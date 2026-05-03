@@ -8,10 +8,9 @@ Detaylı bağlam için: `RESUME.md` | Faz planı için: `MASTER_PLAN.md` | Ürü
 ## ŞU AN
 
 ```
-Aktif Faz   : Faz 4 — Manifest Editörü ✓
+Aktif Faz   : Faz 5 — Authoring Pipeline ✓
 Aktif Adım  : TAMAMLANDI
-Son Commit  : (faz-4: Manifest editor, pipeline state, manifest CLI)
-Test Durumu : 113/113 PASS  (pytest tests/ -q)
+Test Durumu : 123/123 PASS  (pytest tests/ -q)
 Lint Durumu : PASS  (ruff check src/ tests/)
 ```
 
@@ -19,7 +18,16 @@ Lint Durumu : PASS  (ruff check src/ tests/)
 
 ## SON TAMAMLANANLAR
 
-### Faz 4 — Manifest Editörü ✓ (mevcut oturum)
+### Faz 5 — Authoring Pipeline ✓ (mevcut oturum)
+- [x] `src/bookmaker/authoring/pipeline.py` — AuthoringPipeline (seed→outline→draft→approve state machine)
+- [x] `src/bookmaker/authoring/orc.py` — ORC (Outline Review Command)
+- [x] `src/bookmaker/commands/chapter_commands.py` — chapter seed/outline/draft/approve CLI
+- [x] `src/bookmaker/cli.py` — chapter komutu yeniden yönlendirildi
+- [x] `tests/unit/test_authoring_pipeline.py` — 6 test
+- [x] `tests/cli/test_chapter_commands.py` — 4 test
+- [x] **123/123 PASS | ruff lint clean**
+
+### Faz 4 — Manifest Editörü ✓ (önceki oturum)
 - [x] `src/bookmaker/manifest/models.py` — BookManifest, PipelineState, ManifestChapter (Pydantic + YAML round-trip)
 - [x] `src/bookmaker/manifest/manager.py` — ManifestManager (load/save/validate/load_or_generate)
 - [x] `src/bookmaker/manifest/pipeline.py` — PipelineManager (state load/save/update_chapter)
@@ -96,15 +104,15 @@ Lint Durumu : PASS  (ruff check src/ tests/)
 
 ## AKTİF İŞ
 
-Yok — Faz 5 bekliyor.
+Yok — Faz 6 bekliyor.
 
 ---
 
-## SIRADAKİ GÖREVLER — Faz 5
+## SIRADAKİ GÖREVLER — Faz 6
 
-- [ ] Authoring Pipeline (seed → outline → draft → approve akışı)
-- [ ] ORC (Outline Review Command)
-- [ ] bookmaker chapter seed / outline / draft komutları
+- [ ] Production Pipeline (Mermaid, QR, asset, Pandoc export)
+- [ ] bookmaker build full komutu
+- [ ] DOCX export
 
 ---
 

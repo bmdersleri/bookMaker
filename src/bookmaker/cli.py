@@ -2,6 +2,7 @@ import typer
 
 from bookmaker import __version__
 from bookmaker.commands.build import build_chapter_command
+from bookmaker.commands.chapter_commands import chapter_app as chapter_typer
 from bookmaker.commands.check import check_chapter_command
 from bookmaker.commands.init import init_command
 from bookmaker.commands.manifest import manifest_app as manifest_typer
@@ -20,7 +21,7 @@ check_app = typer.Typer(help="Kalite kontrol islemleri.")
 check_app.command("chapter")(check_chapter_command)
 build_app.command("chapter")(build_chapter_command)
 
-app.add_typer(chapter_app, name="chapter")
+app.add_typer(chapter_typer, name="chapter")
 app.add_typer(version_app, name="version")
 app.add_typer(build_app, name="build")
 app.add_typer(check_app, name="check")
