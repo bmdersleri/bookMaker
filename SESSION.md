@@ -8,10 +8,10 @@ Detaylı bağlam için: `RESUME.md` | Faz planı için: `MASTER_PLAN.md` | Ürü
 ## ŞU AN
 
 ```
-Aktif Faz   : Faz 1 — Veri Modelleri ve Depolama
+Aktif Faz   : Faz 2 — Chapter Validator Paketleme
 Aktif Adım  : BAŞLANMADI
-Son Commit  : a69298e (add .gitignore, remove cached pycache)
-Test Durumu : 12/12 PASS  (pytest tests/ -v)
+Son Commit  : abf3e2f (faz-1: Pydantic modelleri, SQLite depolama, bookmaker init komutu)
+Test Durumu : 44/44 PASS  (pytest tests/ -q)
 ```
 
 ---
@@ -22,6 +22,18 @@ Test Durumu : 12/12 PASS  (pytest tests/ -v)
 - [x] `WORKSPACE.md`, `CHAPTER_SPEC.md`, `CHAPTER_AUTHORING_WORKFLOW.md`, `CODING_PLAN.md`, `MASTER_PLAN.md`, `TODO.md`, `SESSION.md`
 - [x] `tools/chapter_semantic_validator.py` — PASS score=100
 - [x] `sample/sample_chapter.md` — kanonik referans bölüm
+
+### Faz 1 — Veri Modelleri ve Depolama ✓ (commit: abf3e2f)
+- [x] `src/bookmaker/models/book.py` — BookProfile, BookArchitecture, ChapterSeed (YAML round-trip)
+- [x] `src/bookmaker/models/quality.py` — Issue, QualityReport (skorlama), GateResult, triyaj
+- [x] `src/bookmaker/models/versioning.py` — VersionEvent, ActiveVersion, ChapterStep
+- [x] `src/bookmaker/models/exchange.py` — RevisionPacket (PRESERVE + prompt üretici)
+- [x] `src/bookmaker/storage/schema.sql` — 6 tablo SQLite şeması
+- [x] `src/bookmaker/storage/sqlite.py` — ensure_schema, bağlantı yöneticisi
+- [x] `src/bookmaker/storage/files.py` — append_event, read_events, workspace yardımcıları
+- [x] `src/bookmaker/templates/presets/java_temelleri.py` — 27 bölüm preseti
+- [x] `src/bookmaker/commands/init.py` — bookmaker init (--preset java-temelleri)
+- [x] 32 yeni test — toplam 44/44 PASS
 
 ### Faz 0 — Proje İskeleti ✓ (commit: a69298e)
 - [x] `pyproject.toml` — uv sync 39 paket, hatasız
@@ -51,31 +63,39 @@ Yok — Faz 1 başlayacak.
 
 ## SIRADAKİ 5 GÖREV
 
-Faz 1 — Veri Modelleri ve Depolama (CODING_PLAN.md §16 Faz 1 referans):
+Faz 2 — Chapter Validator Paketleme (CODING_PLAN.md §16 Faz 2 referans):
 
 ```
-1. Pydantic modelleri — BookProfile, BookArchitecture, ChapterSeed
-   Dosya: src/bookmaker/models/book.py
-   Test : tests/unit/test_models_book.py
-   Kontrol: YAML round-trip kayıpsız
+1. Chapter parser
+   Dosya: src/bookmaker/chapter/parser.py
+   İçerik: YAML front matter, heading hiyerarşisi, SECTION_META,
+            CODE_META, MERMAID_META ayrıştırma
+   Test : tests/unit/test_parser.py
+   Fixture: sample/sample_chapter.md üzerinde çalışmalı
 
-2. Pydantic modelleri — Issue, QualityReport, GateResult
-   Dosya: src/bookmaker/models/quality.py
-   Test : tests/unit/test_models_quality.py
+2. Chapter validator
+   Dosya: src/bookmaker/chapter/validator.py
+   İçerik: mevcut tools/chapter_semantic_validator.py mantığını
+            paket içine al, Issue listesi üret
+   Test : tests/unit/test_validator.py
+   Kontrol: sample_chapter.md → errors=0, warnings=0
 
-3. Pydantic modelleri — VersionEvent, ActiveVersion
-   Dosya: src/bookmaker/models/versioning.py
-   Test : tests/unit/test_models_versioning.py
+3. Chapter scorer
+   Dosya: src/bookmaker/chapter/scoring.py
+   İçerik: score=100 - errors*15 - warnings*3, karar fonksiyonu
+   Test : tests/unit/test_scoring.py (zaten quality.py'de var, bağla)
 
-4. SQLite şeması + ensure_schema()
-   Dosyalar:
-     src/bookmaker/storage/schema.sql
-     src/bookmaker/storage/sqlite.py
-   Test: tables oluşur, tekrar çalışınca hata vermez
+4. bookmaker check chapter komutu
+   Dosya: src/bookmaker/commands/check.py
+   CLI  : bookmaker check chapter .\sample\sample_chapter.md
+          bookmaker check chapter .\sample\sample_chapter.md --json
+   Test : tests/cli/test_check_command.py
+   Kontrol: JSON raporu build/reports/ altına yazar
 
-5. bookmaker init --preset java-temelleri --path .\build\smoke\java-book
-   Dosya: src/bookmaker/commands/init.py  (chapter_app'e bağlanır)
-   Kontrol: workspace dizini, book_profile.yaml, bookmaker.sqlite oluşur
+5. Hatalı fixture dosyaları
+   Dosya: tests/fixtures/invalid_missing_code_meta.md
+          tests/fixtures/invalid_wrong_heading.md
+   Test : validator bunları FAIL olarak raporlamalı
 ```
 
 ---
