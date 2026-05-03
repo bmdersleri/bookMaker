@@ -1,6 +1,8 @@
 import typer
 
 from bookmaker import __version__
+from bookmaker.commands.build import build_chapter_command
+from bookmaker.commands.check import check_chapter_command
 from bookmaker.commands.init import init_command
 
 app = typer.Typer(
@@ -13,6 +15,9 @@ chapter_app = typer.Typer(help="Bolum islemleri.")
 version_app = typer.Typer(help="Surum islemleri.")
 build_app = typer.Typer(help="Export ve build islemleri.")
 check_app = typer.Typer(help="Kalite kontrol islemleri.")
+
+check_app.command("chapter")(check_chapter_command)
+build_app.command("chapter")(build_chapter_command)
 
 app.add_typer(chapter_app, name="chapter")
 app.add_typer(version_app, name="version")

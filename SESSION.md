@@ -8,15 +8,41 @@ Detaylı bağlam için: `RESUME.md` | Faz planı için: `MASTER_PLAN.md` | Ürü
 ## ŞU AN
 
 ```
-Aktif Faz   : Faz 2 — Chapter Validator Paketleme
-Aktif Adım  : BAŞLANMADI
-Son Commit  : abf3e2f (faz-1: Pydantic modelleri, SQLite depolama, bookmaker init komutu)
-Test Durumu : 44/44 PASS  (pytest tests/ -q)
+Aktif Faz   : Faz 3 — Kod Smoke Test Motoru ✓
+Aktif Adım  : TAMAMLANDI
+Son Commit  : (faz-3: Build pipeline, code extraction, Java compilation, build chapter CLI)
+Test Durumu : 99/99 PASS  (pytest tests/ -q)
+Lint Durumu : PASS  (ruff check src/ tests/)
 ```
 
 ---
 
 ## SON TAMAMLANANLAR
+
+### Faz 3 — Kod Smoke Test Motoru ✓ (mevcut oturum)
+- [x] `src/bookmaker/build/extractor.py` — CODE_META'dan kod çıkarma, build/code/ altına yazma
+- [x] `src/bookmaker/build/runner.py` — javac ile derleme, java ile çalıştırma, timeout/error yönetimi
+- [x] `src/bookmaker/build/pipeline.py` — extract + compile iş akışı, rapor üretimi
+- [x] `src/bookmaker/commands/build.py` — bookmaker build chapter (--json)
+- [x] `src/bookmaker/cli.py` — build chapter komutu kayıtlı
+- [x] `tests/unit/test_build_extractor.py` — 4 test (extract count, file write, skip, empty)
+- [x] `tests/unit/test_build_runner.py` — 4 test (valid/invalid/nonexistent/no-main compile)
+- [x] `tests/cli/test_build_command.py` — 3 test (CLI, nonexistent, --json)
+- [x] **99/99 PASS | ruff lint clean**
+- [x] CLI doğrulama: `sample_chapter.md` → 9 kod blogu, 6 çıkarılan, 3 atlanan, 6/6 derlendi
+
+### Faz 2 — Chapter Validator Paketleme ✓ (önceki oturum)
+- [x] `src/bookmaker/chapter/parser.py` — YAML front matter, heading, SECTION_META, CODE_META, MERMAID_META ayrıştırma
+- [x] `src/bookmaker/chapter/validator.py` — Frontmatter, section, code_meta, mermaid, forbidden_marker, java uyum, placeholder validasyonu (17.9 KB, 6 grup)
+- [x] `src/bookmaker/chapter/scoring.py` — score=100-errors*15-warnings*3, decision logic
+- [x] `src/bookmaker/commands/check.py` — bookmaker check chapter (--json, --final)
+- [x] `src/bookmaker/cli.py` — check chapter komutu kayıtlı
+- [x] `tests/unit/test_parser.py` — 13 test (frontmatter, headings, meta, edge cases)
+- [x] `tests/unit/test_validator.py` — 17 test (frontmatter, sections, code_meta, mermaid, integration, edge cases)
+- [x] `tests/unit/test_scoring.py` — 12 test (score, decision thresholds, clamping)
+- [x] `tests/cli/test_check_command.py` — 5 test (CLI, --json, --final, hatalı dosya)
+- [x] `tests/fixtures/` — 4 hatalı fixture (missing_code_meta, wrong_heading, duplicate_meta, java_mismatch)
+- [x] **88/88 PASS** | **ruff lint clean**
 
 ### Planlama (önceki oturum)
 - [x] `WORKSPACE.md`, `CHAPTER_SPEC.md`, `CHAPTER_AUTHORING_WORKFLOW.md`, `CODING_PLAN.md`, `MASTER_PLAN.md`, `TODO.md`, `SESSION.md`
@@ -57,46 +83,15 @@ Test Durumu : 44/44 PASS  (pytest tests/ -q)
 
 ## AKTİF İŞ
 
-Yok — Faz 1 başlayacak.
+Yok — Faz 4 bekliyor.
 
 ---
 
-## SIRADAKİ 5 GÖREV
+## SIRADAKİ GÖREVLER — Faz 4
 
-Faz 2 — Chapter Validator Paketleme (CODING_PLAN.md §16 Faz 2 referans):
-
-```
-1. Chapter parser
-   Dosya: src/bookmaker/chapter/parser.py
-   İçerik: YAML front matter, heading hiyerarşisi, SECTION_META,
-            CODE_META, MERMAID_META ayrıştırma
-   Test : tests/unit/test_parser.py
-   Fixture: sample/sample_chapter.md üzerinde çalışmalı
-
-2. Chapter validator
-   Dosya: src/bookmaker/chapter/validator.py
-   İçerik: mevcut tools/chapter_semantic_validator.py mantığını
-            paket içine al, Issue listesi üret
-   Test : tests/unit/test_validator.py
-   Kontrol: sample_chapter.md → errors=0, warnings=0
-
-3. Chapter scorer
-   Dosya: src/bookmaker/chapter/scoring.py
-   İçerik: score=100 - errors*15 - warnings*3, karar fonksiyonu
-   Test : tests/unit/test_scoring.py (zaten quality.py'de var, bağla)
-
-4. bookmaker check chapter komutu
-   Dosya: src/bookmaker/commands/check.py
-   CLI  : bookmaker check chapter .\sample\sample_chapter.md
-          bookmaker check chapter .\sample\sample_chapter.md --json
-   Test : tests/cli/test_check_command.py
-   Kontrol: JSON raporu build/reports/ altına yazar
-
-5. Hatalı fixture dosyaları
-   Dosya: tests/fixtures/invalid_missing_code_meta.md
-          tests/fixtures/invalid_wrong_heading.md
-   Test : validator bunları FAIL olarak raporlamalı
-```
+- [ ] Manifest Editörü ve Pipeline yönetimi
+- [ ] bookmaker init geliştirme
+- [ ] book_manifest.yaml okuma/yazma/düzenleme CLI
 
 ---
 

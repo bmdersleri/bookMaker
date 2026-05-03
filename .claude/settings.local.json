@@ -36,7 +36,9 @@
       "Bash(git -C D:/bookMaker add SESSION.md .gitignore)",
       "Bash(git -C D:/bookMaker commit -m \"session: faz-0 tamamlandi, faz-1 siradaki gorevler guncellendi\")",
       "Bash(uv run *)",
-      "Bash(git -C D:/bookMaker commit -m \"faz-1: Pydantic modelleri, SQLite depolama, bookmaker init komutu\")"
+      "Bash(git -C D:/bookMaker commit -m \"faz-1: Pydantic modelleri, SQLite depolama, bookmaker init komutu\")",
+      "Bash(git -C D:/bookMaker add SESSION.md)",
+      "Bash(git -C D:/bookMaker commit -m \"session: faz-1 tamamlandi, faz-2 siradaki gorevler\")"
     ]
   }
 }

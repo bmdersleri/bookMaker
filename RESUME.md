@@ -18,7 +18,7 @@ Istenen sistem:
 
 ## Calisma Dizini ve Repo
 
-- Calisma dizini: `D:\bookMaker`
+- Calisma dizini: `D:\bookMaker_Deepseek` (eskiden `D:\bookMaker` — 2026-05-03 arşiv çalışması sırasında taşındı)
 - GitHub repo: `https://github.com/bmdersleri/bookMaker`
 - Yerel remote: `origin https://github.com/bmdersleri/bookMaker.git`
 - Baslangicta repo neredeyse bostu; sadece `README.md` vardi.
@@ -686,11 +686,86 @@ Mermaid render:
 
 Not: Mermaid CLI sandbox icinde Chromium/Puppeteer baslatamadigi icin `mmdc` komutu onayli/escalated calistirildi.
 
-## Sonraki Mantikli Adim
+## Kodlama Asamalari
 
-Kullanici kodlamaya gec derse, once asagidaki kararlar netlestirilmeli:
+Kodlamaya gecildi. Uc faz basariyla tamamlandi:
 
-- Ilk sonraki adim validator test fixture'lari mi olacak, yoksa proje/paket iskeleti mi baslatilacak?
-- Python paket/CLI adi ne olacak?
-- OpenAI entegrasyonu ilk MVP'ye dahil mi?
-- GUI ilk MVP'de sadece proje/bolum goruntuleme mi yapacak, yoksa LLM gorevi de calistiracak mi?
+### Faz 0 — Proje Iskeleti ✓
+
+`pyproject.toml`, CLI iskeleti, core moduller ve test altyapisi kuruldu.
+
+| Bilesen | Durum |
+|---|---|
+| `pyproject.toml` | uv sync 39 paket, Hatchling build |
+| `src/bookmaker/__init__.py` | `__version__ = "0.1.0"` |
+| `src/bookmaker/cli.py` | Typer app, 4 alt komut grubu (chapter, version, build, check) |
+| `src/bookmaker/core/` | encoding, errors, time, ids, paths |
+| `tests/` | conftest, unit, cli, integration iskeletleri |
+| `justfile` | dev/test/lint/fmt/check/version |
+| `.pre-commit-config.yaml` | ruff + markdownlint-cli2 |
+| Commit: `a69298e` | |
+
+### Faz 1 — Veri Modelleri ve Depolama ✓
+
+Pydantic modelleri, SQLite depolama, dosya sistemi yardimcilari, Java Temelleri preseti ve `bookmaker init` komutu.
+
+| Bilesen | Dosya |
+|---|---|
+| Kitap modelleri | `models/book.py` (BookProfile, BookArchitecture, ChapterSeed) |
+| Kalite modelleri | `models/quality.py` (Issue, QualityReport, GateResult, Severity, Decision) |
+| Surum modelleri | `models/versioning.py` (VersionEvent, ActiveVersion, ChapterStep) |
+| Revizyon paketi | `models/exchange.py` (RevisionPacket, to_prompt uretici) |
+| SQLite sema | `storage/schema.sql` (6 tablo: projects, chapters, artifacts, version_events, quality_reports, issues) |
+| SQLite baglanti | `storage/sqlite.py` (ensure_schema, WAL modu, context manager) |
+| Dosya depolama | `storage/files.py` (append_event, read_events, workspace path helpers) |
+| Preset | `templates/presets/java_temelleri.py` (27 bolum) |
+| CLI | `commands/init.py` (bookmaker init --preset java-temelleri) |
+| Test | 32 yeni test |
+| Commit: `abf3e2f` | |
+
+### Faz 2 — Chapter Validator Paketleme ✓ (2026-05-03)
+
+Bolum Markdown dosyalarini `CHAPTER_SPEC.md`'ye gore dogrulayan parser, validator, scorer ve CLI komutu.
+
+| Bilesen | Dosya | Aciklama |
+|---|---|---|
+| **Parser** | `chapter/parser.py` | YAML front matter, heading, SECTION_META, CODE_META, MERMAID_META ayristirma |
+| **Validator** | `chapter/validator.py` | 6 validasyon grubu (frontmatter, sections, code_meta, mermaid, forbidden_markers, java uyum, final placeholder) — 17.9 KB |
+| **Scorer** | `chapter/scoring.py` | score=100 - errors*15 - warnings*3, 5 karar seviyesi (passed, passed_with_warnings, revision_required, blocked) |
+| **CLI** | `commands/check.py` | `bookmaker check chapter <path>` — --json ve --final destegi |
+| **Test parser** | `tests/unit/test_parser.py` | 13 test (frontmatter, headings, meta blocks, edge cases) |
+| **Test validator** | `tests/unit/test_validator.py` | 17 test (frontmatter, sections, code_meta, mermaid, integration, edge cases) |
+| **Test scorer** | `tests/unit/test_scoring.py` | 12 test (score calculation, decision thresholds, clamping) |
+| **Test CLI** | `tests/cli/test_check_command.py` | 5 test (CLI, --json, --final, hatali dosya) |
+| **Fixture'lar** | `tests/fixtures/` | 4 hatali ornek: missing_code_meta, wrong_heading, duplicate_meta, java_mismatch |
+| **Toplam test** | 88/88 PASS | `pytest tests/ -q` + `ruff check src/ tests/` |
+
+CLI dogrulama:
+
+```bash
+bookmaker check chapter sample/sample_chapter.md
+# Skor=100, Karar=pass, Hata=0, Uyari=0
+
+bookmaker check chapter sample/sample_chapter.md --json
+# build/reports/dosya_islemleri_quality_report.json
+
+bookmaker check chapter tests/fixtures/invalid_wrong_heading.md
+# Skor=43, Karar=blocked, Hata=2, Uyari=9
+```
+
+### Arac Erisim Dogrulama (2026-05-03)
+
+Tum araclar calisir durumda (14/14):
+
+```
+Python 3.14.0, Node v24.12.0, Java 17.0.10 LTS, Git 2.44.0,
+Pandoc 3.9, SQLite 3.51.3, Ruff 0.15.12, mmdc 11.12.0,
+ImageMagick 7.1.2-21, uv 0.9.18, Vale 3.14.1, lychee 0.23.0,
+markdownlint-cli2 0.22.1, rga 0.10.9
+```
+
+## Sonraki Hedef: Faz 3 — Kod Smoke Test Motoru
+
+- JDK ile Java kod derleme + calistirma
+- build/chapter kodu cikarma pipeline'i
+- `bookmaker build chapter` komutu
