@@ -8,10 +8,10 @@ Detaylı bağlam için: `RESUME.md` | Faz planı için: `MASTER_PLAN.md` | Ürü
 ## ŞU AN
 
 ```
-Aktif Faz   : Faz 3 — Kod Smoke Test Motoru ✓
+Aktif Faz   : Faz 4 — Manifest Editörü ✓
 Aktif Adım  : TAMAMLANDI
-Son Commit  : (faz-3: Build pipeline, code extraction, Java compilation, build chapter CLI)
-Test Durumu : 99/99 PASS  (pytest tests/ -q)
+Son Commit  : (faz-4: Manifest editor, pipeline state, manifest CLI)
+Test Durumu : 113/113 PASS  (pytest tests/ -q)
 Lint Durumu : PASS  (ruff check src/ tests/)
 ```
 
@@ -19,7 +19,20 @@ Lint Durumu : PASS  (ruff check src/ tests/)
 
 ## SON TAMAMLANANLAR
 
-### Faz 3 — Kod Smoke Test Motoru ✓ (mevcut oturum)
+### Faz 4 — Manifest Editörü ✓ (mevcut oturum)
+- [x] `src/bookmaker/manifest/models.py` — BookManifest, PipelineState, ManifestChapter (Pydantic + YAML round-trip)
+- [x] `src/bookmaker/manifest/manager.py` — ManifestManager (load/save/validate/load_or_generate)
+- [x] `src/bookmaker/manifest/pipeline.py` — PipelineManager (state load/save/update_chapter)
+- [x] `src/bookmaker/commands/manifest.py` — manifest view, list-chapters, validate, pipeline CLI
+- [x] `src/bookmaker/cli.py` — manifest komutu kayıtlı
+- [x] `tests/unit/test_manifest_models.py` — 3 test
+- [x] `tests/unit/test_manifest_manager.py` — 4 test
+- [x] `tests/unit/test_manifest_pipeline.py` — 2 test
+- [x] `tests/cli/test_manifest_command.py` — 5 test
+- [x] **113/113 PASS | ruff lint clean**
+- [x] CLI doğrulama: view, list-chapters (14 chapter), validate, pipeline
+
+### Faz 3 — Kod Smoke Test Motoru ✓ (önceki oturum)
 - [x] `src/bookmaker/build/extractor.py` — CODE_META'dan kod çıkarma, build/code/ altına yazma
 - [x] `src/bookmaker/build/runner.py` — javac ile derleme, java ile çalıştırma, timeout/error yönetimi
 - [x] `src/bookmaker/build/pipeline.py` — extract + compile iş akışı, rapor üretimi
@@ -83,15 +96,15 @@ Lint Durumu : PASS  (ruff check src/ tests/)
 
 ## AKTİF İŞ
 
-Yok — Faz 4 bekliyor.
+Yok — Faz 5 bekliyor.
 
 ---
 
-## SIRADAKİ GÖREVLER — Faz 4
+## SIRADAKİ GÖREVLER — Faz 5
 
-- [ ] Manifest Editörü ve Pipeline yönetimi
-- [ ] bookmaker init geliştirme
-- [ ] book_manifest.yaml okuma/yazma/düzenleme CLI
+- [ ] Authoring Pipeline (seed → outline → draft → approve akışı)
+- [ ] ORC (Outline Review Command)
+- [ ] bookmaker chapter seed / outline / draft komutları
 
 ---
 

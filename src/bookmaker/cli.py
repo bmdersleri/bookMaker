@@ -4,6 +4,7 @@ from bookmaker import __version__
 from bookmaker.commands.build import build_chapter_command
 from bookmaker.commands.check import check_chapter_command
 from bookmaker.commands.init import init_command
+from bookmaker.commands.manifest import manifest_app as manifest_typer
 
 app = typer.Typer(
     name="bookmaker",
@@ -23,6 +24,7 @@ app.add_typer(chapter_app, name="chapter")
 app.add_typer(version_app, name="version")
 app.add_typer(build_app, name="build")
 app.add_typer(check_app, name="check")
+app.add_typer(manifest_typer, name="manifest")
 app.command("init")(init_command)
 
 
