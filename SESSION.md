@@ -8,9 +8,9 @@ Detaylı bağlam için: `RESUME.md` | Faz planı için: `MASTER_PLAN.md` | Ürü
 ## ŞU AN
 
 ```
-Aktif Faz   : Faz 5 — Authoring Pipeline ✓
+Aktif Faz   : Faz 6 — Production Pipeline ✓
 Aktif Adım  : TAMAMLANDI
-Test Durumu : 123/123 PASS  (pytest tests/ -q)
+Test Durumu : 135/135 PASS  (pytest tests/ -q)
 Lint Durumu : PASS  (ruff check src/ tests/)
 ```
 
@@ -18,7 +18,21 @@ Lint Durumu : PASS  (ruff check src/ tests/)
 
 ## SON TAMAMLANANLAR
 
-### Faz 5 — Authoring Pipeline ✓ (mevcut oturum)
+### Faz 6 — Production Pipeline ✓ (mevcut oturum)
+- [x] `src/bookmaker/production/mermaid.py` — Mermaid blok çıkarma + mmdc ile PNG render
+- [x] `src/bookmaker/production/qrcode.py` — qr CLI ile QR kod üretimi
+- [x] `src/bookmaker/production/pandoc.py` — Pandoc ile DOCX export
+- [x] `src/bookmaker/production/pipeline.py` — Full production orkestrasyonu
+- [x] `src/bookmaker/commands/production.py` — production full/mermaid/docx CLI
+- [x] `src/bookmaker/cli.py` — production komutu kayıtlı
+- [x] `tests/unit/test_production_mermaid.py` — 4 test
+- [x] `tests/unit/test_production_qrcode.py` — 2 test
+- [x] `tests/unit/test_production_pandoc.py` — 2 test
+- [x] `tests/unit/test_production_pipeline.py` — 1 test
+- [x] `tests/cli/test_production_command.py` — 3 test
+- [x] **135/135 PASS | ruff lint clean**
+
+### Faz 5 — Authoring Pipeline ✓ (önceki oturum)
 - [x] `src/bookmaker/authoring/pipeline.py` — AuthoringPipeline (seed→outline→draft→approve state machine)
 - [x] `src/bookmaker/authoring/orc.py` — ORC (Outline Review Command)
 - [x] `src/bookmaker/commands/chapter_commands.py` — chapter seed/outline/draft/approve CLI
@@ -104,15 +118,15 @@ Lint Durumu : PASS  (ruff check src/ tests/)
 
 ## AKTİF İŞ
 
-Yok — Faz 6 bekliyor.
+Yok — Faz 7 bekliyor.
 
 ---
 
-## SIRADAKİ GÖREVLER — Faz 6
+## SIRADAKİ GÖREVLER — Faz 7
 
-- [ ] Production Pipeline (Mermaid, QR, asset, Pandoc export)
-- [ ] bookmaker build full komutu
-- [ ] DOCX export
+- [ ] GitHub sync & code pages
+- [ ] bookmaker github komutu
+- [ ] Studio GUI (FastAPI)
 
 ---
 
