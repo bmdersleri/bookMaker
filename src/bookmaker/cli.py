@@ -4,6 +4,7 @@ from bookmaker import __version__
 from bookmaker.commands.build import build_chapter_command
 from bookmaker.commands.chapter_commands import chapter_app as chapter_typer
 from bookmaker.commands.check import check_chapter_command
+from bookmaker.commands.github_commands import github_app as github_typer
 from bookmaker.commands.init import init_command
 from bookmaker.commands.manifest import manifest_app as manifest_typer
 from bookmaker.commands.production import production_app as production_typer
@@ -28,6 +29,7 @@ app.add_typer(build_app, name="build")
 app.add_typer(check_app, name="check")
 app.add_typer(manifest_typer, name="manifest")
 app.add_typer(production_typer, name="production")
+app.add_typer(github_typer, name="github")
 app.command("init")(init_command)
 
 

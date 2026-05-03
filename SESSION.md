@@ -1,16 +1,16 @@
 # SESSION
 
-Bu dosya her oturum sonunda güncellenir. Yeni oturumda **sadece bu dosyayı** okumak yeterlidir.
-Detaylı bağlam için: `RESUME.md` | Faz planı için: `MASTER_PLAN.md` | Ürün hedefleri için: `TODO.md`
+Bu dosya her oturum sonunda guncellenir. Yeni oturumda **sadece bu dosyayi** okumak yeterlidir.
+Detayli baglam icin: `RESUME.md` | Faz plani icin: `MASTER_PLAN.md` | Urun hedefleri icin: `TODO.md`
 
 ---
 
-## ŞU AN
+## SU AN
 
 ```
-Aktif Faz   : Faz 6 — Production Pipeline ✓
-Aktif Adım  : TAMAMLANDI
-Test Durumu : 135/135 PASS  (pytest tests/ -q)
+Aktif Faz   : Faz 7 — GitHub + Studio GUI ✓
+Aktif Adim  : TAMAMLANDI
+Test Durumu : 144/144 PASS  (pytest tests/ -q)
 Lint Durumu : PASS  (ruff check src/ tests/)
 ```
 
@@ -18,162 +18,103 @@ Lint Durumu : PASS  (ruff check src/ tests/)
 
 ## SON TAMAMLANANLAR
 
-### Faz 6 — Production Pipeline ✓ (mevcut oturum)
-- [x] `src/bookmaker/production/mermaid.py` — Mermaid blok çıkarma + mmdc ile PNG render
-- [x] `src/bookmaker/production/qrcode.py` — qr CLI ile QR kod üretimi
+### Faz 7 — GitHub + Studio GUI ✓ (mevcut oturum)
+- [x] `src/bookmaker/github/sync.py` — Git repo kontrol, kod push, manifest URL
+- [x] `src/bookmaker/github/pages.py` — GitHub Pages kod sayfasi uretimi
+- [x] `src/bookmaker/commands/github_commands.py` — github status/sync-code/manifest CLI
+- [x] `src/bookmaker/studio/app.py` — FastAPI Studio GUI (/, /api/status, /api/project)
+- [x] `src/bookmaker/cli.py` — github ve production komutlari kayitli
+- [x] `tests/unit/test_github_sync.py` — 2 test
+- [x] `tests/unit/test_github_pages.py` — 2 test
+- [x] `tests/unit/test_studio_app.py` — 3 test
+- [x] `tests/cli/test_github_commands.py` — 2 test
+- [x] **144/144 PASS | ruff lint clean**
+
+### Faz 6 — Production Pipeline ✓ (onceki oturum)
+- [x] `src/bookmaker/production/mermaid.py` — Mermaid blok cikarma + mmdc ile PNG render
+- [x] `src/bookmaker/production/qrcode.py` — qr CLI ile QR kod uretimi
 - [x] `src/bookmaker/production/pandoc.py` — Pandoc ile DOCX export
 - [x] `src/bookmaker/production/pipeline.py` — Full production orkestrasyonu
 - [x] `src/bookmaker/commands/production.py` — production full/mermaid/docx CLI
-- [x] `src/bookmaker/cli.py` — production komutu kayıtlı
+- [x] `src/bookmaker/cli.py` — production komutu kayitli
 - [x] `tests/unit/test_production_mermaid.py` — 4 test
 - [x] `tests/unit/test_production_qrcode.py` — 2 test
 - [x] `tests/unit/test_production_pandoc.py` — 2 test
 - [x] `tests/unit/test_production_pipeline.py` — 1 test
 - [x] `tests/cli/test_production_command.py` — 3 test
-- [x] **135/135 PASS | ruff lint clean**
 
-### Faz 5 — Authoring Pipeline ✓ (önceki oturum)
-- [x] `src/bookmaker/authoring/pipeline.py` — AuthoringPipeline (seed→outline→draft→approve state machine)
+### Faz 5 — Authoring Pipeline ✓ (onceki oturum)
+- [x] `src/bookmaker/authoring/pipeline.py` — AuthoringPipeline (seed->outline->draft->approve state machine)
 - [x] `src/bookmaker/authoring/orc.py` — ORC (Outline Review Command)
 - [x] `src/bookmaker/commands/chapter_commands.py` — chapter seed/outline/draft/approve CLI
-- [x] `src/bookmaker/cli.py` — chapter komutu yeniden yönlendirildi
+- [x] `src/bookmaker/cli.py` — chapter komutu yeniden yonlendirildi
 - [x] `tests/unit/test_authoring_pipeline.py` — 6 test
 - [x] `tests/cli/test_chapter_commands.py` — 4 test
-- [x] **123/123 PASS | ruff lint clean**
 
-### Faz 4 — Manifest Editörü ✓ (önceki oturum)
-- [x] `src/bookmaker/manifest/models.py` — BookManifest, PipelineState, ManifestChapter (Pydantic + YAML round-trip)
+### Faz 4 — Manifest Editoru ✓ (onceki oturum)
+- [x] `src/bookmaker/manifest/models.py` — BookManifest, PipelineState, ManifestChapter (Pydantic + YAML)
 - [x] `src/bookmaker/manifest/manager.py` — ManifestManager (load/save/validate/load_or_generate)
 - [x] `src/bookmaker/manifest/pipeline.py` — PipelineManager (state load/save/update_chapter)
 - [x] `src/bookmaker/commands/manifest.py` — manifest view, list-chapters, validate, pipeline CLI
-- [x] `src/bookmaker/cli.py` — manifest komutu kayıtlı
+- [x] `src/bookmaker/cli.py` — manifest komutu kayitli
 - [x] `tests/unit/test_manifest_models.py` — 3 test
 - [x] `tests/unit/test_manifest_manager.py` — 4 test
 - [x] `tests/unit/test_manifest_pipeline.py` — 2 test
 - [x] `tests/cli/test_manifest_command.py` — 5 test
-- [x] **113/113 PASS | ruff lint clean**
-- [x] CLI doğrulama: view, list-chapters (14 chapter), validate, pipeline
 
-### Faz 3 — Kod Smoke Test Motoru ✓ (önceki oturum)
-- [x] `src/bookmaker/build/extractor.py` — CODE_META'dan kod çıkarma, build/code/ altına yazma
-- [x] `src/bookmaker/build/runner.py` — javac ile derleme, java ile çalıştırma, timeout/error yönetimi
-- [x] `src/bookmaker/build/pipeline.py` — extract + compile iş akışı, rapor üretimi
+### Faz 3 — Kod Smoke Test Motoru ✓ (onceki oturum)
+- [x] `src/bookmaker/build/extractor.py` — CODE_META'dan kod cikarma
+- [x] `src/bookmaker/build/runner.py` — javac ile derleme, java ile calistirma
+- [x] `src/bookmaker/build/pipeline.py` — extract + compile is akisi
 - [x] `src/bookmaker/commands/build.py` — bookmaker build chapter (--json)
-- [x] `src/bookmaker/cli.py` — build chapter komutu kayıtlı
-- [x] `tests/unit/test_build_extractor.py` — 4 test (extract count, file write, skip, empty)
-- [x] `tests/unit/test_build_runner.py` — 4 test (valid/invalid/nonexistent/no-main compile)
-- [x] `tests/cli/test_build_command.py` — 3 test (CLI, nonexistent, --json)
-- [x] **99/99 PASS | ruff lint clean**
-- [x] CLI doğrulama: `sample_chapter.md` → 9 kod blogu, 6 çıkarılan, 3 atlanan, 6/6 derlendi
+- [x] `tests/unit/test_build_extractor.py` — 4 test
+- [x] `tests/unit/test_build_runner.py` — 4 test
+- [x] `tests/cli/test_build_command.py` — 3 test
 
-### Faz 2 — Chapter Validator Paketleme ✓ (önceki oturum)
-- [x] `src/bookmaker/chapter/parser.py` — YAML front matter, heading, SECTION_META, CODE_META, MERMAID_META ayrıştırma
-- [x] `src/bookmaker/chapter/validator.py` — Frontmatter, section, code_meta, mermaid, forbidden_marker, java uyum, placeholder validasyonu (17.9 KB, 6 grup)
-- [x] `src/bookmaker/chapter/scoring.py` — score=100-errors*15-warnings*3, decision logic
+### Faz 2 — Chapter Validator Paketleme ✓ (onceki oturum)
+- [x] `src/bookmaker/chapter/parser.py` — Front matter, heading, meta block ayristirma
+- [x] `src/bookmaker/chapter/validator.py` — 6 validasyon grubu (17.9 KB)
+- [x] `src/bookmaker/chapter/scoring.py` — score=100-errors*15-warnings*3
 - [x] `src/bookmaker/commands/check.py` — bookmaker check chapter (--json, --final)
-- [x] `src/bookmaker/cli.py` — check chapter komutu kayıtlı
-- [x] `tests/unit/test_parser.py` — 13 test (frontmatter, headings, meta, edge cases)
-- [x] `tests/unit/test_validator.py` — 17 test (frontmatter, sections, code_meta, mermaid, integration, edge cases)
-- [x] `tests/unit/test_scoring.py` — 12 test (score, decision thresholds, clamping)
-- [x] `tests/cli/test_check_command.py` — 5 test (CLI, --json, --final, hatalı dosya)
-- [x] `tests/fixtures/` — 4 hatalı fixture (missing_code_meta, wrong_heading, duplicate_meta, java_mismatch)
-- [x] **88/88 PASS** | **ruff lint clean**
+- [x] `tests/unit/test_parser.py` — 13 test
+- [x] `tests/unit/test_validator.py` — 17 test
+- [x] `tests/unit/test_scoring.py` — 12 test
+- [x] `tests/cli/test_check_command.py` — 5 test
+- [x] `tests/fixtures/` — 4 hatali fixture dosyasi
 
-### Planlama (önceki oturum)
-- [x] `WORKSPACE.md`, `CHAPTER_SPEC.md`, `CHAPTER_AUTHORING_WORKFLOW.md`, `CODING_PLAN.md`, `MASTER_PLAN.md`, `TODO.md`, `SESSION.md`
-- [x] `tools/chapter_semantic_validator.py` — PASS score=100
-- [x] `sample/sample_chapter.md` — kanonik referans bölüm
+### Faz 1 — Veri Modelleri ve Depolama ✓
+- [x] Pydantic modelleri (book, quality, versioning, exchange)
+- [x] SQLite depolama, dosya sistemi yardimcilari
+- [x] Java Temelleri preseti (27 bolum)
+- [x] `bookmaker init --preset java-temelleri`
 
-### Faz 1 — Veri Modelleri ve Depolama ✓ (commit: abf3e2f)
-- [x] `src/bookmaker/models/book.py` — BookProfile, BookArchitecture, ChapterSeed (YAML round-trip)
-- [x] `src/bookmaker/models/quality.py` — Issue, QualityReport (skorlama), GateResult, triyaj
-- [x] `src/bookmaker/models/versioning.py` — VersionEvent, ActiveVersion, ChapterStep
-- [x] `src/bookmaker/models/exchange.py` — RevisionPacket (PRESERVE + prompt üretici)
-- [x] `src/bookmaker/storage/schema.sql` — 6 tablo SQLite şeması
-- [x] `src/bookmaker/storage/sqlite.py` — ensure_schema, bağlantı yöneticisi
-- [x] `src/bookmaker/storage/files.py` — append_event, read_events, workspace yardımcıları
-- [x] `src/bookmaker/templates/presets/java_temelleri.py` — 27 bölüm preseti
-- [x] `src/bookmaker/commands/init.py` — bookmaker init (--preset java-temelleri)
-- [x] 32 yeni test — toplam 44/44 PASS
-
-### Faz 0 — Proje İskeleti ✓ (commit: a69298e)
-- [x] `pyproject.toml` — uv sync 39 paket, hatasız
-- [x] `src/bookmaker/__init__.py` — `__version__ = "0.1.0"`
-- [x] `src/bookmaker/__main__.py`
-- [x] `src/bookmaker/cli.py` — Typer app, 4 alt komut grubu
-- [x] `src/bookmaker/core/encoding.py` — UTF-8 read/write
-- [x] `src/bookmaker/core/errors.py` — özel hata sınıfları
-- [x] `src/bookmaker/core/time.py` — Istanbul timezone ISO 8601
-- [x] `src/bookmaker/core/ids.py` — slugify, event/issue ID
-- [x] `src/bookmaker/core/paths.py` — proje yol yardımcıları
-- [x] `tests/` — conftest, unit, cli, integration iskeletleri
-- [x] `tests/unit/test_core.py` — 8 test PASS
-- [x] `tests/cli/test_cli_smoke.py` — 4 test PASS
-- [x] `justfile` — dev/test/lint/fmt/check/version görevleri
-- [x] `.pre-commit-config.yaml` — ruff + markdownlint-cli2
-- [x] `.markdownlint.yaml`
-- [x] `.gitignore`
+### Faz 0 — Proje Iskeleti ✓
+- [x] `pyproject.toml`, `src/bookmaker/` iskeleti, CLI Typer app
+- [x] Core moduller (encoding, errors, time, ids, paths)
+- [x] `tests/` iskeleti, `justfile`, `.pre-commit-config.yaml`
 
 ---
 
-## AKTİF İŞ
+## AKTIF IS
 
-Yok — Faz 7 bekliyor.
-
----
-
-## SIRADAKİ GÖREVLER — Faz 7
-
-- [ ] GitHub sync & code pages
-- [ ] bookmaker github komutu
-- [ ] Studio GUI (FastAPI)
+Yok — Faz 8 bekliyor.
 
 ---
 
-## ENGELLEYİCİ KARARLAR
+## SIRADAKI GOREVLER — Faz 8
 
-Şu an engelleyici karar yok. Kodlamaya geçilebilir.
+- [ ] Kitap duzeyinde validasyon (`bookmaker check book`)
+- [ ] Bolumler arasi tutarlilik kontrolu
+- [ ] Son kalan isler ve dokumantasyon
+
+---
+
+## ENGELLEYICI KARARLAR
+
+Su an engelleyici karar yok. Kodlamaya gecilebilir.
 
 ---
 
 ## OTURUM NOTLARI
 
-**2026-05-03** — Planlama oturumu tamamlandı.
-
-Kabul edilen tüm tasarım kararları:
-- Outline evaluator: 2 katmanlı (deterministik + kullanıcı checklist)
-- CODE_META fallback: regex ile aday üretimi, kullanıcı onayı zorunlu
-- Revizyon paketi: PRESERVE bloğu otomatik eklenir
-- Bölümler arası tutarlılık: `bookmaker check book` komutu (Faz 8)
-- LLM sağlayıcı analizi: dashboard'da manual_exchange istatistikleri
-- Seed ön doldurma: book_architecture'dan otomatik
-- Derleyici hatası: otomatik onarım promptu (code_repair_prompt.md.j2)
-- Pre-build gate: build başlamadan tüm kontroller
-- Issue → editör highlight (UX #1)
-- Revizyon sparkline (UX #2)
-- Paralel bölüm sekmeleri (UX #3)
-- Kavram kapsam takipçisi (UX #4)
-- Kısmi bölüm revizyonu (UX #5)
-- Pano akıllı tespiti (UX #6)
-- Issue triyajı (UX #7)
-- Zen modu (UX #8)
-- Canlı build akışı + asset galerisi (UX #9)
-- Kitap sağlık skoru (UX #10)
-- Klavye kısayolları katmanı
-
----
-
-## NASIL KULLANILIR
-
-**Oturum sonunda (kodlama bitince):**
-1. `## ŞU AN` bölümünü güncelle: aktif faz/adım, son commit hash, test durumu
-2. `## SON TAMAMLANANLAR` listesine biten görevleri ekle (dosya yollarıyla)
-3. `## AKTİF İŞ` bölümünü temizle veya yarım kalan işi yaz
-4. `## SIRADAKİ 5 GÖREV` listesini güncelle (tam dosya yolları ve kontrol adımları)
-5. `## OTURUM NOTLARI` bölümüne tarihlü önemli bulguları ekle
-
-**Oturum başında:**
-1. Sadece bu dosyayı oku (60 saniye)
-2. "Son Commit" hash'ini `git log --oneline -3` ile doğrula
-3. "Test Durumu" nu `pytest --tb=no -q` ile doğrula
-4. `## SIRADAKİ 5 GÖREV` listesinden devam et
+**2026-05-03** — Tum Faz 0-7 tamamlandi. 144 test, lint clean. Branch `deepseek`'e push edildi.
