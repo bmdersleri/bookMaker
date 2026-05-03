@@ -1,0 +1,66 @@
+book:
+  title: "Java'nın Temelleri"
+  subtitle: "Bilgisayar Mühendisliği Öğrencileri İçin Temel Programlama, Konsol ve GUI Uygulamaları"
+  author: "İsmail Kırbaş"
+  lang: "tr-TR"
+  date: "2026"
+  numbering_policy: "build_time"
+  automation_profile: "java_book_v1_3"
+
+paths:
+  chapters_dir: "chapters"
+  assets_auto: "assets/auto"
+  assets_manual: "assets/manual"
+  assets_locked: "assets/locked"
+  assets_final: "assets/final"
+  build_dir: "build"
+  dist_dir: "dist"
+  reports_dir: "build/reports"
+
+pandoc:
+  reference_doc: "templates/referenceV14_java_temelleri.docx"
+  lua_filter: "filters/styles_revised_v14.lua"
+  input_format: "markdown+tex_math_single_backslash"
+  output_docx: "dist/Java_Temelleri.docx"
+
+repository:
+  owner: "bmdersleri"
+  repo: "javaninTemelleri"
+  branch: "main"
+  code_root: "kodlar"
+  raw_root: "https://github.com/bmdersleri/javaninTemelleri/blob/main"
+  pages_root: "https://bmdersleri.github.io/javaninTemelleri"
+
+qr:
+  default_policy: "dual"
+  source_dir: "assets/auto/qr/source"
+  page_dir: "assets/auto/qr/page"
+  verify_decode: true
+
+asset_resolution:
+  priority:
+    - "manual"
+    - "locked"
+    - "auto"
+  never_clean:
+    - "assets/manual"
+    - "assets/locked"
+
+chapters:
+  - order: 1
+    chapter_id: "java-giris"
+    source: "chapters/java-giris.md"
+    title: "Java’ya Giriş ve Programlama Mantığı"
+    github_slug: "java-giris"
+
+  - order: 2
+    chapter_id: "gelistirme-ortami"
+    source: "chapters/gelistirme-ortami.md"
+    title: "Java Geliştirme Ortamı ve İlk Proje"
+    github_slug: "gelistirme-ortami"
+
+  - order: 8
+    chapter_id: "karar-yapilari"
+    source: "chapters/karar-yapilari.md"
+    title: "Karar Yapıları: if, else-if ve switch"
+    github_slug: "karar-yapilari"

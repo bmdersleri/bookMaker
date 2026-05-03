@@ -1,0 +1,9 @@
+flowchart TD
+    A[Dosya yolu belirlenir] --> B[Okuma veya yazma seçilir]
+    B --> C[try-with-resources başlatılır]
+    C --> D[Dosyaya yazılır veya dosyadan okunur]
+    D --> E{Hata oluştu mu?}
+    E -- Hayır --> F[İşlem tamamlanır]
+    E -- Evet --> G[Kullanıcıya anlaşılır mesaj verilir]
+    F --> H[Kaynak otomatik kapanır]
+    G --> H

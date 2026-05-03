@@ -1,0 +1,95 @@
+{
+  "package": "java_temelleri_prompt_paketi_v1_3",
+  "version": "1.3",
+  "created": "2026-04-29",
+  "purpose": "Manifest tabanlı, otomasyon uyumlu Java kitabı üretim prompt paketi",
+  "files": [
+    {
+      "path": "00_kullanim_kilavuzu_v1_3.md",
+      "size_bytes": 4138,
+      "sha256": "e64dc2afc4409f0adfffc405b1334884553426664e966c57c94d2624fead66be"
+    },
+    {
+      "path": "01_nihai_icindekiler_v1_3.md",
+      "size_bytes": 8094,
+      "sha256": "bf26838269dee0fd3837268a98b96c70accdaa5eff4a8cbacb26b50fcb712a41"
+    },
+    {
+      "path": "02_ana_sistem_promptu_java_temelleri_v1_3.md",
+      "size_bytes": 5646,
+      "sha256": "eec5676fa4ded9b01cc8815121806125015977402e0f13816905af1b320ab07f"
+    },
+    {
+      "path": "03_cikti_format_standardi_v1_3.md",
+      "size_bytes": 5634,
+      "sha256": "697070fc378434e5e81e052b5439666f22b2232b45bb1079dead56567c97c4ff"
+    },
+    {
+      "path": "04_kaynaklar_java_temelleri_v1_3.md",
+      "size_bytes": 5916,
+      "sha256": "92c0ed40bc7a121d8d30ae11bd57f99b341399493007d46c1f1f823f9c629a9a"
+    },
+    {
+      "path": "05_bolum_yapisi_standardi_v1_3.md",
+      "size_bytes": 2632,
+      "sha256": "038742c7ff834043ab10f65222ef5bfad0c7e9bddd57b27eee3e9f3a41576e91"
+    },
+    {
+      "path": "06_bolum_girdi_sablonu_v1_3.md",
+      "size_bytes": 3242,
+      "sha256": "84a3b0195ee69ff145b14deb3f8b15aa1ade7e76ce90e371a441db410e7c30de"
+    },
+    {
+      "path": "07_ornek_bolum_format_uyarlama_notu_v1_3.md",
+      "size_bytes": 5908,
+      "sha256": "7c88d9783f5a43b620ca65f79fdb8c4e65d4894da606b933a8b24b68097fb909"
+    },
+    {
+      "path": "08_pilot_cikti_degerlendirme_notu_v1_3.md",
+      "size_bytes": 1850,
+      "sha256": "316b79e3d6723aad7d9c0f9edcc8445c4829cf05e05fbfdbd615f8c11d5485aa"
+    },
+    {
+      "path": "09_otomasyon_manifest_standardi_v1_3.md",
+      "size_bytes": 3654,
+      "sha256": "4f7208f3ec84f7bd47ab2f42a850a3f36283e65dac3875807082aafc8d0bf055"
+    },
+    {
+      "path": "10_manuel_gorsel_onceligi_politikasi_v1_3.md",
+      "size_bytes": 2282,
+      "sha256": "bd69b354c7893612b329595024b07026026b711b6fcb5d06c0723e39bb1ce9b0"
+    },
+    {
+      "path": "11_pipeline_kalite_kapilari_v1_3.md",
+      "size_bytes": 2702,
+      "sha256": "674b783e97c08232167c322a3e99b18f40b51c86e264af40e7b1550636ab9a3b"
+    },
+    {
+      "path": "12_outline_kontrol_promptu_java_temelleri_v1_3.md",
+      "size_bytes": 12629,
+      "sha256": "6a4eba04059aa34a34210e7d5b03607e8bdc14957d427df3473fd44e003cd2ad"
+    },
+    {
+      "path": "99_paket_kontrol_ozeti_v1_3.md",
+      "size_bytes": 1952,
+      "sha256": "21a82bd023fa3f81617e59ab866233e7acc2ca6c26b7bd07242b2c99f4586d0e"
+    },
+    {
+      "path": "examples/bolum_girdi_ornegi_karar_yapilari_v1_3.md",
+      "size_bytes": 2159,
+      "sha256": "ad40ebd54ae9fca727cddae356c75122af19c1c97f48f87cf6aa1b63bdd53767"
+    },
+    {
+      "path": "examples/book_manifest_ornegi_v1_3.yaml",
+      "size_bytes": 1747,
+      "sha256": "1831f8bcd3345a1d2a1408cabdae5ecc25a781337e43c04eac7b7fb494b029f2"
+    },
+    {
+      "path": "examples/meta_blok_ornekleri_v1_3.md",
+      "size_bytes": 1568,
+      "sha256": "6d8016b281d5653e2f8646f853c619e9c78b36f10e13b63616bda73ecdfdb255"
+    }
+  ],
+  "updated": "2026-04-29",
+  "notes": "12_outline_kontrol_promptu_java_temelleri_v1_3.md eklendi."
+}
