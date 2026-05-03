@@ -1,5 +1,8 @@
 # RESUME
 
+> **Yeni oturumda önce `SESSION.md` oku — 60 saniyede hazır olursun.**
+> Bu dosya geçmiş kararların ve bağlamın arşividir; değişmez.
+
 Bu dosya yeni bir sohbet veya sifir baglamla baslandiginda `bookMaker` projesi hakkinda bilinmesi gerekenleri ozetler.
 
 ## Kullanici Hedefi

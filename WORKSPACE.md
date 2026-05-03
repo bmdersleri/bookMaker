@@ -187,6 +187,7 @@ uv: 0.11.8
 ruff: 0.15.12
 pre-commit: 4.6.0
 playwright: 1.59.0
+qrcode: 8.2 (pillow: 12.2.0)
 ```
 
 `uv` tam yolu:
@@ -198,6 +199,12 @@ C:\Users\ismai\AppData\Roaming\uv\tools\playwright\Scripts\python.exe
 ```
 
 Playwright Chromium browser bileseni kuruldu ve headless render smoke testi basarili oldu.
+
+`qrcode` uv tool ile kuruldu. CLI komutu `qr`, PNG ciktisi destekli:
+
+```powershell
+qr --output dosya.png "https://github.com/..."
+```
 
 ## SQLite
 

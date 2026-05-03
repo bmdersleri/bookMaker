@@ -1372,19 +1372,19 @@ Ilk MVP, teknik exporttan once yazarlik pipeline'ini dogru kurmaya odaklanmalidi
 9. Kitap profili formu
 10. Kitap mimarisi formu veya manuel LLM icin prompt uretimi
 11. Bolum tohumlama formu
-12. Bolum tohumlama icin akilli on doldurma
+12. Bolum tohumlama icin akilli on doldurma: `book_architecture.yaml` ilgili bolum girisinden `purpose`, `prerequisites`, `learning_outcomes`, `mandatory_concepts` alanlarini otomatik oner; kaynak goster; kullanici onayi olmadan kesinlestirme
 13. Tek tik outline promptu uretimi
 14. LLM outline ciktisini yapistirma alani
 15. Paste sonrasi otomatik outline on analiz
-16. Outline kalite kontrolu ve 100 uzerinden skor
-17. Outline revizyon paketi ve kopyalanabilir revizyon promptu uretimi
+16. Outline kalite kontrolu iki katmanli: (a) deterministik yapısal kontroller, (b) kullanici onaylı checklist; opsiyonel LLM semantik degerlendirme mimarisi hazir
+17. Outline revizyon paketi: PRESERVE blogu (onaylanan basliklar, dogru kavramlar, kapsam disi liste) otomatik eklenmeli; LLM'in tum outline'i yeniden yazmasi onlenmeli
 18. Tek tik tam metin promptu uretimi
 19. Tam metin promptunda LLM'e inline `CODE_META` uretme zorunlulugunu acikca verme
 20. Markdown tam metin ve LLM tarafindan uretilmis `CODE_META` bloklarini yapistirma alani
-21. Paste sonrasi otomatik `CODE_META` parse/validate + normalize + on analiz
+21. Paste sonrasi otomatik `CODE_META` parse/validate + normalize + on analiz; `CODE_META` oncesiz kod bloklari icin fallback: Java regex ile aday `file`/`main_class`/`code_id` onerisi, kullanici onayi zorunlu
 22. Metadata formu ile `CODE_META` / `MERMAID_META` duzenleme
 23. Tam metin kalite kontrolu ve 100 uzerinden skor
-24. Tam metin revizyon paketi ve kopyalanabilir revizyon promptu uretimi
+24. Tam metin revizyon paketi: PRESERVE blogu (hatasiz kod bloklari, onaylanan META bloklari, dogru islenen kavram paragraflari) otomatik eklenmeli
 25. Sonraki en mantikli is onerisi
 26. Onayli bolum dosyasi uretimi
 
@@ -1396,7 +1396,7 @@ Ilk MVP, teknik exporttan once yazarlik pipeline'ini dogru kurmaya odaklanmalidi
 4. Kod kimligi ve dosya yolu tutarliligini kontrol etme
 5. Java/Python/JavaScript icin basit kod test adapterleri
 6. Kod test raporlarini JSON/Markdown olarak uretme
-7. Hatalar icin revizyon paketi / LLM repair promptu uretme
+7. Derleyici hatasi onarim paketi: `javac stderr` otomatik ayrisitirilip `code_repair_prompt.md.j2` sablonuna doldurularak onarim promptu uretilmeli; kullanici tek tikla kopyalayip duzeltilmis kodu yapistirabilmeli
 8. GitHub/code page URL alanlarini manifestte modelleme
 9. Online runnable URL alanlarini modelleme
 9. QR/link referanslarini cikarma
@@ -1417,15 +1417,18 @@ Ilk MVP, teknik exporttan once yazarlik pipeline'ini dogru kurmaya odaklanmalidi
 24. Tek sayfa veya bolumlu HTML cikti alma
 25. Link dogrulama icin lychee entegrasyonu
 26. Markdown kalite kontrol icin markdownlint-cli2 entegrasyonu
+27. Pre-build gate: build baslamadan once tum bolumler `approved` mi, `code_id` kitap genelinde benzersiz mi, zorunlu QR/Mermaid dosyalari mevcut mu, lychee kırık link yok mu; bloklayici varsa build baslamasin
+28. `bookmaker check book` komutu: kitap geneli tutarlilik kontrolu — `code_id` benzersizligi, terim sozlugu catismasi, kavram tanimi tutarsizligi, kapsam disi ihlali
 
 ### MVP-3: Studio GUI
 
 1. Aktif kitap secme
-2. Dashboard: kitap ve bolum ilerleme durumu
-3. Pipeline durum matrisi
-4. Kitap profili ekrani
-5. Kitap mimarisi ekrani
-6. Bolum Stüdyosu:
+2. Dashboard: Kitap Saglik Skoru (bilesik; bolum ilerlemesi + kalite + teknik + bloklu + export hazirlik)
+3. Dashboard: bolum ilerleme matrisi — renk kodlu durum kutucuklari + revizyon skor sparkline
+4. Pipeline durum matrisi
+5. Kitap profili ekrani
+6. Kitap mimarisi ekrani (bolum bagimlilik goruntumu dahil)
+7. Bolum Studyosu — paralel bolum sekme destegi:
    - Tohum
    - Outline Promptu
    - Outline Ciktisi
@@ -1435,14 +1438,25 @@ Ilk MVP, teknik exporttan once yazarlik pipeline'ini dogru kurmaya odaklanmalidi
    - Tam Metin Ciktisi
    - Tam Metin Kalite Raporu
    - Tam Metin Revizyon Paketi
+   - Teknik Kontrol
    - Onayli Bolum
    - Surum Gecmisi
    - Fark Goruntuleme
-7. Metadata form paneli
-8. Sonraki en mantikli is paneli
-9. Dashboard: kitap geneli skor, bloklu bolumler, en sik issue tipleri
-10. Raporlar ekrani
-11. Export ekrani
+8. Metadata form paneli
+9. Sonraki en mantikli is paneli
+10. Issue → editorde highlight: issue tiklaninca ilgili satira atla + sari/kirmizi vurgulama; `←` `→` gezinti
+11. Issue triyaj sistemi: 🔴 Simdi / 🟡 Sonra / ⚪ Kabul etiketleri; kabul override event yazar
+12. Kavram kapsam takipcisi: paste sonrasi `mandatory_concepts` canli tara, ✓/✗ goster, eksikler revizyon paketine eklensin
+13. Revizyon skor sparkline: her bolum ve surum gecmisi panelinde v1→v2→v3 skor mini grafigi
+14. Kismi bolum revizyonu: preview'da `##` baslik secince "Bu Bolumu Revize Et" butonu; dar kapsamli prompt uret
+15. Pano akilli tespiti: LLM yaniti panoda tespit edilince "Yapistir?" toast bildirimi
+16. Odak (Zen) modu: F11 ile tum paneller kapanir, sadece editor; Esc ile geri
+17. Canli build akisi: SSE ile pandoc/mmdc ciktisi satir satir; her adim tik/hata ikonu
+18. Asset galerisi: QR / Mermaid / screenshot kutucuklari + bolum etiketi
+19. LLM saglayici analiz paneli: saglayici bazinda ortalama outline skoru, tam metin skoru, revizyon sayisi; veri birikmeden bos
+20. Klavye kisayol katmani: Ctrl+Enter, Ctrl+K, Ctrl+Shift+V, Ctrl+R, Ctrl+Shift+A, F11, ←/→, Ctrl+Tab
+21. Raporlar ekrani (kalite, kod testi, pre-build gate raporlari)
+22. Export ekrani: pre-build gate sonucu gosterilir; bloklayici varsa export butonu pasif
 
 ### MVP-4: Manuel LLM Exchange ve Opsiyonel Adapter Iskeleti
 

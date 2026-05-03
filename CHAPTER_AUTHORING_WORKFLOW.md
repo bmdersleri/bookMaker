@@ -170,6 +170,22 @@ Kalite kapisi:
 - `purpose`, `learning_outcomes`, `mandatory_concepts`, `out_of_scope` bos olmamali.
 - Yazar seed'i onaylamadan outline promptu final uretilmez.
 
+### Kitap Mimarisinden Otomatik On Doldurma
+
+Seed formu bos acilmamalidir. Sistem `book_architecture.yaml` icindeki ilgili bolum girisinden asagidaki alanlari otomatik onermelidir:
+
+- Bolum amaci (`purpose`) — mimarideki `chapter_purpose` alanından
+- On kosullar (`prerequisites`) — mimarideki bolum bağimlilik ilişkisinden
+- Ogrenme ciktilari (`learning_outcomes`) — mimarideki `expected_learning_outcomes` alanından
+- Zorunlu kavramlar (`mandatory_concepts`) — mimarideki `mandatory_concepts` alanından
+
+Ek on doldurma kaynaklari:
+
+- Onceki bolumlerin `out_of_scope` listelerinden kapsam disi aday onerileri.
+- Secili preset (java_temelleri vb.) icin varsayilan ornek ve hata adaylari.
+
+Kural: On doldurulan hicbir alan yazar onayi olmadan kesinlesmis sayilmaz. Sistem hangi alanin nereden on dolduruldugunu gostermelidir.
+
 ### 4.3. Outline Promptu Uretimi
 
 Amaç: Harici LLM'e verilecek kontrollu outline promptunu uretmek.
@@ -333,6 +349,21 @@ Surumleme:
 - Revizyon paketi de surumlenir.
 - Yeni outline eski outline'i ezmez.
 
+Revizyon promptu PRESERVE kurali:
+
+Her outline revizyon promptuna degismemesi gereken parcalarin listesi otomatik eklenmeli:
+
+```yaml
+preserve:
+  - Onaylanan bolum basliklari ve sirasi
+  - Kapsam ici olarak isaretlenen tum kavramlar
+  - Dogru olan kod/gorsel/alistirma planlari
+  - CHAPTER_SPEC kurallari
+  - Kapsam disi konular listesi
+```
+
+Bu blok promptun basinа sabit olarak eklenir. Amac: LLM'in tum outline'i yeniden yazmak yerine yalnizca belirtilen eksiklikleri gidermesi.
+
 ### 4.7. Outline Onayi
 
 Amaç: Tam metin asamasina gecilecek outline surumunu sabitlemek.
@@ -444,6 +475,15 @@ Normalize edilebilecek ornekler:
 - Kod blogundan sonra gelen metadata'yi kod blogundan onceye tasima onerisi.
 - `CODE_META` icinde eksik `kind`, `main_class`, `test`, `qr_policy`, `expected_stdout_contains` alanlarini isaretleme.
 
+### CODE_META Fallback Tespiti
+
+Normalize adiminda `CODE_META` oncesiz kod bloklari otomatik taranmalidir:
+
+1. Java kodu ise regex ile `public class` adi, `main` metot varligi ve dosya adi adayi tahmin edilir.
+2. Aday `code_id`, `file`, `main_class`, `extension` degerleri form olarak sunulur.
+3. Yazar degerleri onaylar ya da duzeltir.
+4. Onaylanan metadata `normalized_chapter`'a islenir ve `normalization_report` icine `code_meta_auto_suggested` olayi yazilir.
+
 Kural:
 
 - Riskli icerik degisikligi otomatik uygulanmaz; kullanici onayi gerekir.
@@ -524,7 +564,20 @@ UI eylemleri:
 Kural:
 
 - Revizyon promptu "tum bolumu yeniden yaz" yerine mumkunse hedefli degisiklik istemelidir.
-- Dogru kisimlari koruma talimati revizyon promptunda yer almalidir.
+- Her tam metin revizyon promptuna PRESERVE blogu otomatik eklenmeli:
+
+```yaml
+preserve:
+  - Onaylanan ve hatasiz tum kod bloklari ve CODE_META'lari
+  - Onaylanan MERMAID_META ve SECTION_META bloklari
+  - Kapsam ici kavramlarin dogru islendigi paragraflar
+  - CHAPTER_SPEC kurallari
+  - Kapsam disi konular listesi
+changes_only:
+  - <issue listesindeki hedefli degisiklikler buraya siralenir>
+```
+
+Bu blok promptun basina sabit olarak eklenir; LLM'in degistirmemesi gereken alanlar somut olarak listelenir.
 
 ### 4.13. Teknik Kontrol
 
@@ -562,6 +615,26 @@ Kalite kapisi:
 
 - Runnable kodlarda kritik derleme/calistirma hatasi varsa onay engellenir.
 - Mermaid render zorunlu diyagramlarda basarisizsa onay engellenir.
+
+### Derleyici Hatasi Onarim Paketi
+
+Teknik kontrol asamasinda `javac` veya `java` hata verdiginde sistem otomatik onarim paketi uretmelidir:
+
+1. `javac stderr` ciktisi ayrisitirilir; hata satiri, hata turu ve mesaj cikarilir.
+2. Hatali `code_id`, dosya adi ve ham hata mesaji tespit edilir.
+3. `code_repair_prompt.md.j2` sablonuna doldurularak onarim promptu uretilir.
+4. Kullanici tek tikla promptu kopyalayip LLM'e goturebilir.
+5. Duzeltilmis kod yapistirildiktan sonra teknik kontrol otomatik tekrar calisir.
+
+Onarim promptu icerigi:
+
+```text
+Hatali kod blogu (oldugu gibi)
+javac/java hata mesaji (ham)
+Beklenen calisma davranisi (expected_stdout_contains)
+CODE_META alanlari (degistirilmemeli)
+Talimat: "Yalnizca kodu duzelt; CODE_META, yorum satirlari ve sinif adi degistirme."
+```
 
 ### 4.14. Bolum Onayi
 
@@ -671,20 +744,21 @@ Ana alanlar:
 
 ```text
 Sol panel:
-  Bolum listesi
-  Bolum durumlari
-  Son skorlar
+  Bolum listesi (durum ikonu + son skor + sparkline)
+  Paralel acik bolum sekmeleri
 
 Orta panel:
-  Aktif adim
+  Aktif adim sekmeleri
   Form / editor / paste alani
-  Markdown preview
+  Markdown preview (issue highlight destekli)
+  Kismi bolum revizyonu butonu (baslik secilince)
 
 Sag panel:
   Kalite raporu
-  Issue listesi
+  Issue listesi (triyaj etiketleri: Simdi / Sonra / Kabul)
+  Kavram kapsam takipcisi
   Siradaki onerilen eylem
-  Surum ozeti
+  Surum ozeti + revizyon skor sparkline
 ```
 
 Sekmeler:
@@ -706,6 +780,66 @@ Fark Goruntuleme
 ```
 
 Yazar teknik YAML yazmak zorunda kalmamalidir; metadata alanlari form olarak sunulmalidir.
+
+### 6.0. On UX Ilkesi
+
+Uretim hizini ve kalitesini artiran 10 temel UX ozelligi:
+
+**1. Issue → Editorde Anlik Vurgulama**
+Kalite raporundaki her issue tiklanabilir. Tiklaninca orta panelde o satira atlanir, Markdown preview'da sari/kirmizi highlight gosterilir. `←` `→` ile issue'lar arasi gezinti.
+
+**2. Revizyon Kalite Trend Sparkline**
+Her bolum basliginda ve surum gecmisi panelinde surumler arasi skor degisimi mini grafigi:
+```
+v1:72 → v2:81 → v3:91 ✓
+```
+Geri gidis kirmizi, ilerleme yesil gosterilir.
+
+**3. Paralel Bolum Sekmeleri**
+Birden fazla bolum ayni anda acik olabilir. Bir bolum LLM beklerken diger bolumun seed formu doldurulabirdir. Her sekme bagimsiz state tasir.
+
+**4. Zorunlu Kavram Kapsam Takipcisi**
+Tam metin yapistirildiktan sonra `seed.yaml`'daki `mandatory_concepts` listesi otomatik taranir:
+```
+try-with-resources    ✓ (satir 142)
+BufferedWriter        ✓ (satir 98)
+FileNotFoundException ✗ Eksik → revizyon paketine ekle
+```
+Eksik kavramlar tek tikla revizyon paketine eklenir.
+
+**5. Kismi Bolum Revizyonu**
+Markdown preview'da bir `## baslik` secilince "Bu Bolumu Revize Et" butonu belirir. Sistem sadece o section + ilgili seed gereksinimleri + CHAPTER_SPEC kurallari ile dar kapsamli bir revizyon promptu uretir.
+
+**6. Pano Akilli Tespiti**
+Studio arka planda klipboardi izler. Icerik LLM yanitina benziyorsa (Markdown + yeterli uzunluk) ekran kosesinde toast:
+```
+"Panoda LLM yaniti var — yapistir?"  [Evet] [Hayir]
+```
+
+**7. Issue Triyaji**
+Her issue icin 3 etiket:
+- 🔴 Simdi Duzelt → revizyon paketine gir; onay engeli
+- 🟡 Sonra Duzelt → bir sonraki revizyonda ele al
+- ⚪ Kabul Edilebilir → gerekcesiyle override event yaz; dashboard'da izlenir
+
+**8. Odak (Zen) Yazma Modu**
+`F11` ile tum paneller kapanir; sadece orta editör + minimal arac cubugu kalir. `Esc` ile normal görünüme don.
+
+**9. Canli Build Akisi + Asset Galerisi**
+Build sirasinda pandoc/mmdc ciktisi SSE ile satir satir akar; her adim yesil tik veya kirmizi hata ikonu alir. Yan panelde QR/Mermaid/screenshot kutucuklari hangi bolumden geldigi etiketiyle gosterilir.
+
+**10. Kitap Saglik Skoru**
+Dashboard'da bilesik skor:
+```
+Kitap Saglik Skoru: 74 / 100
+
+Bolum Ilerlemesi  ██████░░░░  60%  (15/25 onayli)
+Ortalama Kalite   ████████░░  82/100
+Teknik Kontrol    ███████░░░  70%  (hatali 2 kod)
+Bloklu Bolumler   ██░░░░░░░░  3 adet
+Export Hazirlik   ██████░░░░  60%
+```
+Her metrige tiklaninca ilgili rapora gidilir.
 
 ## 6.1. Workflow Hizlandiricilari
 
@@ -848,16 +982,34 @@ Kapsam disi konulari ekleme.
 
 Tekil butonlar yerine sik kullanilan is zincirleri sunulmalidir.
 
-Onerilen kisayollar:
+Onerilen is zinciri dugmeleri:
 
 ```text
 Outline'i Degerlendir ve Revizyon Paketi Hazirla
 Tam Metni Normalize Et ve Kontrol Et
-Metadata Eksiklerini Bul
+Metadata Eksiklerini Bul ve Onar
+Kavram Kapsami Kontrol Et
 Teknik Kontrolleri Calistir
 Onaya Hazirla
 Surumleri Karsilastir
 En Iyi Surumu Sec
+```
+
+### Klavye Kisayollari
+
+Guc kullanicilari icin klavye kisayol katmani:
+
+```text
+Ctrl+Enter      → Aktif adimi calistir (evaluate / normalize / check)
+Ctrl+K          → Promptu panoya kopyala
+Ctrl+Shift+V    → LLM yanitini yapistir (Pano tespiti ile)
+Ctrl+R          → Revizyon paketi uret
+Ctrl+Shift+A    → Bolumu onayla
+Ctrl+Z          → Bir onceki surum (version restore)
+F11             → Odak (Zen) modu ac/kapat
+← / →           → Issue'lar arasi gezinti (rapor paneli aktifken)
+Ctrl+Tab        → Acik bolum sekmeleri arasi gecis
+Ctrl+F          → Bolum ici arama
 ```
 
 ### Preset ve Sablon Sistemi
@@ -908,6 +1060,18 @@ Gosterilecek metrikler:
 - Bloklu bolumler.
 - Ortalama kalite skoru.
 - En cok tekrar eden issue tipleri.
+
+### LLM Saglayici Analizi
+
+`manual_exchange` kayitlari kullanilarak saglayici bazinda kalite analizi dashboard'da sunulacak:
+
+| Saglayici | Ort. Outline Skoru | Ort. Tam Metin Skoru | Ort. Revizyon Sayisi |
+|-----------|--------------------|----------------------|----------------------|
+| ChatGPT   | —                  | —                    | —                    |
+| Claude    | —                  | —                    | —                    |
+| Gemini    | —                  | —                    | —                    |
+
+Bu tablo yazar icin hangi LLM'in bu kitap turu ve preset icin daha iyi sonuc verdigini gosterir. Dashboard'da isteğe bagli filtre olarak sunulur; veri birikmeden once bos goruntulenir.
 
 ## 6.2. Sonraki En Mantikli Is Kuralı
 

@@ -143,6 +143,19 @@ Kural:
 4. Sistem guvenli durumlarda eksik metadata icin aday degerler onerebilir; ancak yazar onayi olmadan onayli bolume islenmis sayilmaz.
 5. Hatalı/pedagojik kod ornekleri de metadata tasimalidir; yalnizca `review_only`, `broken_example`, `test: skip` gibi alanlarla dogru isaretlenmelidir.
 
+### CODE_META Eksikligi Fallback Hatti
+
+LLM tam metin ciktisinda `CODE_META` bloklarini uretmeyi atlayabilir. Sistem bu durumu otomatik tespit ederek bir onarim kuyruğuna almalidir.
+
+Otomatik tespit akisi:
+
+1. Yapistirma veya normalize aninda `CODE_META` oncesiz kod bloklari taranir.
+2. Java kodu ise `public class Foo` adi, `main` metot varligi ve dosya adi adayi regex ile tahmin edilir.
+3. `code_id`, `file`, `main_class`, `extension` aday degerleri form olarak sunulur.
+4. Yazar aday degerleri onaylar ya da duzeltir.
+5. Onaylanan `CODE_META` `normalized_chapter` uzerine islenir ve `normalization_report` icine yazilir.
+6. Validator gecisi her durumda zorunludur; sistem aday uretse bile yazar onayi olmadan `approved_chapter`'a tasinamaz.
+
 ```markdown
 <!-- CODE_META
 order: 001
@@ -314,6 +327,13 @@ Validator mekanik kontrollerden sonra asagidaki semantik iliskileri raporlamalid
 6. Alistirmalar ve rubrik ogrenme ciktilariyla uyumlu mu?
 7. Kapsam disi konular bolume sizmis mi?
 8. Bolum sonraki bolume dogru pedagojik kopru kuruyor mu?
+
+Kitap geneli tutarlilik (export oncesi `bookmaker check book` ile):
+
+9. Ayni kavram farkli bolumlerde cakisan bicimde mi tanimlanmis?
+10. Terim sozlugu girislerinde kitap geneli tutarlilik var mi?
+11. `code_id` degerleri kitap genelinde benzersiz mi?
+12. Kapsam disi tanimlanan bir konu baska bolumde isleniyor mu?
 
 ## 12. Durdurucu Hatalar
 

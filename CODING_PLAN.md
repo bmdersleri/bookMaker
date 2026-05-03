@@ -686,7 +686,11 @@ bookmaker version list chapter_03
 bookmaker version diff chapter_03 draft_v001 draft_v002
 bookmaker version restore chapter_03 draft_v001
 bookmaker check chapter .\sample\sample_chapter.md
+bookmaker check book .\my-java-book
 bookmaker build docx
+bookmaker build pdf
+bookmaker build epub
+bookmaker build mkdocs
 bookmaker studio --host 127.0.0.1 --port 8765
 ```
 
@@ -705,11 +709,10 @@ Ilk Studio sade HTML/CSS/JS + FastAPI olacak.
 ### 10.1. Ana Ekranlar
 
 1. Dashboard
-   - Aktif kitap.
-   - Bolum sayisi.
-   - Asama dagilimi.
-   - Ortalama kalite skoru.
-   - Bloklu bolumler.
+   - Kitap Saglik Skoru (bilesik skor; alt metriklerle birlikte).
+   - Bolum ilerleme matrisi (renk kodlu durum kutucuklari + revizyon trend sparkline).
+   - Bloklu bolumler ve en sik issue tipleri.
+   - LLM saglayici analiz tablosu.
    - Son eventler.
 
 2. Kitap Profili
@@ -717,39 +720,43 @@ Ilk Studio sade HTML/CSS/JS + FastAPI olacak.
    - Yazar, kitap adi, hedef kitle, dil, export hedefleri.
 
 3. Kitap Mimarisi
-   - Bolum listesi.
-   - Bolum sirasi, baslik, tur, durum.
+   - Bolum listesi, siralama, baslik, tur, durum.
+   - Bolum bagimlilik goruntumu (on kosul iliskileri).
 
-4. Bolum Stüdyosu
-   - Sol panel: bolum listesi.
-   - Orta panel: aktif is alani.
-   - Sag panel: kalite raporu, issue listesi, siradaki eylem.
+4. Bolum Studyosu
+   - Sol panel: bolum listesi + durum ikonlari.
+   - Orta panel: aktif sekmeli is alani (paralel bolum sekme destegi).
+   - Sag panel: kalite raporu + issue listesi (triyaj etiketli) + siradaki eylem + kavram kapsam takipcisi.
 
 5. Surum Gecmisi
-   - Artifact surumleri.
-   - Diff.
-   - Bu surume don.
-   - Bu surumden revizyon promptu uret.
+   - Artifact surumleri + skor degisim sparkline.
+   - Iki surum arasi Markdown diff.
+   - Bu surume don / Bu surumden revizyon promptu uret.
 
 6. Export
-   - DOCX build.
-   - Pandoc log.
-   - Build raporu.
+   - Pre-build gate kontrol sonucu (bloklayici varsa export butonu pasif).
+   - Format secimi.
+   - Canli build akisi (SSE; pandoc/mmdc ciktisi satir satir).
+   - Asset galerisi (QR / Mermaid / screenshot kutucuklari + bolum etiketi).
+   - Export raporu.
 
-### 10.2. Bolum Stüdyosu Tableri
+### 10.2. Bolum Studyosu Sekmeleri
 
 ```text
 Tohum
 Outline Promptu
 Outline Ciktisi
 Outline Kalite Raporu
+Outline Revizyon Paketi
 Tam Metin Promptu
 Tam Metin Ciktisi
 Normalize
 Tam Metin Kalite Raporu
+Tam Metin Revizyon Paketi
 Teknik Kontrol
 Onayli Bolum
 Surum Gecmisi
+Fark Goruntuleme
 ```
 
 ### 10.3. Metadata Formlari
@@ -773,6 +780,34 @@ Kod bloklari algilaninca sag panelde su form gosterilir:
 - `validation_mode`
 
 Form degisiklikleri dogrudan onayli dosyayi ezmez; yeni normalized/draft surumu uretir.
+
+### 10.4. On UX Ozelligi
+
+| # | Ozellik | Uygulama Notu |
+|---|---------|---------------|
+| 1 | Issue highlight | Issue tiklaninca orta panelde satira atla + sarı/kirmizi highlight; `←` `→` gezinti |
+| 2 | Revizyon sparkline | Her bolum basliginda v1→v2→v3 skor mini grafigi; geri gidis kirmizi |
+| 3 | Paralel bolum sekmeleri | Birden fazla bolum ayni anda acik; sekme basi bagimsiz state |
+| 4 | Kavram kapsam takipcisi | Paste sonrasi `mandatory_concepts` canli tara; eksikler revizyon paketine otomatik ekle |
+| 5 | Kismi bolum revizyonu | Preview'da `##` baslik secince "Bu Bolumu Revize Et" butonu; dar kapsamli prompt uret |
+| 6 | Pano akilli tespiti | Clipboard LLM yanitina benziyorsa toast: "Yapistir?" |
+| 7 | Issue triyjasi | 🔴 Simdi / 🟡 Sonra / ⚪ Kabul etiketleri; kabul override event yazar |
+| 8 | Odak (Zen) modu | F11 ile tum paneller kapanir, sadece editor; Esc ile geri |
+| 9 | Canli build akisi | SSE ile pandoc/mmdc ciktisi satir satir; asset galerisi yan panelde |
+| 10 | Kitap saglik skoru | Bilesik skor: bolum ilerlemesi + kalite + teknik + bloklu + export hazirlik |
+
+### 10.5. Klavye Kisayollari
+
+```text
+Ctrl+Enter      → Aktif adimi calistir (evaluate / normalize / check)
+Ctrl+K          → Promptu panoya kopyala
+Ctrl+Shift+V    → LLM yanitini yapistir
+Ctrl+R          → Revizyon paketi uret
+Ctrl+Shift+A    → Bolumu onayla
+F11             → Odak modu ac/kapat
+← / →           → Issue'lar arasi gezinti (rapor paneli aktifken)
+Ctrl+Tab        → Acik bolum sekmeleri arasi gecis
+```
 
 ## 11. Chapter Parser ve Validator
 
@@ -854,6 +889,12 @@ Revizyon paketi LLM'e kopyalanabilir bicimde uretilecek:
 revision_packet:
   target_artifact: normalized_v001.md
   objective: "CODE_META eksiklerini gider."
+  preserve:
+    - "Onaylanan ve hatasiz tum kod bloklari ve CODE_META'lari"
+    - "Onaylanan MERMAID_META ve SECTION_META bloklari"
+    - "Kapsam ici kavramlarin dogru islendigi paragraflar"
+    - "CHAPTER_SPEC kurallari"
+    - "Kapsam disi konular listesi"
   issues:
     - issue_id: issue_0003
       severity: error
@@ -866,7 +907,10 @@ revision_packet:
     - "Tam bolumu yeniden yazma."
     - "CODE_META alanlarini koru."
     - "Sadece belirtilen bloklari duzelt."
+    - "preserve listesindeki hicbir blogu degistirme."
 ```
+
+`preserve` alani her iki revizyon turunde de (outline ve tam metin) zorunludur. Jinja2 sablonu bu alani otomatik olarak onceki onayli artifact listesinden doldurur.
 
 ## 13. Java Kod Hatti
 
@@ -909,16 +953,44 @@ Test tipleri:
 
 `compile_run_assert` icin `expected_stdout_contains` gerekir.
 
+### 13.3. Derleyici Hatasi Onarim Promptu
+
+`javac` veya `java` hata verdiginde `java_adapter.py` asagidaki adimi izleyecek:
+
+1. `stderr` ciktisi satir bazli ayrisitirilir.
+2. Hata turu (`error`, `warning`), satir numarasi ve mesaj cikarilir.
+3. `code_repair_prompt.md.j2` sablonu doldurularak `build/reports/code_repair_<code_id>.md` uretilir.
+4. GUI'de "Onarim Promptunu Kopyala" butonu aktif hale gelir.
+5. Kullanici duzeltilmis kodu yapistirinca teknik kontrol otomatik tekrar calisir.
+
+Sablon degiskenleri:
+
+```jinja2
+{{ code_id }}
+{{ file }}
+{{ raw_source }}
+{{ javac_stderr }}
+{{ expected_stdout_contains }}
+{{ code_meta_fields }}
+```
+
 ## 14. DOCX Export Hatti
 
 Ilk DOCX hattinin kapsami:
 
-1. Onayli bolumleri siraya gore bul.
-2. Birlesik Markdown olustur.
-3. Mermaid ve asset placeholderlarini ilk fazda bozmadan tasiyabil.
-4. Pandoc ile DOCX uret.
-5. Pandoc logunu kaydet.
-6. Export raporu uret.
+1. **Pre-build gate** — Build baslamadan once otomatik kontrol:
+   - Tum bolumlerin `approved` durumunda olmasi.
+   - Cozumsuz krik link olmaması (`lychee`).
+   - QR dosyalarinin uretilmis olmasi (`qr_policy` ile isaretlenenler).
+   - Zorunlu Mermaid render'larinin hazir olmasi.
+   - `code_id` degerlerinin kitap genelinde benzersiz olmasi.
+   - Herhangi bir bloklayici hata varsa build baslamaz, rapor verir.
+2. Onayli bolumleri siraya gore bul.
+3. Birlesik Markdown olustur.
+4. Mermaid ve asset placeholderlarini ilk fazda bozmadan tasiyabil.
+5. Pandoc ile DOCX uret.
+6. Pandoc logunu kaydet.
+7. Export raporu uret.
 
 Ilk komut:
 
