@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+import pytest
+
 from bookmaker.production.mermaid import extract_mermaid_blocks
 
 
@@ -27,6 +29,9 @@ def test_extract_multiple_mermaid(tmp_path: Path) -> None:
     assert len(blocks) == 2
 
 
+
+
+@pytest.mark.slow
 def test_render_mermaid_timeout_returns_error(tmp_path: Path) -> None:
     from bookmaker.production.mermaid import render_mermaid
 

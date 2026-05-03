@@ -14,7 +14,8 @@ Outline:
 """
 
 SYSTEM_PROMPT_CHAPTER = """Sen deneyimli bir teknik kitap yazarı ve pedagojik içerik uzmanısın.
-Verilen outline ve seed bilgisine göre CHAPTER_SPEC.md uyumlu eksiksiz bir bölüm Markdown metni üreteceksin.
+Verilen outline ve seed bilgisine göre CHAPTER_SPEC.md uyumlu
+eksiksiz bir bölüm Markdown metni üreteceksin.
 
 Kurallar:
 1. YAML front matter ile başla.
@@ -38,7 +39,10 @@ Kitap yapısı:
 
 def outline_prompt(topic: str, purpose: str = "") -> tuple[str, str]:
     """Outline üretimi için prompt çifti döndürür."""
-    user = f"Konu: {topic}\n\nAmaç: {purpose or 'Temel kavramları öğretmek'}\n\nAyrıntılı bir outline hazırla."
+    user = (
+        f"Konu: {topic}\nAmaç: {purpose or 'Temel kavramları öğretmek'}\n"
+        "Ayrıntılı bir outline hazırla."
+    )
     return SYSTEM_PROMPT_OUTLINE, user
 
 
@@ -66,6 +70,6 @@ def book_prompt(topic: str, language: str = "tr-TR", audience: str = "") -> tupl
     user = (
         f"Kitap konusu: {topic}\nDil: {language}\n"
         f"Hedef kitle: {audience or 'Başlangıç düzeyi programcılar'}\n\n"
-        "Kısımlara ayrılmış, her bölümü amaç ve öğrenme çıktılarıyla birlikte bir kitap outline'ı hazırla."
+        "Kısımlara ayrılmış, amaç ve öğrenme çıktılarıyla kitap outline'ı hazırla."
     )
     return SYSTEM_PROMPT_BOOK, user

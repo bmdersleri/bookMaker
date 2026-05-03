@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from bookmaker.llm.base import LLMClient
@@ -58,7 +57,11 @@ class OpenAICompatibleClient(LLMClient):
                     }
                 data = resp.json()
                 content = data["choices"][0]["message"]["content"]
-                return {"content": content, "model": data.get("model", ""), "usage": data.get("usage", {})}
+                return {
+                    "content": content,
+                    "model": data.get("model", ""),
+                    "usage": data.get("usage", {}),
+                }
         except Exception as e:
             return {"error": str(e), "content": ""}
 
@@ -70,7 +73,11 @@ class OpenAICompatibleClient(LLMClient):
         result = self.chat(messages, max_tokens=10)
         if result.get("error"):
             return {"status": "error", "message": result["error"]}
-        return {"status": "ok", "model": result.get("model", ""), "response": result.get("content", "")}
+        return {
+            "status": "ok",
+            "model": result.get("model", ""),
+            "response": result.get("content", ""),
+        }
 
     def generate_text(self, system_prompt: str, user_prompt: str, **kwargs: Any) -> str:
         """Basit metin üretimi. content veya error döndürür."""

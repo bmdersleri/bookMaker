@@ -17,7 +17,9 @@ llm_app = typer.Typer(help="LLM API islemleri.")
 
 @llm_app.command("configure")
 def configure_llm(
-    provider: Annotated[str, typer.Option("--provider", help="API saglayicisi (openai, deepseek, anthropic)")] = "",
+    provider: Annotated[
+        str, typer.Option("--provider", help="API saglayicisi (openai, deepseek, anthropic)")
+    ] = "",
     key: Annotated[str, typer.Option("--key", "-k", help="API anahtari")] = "",
     model: Annotated[str, typer.Option("--model", "-m", help="Model adi")] = "",
     path: Annotated[Path, typer.Option("--path", "-p", help="Proje dizini")] = Path("."),
@@ -77,7 +79,7 @@ def test_llm(
 
     result = client.test_connection()
     if result.get("status") == "ok":
-        console.print(f"[green]Baglanti basarili![/green]")
+        console.print("[green]Baglanti basarili![/green]")
         console.print(f"  Model: {result.get('model', '?')}")
         console.print(f"  Yanit: {result.get('response', '?')}")
     else:

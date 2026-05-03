@@ -8,7 +8,6 @@ from bookmaker.authoring.pipeline import AuthoringPipeline
 from bookmaker.generation.prompts import book_prompt, chapter_prompt, outline_prompt
 from bookmaker.llm.config import LLMConfig
 from bookmaker.llm.openai import OpenAICompatibleClient
-from bookmaker.manifest.manager import ManifestManager
 
 
 class GenerationPipeline:
@@ -34,7 +33,9 @@ class GenerationPipeline:
     def generate_outline(self, chapter_id: str, topic: str, purpose: str = "") -> str:
         """LLM ile outline üretir ve AuthoringPipeline'a kaydeder."""
         if not self.client:
-            raise RuntimeError("LLM API yapılandırılmamış. Önce 'bookmaker llm configure' çalıştır.")
+            raise RuntimeError(
+                "LLM API yapılandırılmamış. 'bookmaker llm configure' çalıştır."
+            )
 
         sys_prompt, user_prompt = outline_prompt(topic, purpose)
         outline = self.client.generate_text(sys_prompt, user_prompt)
@@ -95,7 +96,7 @@ class GenerationPipeline:
         result["outline"] = book_outline
 
         # 2. Kitap profili oluştur
-        from bookmaker.models.book import BookProfile, BookArchitecture, ChapterArchEntry
+        from bookmaker.models.book import BookArchitecture, BookProfile
 
         profile = BookProfile(
             book_id=topic.lower().replace(" ", "_"),
@@ -121,7 +122,7 @@ class GenerationPipeline:
             pipe.seed(cid, purpose=f"{topic} temel kavramları")
 
             try:
-                chapter_text = self.generate_chapter(cid, title, purpose=f"{topic} bölüm {i}")
+                self.generate_chapter(cid, title, purpose=f"{topic} bolum {i}")
                 result["chapters"].append({"id": cid, "title": title, "status": "generated"})
             except Exception as e:
                 result["chapters"].append({"id": cid, "title": title, "status": f"error: {e}"})

@@ -21,7 +21,9 @@ def generate_chapter(
     chapter_id: Annotated[str, typer.Argument(help="Bolum ID")],
     title: Annotated[str, typer.Option("--title", "-t", help="Bolum basligi")] = "",
     purpose: Annotated[str, typer.Option("--purpose", "-p", help="Bolum amaci")] = "",
-    concepts: Annotated[str, typer.Option("--concepts", "-c", help="Zorunlu kavramlar (virgulle ayrilmis)")] = "",
+    concepts: Annotated[
+        str, typer.Option("--concepts", "-c", help="Zorunlu kavramlar (virgulle ayrilmis)")
+    ] = "",
     path: Annotated[Path, typer.Option("--path", help="Proje dizini")] = Path("."),
 ) -> None:
     """LLM ile bolum metni uretir."""
@@ -66,7 +68,7 @@ def generate_outline(
 
     try:
         outline = pipe.generate_outline(chapter_id, topic, purpose)
-        console.print(f"\n[green]Outline uretildi:[/green]\n")
+        console.print("\n[green]Outline uretildi:[/green]\n")
         console.print(outline)
     except RuntimeError as e:
         console.print(f"[red]Hata: {e}[/red]")
