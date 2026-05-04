@@ -3,7 +3,10 @@ __pycache__/
 *.py[cod]
 *.pyo
 .pytest_cache/
-build/.pytest_tmp/
+build/
+!build/output/images/
+!build/output/images/*.png
+!build/output/java-programlamaya-giris.md.pytest_tmp/
 dist/
 *.egg-info/
 .ruff_cache/
