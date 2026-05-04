@@ -49,11 +49,10 @@ def ensure_dirs() -> None:
 
 def copy_assets() -> None:
     """CSS ve diger statik dosyalari kopyala."""
-    src_css = PROJECT_ROOT / "docs" / "assets" / "style.css"
-    dst_css = ASSETS_DIR / "style.css"
-    if src_css.exists():
-        shutil.copy2(src_css, dst_css)
-        print(f"  CSS: {dst_css}")
+    # CSS zaten docs/assets/style.css yolunda — kopyalama gerekmez
+    css_path = ASSETS_DIR / "style.css"
+    if css_path.exists():
+        print(f"  CSS: {css_path} ({css_path.stat().st_size} bytes)")
 
 
 def copy_images() -> None:
