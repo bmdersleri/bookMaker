@@ -19,7 +19,7 @@ DOCS_DIR = PROJECT_ROOT / "docs"
 ASSETS_DIR = DOCS_DIR / "assets"
 IMAGES_DIR = ASSETS_DIR / "images"
 
-PANDOC = r"C:\Program Files\Pandoc\pandoc.exe"
+PANDOC = shutil.which("pandoc") or r"C:\Program Files\Pandoc\pandoc.exe"
 
 HEADER = f"""---
 title: "Java Programlamaya Giris"
