@@ -14,9 +14,10 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-INPUT_MD = ROOT / "build" / "output" / "java-programlamaya-giris.md"
-IMAGES_DIR = ROOT / "build" / "output" / "images"
-OUTPUT_DIR = ROOT / "build" / "output"
+BOOK_PROJECT = ROOT / "book_projects" / "java-temelleri"
+INPUT_MD = BOOK_PROJECT / "build" / "output" / "java-programlamaya-giris.md"
+IMAGES_DIR = BOOK_PROJECT / "build" / "output" / "images"
+OUTPUT_DIR = BOOK_PROJECT / "build" / "output"
 TEMP_MD = OUTPUT_DIR / "java-programlamaya-giris-latex-ready.md"
 OUTPUT_PDF = OUTPUT_DIR / "java-programlamaya-giris.pdf"
 

@@ -10,7 +10,8 @@ CHAPTER_ORDER = [
     "ek-a","ek-b","ek-c","ek-d",
 ]
 
-chapters_dir = Path("chapters")
+ROOT = Path(__file__).resolve().parent.parent.parent
+chapters_dir = ROOT / "book_projects" / "java-temelleri" / "chapters"
 total_fixed = 0
 
 for slug in CHAPTER_ORDER:

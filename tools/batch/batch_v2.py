@@ -448,7 +448,7 @@ def process_chapter(ch_id, title, purpose, use_combined=True):
     P12: Varsayilan olarak combined prompt kullan.
     """
     pipe = AuthoringPipeline(ROOT)
-    chapter_root = ROOT / "chapters" / ch_id
+    chapter_root = ROOT / "book_projects" / "java-temelleri" / "chapters" / ch_id
 
     log(f"\n{'='*60}")
     log(f"BASLIYOR: {ch_id} - {title}")

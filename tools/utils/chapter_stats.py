@@ -2,9 +2,10 @@
 """Tum bolumlerin karakter sayilarini olc ve analiz et"""
 import os
 import re
+from pathlib import Path
 
-chapters = {}
-chapters_dir = r"D:\bookMaker_Deepseek\chapters"
+ROOT = Path(__file__).resolve().parent.parent.parent
+chapters_dir = str(ROOT / "book_projects" / "java-temelleri" / "chapters")
 
 # Bolum sirasi
 chapter_order = [

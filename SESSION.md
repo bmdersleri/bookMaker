@@ -8,150 +8,70 @@ Detaylı bağlam: `resume.md` | Optimizasyonlar: `fault.md` | Hedefler: `todo.md
 ## SU AN
 
 ```
-Aktif Faz      : Production (DOCX + PDF Çıktıları Tamam)
-Son Adım       : PDF Çıktısı (pandoc + xelatex, 54 Mermaid PNG, 339 sayfa)
-Branch         : deepseek
-PowerShell     : 7.6.1 (ZORUNLU — pwsh.exe)
-PS7 Yolu       : C:\Program Files\PowerShell\7\pwsh.exe
-PS5.1          : KULLANILMAYACAK
+Aktif Faz       : Yapısal Ayrıştırma (Stüdyo ↔ Kitap Projeleri)
+Son Değişiklik  : Kitap projeleri book_projects/ altına taşındı
+Branch          : deepseek
+PowerShell      : 7.6.1 (ZORUNLU — pwsh.exe)
+PS7 Yolu        : C:\Program Files\PowerShell\7\pwsh.exe
+PS5.1           : KULLANILMAYACAK
 ```
 
 ---
 
-## SON TAMAMLANANLAR
+## YENİ MİMARİ
 
-### Kitap Üretimi — TÜM BÖLÜMLER ✅
+```
+D:\bookMaker_Deepseek\              ← Otomasyon repom (bmdersleri/bookMaker)
+├── src/bookmaker/                    ← Python otomasyon kodu
+├── book_projects/                    ← Kitap projeleri (her biri ayrı repo)
+│   └── java-temelleri/              ← İlk kitap (bmdersleri/java-temelleri)
+│       ├── chapters/                ← 27 bölüm dosyası
+│       ├── build/output/            ← DOCX, PDF, PNG çıktıları
+│       ├── book_profile.yaml        ← Kitap profili
+│       ├── llm_config.json          ← LLM API ayarları
+│       ├── pipeline_state.yaml      ← Pipeline durumu
+│       ├── book.ps1                 ← Kitap scriptleri
+│       └── .git/                    ← AYRI repo
+├── tools/                            ← Yardımcı araçlar
+├── tests/                            ← Testler
+└── docs/                             ← Ortak dokümantasyon
+```
 
-| Batch | Bölümler | Durum |
-|-------|----------|-------|
-| 0 | B1-B6 (6 bölüm) | ✅ |
-| 1 | B7-B11 (5 bölüm) | ✅ |
-| 2 | B12-B16 (5 bölüm) | ✅ |
-| 3 | B17-B21 (5 bölüm) | ✅ |
-| 4 | B22-B23 + Ek A-D (6 bölüm) | ✅ |
+---
 
-**Toplam: 23 bölüm + 4 ek = 27 dosya, ~585 KB**
+## KULLANIM
 
-### P13 Token Optimizasyonu ✅
+```powershell
+# 1. Otomasyon kodunda calismak icin
+cd D:\bookMaker_Deepseek
 
-| Prompt | Önce | Sonra | Kazanç |
-|--------|------|-------|--------|
-| SYSTEM_COMBINED | 242 tok | 96 tok | **%60** |
-| SYSTEM_CHAPTER | 164 tok | 73 tok | **%55** |
+# 2. Kitap projesinde calismak icin
+cd D:\bookMaker_Deepseek\book_projects\java-temelleri
+.\book status
 
-- Dinamik max_tokens: kucuk→8192, orta→10240, buyuk→12288
-- **Doğrulandı:** Ek C optimize prompt ile %94 daha fazla icerik, %13.5 hizli
+# 3. CLI ile kitap projesini belirtme
+bookmaker --path book_projects/java-temelleri check book
+bookmaker --path book_projects/java-temelleri production full build/output/java-programlamaya-giris.md
+```
 
-### Production Ciktilar ✅
+## KİTAP ÇIKTILARI
 
-| Dosya | Boyut | Icerik |
+| Dosya | Boyut | İçerik |
 |-------|-------|--------|
-| `build/output/java-programlamaya-giris.docx` | **1.2 MB** | 277 sayfa, TOC + **57/57 PNG gomulu** |
-| `build/output/java-programlamaya-giris.md` | **585 KB** | Birlestirilmis Markdown |
-| `build/output/images/*.png` | **~1,060 KB** | 58 Mermaid diyagrami (58/58 tamam) |
-| `build/output/java-programlamaya-giris.pdf` | **1.9 MB** | 347 sayfa, TOC + 57/57 PNG |
+| `book_projects/java-temelleri/build/output/java-programlamaya-giris.docx` | 1.2 MB | 277 sayfa, TOC + 57 PNG |
+| `book_projects/java-temelleri/build/output/java-programlamaya-giris.md` | 585 KB | Birleştirilmiş Markdown |
+| `book_projects/java-temelleri/build/output/java-programlamaya-giris.pdf` | 1.9 MB | 347 sayfa, TOC + 57 PNG |
+| `book_projects/java-temelleri/build/output/images/*.png` | ~1 MB | 58 Mermaid diyagramı |
 
-### PDF Çıktısı — GÜNCELLENDİ ✅
+## TAMAMLANANLAR (Bu Oturum)
 
-- **Araç:** pandoc 3.9 + xelatex (MiKTeX Portable)
-- **Ön işleme:** Placeholder temizleme (5 adet), Mermaid blokları → PNG (57/57)
-- **Sayfa sayısı:** 347 sayfa (Letter, 11pt, Arial)
-- **İçindekiler:** Var (--toc, depth 2)
-- **Görseller:** 57 Mermaid PNG gömülü (58/58 PNG üretildi, 57'si MD'e referanslandı)
-- **Boyut:** 1.9 MB (1,967,015 bytes)
-- **Komut:** `.\book pdf` veya `python tools/book_pdf_v3.py`
-
-### Ortam ✅
-
-- ⚠️ PowerShell 7.6.1 **ZORUNLU** (`C:\Program Files\PowerShell\7\pwsh.exe`)
-- Windows PowerShell 5.1 (powershell.exe) kullanilmayacak
-- PS7 profili: `cdgo`, `book`, `book-env` alias'lari aktif
-- `book.ps1`: tek script ile tum islemler (+ pdf komutu eklendi)
-- `justfile`: uv tabanli hizli komutlar
-
-### Cozulen Hatalar
-
-| ID | Sorun | Cozum | Tarih |
-|----|-------|-------|-------|
-| F-007 | 4/58 Mermaid parse hatasi | `.mmd` dosyalari duzeltildi + 58/58 PNG render | 2026-05-04 |
-| F-008 | Bolum uzunlugu dengesiz | Incelendi, mevcut hali kabul edildi | 2026-05-04 |
-
----
-
-## RESTART REHBERI
-
-Bilgisayari acinca:
-
-### Adim 1: PS7 Terminali Ac (ZORUNLU)
-```
-Win + R -> pwsh -> Enter
-```
-> ⚠️ **powershell.exe (PS5.1) kullanma!** Tum komutlar `pwsh.exe` ile calisir.
-
-### Adim 2: Projeye Git
-```powershell
-cdgo     # alias -> D:\bookMaker_Deepseek
-```
-
-### Adim 3: Durumu Kontrol Et
-```powershell
-.\book status      # git durumu
-.\book check       # 27 bolum kontrolu
-.\book log -5      # son 5 commit
-```
-
-### Hizli Komutlar
-
-| Komut | Ne Yapar |
-|-------|----------|
-| `.\book help` | Tum komut listesi |
-| `.\book status` | Git durumu |
-| `.\book check` | 27 bolum kontrolu |
-| `.\book log 5` | Son 5 commit |
-| `.\book push "mesaj"` | Stage + commit + push |
-| `.\book build` | MD + DOCX (book_build.py) |
-| `.\book pdf` | PDF uret (pandoc + xelatex, yeni) |
-| `.\book production` | Mermaid PNG + TOC'lu DOCX (book_production.py) |
-
-### TAMAMLANANLAR (Bu Oturum)
-- [x] F-007: 4/58 Mermaid parse hatasi duzeltildi ✅
-- [x] F-008: Bolum uzunlugu incelendi, kabul edildi ✅
-- [x] PS7 zorunlu yapilandirma ✅
-- [x] GitHub push (deepseek branch) ✅
-
-### TAMAMLANANLAR (Bu Oturum — Tumu Tamamlandi)
-- [x] F-007: 4/58 Mermaid parse hatasi duzeltildi ✅
-- [x] F-008: Bolum uzunlugu incelendi, kabul edildi ✅
-- [x] PS7 zorunlu yapilandirma ✅
-- [x] GitHub push (deepseek branch, 4 commit) ✅
-- [x] DOCX PNG gomme (57/57, 1.2 MB) ✅
-- [x] PDF guncelleme (57/57 PNG, 347 sayfa, 1.9 MB) ✅
-- [x] CODE_META gorunurluk fix (147 satir, 7 bolum) ✅
-
-### Siradaki (Istege Bagli)
-- [ ] Kitap duzeyinde validasyon (`bookmaker check book`)
-- [ ] GitHub Pages icin web yayini
-
----
-
-## GIT HISTORY
-
-```
-7d2172f docs: SESSION restart hazirligi + P13/production ozeti
-82d3cc6 chore: mermaid PNG goruntuleri (54 adet, 971 KB)
-232d401 feat: book production pipeline (mermaid->PNG, pandoc DOCX w/ TOC)
-b7bb0d6 docs: Ek C P13 test sonuclari guncellendi + estimate guncel
-4ed0d02 feat: P13 dogrulama - Ek C yeniden uretildi
-12ff75e feat: P13 token optimizasyonu + prompt kompresyonu
-e9deb2e feat: dev experience improvements - book.ps1 + justfile + profile
-4b14492 feat: book build tool + merged output (MD + DOCX)
-0699e95 feat: batch 3-4 chapters generated (B17-B23 + Ek A-D)
-6c668c0 feat: batch 1-2 chapters generated (B7-B16) + process optimization
-```
-
----
-
-## ENGELLEYICI KARARLAR
-
-Yok. Tum batch'ler tamam, DOCX + PDF ciktisi hazir (1.8 MB, 339 sayfa).
-Geriye kalan: Mermaid parse hatalari (F-007) ve bolum dengesi (F-008) — dusuk oncelik.
+### Yapısal Ayrıştırma ✅
+- [x] `book_projects/java-temelleri/` oluşturuldu
+- [x] 27 bölüm → `book_projects/java-temelleri/chapters/` taşındı
+- [x] Build çıktıları → `book_projects/java-temelleri/build/` taşındı
+- [x] Config dosyaları → `book_projects/java-temelleri/` taşındı
+- [x] `book_profile.yaml` oluşturuldu
+- [x] `core/paths.py` dual-root desteği kazandı
+- [x] Tools scriptleri yeni path'lere güncellendi
+- [x] `.gitignore` güncellendi
+- [x] `book_projects/java-temelleri/` ayrı Git repo olarak init edildi

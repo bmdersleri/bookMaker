@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Mermaid bloklarini PNG yollariyla degistir + DOCX olustur"""
 import re, os, subprocess, sys
+from pathlib import Path
 
-OUTPUT_DIR = r"D:\bookMaker_Deepseek\build\output"
+ROOT = Path(__file__).resolve().parent.parent.parent
+BOOK_PROJECT = ROOT / "book_projects" / "java-temelleri"
+OUTPUT_DIR = str(BOOK_PROJECT / "build" / "output")
 IMAGES_DIR = os.path.join(OUTPUT_DIR, "images")
 MERGED_MD = os.path.join(OUTPUT_DIR, "java-programlamaya-giris.md")
 TEMP_MD = os.path.join(OUTPUT_DIR, "temp_docx_ready.md")

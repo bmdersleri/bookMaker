@@ -3,20 +3,19 @@ __pycache__/
 *.py[cod]
 *.pyo
 .pytest_cache/
-build/
-!build/output/images/
-!build/output/images/*.png
-!build/output/java-programlamaya-giris.md
 dist/
 *.egg-info/
 .ruff_cache/
 
 # API anahtarlari ve hassas yapilandirma
 api.txt
-llm_config.json
 .env
 *.key
 secrets/
 credentials/
 
 node_modules/
+
+# Kitap projeleri - her biri ayri repo'da yonetilir
+book_projects/
+!book_projects/*/.git/

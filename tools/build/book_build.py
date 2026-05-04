@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
+BOOK_PROJECT = ROOT / "book_projects" / "java-temelleri"
 sys.path.insert(0, str(ROOT))
 
 # Bölüm sırası
@@ -79,7 +80,7 @@ def extract_title_from_frontmatter(text):
 
 def read_chapter(chapter_id):
     """Bölüm dosyasını okur, front matter'ı çıkarır, bölüm başlığı ekler."""
-    path = ROOT / "chapters" / chapter_id / "draft_versions" / "v001.md"
+    path = BOOK_PROJECT / "chapters" / chapter_id / "draft_versions" / "v001.md"
     if not path.exists():
         print(f"  [UYARI] {chapter_id} bulunamadi: {path}")
         return None
@@ -242,18 +243,18 @@ def main():
                         help="Çıktı formatı (varsayılan: both)")
     args = parser.parse_args()
 
-    os.makedirs(ROOT / "build" / "output", exist_ok=True)
+    os.makedirs(BOOK_PROJECT / "build" / "output", exist_ok=True)
 
     # Birleştir
     text = merge_book()
 
     # MD çıktı
-    md_path = ROOT / "build" / "output" / "java-programlamaya-giris.md"
+    md_path = BOOK_PROJECT / "build" / "output" / "java-programlamaya-giris.md"
     save_md(text, md_path)
 
     # DOCX çıktı
     if args.format in ("docx", "both"):
-        docx_path = ROOT / "build" / "output" / "java-programlamaya-giris.docx"
+        docx_path = BOOK_PROJECT / "build" / "output" / "java-programlamaya-giris.docx"
         save_docx(text, docx_path)
 
 

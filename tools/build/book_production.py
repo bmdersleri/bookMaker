@@ -9,7 +9,8 @@ import base64, os, re, subprocess, sys, time, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-BUILD = ROOT / "build" / "output"
+BOOK_PROJECT = ROOT / "book_projects" / "java-temelleri"
+BUILD = BOOK_PROJECT / "build" / "output"
 MD_PATH = BUILD / "java-programlamaya-giris.md"
 IMG_DIR = BUILD / "images"
 

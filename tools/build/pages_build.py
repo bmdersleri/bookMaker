@@ -14,7 +14,8 @@ import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-BUILD_OUTPUT = PROJECT_ROOT / "build" / "output"
+BOOK_PROJECT = PROJECT_ROOT / "book_projects" / "java-temelleri"
+BUILD_OUTPUT = BOOK_PROJECT / "build" / "output"
 DOCS_DIR = PROJECT_ROOT / "docs"
 ASSETS_DIR = DOCS_DIR / "assets"
 IMAGES_DIR = ASSETS_DIR / "images"

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Mermaid bloklarını kontrol et ve bozuk olanları düzelt"""
+"""Mermaid bloklarini kontrol et ve bozuk olanlari duzelt"""
 import re
+from pathlib import Path
 
-merged_path = r"D:\bookMaker_Deepseek\build\output\java-programlamaya-giris.md"
+ROOT = Path(__file__).resolve().parent.parent.parent
+merged_path = str(ROOT / "book_projects" / "java-temelleri" / "build" / "output" / "java-programlamaya-giris.md")
 with open(merged_path, "r", encoding="utf-8") as f:
     content = f.read()
 
