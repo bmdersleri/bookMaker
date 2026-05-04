@@ -1,0 +1,28 @@
+book_id: ''
+pipeline_id: ''
+current_stage: authoring
+chapters:
+  bolum-01:
+    current_step: full_text_pasted
+    score: 0
+    decision: blocked
+  bolum-02:
+    current_step: full_text_pasted
+    score: 0
+    decision: blocked
+  bolum-03:
+    current_step: full_text_pasted
+    score: 0
+    decision: blocked
+  bolum-04:
+    current_step: full_text_pasted
+    score: 0
+    decision: blocked
+  bolum-05:
+    current_step: full_text_pasted
+    score: 0
+    decision: blocked
+  bolum-06:
+    current_step: full_text_pasted
+    score: 0
+    decision: blocked

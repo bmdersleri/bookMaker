@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from bookmaker.authoring.pipeline import AuthoringPipeline
+from bookmaker.generation.postprocess import process as postprocess
 from bookmaker.generation.prompts import book_prompt, chapter_prompt, outline_prompt
 from bookmaker.llm.config import LLMConfig
 from bookmaker.llm.openai import OpenAICompatibleClient
@@ -70,6 +71,9 @@ class GenerationPipeline:
 
         sys_prompt, user_prompt = chapter_prompt(chapter_title, outline, purpose, concepts)
         chapter_text = self.client.generate_text(sys_prompt, user_prompt)
+
+        # Post-process: front matter + heading fix + CODE_META
+        chapter_text = postprocess(chapter_text, chapter_id, chapter_title)
 
         pipe.paste_draft(chapter_id, chapter_text)
         pipe.advance(chapter_id, "full_text_pasted")
