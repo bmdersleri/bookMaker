@@ -1,0 +1,13 @@
+book_id: test_proje
+title: Java Temelleri
+subtitle: Akademik ve Uygulamali Programlamaya Giris
+author: Test
+language: tr-TR
+audience: Universite baslangic duzeyi / meslek yuksekokulu / programlamaya giris
+level: beginner
+domain: programming
+primary_code_language: java
+export_targets:
+- docx
+- mkdocs
+quality_profile: academic_technical_book_v1

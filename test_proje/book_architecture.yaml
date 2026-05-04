@@ -1,0 +1,245 @@
+book_id: test_proje
+chapters:
+- chapter_id: chapter_01
+  order: 1
+  title: Java'ya Giris ve Gelistirme Ortami
+  chapter_type: intro
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_02
+  order: 2
+  title: Degiskenler, Veri Tipleri ve Operatorler
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_03
+  order: 3
+  title: Kontrol Yapilari
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_04
+  order: 4
+  title: Donguler
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_05
+  order: 5
+  title: Diziler
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_06
+  order: 6
+  title: Metotlar
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_07
+  order: 7
+  title: 'Nesne Tabanli Programlama: Siniflar'
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_08
+  order: 8
+  title: Kalitim ve Cok Bicimlilik
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_09
+  order: 9
+  title: Arayuzler ve Soyut Siniflar
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_10
+  order: 10
+  title: Istisna Yonetimi
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_11
+  order: 11
+  title: 'Koleksiyonlar: List, Set, Map'
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_12
+  order: 12
+  title: Generics
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_13
+  order: 13
+  title: Lambdalar ve Fonksiyonel Programlama
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_14
+  order: 14
+  title: Stream API
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_15
+  order: 15
+  title: Dosya Islemleri ve I/O
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_16
+  order: 16
+  title: 'Eslisimli Programlama: Thread ve Executor'
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_17
+  order: 17
+  title: Ag Programlama
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_18
+  order: 18
+  title: 'Veritabani: JDBC'
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_19
+  order: 19
+  title: 'Birim Testi: JUnit 5'
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_20
+  order: 20
+  title: 'Yapim Araclari: Maven ve Gradle'
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_21
+  order: 21
+  title: Tasarim Kaliplari
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_22
+  order: 22
+  title: Java Modulleri
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_23
+  order: 23
+  title: 'Modern Java: Record, Sealed, Pattern'
+  chapter_type: core
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_24
+  order: 24
+  title: 'Ek A: Java API Hizli Basvuru'
+  chapter_type: appendix
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_25
+  order: 25
+  title: 'Ek B: Ortak Hatalar ve Cozumleri'
+  chapter_type: appendix
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_26
+  order: 26
+  title: 'Ek C: Algoritmalar ve Veri Yapilari'
+  chapter_type: appendix
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []
+- chapter_id: chapter_27
+  order: 27
+  title: 'Ek D: Proje Ornekleri'
+  chapter_type: appendix
+  status: planned
+  purpose: ''
+  expected_learning_outcomes: []
+  mandatory_concepts: []
+  prerequisites: []

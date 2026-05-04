@@ -1,0 +1,58 @@
+book_id: test_proje
+pipeline_id: academic_technical_book_v1
+current_stage: authoring
+chapters:
+  chapter_01:
+    current_step: planned
+  chapter_02:
+    current_step: planned
+  chapter_03:
+    current_step: planned
+  chapter_04:
+    current_step: planned
+  chapter_05:
+    current_step: planned
+  chapter_06:
+    current_step: planned
+  chapter_07:
+    current_step: planned
+  chapter_08:
+    current_step: planned
+  chapter_09:
+    current_step: planned
+  chapter_10:
+    current_step: planned
+  chapter_11:
+    current_step: planned
+  chapter_12:
+    current_step: planned
+  chapter_13:
+    current_step: planned
+  chapter_14:
+    current_step: planned
+  chapter_15:
+    current_step: planned
+  chapter_16:
+    current_step: planned
+  chapter_17:
+    current_step: planned
+  chapter_18:
+    current_step: planned
+  chapter_19:
+    current_step: planned
+  chapter_20:
+    current_step: planned
+  chapter_21:
+    current_step: planned
+  chapter_22:
+    current_step: planned
+  chapter_23:
+    current_step: planned
+  chapter_24:
+    current_step: planned
+  chapter_25:
+    current_step: planned
+  chapter_26:
+    current_step: planned
+  chapter_27:
+    current_step: planned
