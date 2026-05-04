@@ -1,7 +1,7 @@
 """
 batch_v2.py — Optimize Edilmis Kitap Bolum Uretim Scripti
 
-Iyilestirmeler (P1-P12):
+Iyilestirmeler (P1-P13):
   P1:  Tek script, sirali islem
   P2:  requests streaming
   P3:  Retry mekanizmasi (3 deneme, backoff)
@@ -11,9 +11,10 @@ Iyilestirmeler (P1-P12):
   P7:  Detayli hata raporlama
   P8:  Resume destegi (batch_progress.json)
   P9:  Outline token optimizasyonu (2048)
-  P10: Buyuk bolum uyarisi
+  P10: Buyuk bolum uyarisi (gelismis tahmin)
   P11: On API testi (preflight)
   P12: Combined prompt + BOLUM_METNI ayristirma
+  P13: Prompt kompresyonu + dinamik max_tokens
 
 Kullanim:
   python tools/batch_v2.py              # varsayilan: combined prompt
@@ -59,25 +60,19 @@ SYSTEM_OUTLINE = (
 )
 
 SYSTEM_CHAPTER = (
-    "Sen deneyimli bir teknik kitap yazari ve pedagojik icerik uzmanisin. "
-    "Verilen outline gore eksiksiz bir bolum Markdown metni ureteceksin.\n\n"
+    "Java kitabi bolumu yaziyorsun.\n\n"
     "Kurallar:\n"
-    "1. YAML front matter ILE BASLA (title, subtitle, author, date, lang vb. tum alanlar).\n"
-    "2. Basliklar elle numaralandirilmasin (sadece #, ##, ### kullan).\n"
-    "3. Her kod blogundan once <!-- CODE_META ... --> blogu olsun.\n"
-    "4. Kod ornekleri Java olsun, dosya adi public class adiyla uyumlu olsun.\n"
-    "5. Pedagojik kutular icin blockquote kullan.\n"
-    "6. Bolum sonunda ozet, terim sozlugu, sorular ve alistirmalar olsun.\n"
-    "7. Her ana bolum icin 1-2 Mermaid diyagrami ekle (```mermaid ... ```).\n"
-    "8. Bolum en az 12000 karakter olmali."
+    "1. YAML front matter ile basla (title, subtitle en az).\n"
+    "2. Java kodu; dosya adi class adiyla uyumlu.\n"
+    "3. Blockquote ile onemli noktalari vurgula.\n"
+    "4. Bolum sonunda ozet ve alistirmalar.\n"
+    "5. Her ana bolum icin 1 Mermaid diyagrami.\n"
+    "6. En az 10000 karakter."
 )
 
 SYSTEM_COMBINED = (
-    "Sen deneyimli bir teknik kitap yazari ve pedagojik icerik uzmanisin. "
-    "Verilen konu icin once ayrintili bir outline, sonra bu outline'a gore "
-    "eksiksiz bir bolum metni ureteceksin.\n\n"
-    "Once OZET_BOLUM_BASLIGI ve altinda outline'i YAML listesi olarak yaz.\n"
-    "Sonra — BOLUM_METNI basligi altinda tam Markdown bolumunu yaz.\n\n"
+    "Once OZET_BOLUM_BASLIGI altinda outline (YAML listesi).\n"
+    "Sonra BOLUM_METNI altinda chapter.\n\n"
     + SYSTEM_CHAPTER
 )
 
@@ -122,6 +117,45 @@ BATCHES = {
          "Kod kalite standartlari, yaygin hata desenleri, kod review checklist ve en iyi uygulamalari ogretmek"),
     ],
 }
+
+
+# ============================================================
+# P13: Tahmini Bolum Boyutu (Dinamik max_tokens icin)
+# ============================================================
+# Onceden olculen bolum boyutlarina gore tahmin
+# (referans: B1-B16 olculen degerler, B17+ tahmini)
+CHAPTER_SIZE_ESTIMATE = {
+    "bolum-01": 12000, "bolum-02": 11000, "bolum-03": 11000,
+    "bolum-04": 13000, "bolum-05": 11000, "bolum-06": 11000,
+    "bolum-07": 26000, "bolum-08": 16000, "bolum-09": 23000,
+    "bolum-10": 23000, "bolum-11": 31000, "bolum-12": 27000,
+    "bolum-13": 28000, "bolum-14": 23000, "bolum-15": 29000,
+    "bolum-16": 23000, "bolum-17": 19000, "bolum-18": 19000,
+    "bolum-19": 32000, "bolum-20": 27000, "bolum-21": 47000,
+    "bolum-22": 19000, "bolum-23": 19000,
+    "ek-a": 25000, "ek-b": 22000, "ek-c": 16000, "ek-d": 22000,
+}
+
+
+def estimate_chapter_size(chapter_id):
+    """P13: Bolumun beklenen boyutunu tahmin et."""
+    return CHAPTER_SIZE_ESTIMATE.get(chapter_id, 20000)
+
+
+def dynamic_max_tokens(chapter_id):
+    """P13: Bolum boyutuna gore max_tokens belirle.
+    
+    Kucuk bolumler (< 15000 chars) icin 8192 token yeterli.
+    Buyuk bolumler (> 25000 chars) icin 12288 token.
+    Ortalama bolumler icin 10240 token.
+    """
+    est = estimate_chapter_size(chapter_id)
+    if est < 15000:
+        return 8192
+    elif est > 25000:
+        return 12288
+    else:
+        return 10240
 
 
 # ============================================================
@@ -350,20 +384,22 @@ def extract_chapter_from_combined(combined_text):
 # ============================================================
 # P6: Tek Prompt Modu
 # ============================================================
-def generate_combined(chapter_id, title, purpose):
-    """P6: Tek API cagrisinda outline + chapter."""
+def generate_combined(chapter_id, title, purpose, max_tokens=10240):
+    """P6: Tek API cagrisinda outline + chapter.
+    
+    P13: max_tokens dinamik olarak belirlenir (varsayilan: 10240).
+    """
     user = (
         f"Konu: {title}\n"
         f"Amac: {purpose}\n\n"
-        "Once ayrintili bir outline hazirla (OZET_BOLUM_BASLIGI altinda), "
-        "sonra bu outline'a gore eksiksiz bolum metnini yaz (BOLUM_METNI altinda)."
+        "Once outline (OZET_BOLUM_BASLIGI), sonra chapter (BOLUM_METNI)."
     )
     return stream_with_retry(
         [
             {"role": "system", "content": SYSTEM_COMBINED},
             {"role": "user", "content": user},
         ],
-        max_tokens=12288,
+        max_tokens=max_tokens,
         label=f"{chapter_id} combined",
     )
 
@@ -380,20 +416,23 @@ def generate_outline(chapter_id, title, purpose):
     )
 
 
-def generate_chapter_text(chapter_id, title, purpose, outline):
-    """Chapter text uret."""
+def generate_chapter_text(chapter_id, title, purpose, outline, max_tokens=8192):
+    """Chapter text uret.
+    
+    P13: max_tokens dinamik olarak belirlenir (varsayilan: 8192).
+    """
     user = (
         f"Bolum: {title}\n\n"
         f"Amac: {purpose}\n\n"
         f"Outline:\n{outline}\n\n"
-        "Yukaridaki outline'a gore eksiksiz bolum metnini uret."
+        "Yukaridaki outline'a gore bolum metnini uret."
     )
     return stream_with_retry(
         [
             {"role": "system", "content": SYSTEM_CHAPTER},
             {"role": "user", "content": user},
         ],
-        max_tokens=8192,
+        max_tokens=max_tokens,
         label=f"{chapter_id} chapter",
     )
 
@@ -425,11 +464,20 @@ def process_chapter(ch_id, title, purpose, use_combined=True):
         else:
             log(f"  [Seed] mevcut")
 
+        # P13: Dinamik max_tokens
+        mt = dynamic_max_tokens(ch_id)
+
+        # P10: Combined modda buyuk bolum uyarisi
+        if use_combined:
+            est = estimate_chapter_size(ch_id)
+            if est > 30000:
+                log(f"  [Uyari] Tahmini buyuk bolum ({est:,} chars) — max_tokens={mt}")
+
         # --- P12: Combined prompt (varsayilan) ---
         if use_combined:
-            log(f"  [Combined] outline+chapter tek cagrida...")
+            log(f"  [Combined] outline+chapter tek cagrida (max_tokens={mt})...")
             t1 = time.time()
-            combined = generate_combined(ch_id, title, purpose)
+            combined = generate_combined(ch_id, title, purpose, max_tokens=mt)
             if combined.startswith("ERROR"):
                 raise RuntimeError(combined)
             elapsed = time.time() - t1
@@ -459,11 +507,12 @@ def process_chapter(ch_id, title, purpose, use_combined=True):
 
             # P10: Buyuk bolum uyarisi
             if len(outline) > 5000:
-                log(f"  [Uyari] Genis outline ({len(outline):,} chars) — bolum uzun olabilir")
+                est = estimate_chapter_size(ch_id)
+                log(f"  [Uyari] Genis outline ({len(outline):,} chars) — tahmini ~{est:,} chars, max_tokens={mt}")
 
-            log(f"  [Chapter] uretiliyor...", end="")
+            log(f"  [Chapter] uretiliyor (max_tokens={mt})...", end="")
             t2 = time.time()
-            chapter_text = generate_chapter_text(ch_id, title, purpose, outline)
+            chapter_text = generate_chapter_text(ch_id, title, purpose, outline, max_tokens=mt)
             if chapter_text.startswith("ERROR"):
                 raise RuntimeError(chapter_text)
             elapsed = time.time() - t2
