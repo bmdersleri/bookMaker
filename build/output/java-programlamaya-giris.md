@@ -191,10 +191,6 @@ sudo yum install java-17-openjdk-devel
 #### Windows’ta PATH ve JAVA_HOME Ayarlama
 
 ```bash
-## 1.12 CODE_META
-## 1.13 Purpose: Windows'ta JDK ortam değişkenlerini ayarlamak
-## 1.14 Usage: Komut isteminde (cmd) yönetici olarak çalıştırın
-## 1.15 Note: JDK sürüm numarasını kendi kurulumunuza göre değiştirin
 ```
 
 ```bash
@@ -208,10 +204,6 @@ setx PATH "%PATH%;%JAVA_HOME%\bin"
 #### macOS/Linux’ta PATH ve JAVA_HOME Ayarlama
 
 ```bash
-## 1.18 CODE_META
-## 1.19 Purpose: macOS/Linux'ta JDK ortam değişkenlerini ayarlamak
-## 1.20 Usage: Terminal'de çalıştırın veya ~/.bashrc dosyasına ekleyin
-## 1.21 Note: JDK sürüm numarasını kendi kurulumunuza göre değiştirin
 ```
 
 ```bash
@@ -274,10 +266,6 @@ public class MerhabaDunya {
 ### Derleme ve Çalıştırma Süreci
 
 ```bash
-## 1.27 CODE_META
-## 1.28 Purpose: Java programını derleme ve çalıştırma komutları
-## 1.29 Usage: Terminal veya komut isteminde çalıştırın
-## 1.30 Note: Önce derleme, sonra çalıştırma yapılır
 ```
 
 ```bash
@@ -1291,7 +1279,6 @@ Koşul ifadelerinin temelinde **boolean** (mantıksal) değerler yatar. Boolean 
 Aşağıdaki örnekte, koşulsuz bir akış ile koşullu bir akış arasındaki farkı göreceksiniz:
 
 ```python
-## 5.2 CODE_META
 ## 5.3 Dosya: kosulsuz_akis.py
 ## 5.4 Açıklama: Koşulsuz ve koşullu program akışı karşılaştırması
 ## 5.5 Anahtar Kavramlar: koşullu programlama, boolean mantığı

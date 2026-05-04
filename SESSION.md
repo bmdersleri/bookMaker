@@ -123,9 +123,10 @@ cdgo     # alias -> D:\bookMaker_Deepseek
 - [x] F-007: 4/58 Mermaid parse hatasi duzeltildi ✅
 - [x] F-008: Bolum uzunlugu incelendi, kabul edildi ✅
 - [x] PS7 zorunlu yapilandirma ✅
-- [x] GitHub push (deepseek branch, 3 commit) ✅
+- [x] GitHub push (deepseek branch, 4 commit) ✅
 - [x] DOCX PNG gomme (57/57, 1.2 MB) ✅
 - [x] PDF guncelleme (57/57 PNG, 347 sayfa, 1.9 MB) ✅
+- [x] CODE_META gorunurluk fix (147 satir, 7 bolum) ✅
 
 ### Siradaki (Istege Bagli)
 - [ ] Kitap duzeyinde validasyon (`bookmaker check book`)
