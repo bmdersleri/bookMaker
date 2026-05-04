@@ -1,135 +1,492 @@
-"""Otomatik kitap/bölüm üretim pipeline'ı."""
+"""2 asamali bolum uretim pipeline'i.
+Cift model destegi: Seed (Pro) + Enrich (Flash).
+
+Asama 1 — SEEDING:    LLM (Pro) serbest bolum icerigi uretir
+Asama 2 — NORMALIZATION: Python kodu (0 token)
+Asama 3 — ENRICHMENT:  LLM (Flash, paralel) eksik bolumleri doldurur
+Asama 4 — ASSEMBLY:    Python kodu (0 token)
+"""
 
 from __future__ import annotations
 
+import concurrent.futures
+import time
 from pathlib import Path
+from typing import Any, Optional
 
 from bookmaker.authoring.pipeline import AuthoringPipeline
-from bookmaker.generation.postprocess import process as postprocess
-from bookmaker.generation.prompts import book_prompt, chapter_prompt, outline_prompt
+from bookmaker.core.config import load_config
+from bookmaker.generation.postprocess import (
+    detect_missing_sections,
+    extract_sections,
+    insert_section,
+    normalize,
+)
+from bookmaker.generation.spec import (
+    build_seed_from_spec_prompt,
+    build_spec_prompt,
+    build_spec_validation_prompt,
+    generate_spec,
+    validate_spec,
+)
+from bookmaker.generation.prompts import (
+    SYSTEM_AUTHOR,
+    build_enrich_bridge_prompt,
+    build_enrich_errors_prompt,
+    build_enrich_exercises_prompt,
+    build_enrich_glossary_prompt,
+    build_enrich_questions_prompt,
+    build_enrich_summary_prompt,
+    build_seed_prompt,
+)
 from bookmaker.llm.config import LLMConfig
 from bookmaker.llm.openai import OpenAICompatibleClient
 
 
-class GenerationPipeline:
-    """LLM API kullanarak otomatik içerik üretimi."""
+class ChapterGenerator:
+    """2 asamali bolum uretici. Cift model destegi.
 
-    def __init__(self, project_root: Path) -> None:
-        self.root = project_root.resolve()
-        self.config = LLMConfig(self.root)
-        self.client: OpenAICompatibleClient | None = None
-        self._init_client()
+    Kullanim:
+        gen = ChapterGenerator("book_projects/java-temelleri")
+        result = gen.generate_chapter(
+            chapter_id="bolum-16",
+            title="Dosya Islemleri",
+            concepts=["File", "Path", "BufferedReader"],
+        )
 
-    def _init_client(self) -> None:
-        if self.config.is_configured():
-            self.client = OpenAICompatibleClient(
-                api_key=self.config.api_key,
-                model=self.config.model,
-                base_url=self.config.base_url,
-                timeout=300,
-            )
+    Model stratejisi:
+        seed_model   -> Pro (DeepSeek V4 Pro)    -> ana icerik
+        enrich_model -> Flash (DeepSeek V4 Flash) -> tamamlama
+    """
+
+    def __init__(self, project_root: str | Path) -> None:
+        self.root = Path(project_root).resolve()
+        self.config = load_config(start=self.root)
+        self.llm_config = LLMConfig(self.root)
+        self.seed_client: Optional[OpenAICompatibleClient] = None
+        self.enrich_client: Optional[OpenAICompatibleClient] = None
+        self._init_clients()
+
+    def _init_clients(self) -> None:
+        if not self.llm_config.is_configured():
+            return
+        base = {"api_key": self.llm_config.api_key,
+                "base_url": self.llm_config.base_url}
+        sm = self.llm_config.seed_model or "deepseek-chat"
+        self.seed_client = OpenAICompatibleClient(**base, model=sm, timeout=300)
+        em = self.llm_config.enrich_model or sm
+        self.enrich_client = OpenAICompatibleClient(**base, model=em, timeout=60)
 
     def is_ready(self) -> bool:
-        return self.client is not None and self.config.is_configured()
+        return bool(self.llm_config.is_configured() and self.seed_client)
 
-    def generate_outline(self, chapter_id: str, topic: str, purpose: str = "") -> str:
-        """LLM ile outline üretir ve AuthoringPipeline'a kaydeder."""
-        if not self.client:
-            raise RuntimeError(
-                "LLM API yapılandırılmamış. 'bookmaker llm configure' çalıştır."
-            )
+    # ----------------------------------------------------------
+    # ASAMA 1: SEEDING (Pro model)
+    # ----------------------------------------------------------
 
-        sys_prompt, user_prompt = outline_prompt(topic, purpose)
-        outline = self.client.generate_text(sys_prompt, user_prompt)
+    def seed(self, chapter_title: str, concepts: list[str],
+             outline: Optional[str] = None,
+             chapter_no: Optional[int] = None) -> str:
+        """LLM Pro ile serbest bolum icerigi uretir."""
+        if not self.seed_client:
+            raise RuntimeError("LLM API yapilandirilmamis.")
+        user_prompt = build_seed_prompt(
+            chapter_title=chapter_title, concepts=concepts,
+            outline=outline, chapter_no=chapter_no)
+        model_name = self.llm_config.seed_model or "varsayilan"
+        print(f"  [SEED:{model_name}] {chapter_title}...")
+        t0 = time.time()
+        raw = self.seed_client.generate_text(SYSTEM_AUTHOR, user_prompt)
+        elapsed = time.time() - t0
+        print(f"  [SEED] {len(raw.split())} kelime, {elapsed:.1f}s")
+        return raw
 
-        pipe = AuthoringPipeline(self.root)
-        pipe.paste_outline(chapter_id, outline)
-        pipe.advance(chapter_id, "outline_pasted")
+    # ----------------------------------------------------------
+    # ASAMA 2: NORMALIZATION (Python, 0 token)
+    # ----------------------------------------------------------
 
-        return outline
+    def normalize_chapter(self, raw_text: str, chapter_id: str,
+                          title: str) -> str:
+        """Ham LLM ciktisini normalize eder."""
+        return normalize(raw_text, chapter_id, title, self.config)
+
+    # ----------------------------------------------------------
+    # ASAMA 3: ENRICHMENT (Flash model, paralel)
+    # ----------------------------------------------------------
+
+    def detect_missing(self, normalized_text: str) -> list[dict]:
+        return detect_missing_sections(normalized_text)
+
+    def enrich(self, normalized_text: str, chapter_title: str,
+               enrich_types: Optional[list[str]] = None,
+               next_chapter: Optional[str] = None) -> dict[str, str]:
+        """Eksik bolumleri LLM Flash ile paralel doldurur."""
+        if not self.enrich_client:
+            print("  [WARN] Enrich client yok, fallback kullaniliyor.")
+            return self._fallback_all(enrich_types, chapter_title)
+
+        missing = self.detect_missing(normalized_text)
+        sections = extract_sections(normalized_text)
+        headings = [s["heading"] for s in sections
+                    if s["heading"] != "__title__"]
+        first_lines = normalized_text.splitlines()
+        ctx_lines = [l for l in first_lines if not l.startswith("---")]
+        context = "\n".join(ctx_lines[:20])
+
+        type_map = {
+            "ozet": ("Bolum ozeti", build_enrich_summary_prompt),
+            "sozluk": ("Terim sozlugu", build_enrich_glossary_prompt),
+            "soru": ("Kendini degerlendirme sorulari",
+                     build_enrich_questions_prompt),
+            "alistirma": ("Programlama alistirmalari",
+                          build_enrich_exercises_prompt),
+            "hata": ("Sik yapilan hatalar", build_enrich_errors_prompt),
+            "kopru": ("Bir sonraki bolume kopru",
+                      build_enrich_bridge_prompt),
+        }
+        if enrich_types is None:
+            enrich_types = list(type_map.keys())
+
+        pending = [m["key"] for m in missing
+                   if not m["existing"]
+                   and m["key"] in enrich_types
+                   and m["key"] in type_map]
+        if not pending:
+            print("  [ENRICH] Eksik yok, atlaniyor.")
+            return {}
+
+        model_name = self.llm_config.enrich_model or "varsayilan"
+        print(f"  [ENRICH:{model_name}] {len(pending)} eksik, paralel...")
+        enriched, start = {}, time.time()
+
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=min(len(pending), 4)
+        ) as pool:
+            fmap = {}
+            for key in pending:
+                stitle, builder = type_map[key]
+                if key == "kopru":
+                    up = builder(chapter_title=chapter_title,
+                                 next_chapter=next_chapter,
+                                 headings=headings, context=context)
+                else:
+                    up = builder(chapter_title=chapter_title,
+                                 headings=headings, context=context)
+                fut = pool.submit(self._call_enrich, up)
+                fmap[fut] = key
+            for fut in concurrent.futures.as_completed(fmap):
+                key = fmap[fut]
+                try:
+                    c, e = fut.result()
+                    enriched[key] = c
+                    print(f"    [{key}] {len(c.split())} kel, {e:.1f}s")
+                except Exception as ex:
+                    print(f"    [{key}] HATA: {ex}")
+                    enriched[key] = _fallback_content(key, chapter_title)
+
+        print(f"  [ENRICH] {len(enriched)} bolum, {time.time()-start:.1f}s")
+        return enriched
+
+    def _call_enrich(self, user_prompt: str) -> tuple[str, float]:
+        t0 = time.time()
+        c = self.enrich_client.generate_text(SYSTEM_AUTHOR, user_prompt)
+        return c.strip(), time.time() - t0
+
+    def _fallback_all(self, enrich_types, chapter_title):
+        types = enrich_types or ["ozet", "sozluk", "soru",
+                                 "alistirma", "hata", "kopru"]
+        return {k: _fallback_content(k, chapter_title) for k in types}
+
+    # ----------------------------------------------------------
+    # ASAMA 4: ASSEMBLY (Python, 0 token)
+    # ----------------------------------------------------------
+
+    def assemble(self, normalized_text: str, enriched: dict[str, str],
+                 chapter_id: str, chapter_title: str) -> str:
+        """Tum parcalari birlestirir."""
+        text = normalized_text
+        end_order = [
+            ("alistirma", "Programlama alistirmalari"),
+            ("soru", "Kendini degerlendirme sorulari"),
+            ("sozluk", "Terim sozlugu"),
+            ("ozet", "Bolum ozeti"),
+            ("hata", "Sik yapilan hatalar ve yanlis sezgiler"),
+        ]
+        for key, stitle in reversed(end_order):
+            if key in enriched and enriched[key]:
+                text = insert_section(text, stitle, enriched[key])
+        if "kopru" in enriched and enriched["kopru"]:
+            text = insert_section(text, "Bir sonraki bolume kopru",
+                                  enriched["kopru"])
+        return text
+
+    # ----------------------------------------------------------
+    # GENERATE: TUM ASAMALAR
+    # ----------------------------------------------------------
 
     def generate_chapter(
-        self,
-        chapter_id: str,
-        chapter_title: str,
-        purpose: str = "",
-        concepts: list[str] | None = None,
-    ) -> str:
-        """LLM ile bölüm metni üretir ve AuthoringPipeline'a kaydeder."""
-        if not self.client:
-            raise RuntimeError("LLM API yapılandırılmamış.")
+        self, chapter_id: str, title: str, concepts: list[str],
+        outline: Optional[str] = None,
+        chapter_no: Optional[int] = None,
+        enrich_types: Optional[list[str]] = None,
+        next_chapter: Optional[str] = None,
+        save: bool = True,
+    ) -> dict[str, Any]:
+        """Bolum uretimini bastan sona calistirir."""
+        if not self.is_ready():
+            raise RuntimeError("LLM API yapilandirilmamis.")
 
-        pipe = AuthoringPipeline(self.root)
-        outline_p = pipe.root / "chapters" / chapter_id / "outline_versions" / "v001.md"
+        result = {
+            "chapter_id": chapter_id, "title": title,
+            "model_seed": self.llm_config.seed_model or "varsayilan",
+            "model_enrich": self.llm_config.enrich_model or "varsayilan",
+            "timings": {},
+        }
 
-        if not outline_p.exists():
-            # Seed yoksa oluştur
-            pipe.seed(chapter_id, purpose=purpose, mandatory_concepts=concepts or [])
-            # Outline yoksa topic'ten üret
-            outline = self.generate_outline(chapter_id, chapter_title, purpose)
-        else:
-            outline = outline_p.read_text(encoding="utf-8")
+        # Asama 1: Seed
+        t0 = time.time()
+        raw = self.seed(title, concepts, outline, chapter_no)
+        result["seed"] = raw
+        result["timings"]["seed"] = round(time.time() - t0, 1)
 
-        sys_prompt, user_prompt = chapter_prompt(chapter_title, outline, purpose, concepts)
-        chapter_text = self.client.generate_text(sys_prompt, user_prompt)
+        # Asama 2: Normalize
+        t0 = time.time()
+        normalized = self.normalize_chapter(raw, chapter_id, title)
+        result["timings"]["normalize"] = round(time.time() - t0, 1)
 
-        # Post-process: front matter + heading fix + CODE_META
-        chapter_text = postprocess(chapter_text, chapter_id, chapter_title)
+        # Eksik tespiti
+        missing = self.detect_missing(normalized)
+        result["missing"] = [m for m in missing if not m["existing"]]
 
-        pipe.paste_draft(chapter_id, chapter_text)
-        pipe.advance(chapter_id, "full_text_pasted")
+        # Asama 3: Enrich
+        t0 = time.time()
+        enriched = self.enrich(normalized, title, enrich_types,
+                               next_chapter) if result["missing"] else {}
+        result["enriched"] = enriched
+        result["timings"]["enrich"] = round(time.time() - t0, 1)
 
-        return chapter_text
+        # Asama 4: Assemble + son normalize pasosu
+        t0 = time.time()
+        final = self.assemble(normalized, enriched, chapter_id, title)
+        final = self.normalize_chapter(final, chapter_id, title)
+        result["timings"]["assemble"] = round(time.time() - t0, 1)
 
-    def generate_book_outline(self, topic: str, language: str = "tr-TR", audience: str = "") -> str:
-        """LLM ile kitap outline'ı üretir."""
-        if not self.client:
-            raise RuntimeError("LLM API yapılandırılmamış.")
-
-        sys_prompt, user_prompt = book_prompt(topic, language, audience)
-        return self.client.generate_text(sys_prompt, user_prompt)
-
-    def generate_full_book(self, topic: str, language: str = "tr-TR") -> dict:
-        """Konudan kitap oluşturur: init → outline → bölümler."""
-        if not self.client:
-            raise RuntimeError("LLM API yapılandırılmamış.")
-
-        result: dict = {"topic": topic, "outline": "", "chapters": []}
-
-        # 1. Kitap outline'ı
-        book_outline = self.generate_book_outline(topic, language)
-        result["outline"] = book_outline
-
-        # 2. Kitap profili oluştur
-        from bookmaker.models.book import BookArchitecture, BookProfile
-
-        profile = BookProfile(
-            book_id=topic.lower().replace(" ", "_"),
-            title=topic,
-            language=language,
-            quality_profile="academic_technical_book_v1",
-        )
-        profile.to_yaml(self.root / "book_profile.yaml")
-
-        # 3. Preset oluştur ve init yap
-        from bookmaker.commands.init import PRESETS
-        if "custom" not in PRESETS:
-            PRESETS.append("custom")
-
-        arch = BookArchitecture(book_id=profile.book_id)
-        arch.to_yaml(self.root / "book_architecture.yaml")
-
-        # 4. Bölümleri üret
-        pipe = AuthoringPipeline(self.root)
-        for i in range(1, 4):  # İlk 3 bölümü otomatik üret
-            cid = f"bolum_{i:02d}"
-            title = f"Bölüm {i}: {topic} — Temel Kavramlar"
-            pipe.seed(cid, purpose=f"{topic} temel kavramları")
-
+        if save:
+            path = self._save_chapter(chapter_id, final)
+            result["path"] = str(path)
             try:
-                self.generate_chapter(cid, title, purpose=f"{topic} bolum {i}")
-                result["chapters"].append({"id": cid, "title": title, "status": "generated"})
+                pipe = AuthoringPipeline(self.root)
+                pipe.paste_draft(chapter_id, final)
+                pipe.advance(chapter_id, "full_text_pasted")
             except Exception as e:
-                result["chapters"].append({"id": cid, "title": title, "status": f"error: {e}"})
+                print(f"  [WARN] Pipeline kaydi: {e}")
 
+        result["total_time"] = round(sum(result["timings"].values()), 1)
+        wc = len(final.split())
+        print(f"\n  {chapter_id}: {wc} kel, {result['total_time']}s"
+              f"\n  Seed: {result['model_seed']} | Enrich: {result['model_enrich']}"
+              f"\n  Eksik: {len(result['missing'])} -> {len(enriched)} dolduruldu")
         return result
+
+    def _save_chapter(self, chapter_id: str, text: str) -> Path:
+        d = self.root / "chapters" / chapter_id / "approved"
+        d.mkdir(parents=True, exist_ok=True)
+        p = d / f"{chapter_id}_v001.md"
+        p.write_text(text, encoding="utf-8")
+        return p
+
+
+
+    # ----------------------------------------------------------
+    # GENERATE WITH SPEC (kapsamli, ara dosya kayitli)
+    # ----------------------------------------------------------
+
+    def generate_chapter_with_spec(
+        self, chapter_id: str, title: str, concepts: list[str],
+        chapter_no=None, enrich_types=None, next_chapter=None, save=True,
+    ):
+        """Spec -> Validate -> Seed -> Normalize -> Enrich -> Assemble.
+        Her asamanin ciktisi build/generation/ altina kaydedilir."""
+        gen_dir = self.root / "build" / "generation"
+        gen_dir.mkdir(parents=True, exist_ok=True)
+        t0 = time.time()
+        result = {"chapter_id": chapter_id, "title": title, "steps": {}}
+
+        # --- STEP 0: SPEC ---
+        print(f"\n--- ADIM 0: SPEC ---")
+        spec = generate_spec(self.seed_client, title, concepts,
+                             f"Hedef: {self.config.audience}", chapter_no)
+        self._save_gen(gen_dir / "step0_spec.md", spec)
+        self._save_gen(gen_dir / "prompt0_spec.txt",
+            build_spec_prompt(title, concepts,
+                f"Hedef: {self.config.audience}", chapter_no))
+        result["spec"] = spec
+
+        # --- STEP 0.5: VALIDATE ---
+        print(f"\n--- ADIM 0.5: DOGRULAMA ---")
+        validation = validate_spec(self.enrich_client, spec, title)
+        self._save_gen(gen_dir / "step0_validation.md", validation["notes"])
+        self._save_gen(gen_dir / "prompt0_validation.txt",
+            build_spec_validation_prompt(spec, title))
+        result["validation"] = validation
+
+        # --- STEP 1: SEED ---
+        print(f"\n--- ADIM 1: SEED ---")
+        seed_prompt = build_seed_from_spec_prompt(spec, title)
+        self._save_gen(gen_dir / "prompt1_seed.txt", seed_prompt)
+        seed_start = time.time()
+        raw = self.seed_client.generate_text(SYSTEM_AUTHOR, seed_prompt)
+        result["seed_time"] = round(time.time() - seed_start, 1)
+        self._save_gen(gen_dir / "step1_seed.md", raw)
+        print(f"  [SEED] {len(raw.split())} kelime, {result['seed_time']}s")
+
+        # --- STEP 2: NORMALIZE ---
+        norm = self.normalize_chapter(raw, chapter_id, title)
+        self._save_gen(gen_dir / "step2_normalized.md", norm)
+
+        # --- STEP 3: ENRICH ---
+        missing = self.detect_missing(norm)
+        enriched = self.enrich(norm, title, enrich_types, next_chapter) if missing else {}
+        for k, v in enriched.items():
+            self._save_gen(gen_dir / f"prompt3_enrich_{k}.txt",
+                f"Enrichment: {k}, Chapter: {title}")
+        result["enriched"] = enriched
+        result["missing"] = [m for m in missing if not m["existing"]]
+
+        # --- STEP 4: ASSEMBLE + FINAL NORMALIZE ---
+        final = self.assemble(norm, enriched, chapter_id, title)
+        final = self.normalize_chapter(final, chapter_id, title)
+        self._save_gen(gen_dir / "step4_final.md", final)
+
+        if save:
+            path = self._save_chapter(chapter_id, final)
+            result["path"] = str(path)
+
+        wc = len(final.split())
+        tt = round(time.time() - t0, 1)
+        print(f"\n  DONE {chapter_id}: {wc} kelime, {tt}s")
+        print(f"  Dosyalar: {gen_dir}")
+        return result
+
+    def _save_gen(self, path, content):
+        """Icerigi generation dizinine kaydet."""
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(str(content), encoding="utf-8")
+        except Exception:
+            pass
+
+
+
+def _fallback_content(key: str, chapter_title: str) -> str:
+    fb = {
+        "ozet": f"Bu bolumde {chapter_title} konusu ele alindi.",
+        "sozluk": "**API hatasi** — Sozluk olusturulamadi.",
+        "soru": "**API hatasi** — Sorular olusturulamadi.",
+        "alistirma": "**API hatasi** — Alistirmalar olusturulamadi.",
+        "hata": "**API hatasi** — Hatalar olusturulamadi.",
+        "kopru": "Bir sonraki bolumde yeni kavramlar ele alinacak.",
+    }
+    return fb.get(key, "")
+
+    # ----------------------------------------------------------
+    # GENERATE WITH SPEC (kapsamli, ara dosya kayitli)
+    # ----------------------------------------------------------
+
+
+def _fallback_content(key: str, chapter_title: str) -> str:
+    fb = {
+        "ozet": f"Bu bolumde {chapter_title} konusu ele alindi.",
+        "sozluk": "**API hatasi** — Sozluk olusturulamadi.",
+        "soru": "**API hatasi** — Sorular olusturulamadi.",
+        "alistirma": "**API hatasi** — Alistirmalar olusturulamadi.",
+        "hata": "**API hatasi** — Hatalar olusturulamadi.",
+        "kopru": "Bir sonraki bolumde yeni kavramlar ele alinacak.",
+    }
+    return fb.get(key, "")
+
+    # ----------------------------------------------------------
+    # GENERATE WITH SPEC (kapsamli, ara dosya kayitli)
+    # ----------------------------------------------------------
+
+    def generate_chapter_with_spec(
+        self, chapter_id: str, title: str, concepts: list[str],
+        chapter_no=None, enrich_types=None, next_chapter=None, save=True,
+    ):
+        """Spec -> Validate -> Seed -> Normalize -> Enrich -> Assemble.
+        Her a�aman�n ��kt�s� build/generation/ alt�na kaydedilir."""
+        gen_dir = self.root / "build" / "generation"
+        gen_dir.mkdir(parents=True, exist_ok=True)
+        t0 = time.time()
+        result = {"chapter_id": chapter_id, "title": title, "steps": {}}
+
+        # --- STEP 0: SPEC ---
+        print(f"\\n--- ADIM 0: SPEC ---")
+        spec = generate_spec(self.seed_client, title, concepts,
+                             f"Hedef: {self.config.audience}", chapter_no)
+        self._save(gen_dir / "step0_spec.md", spec)
+        self._save(gen_dir / "prompt0_spec.txt",
+                   build_spec_prompt(title, concepts, f"Hedef: {self.config.audience}", chapter_no))
+        result["spec"] = spec
+
+        # --- STEP 0.5: VALIDATE ---
+        print(f"\\n--- ADIM 0.5: DOGRULAMA ---")
+        validation = validate_spec(self.enrich_client, spec, title)
+        self._save(gen_dir / "step0_validation.md", validation["notes"])
+        self._save(gen_dir / "prompt0_validation.txt",
+                   build_spec_validation_prompt(spec, title))
+        result["validation"] = validation
+
+        # --- STEP 1: SEED ---
+        print(f"\\n--- ADIM 1: SEED ---")
+        seed_prompt = build_seed_from_spec_prompt(spec, title)
+        self._save(gen_dir / "prompt1_seed.txt", seed_prompt)
+        seed_start = time.time()
+        raw = self.seed_client.generate_text(SYSTEM_AUTHOR, seed_prompt)
+        result["seed_time"] = round(time.time() - seed_start, 1)
+        self._save(gen_dir / "step1_seed.md", raw)
+        print(f"  [SEED] {len(raw.split())} kelime, {result['seed_time']}s")
+        result["seed_raw"] = raw
+
+        # --- STEP 2: NORMALIZE ---
+        norm = self.normalize_chapter(raw, chapter_id, title)
+        self._save(gen_dir / "step2_normalized.md", norm)
+        result["normalized"] = norm
+
+        # --- STEP 3: ENRICH ---
+        missing = self.detect_missing(norm)
+        enriched = self.enrich(norm, title, enrich_types, next_chapter) if missing else {}
+        for k, v in enriched.items():
+            self._save(gen_dir / f"prompt3_enrich_{k}.txt",
+                       f"Enrichment: {k}, Chapter: {title}")
+        result["enriched"] = enriched
+        result["missing"] = [m for m in missing if not m["existing"]]
+
+        # --- STEP 4: ASSEMBLE ---
+        final = self.assemble(norm, enriched, chapter_id, title)
+        final = self.normalize_chapter(final, chapter_id, title)
+        self._save(gen_dir / "step4_final.md", final)
+        result["final"] = final
+
+        if save:
+            path = self._save_chapter(chapter_id, final)
+            result["path"] = str(path)
+
+        wc = len(final.split())
+        tt = round(time.time() - t0, 1)
+        self._save(gen_dir / "metrics.json",
+                   f'{{"chapter":"{chapter_id}","words":{wc},"time":{tt},'
+                   f'"seed_time":{result.get("seed_time",0)},'
+                   f'"model":"{self.llm_config.seed_model}"}}')
+        print(f"\\n  DONE {chapter_id}: {wc} kelime, {tt}s")
+        print(f"  Dosyalar: {gen_dir}")
+        return result
+
+    def _save(self, path, content):
+        """��eri�i dosyaya kaydet."""
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(str(content), encoding="utf-8")
+        except Exception:
+            pass
+

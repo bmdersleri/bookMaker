@@ -16,7 +16,7 @@ _DEFAULT_BOOK = "java-temelleri"
 
 def find_automation_root(start: Path | None = None) -> Path | None:
     """Otomasyon kkunu bulur (pyproject.toml veya src/bookmaker/ ile)."""
-    current = (start or Path.cwd()).resolve()
+    current = (Path(start) if start else Path.cwd()).resolve()
     for parent in [current, *current.parents]:
         if (parent / "pyproject.toml").exists():
             return parent
@@ -31,7 +31,7 @@ def find_project_root(start: Path | None = None, book_name: str = _DEFAULT_BOOK)
     - Once mevcut dizinden yukari dogru book_profile.yaml ara
     - Bulamazsa automation_root/book_projects/<book_name>/ dene
     """
-    current = (start or Path.cwd()).resolve()
+    current = (Path(start) if start else Path.cwd()).resolve()
 
     # 1. Mevcut dizin ve ust dizinlerde book_profile.yaml ara
     for parent in [current, *current.parents]:

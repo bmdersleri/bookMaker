@@ -1,145 +1,376 @@
-"""Generation pipeline post-processor — hata duzeltmeleri."""
+"""Normalizasyon — LLM çıktısını yapılandırılmış bölüm dosyasına dönüştürür.
+Hiçbir meta etiketi (CODE_META, SECTION_META) kullanılmaz.
+Tüm format işlemleri Python kodu ile yapılır."""
 
 from __future__ import annotations
 
 import re
 from pathlib import Path
+from typing import Optional
+
+from bookmaker.core.config import BookConfig
+from bookmaker.generation.clean_text import TextCleaner
 
 
-def ensure_frontmatter(text: str, chapter_id: str, title: str) -> str:
-    """F-001: Front matter yoksa veya eksikse yenile."""
-    required_fields = [
-        "title", "subtitle", "author", "date", "lang",
-        "documentclass", "toc", "toc-depth", "numbersections",
-        "repo", "project-alias", "chapter-alias", "chapter_id",
-        "chapter_type", "automation_profile", "chapter_spec",
-        "processing_stage", "numbering", "github_slug",
-        "qr_policy", "asset_policy", "placeholder_policy",
-        "snippet_policy",
-    ]
-    if text.lstrip().startswith("---"):
-        # Mevcut front matter'i kontrol et, eksik alan varsa yenile
-        end_idx = text.find("---", 3)
-        if end_idx != -1:
-            existing_fm = text[3:end_idx]
-            missing = [f for f in required_fields if f not in existing_fm]
-            if not missing:
-                return text  # Tum alanlar mevcut
-            # Eksik var -> yenile
-    # Yeniden olustur
-    fm = (
-        "---\n"
-        f'title: "{title}"\n'
-        'subtitle: "Java\'nin Temelleri"\n'
-        'author: "Ismail Kirbas"\n'
-        'date: "2026"\n'
-        "lang: tr-TR\n"
-        "documentclass: report\n"
-        "toc: true\n"
-        "toc-depth: 3\n"
-        "numbersections: true\n"
-        "repo: bmdersleri\n"
-        "project-alias: javanintemelleri\n"
-        f"chapter-alias: {chapter_id}\n"
-        f"chapter_id: {chapter_id}\n"
-        "chapter_type: core\n"
-        "automation_profile: academic_technical_book_v1\n"
-        "chapter_spec: chapter_spec_v0_1\n"
-        "processing_stage: authoring_source\n"
-        "numbering: auto\n"
-        f"github_slug: {chapter_id}\n"
-        "qr_policy: dual_for_code_examples\n"
-        "asset_policy: manual_override\n"
-        "placeholder_policy: source_template\n"
-        "snippet_policy: non_meta_code_is_explanatory\n"
-        "---\n\n"
-    )
-    return fm + text
+# ============================================================
+# HEADING NORMALIZASYONU
+# ============================================================
 
-
-def fix_heading_hierarchy(text: str) -> str:
-    """F-002: Ilk # H1 kalir, sonraki tum #'lar ## olur."""
+def normalize_headings(text: str) -> str:
+    """Heading seviyelerini düzeltir:
+    - İlk # H1 olarak kalır, sonraki tüm #'lar ## olur (H2)
+    - H1 başlığından "Bölüm N:", "Chapter N:" öneki temizlenir
+    - H3 ve H4 seviyeleri korunur
+    - Front matter (---) atlanır
+    - Kod blokları içi atlanır
+    """
     lines = text.splitlines()
-    found_first_h1 = False
     result = []
-    in_fm = text.lstrip().startswith("---")
+    in_front_matter = text.lstrip().startswith("---")
+    in_code_block = False
+    found_h1 = False
 
     for line in lines:
         stripped = line.rstrip()
 
-        # YAML front matter sonu
-        if in_fm and stripped == "---":
-            in_fm = False
+        # Front matter geçişi
+        if in_front_matter and stripped == "---":
+            in_front_matter = False
             result.append(line)
             continue
 
-        if not in_fm:
-            match = re.match(r"^(#{1,6})\s+", stripped)
-            if match:
-                level = len(match.group(1))
-                if level == 1:
-                    if not found_first_h1:
-                        found_first_h1 = True
-                    else:
-                        line = "##" + line[line.index("#") + 1:]
+        # Kod blokları
+        if stripped.startswith("```"):
+            in_code_block = not in_code_block
+            result.append(line)
+            continue
+
+        if in_front_matter or in_code_block:
+            result.append(line)
+            continue
+
+        # Heading düzeltme
+        match = re.match(r"^(#{1,6})\s+", stripped)
+        if match:
+            level = len(match.group(1))
+            if level == 1:
+                if not found_h1:
+                    found_h1 = True
+                    # H1 başlığından "Bölüm N:", "Chapter N:" önekini temizle
+                    heading_text = stripped[match.end():]
+                    cleaned = re.sub(
+                        r'^(Bölüm|Chapter|Bolum)\s+\d+[:\-.]\s*',
+                        '', heading_text, flags=re.IGNORECASE
+                    ).strip()
+                    if cleaned:
+                        line = "# " + cleaned
+                else:
+                    # İkinci H1 → H2'ye düşür
+                    line = "##" + line[line.index("#") + 1:]
+            elif level > 4:
+                # H5/H6 → H4'e yükselt
+                line = "####" + line[line.index("#") + len(match.group(1)):]
 
         result.append(line)
 
     return "\n".join(result)
 
 
-def auto_code_meta(text: str, chapter_id: str) -> str:
-    """F-003: Java kod bloklarina otomatik CODE_META ekle."""
-    # Kod bloklarini bul
-    pattern = re.compile(r"(```java\s*\n(.*?)```)", re.DOTALL)
-    result = []
-    last_end = 0
-    counter = 0
+# ============================================================
+# FRONT MATTER
+# ============================================================
 
-    for match in pattern.finditer(text):
-        start = match.start()
-        code = match.group(2).strip()
+def build_front_matter(chapter_id: str, title: str, config: Optional[BookConfig] = None) -> str:
+    """book_profile.yaml'daki bilgileri kullanarak YAML front matter olusturur.
 
-        # CODE_META once eklenmis mi?
-        before = text[max(0, start - 500):start]
-        if "CODE_META" in before and before.rstrip().endswith("-->"):
-            result.append(text[last_end:match.end()])
-            last_end = match.end()
+    Args:
+        chapter_id: Bolum kimligi (orn. bolum-16)
+        title: Bolum basligi
+        config: Kitap config (None = varsayilan degerler, str = uyari + varsayilan)
+
+    Returns:
+        YAML front matter blogu (--- ile cevrili)
+
+    Not: config yanlislikla string gecilirse uyari verir, varsayilan degerlerle
+    devam eder (cokmez). normalize() fonksiyonu icinden dogru cagrilir:
+        ensure_front_matter(text, chapter_id, title, config)
+        -> build_front_matter(chapter_id, title, config)
+    """
+    # Saglamlik: yanlislikla string gecilmisse uyar
+    if isinstance(config, str):
+        import warnings
+        warnings.warn(
+            f"build_front_matter: 'config' parametresine BookConfig yerine "
+            f"string gecildi ('{config[:50]}...'). Varsayilan degerler kullaniliyor. "
+            f"Dogru kullanim: build_front_matter(chapter_id, title, config)",
+            UserWarning, stacklevel=2,
+        )
+        config = None
+
+    # Config'ten degerleri al (yoksa varsayilan)
+    author = config.author if config else "Ismail Kirbas"
+    year = config.year if config else 2026
+    subtitle = f'"{config.title}"' if config else "\"Java'nin Temelleri\""
+    repo = config.github_slug if config else "javanintemelleri"
+
+    return f"""---
+title: "{title}"
+subtitle: {subtitle}
+author: "{author}"
+date: "{year}"
+lang: tr-TR
+documentclass: report
+toc: true
+toc-depth: 3
+numbersections: true
+repo: bmdersleri
+project-alias: javanintemelleri
+chapter-alias: {chapter_id}
+chapter_id: {chapter_id}
+chapter_type: core
+automation_profile: academic_technical_book_v1
+numbering: auto
+github_slug: {chapter_id}
+qr_policy: dual_for_code_examples
+asset_policy: manual_override
+---"""
+def ensure_front_matter(text: str, chapter_id: str, title: str,
+                        config: Optional[BookConfig] = None) -> str:
+    """Metnin başına front matter ekler (H1 başlığı korur)."""
+    if text.lstrip().startswith("---"):
+        # Mevcut front matter varsa koru
+        end = text.find("---", 3)
+        if end != -1:
+            return text
+    # Front matter yoksa başa ekle, H1'i koru
+    fm = build_front_matter(chapter_id, title, config)
+    return fm + "\n\n" + text.lstrip("\n")
+
+
+# ============================================================
+# BÖLÜM AYRIŞTIRMA
+# ============================================================
+
+def extract_sections(text: str) -> list[dict]:
+    """Metni H2 başlıklarına göre bölümlere ayırır.
+
+    Returns:
+        [{'heading': 'Bölüm özeti', 'content': '...', 'order': 1}, ...]
+    """
+    in_front_matter = text.lstrip().startswith("---")
+    in_code_block = False
+    sections = []
+    current_heading = None
+    current_lines = []
+    order = 0
+
+    for line in text.splitlines():
+        stripped = line.rstrip()
+
+        # Front matter geçişi
+        if in_front_matter and stripped == "---":
+            in_front_matter = False
+            continue
+        if in_front_matter:
             continue
 
-        # Dosya adini bul
-        file_match = re.search(r"//\s*Dosya:\s*(\S+)", code)
-        file_name = file_match.group(1) if file_match else f"Ornek{counter:02d}.java"
-        main_class = Path(file_name).stem
-        counter += 1
+        # Kod blokları
+        if stripped.startswith("```"):
+            in_code_block = not in_code_block
+            if current_heading is not None:
+                current_lines.append(line)
+            continue
 
-        code_id = f"{chapter_id}_kod{counter:02d}"
-        meta = (
-            f"<!-- CODE_META\n"
-            f"id: {code_id}\n"
-            f"chapter_id: {chapter_id}\n"
-            f"kind: example\n"
-            f'title: "Kod {counter}"\n'
-            f'file: "{file_name}"\n'
-            f"mainClass: {main_class}\n"
-            f"extract: true\n"
-            f"test: compile\n"
-            f"github: true\n"
-            f"qr: dual\n"
-            f"-->\n\n"
-        )
-        result.append(text[last_end:start])
-        result.append(meta)
-        result.append(text[start:match.end()])
-        last_end = match.end()
+        if in_code_block:
+            if current_heading is not None:
+                current_lines.append(line)
+            continue
 
-    result.append(text[last_end:])
-    return "".join(result)
+        # H1 başlık (front matter'dan hemen sonraki)
+        if re.match(r"^#\s+", stripped):
+            if current_heading is not None:
+                sections.append({
+                    "heading": current_heading,
+                    "content": "\n".join(current_lines),
+                    "order": order,
+                })
+                order += 1
+            current_heading = "__title__"  # Özel: bölüm başlığı
+            current_lines = []
+            continue
+
+        # H2 başlık
+        if re.match(r"^##\s+", stripped):
+            if current_heading is not None:
+                sections.append({
+                    "heading": current_heading,
+                    "content": "\n".join(current_lines),
+                    "order": order,
+                })
+                order += 1
+            current_heading = stripped.lstrip("# ")
+            current_lines = []
+            continue
+
+        if current_heading is not None:
+            current_lines.append(line)
+
+    # Son bölümü ekle
+    if current_heading is not None and current_lines:
+        sections.append({
+            "heading": current_heading,
+            "content": "\n".join(current_lines),
+            "order": order,
+        })
+
+    return sections
 
 
-def process(text: str, chapter_id: str, title: str) -> str:
-    """Tum duzeltmeleri sirayla uygula."""
-    text = ensure_frontmatter(text, chapter_id, title)
-    text = fix_heading_hierarchy(text)
-    text = auto_code_meta(text, chapter_id)
-    return text
+# ============================================================
+# EKSİK BÖLÜM TESPİTİ
+# ============================================================
+
+_STANDARD_END_SECTIONS = {
+    "özet": "Bölüm özeti",
+    "sözlük": "Terim sözlüğü",
+    "soru": "Kendini değerlendirme soruları",
+    "alıştırma": "Programlama alıştırmaları",
+    "hata": "Sık yapılan hatalar",
+    "köprü": "Bir sonraki bölüme",
+    "laboratuvar": "Laboratuvar",
+    "proje": "Proje görevi",
+    "rubrik": "Değerlendirme rubriği",
+    "kaynak": "İleri okuma",
+}
+
+
+def detect_missing_sections(text: str) -> list[dict]:
+    """Hangi standart bölüm sonu yapılarının eksik olduğunu tespit eder.
+
+    Returns:
+        [{'key': 'özet', 'title': 'Bölüm özeti', 'existing': False}, ...]
+    """
+    text_lower = text.lower()
+    sections = extract_sections(text)
+    existing_headings = [s["heading"].lower() for s in sections]
+
+    missing = []
+    for key, title in _STANDARD_END_SECTIONS.items():
+        # Başlıkta geçiyor mu kontrol et
+        found = any(key in h for h in existing_headings)
+        missing.append({
+            "key": key,
+            "title": title,
+            "existing": found,
+        })
+
+    return missing
+
+
+# ============================================================
+# KOD / MERMAID ÇIKARMA
+# ============================================================
+
+def extract_code_blocks(text: str, language: str = "java") -> list[dict]:
+    """Belirtilen dildeki kod bloklarını çıkarır.
+
+    Returns:
+        [{'index': 0, 'code': '...', 'language': 'java', 'start': 100, 'end': 250}, ...]
+    """
+    pattern = re.compile(
+        r"```" + language + r"\s*\n(.*?)```", re.DOTALL
+    )
+    return [
+        {
+            "index": i,
+            "code": match.group(1).strip(),
+            "language": language,
+            "start": match.start(),
+            "end": match.end(),
+        }
+        for i, match in enumerate(pattern.finditer(text))
+    ]
+
+
+def extract_mermaid_blocks(text: str) -> list[dict]:
+    """Mermaid bloklarını çıkarır.
+
+    Returns:
+        [{'index': 0, 'code': '...', 'start': 100, 'end': 250}, ...]
+    """
+    pattern = re.compile(r"```mermaid\s*\n(.*?)```", re.DOTALL)
+    return [
+        {
+            "index": i,
+            "code": match.group(1).strip(),
+            "start": match.start(),
+            "end": match.end(),
+        }
+        for i, match in enumerate(pattern.finditer(text))
+    ]
+
+
+# ============================================================
+# BİRLEŞTİRME
+# ============================================================
+
+def insert_section(text: str, section_title: str, section_content: str,
+                  before_heading: Optional[str] = None) -> str:
+    """Metne yeni bir H2 bölümü ekler.
+
+    Args:
+        text: Mevcut metin
+        section_title: Eklenecek bölüm başlığı (sadece metin, ## eklenir)
+        section_content: Bölüm içeriği (markdown)
+        before_heading: Varsa bu başlıktan önce ekle
+
+    Returns:
+        Güncellenmiş metin
+    """
+    new_section = f"\n\n## {section_title}\n\n{section_content.strip()}\n"
+
+    if before_heading:
+        # Belirtilen başlıktan önce ekle
+        pattern = rf"(^|\n)(##\s+{re.escape(before_heading)})"
+        match = re.search(pattern, text, re.MULTILINE)
+        if match:
+            pos = match.start(2)
+            return text[:pos] + new_section + "\n" + text[pos:]
+        # Başlık bulunamazsa sona ekle
+        return text.rstrip() + new_section
+
+    # Sona ekle
+    return text.rstrip() + new_section
+
+
+# ============================================================
+# ANA NORMALİZASYON FONKSİYONU
+# ============================================================
+
+def normalize(
+    text: str,
+    chapter_id: str,
+    title: str,
+    config: Optional[BookConfig] = None,
+) -> str:
+    """LLM çıktısını normalize eder: temizlik + başlıklar + front matter.
+
+    Sıra:
+    1. TextCleaner ile tırnak/boşluk/yazım düzelt (0 token)
+    2. Heading seviyelerini düzelt
+    3. Front matter ekle/koru
+    4. Fazla boşlukları temizle
+
+    Args:
+        text: Ham LLM çıktısı
+        chapter_id: Bölüm kimliği
+        title: Bölüm başlığı
+        config: Kitap config
+
+    Returns:
+        Normalize edilmiş bölüm metni
+    """
+    text = TextCleaner.clean(text)
+    text = normalize_headings(text)
+    text = ensure_front_matter(text, chapter_id, title, config)
+    return text.strip() + "\n"
