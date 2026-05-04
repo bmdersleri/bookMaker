@@ -7,9 +7,26 @@ from pathlib import Path
 
 
 def ensure_frontmatter(text: str, chapter_id: str, title: str) -> str:
-    """F-001: Front matter yoksa ekle."""
+    """F-001: Front matter yoksa veya eksikse yenile."""
+    required_fields = [
+        "title", "subtitle", "author", "date", "lang",
+        "documentclass", "toc", "toc-depth", "numbersections",
+        "repo", "project-alias", "chapter-alias", "chapter_id",
+        "chapter_type", "automation_profile", "chapter_spec",
+        "processing_stage", "numbering", "github_slug",
+        "qr_policy", "asset_policy", "placeholder_policy",
+        "snippet_policy",
+    ]
     if text.lstrip().startswith("---"):
-        return text
+        # Mevcut front matter'i kontrol et, eksik alan varsa yenile
+        end_idx = text.find("---", 3)
+        if end_idx != -1:
+            existing_fm = text[3:end_idx]
+            missing = [f for f in required_fields if f not in existing_fm]
+            if not missing:
+                return text  # Tum alanlar mevcut
+            # Eksik var -> yenile
+    # Yeniden olustur
     fm = (
         "---\n"
         f'title: "{title}"\n'

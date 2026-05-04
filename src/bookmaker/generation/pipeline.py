@@ -26,6 +26,7 @@ class GenerationPipeline:
                 api_key=self.config.api_key,
                 model=self.config.model,
                 base_url=self.config.base_url,
+                timeout=300,
             )
 
     def is_ready(self) -> bool:

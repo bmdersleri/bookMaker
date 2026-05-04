@@ -1,0 +1,1 @@
+{"model":"deepseek-chat","messages":[{"role":"user","content":"Write 3 short paragraphs about Java exception handling. Max 300 words."}],"max_tokens":500}
