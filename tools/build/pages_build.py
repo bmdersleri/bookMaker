@@ -82,6 +82,16 @@ def build_html() -> bool:
     # Gorsel yollarini duzelt: ./images/*.png -> assets/images/*.png
     print("  Gorsel yollari duzeltiliyor...")
     content = src_md.read_text(encoding="utf-8")
+
+    # Mermaid kod bloklarini sil (resim referanslari zaten var)
+    import re
+    content = re.sub(
+        r"```mermaid\s*.*?```\s*",
+        "",
+        content,
+        flags=re.DOTALL,
+    )
+
     content = content.replace("](./images/", "](./assets/images/")
     content = content.replace('src="./images/', 'src="./assets/images/')
     
