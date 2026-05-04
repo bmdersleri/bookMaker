@@ -1,71 +1,73 @@
-# bookMaker Geliştirme Yol Haritası
+# bookMaker Gelistirme Yol Haritasi
 
 ## Tamamlanan Fazlar
 
-### Faz 0 — Proje İskeleti ✅
-### Faz 1 — Veri Modelleri ve Depolama ✅
-### Faz 2 — Chapter Validator ✅
-### Faz 3 — Kod Smoke Test Motoru ✅
-### Faz 4 — Manifest Editörü ✅
-### Faz 5 — Authoring Pipeline ✅
-### Faz 6 — Production Pipeline ✅
-### Faz 7 — GitHub + Studio GUI ✅
+### Faz 0-7: TUM FAZLAR TAMAMLANDI
 
-## Aktif Çalışma
+| Faz | Konu | Durum |
+|-----|------|-------|
+| 0 | Proje Iskeleti | TAMAM |
+| 1 | Veri Modelleri ve Depolama | TAMAM |
+| 2 | Chapter Validator | TAMAM |
+| 3 | Kod Smoke Test Motoru | TAMAM |
+| 4 | Manifest Editoru | TAMAM |
+| 5 | Authoring Pipeline | TAMAM |
+| 6 | Production Pipeline | TAMAM |
+| 7 | GitHub + Studio GUI | TAMAM |
 
-### LLM API + Generation Pipeline
+## Bolum Uretimi
 
-#### Bölüm Üretimi
+### Batch 0-4: TUMU TAMAMLANDI
 
-**Batch 1-2 (B7-B16):** ✅ Tamam
-- [x] B7: Algoritmik Problem Çözme Desenleri
-- [x] B8: Metotlar, Overloading ve Özyineleme
-- [x] B9: Diziler ve Çok Boyutlu Veri Yapıları
-- [x] B10: String İşlemleri ve Metin Problemleri
-- [x] B11: Matematiksel Yardımcılar ve Rastgelelik
-- [x] B12: Tarih ve Zaman İşlemleri
-- [x] B13: Paketler, import Kullanımı ve Proje Düzeni
-- [x] B14: Koleksiyonlar ve Dinamik Veri Yönetimi
-- [x] B15: Hata Yönetimi ve Dayanıklı Programlama
-- [x] B16: Dosya İşlemleri ve Kalıcı Veri Saklama
+| Batch | Bolumler | Durum |
+|-------|----------|-------|
+| 0 | B1-B6 (6 bolum) | TAMAM |
+| 1 | B7-B11 (5 bolum) | TAMAM |
+| 2 | B12-B16 (5 bolum) | TAMAM |
+| 3 | B17-B21 (5 bolum) | TAMAM |
+| 4 | B22-B23 + Ek A-D (6 bolum) | TAMAM |
 
-**Batch 3 (B17-B21):** 🔄 Devam
-- [ ] B17: Sınıf, Nesne, Constructor ve Kapsülleme
-- [ ] B18: Kalıtım ve Interface'e Kısa Ön Bakış
-- [ ] B19: GUI Programlamaya Giriş ve Swing Arayüz Tasarımı
-- [ ] B20: Temel Swing Bileşenleri, Olay Yönetimi ve Form Doğrulama
-- [ ] B21: Liste, Tablo, Menü ve Diyaloglarla GUI Veri Sunumu
+**Toplam: 23 bolum + 4 ek = 27 dosya, ~585 KB**
 
-**Batch 4:** ⏳ Sırada
-- [ ] B22: JDBC ile Veritabanı Programlamaya Giriş
-- [ ] B23: Bütünleşik Uygulama ve Final Proje Rehberi
-- [ ] Ek A: Sık Yapılan Java Hataları ve Çözüm Rehberi
-- [ ] Ek B: JavaFX'e Kısa Bakış
-- [ ] Ek C: Mini Proje Fikirleri ve Rubrikler
-- [ ] Ek D: Java Programlama Kontrol Rehberi, Sık Hatalar ve Kod Kalitesi
+### Iyilestirmeler (P1-P13)
 
-#### İyileştirmeler
-- [x] P1-P12 tüm optimizasyonlar batch_v2.py'de
-- [x] postprocess.py: front matter fix, heading fix, CODE_META
-- [x] pipeline.py: timeout 120→300
-- [x] .gitignore: api.txt, llm_config.json
+| # | Iyilestirme | Durum |
+|---|-------------|-------|
+| P1 | Sirali islem | TAMAM |
+| P2 | requests streaming | TAMAM |
+| P3 | Retry (3 deneme, backoff) | TAMAM |
+| P4 | Atomik yazma (.tmp->rename) | TAMAM |
+| P5 | Progress gostergesi (5sn) | TAMAM |
+| P6/P12 | Combined prompt (varsayilan) | TAMAM |
+| P7 | Hata raporlama (JSON) | TAMAM |
+| P8 | Resume destegi | TAMAM |
+| P9 | Outline token 4096->2048 | TAMAM |
+| P10 | Buyuk bolum uyarisi | TAMAM |
+| P11 | Preflight API testi | TAMAM |
+| P13 | Token optimizasyonu (%60 kazanc) | TAMAM |
 
-## Sıradaki Görevler
+## Production Ciktilar
 
-### Kısa Vade
-- [ ] Batch 3 (B17-B21) tamamla
-- [ ] Batch 4 (B22-B23 + Ek A-D) tamamla
-- [ ] Tüm batch'leri commit + push et
+| Cikti | Boyut | Detay |
+|-------|-------|-------|
+| `build/output/java-programlamaya-giris.md` | 585 KB | Birlestirilmis Markdown |
+| `build/output/java-programlamaya-giris.docx` | 1.2 MB | TOC + 54 PNG |
+| `build/output/java-programlamaya-giris.pdf` | 1.8 MB | 339 sayfa, TOC + 54 PNG |
+| `build/output/images/*.png` | ~971 KB | 54 Mermaid diyagrami |
+
+## Siradaki Gorevler
+
+### Kisa Vade
+- [x] F-007: 4/58 Mermaid parse hatasini duzelt (manuel) ✅
+- [x] F-008: Bolum uzunlugu tutarliligini degerlendir (kabul edildi) ✅
+- [ ] GitHub push (deepseek branch, mevcut commit'ler)
 
 ### Orta Vade
-- [ ] Mermaid diyagramı çıktısını doğrula (F-007)
-- [ ] Bölüm uzunluğu tutarlılığını değerlendir (F-008)
-- [ ] Kitap düzeyinde validasyon (`bookmaker check book`)
-- [ ] DOCX/PDF çıktısı üret
-- [ ] Kodları GitHub'a sync et
+- [ ] Kitap duzeyinde validasyon (`bookmaker check book`)
+- [ ] GitHub Pages icin web yayini
 
 ### Uzun Vade
-- [ ] Faz 8: Kitap düzeyinde validasyon
-- [ ] Studio GUI geliştirmeleri
-- [ ] Paralel API çağrıları (birden fazla bölüm aynı anda)
-- [ ] Farklı LLM sağlayıcı desteği
+- [ ] Faz 8: Kitap duzeyinde validasyon
+- [ ] Studio GUI gelistirmeleri
+- [ ] Paralel API cagrilari
+- [ ] Farkli LLM saglayici destegi

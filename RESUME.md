@@ -1,117 +1,135 @@
 # RESUME
 
-> **Yeni oturumda önce `SESSION.md` oku — 60 saniyede hazır olursun.**
-> Bu dosya geçmiş kararların ve bağlamın arşividir; değişmez.
+> **Yeni oturumda once `SESSION.md` oku — 60 saniyede hazir olursun.**
+> Bu dosya gecmis kararlarin ve baglamin arsividir; degismez.
 
-Bu dosya yeni bir sohbet veya sıfır bağlamla başlandığında `bookMaker` projesi hakkında bilinmesi gerekenleri özetler.
+Bu dosya yeni bir sohbet veya sifir baglamla baslandiginda `bookMaker` projesi hakkinda bilinmesi gerekenleri ozetler.
 
-## Kullanıcı Hedefi
+## Kullanici Hedefi
 
-Kullanıcı, LLM modellerinden maksimum düzeyde faydalanarak bilimsel ve akademik temeli olan bilişim ve veri bilimi içerikli kitaplar hazırlamak istiyor.
+Kullanici, LLM modellerinden maksimum duzeyde faydalanarak bilimsel ve akademik temeli olan bilisim ve veri bilimi icerikli kitaplar hazirlamak istiyor.
 
-İstenen sistem:
-- CLI ile çalışmalı
-- Güzel ve kullanışlı bir arayüzü de olmalı
-- LLM sağlayıcısı olarak dış servisleri hedeflemeli
-- Akademik kitap üretim sürecini sadece metin üretimi olarak değil, yapı, kaynak, kod, alıştırma, rubrik, çıktı ve kalite kontrol süreci olarak ele almalı
+Istenen sistem:
+- CLI ile calismali
+- Guzel ve kullanisli bir arayuzu de olmali
+- LLM saglayicisi olarak dis servisleri hedeflemeli
+- Akademik kitap uretim surecini sadece metin uretimi olarak degil, yapi, kaynak, kod, alistirma, rubrik, cikti ve kalite kontrol sureci olarak ele almali
 
-## Çalışma Dizini ve Repo
+## Calisma Dizini ve Repo
 
-- Çalışma dizini: `D:\bookMaker_Deepseek`
+- Calisma dizini: `D:\bookMaker_Deepseek`
 - GitHub repo: `https://github.com/bmdersleri/bookMaker`
 - Remote: `origin https://github.com/bmdersleri/bookMaker.git`
 - Branch: `deepseek`
 
 ## Mevcut Durum
 
-### Bölüm Üretimi — TAMAM ✅
+### Bolum Uretimi — TUMU TAMAM
 
-| Batch | Bölümler | Durum | Boyut Aralığı |
+| Batch | Bolumler | Durum | Boyut Araligi |
 |-------|----------|-------|---------------|
-| 0 (önceden) | B1-B6 (6 bölüm) | ✅ | 11,535 — 13,783c |
-| Batch 1 | B7-B11 (5 bölüm) | ✅ | 15,792 — 30,640c |
-| Batch 2 | B12-B16 (5 bölüm) | ✅ | 17,761 — 28,907c |
-| Batch 3 | B17-B21 (5 bölüm) | ✅ | 19,110 — 47,019c |
-| Batch 4 | B22-B23 + Ek A-D (6 bölüm) | ✅ | 15,629 — 24,570c |
+| 0 (onceden) | B1-B6 (6 bolum) | TAMAM | 11,535 — 13,783c |
+| Batch 1 | B7-B11 (5 bolum) | TAMAM | 15,792 — 30,640c |
+| Batch 2 | B12-B16 (5 bolum) | TAMAM | 17,761 — 28,907c |
+| Batch 3 | B17-B21 (5 bolum) | TAMAM | 19,110 — 47,019c |
+| Batch 4 | B22-B23 + Ek A-D (6 bolum) | TAMAM | 15,629 — 24,570c |
 
-**Toplam: 23 bölüm + 4 ek = 27 dosya, ~552,232 karakter**
+**Toplam: 23 bolum + 4 ek = 27 dosya, ~585 KB**
 
-### Sıradaki Adımlar
-- [ ] Commit + Push to GitHub
-- [ ] DOCX/PDF çıktısı üret
-- [ ] F-007: Mermaid diyagramları doğrula
-- [ ] F-008: Bölüm uzunluğu tutarlılığı
+### Production Ciktilar — TUMU TAMAM
+
+| Cikti | Boyut | Detay |
+|-------|-------|-------|
+| `build/output/java-programlamaya-giris.md` | 585 KB | Birlestirilmis Markdown |
+| `build/output/java-programlamaya-giris.docx` | 1.2 MB | TOC + 54 PNG Mermaid |
+| `build/output/java-programlamaya-giris.pdf` | 1.8 MB | 339 sayfa, TOC + 54 PNG |
+| `build/output/images/*.png` | ~971 KB | 54 Mermaid diyagrami |
+
+### Siradaki Adimlar
+- [ ] F-007: 4/58 Mermaid parse hatasini duzelt (manuel)
+- [ ] F-008: Bolum uzunlugu tutarliligi
+- [ ] GitHub push (deepseek branch)
 
 ### Aktif Hatalar (FAULT.md)
 
-| ID | Sorun | Öncelik |
+| ID | Sorun | Oncelik |
 |----|-------|---------|
-| F-007 | Görsel/Mermaid referansı yok | 🟡 Orta |
-| F-008 | Bölüm uzunluğu dengesiz | 🟡 Orta |
+| F-007 | 4/58 Mermaid parse hatasi | Orta |
+| F-008 | Bolum uzunlugu dengesiz | Orta |
 
-### Çözülen Hatalar
+### Cozulen Hatalar
 
-| ID | Sorun | Çözüm |
+| ID | Sorun | Cozum |
 |----|-------|-------|
 | F-001 | Front matter eksik | postprocess.py: ensure_frontmatter |
-| F-002 | Heading hiyerarşisi | postprocess.py: fix_heading_hierarchy |
+| F-002 | Heading hiyerarsisi | postprocess.py: fix_heading_hierarchy |
 | F-003 | CODE_META yok | postprocess.py: auto_code_meta |
-| F-004 | API yanıt süresi (~95sn) | P12 combined prompt + P9 token opt. |
+| F-004 | API yanit suresi (~95sn) | P12 combined prompt + P9 token opt. |
 | F-005 | API timeout (120sn) | timeout=300 (pipeline) + 600 (batch) |
-| F-006 | Eksik front matter alanları | 23 alan kontrolü |
+| F-006 | Eksik front matter alanlari | 23 alan kontrolu |
 
-### P1-P12 İyileştirmeleri
+### P1-P13 Iyilestirmeleri
 
-| # | İyileştirme | Durum |
+| # | Iyilestirme | Durum |
 |---|-------------|-------|
-| P1 | Sıralı işlem | ✅ |
-| P2 | requests streaming | ✅ |
-| P3 | Retry (3 deneme, backoff) | ✅ |
-| P4 | Atomik yazma (.tmp→rename) | ✅ |
-| P5 | Progress göstergesi (5sn) | ✅ |
-| P6/P12 | Combined prompt (varsayılan) | ✅ |
-| P7 | Hata raporlama (JSON) | ✅ |
-| P8 | Resume desteği | ✅ |
-| P9 | Outline token 4096→2048 | ✅ |
-| P10 | Büyük bölüm uyarısı | ✅ |
-| P11 | Preflight API testi | ✅ |
+| P1 | Sirali islem | TAMAM |
+| P2 | requests streaming | TAMAM |
+| P3 | Retry (3 deneme, backoff) | TAMAM |
+| P4 | Atomik yazma (.tmp->rename) | TAMAM |
+| P5 | Progress gostergesi (5sn) | TAMAM |
+| P6/P12 | Combined prompt (varsayilan) | TAMAM |
+| P7 | Hata raporlama (JSON) | TAMAM |
+| P8 | Resume destegi | TAMAM |
+| P9 | Outline token 4096->2048 | TAMAM |
+| P10 | Buyuk bolum uyarisi | TAMAM |
+| P11 | Preflight API testi | TAMAM |
+| P13 | Token optimizasyonu (%60 kazanc) | TAMAM |
 
-## Kullanıcı Tercihleri
+## Kullanici Tercihleri
 
-- Kodlamaya başlamadan önce problemi ve mimariyi tartışmak istiyor
-- Tüm dosyalarda UTF-8 kullanılmalı
-- Sistem Windows ve PowerShell 7.x üzerinde çalışıyor
-- PowerShell sürümü: 7.6.1
+- Kodlamaya baslamadan once problemi ve mimariyi tartismak istiyor
+- Tum dosyalarda UTF-8 kullanilmali
+- Sistem Windows ve PowerShell 7 **ZORUNLU**
+- PowerShell surumu: 7.6.1 (`C:\Program Files\PowerShell\7\pwsh.exe`)
+- **Windows PowerShell 5.1 (powershell.exe) kullanilmayacak**
+- Tum `exec` komutlari PS7 ile calistirilir
 
 ## Ortam
 
 - OS: Windows
-- Shell: PowerShell
+- Shell: PowerShell 7 (pwsh.exe — tercih edilen shell)
 - Python: 3.14.0
-- LLM: DeepSeek (deepseek-chat → deepseek-v4-flash)
-- retry: 3 deneme, üstel backoff
+- LLM: DeepSeek (deepseek-chat -> deepseek-v4-flash)
+- retry: 3 deneme, ustel backoff
 - timeout: 600sn (batch), 300sn (pipeline)
-- streaming: requests kütüphanesi
+- streaming: requests kutuphanesi
+- PDF: pandoc 3.9 + xelatex (MiKTeX Portable)
 
 ## Anahtar Dosyalar
 
-- `SESSION.md` — oturum takibi (**önce bunu oku**)
-- `KULLANIM_KILAVUZU.md` — tüm CLI komutları + batch_v2.py
-- `FAULT.md` — hata listesi + P1-P12 iyileştirmeleri
-- `MASTER_PLAN.md` — faz planı
-- `TODO.md` — ürün hedefleri
-- `src/bookmaker/generation/postprocess.py` — son düzeltmeler
-- `tools/batch_v2.py` — optimize edilmiş batch üretim (P1-P12)
+- `SESSION.md` — oturum takibi (**once bunu oku**)
+- `KULLANIM_KILAVUZU.md` — tum CLI komutlari + batch_v2.py
+- `FAULT.md` — hata listesi + P1-P12 iyilestirmeleri
+- `MASTER_PLAN.md` — faz plani
+- `TODO.md` — urun hedefleri
+- `src/bookmaker/generation/postprocess.py` — son duzeltmeler
+- `tools/batch_v2.py` — optimize edilmis batch uretim (P1-P12)
+- `tools/book_pdf_v3.py` — PDF uretimi (pandoc + xelatex)
 
-## Komut Kullanımı
+## Komut Kullanimi
 
 ```powershell
-# Batch üretim (önerilen)
-python tools/batch_v2.py --batch 3           # combined prompt (varsayılan)
-python tools/batch_v2.py --two-step --batch 3 # iki aşamalı
+# PDF uretimi (yeni)
+.\book pdf
+# veya
+python tools/book_pdf_v3.py
 
-# CLI ile tek bölüm
-python -m bookmaker generate chapter bolum-17 --title "..."
+# Batch uretim (on
+python tools/batch_v2.py --batch 3
+python tools/batch_v2.py --two-step --batch 3
+
+# Kitap birlestir
+python tools/book_build.py --format both
 
 # Test
 python -m pytest tests/ -q -m "not slow"

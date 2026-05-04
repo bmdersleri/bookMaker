@@ -5,12 +5,46 @@ Bu dosya mevcut Windows/PowerShell calisma ortaminda kullanilabilecek araclari, 
 ## Sistem
 
 ```text
-Calisma dizini: D:\bookMaker
+Calisma dizini: D:\bookMaker_Deepseek
 Isletim sistemi: Windows
-Shell: PowerShell 7.x
+Shell: PowerShell 7 (ZORUNLU)
 PowerShell surumu: 7.6.1
+PS7 Yolu: C:\Program Files\PowerShell\7\pwsh.exe
+PS5.1: Kullanilmayacak
 Timezone: Europe/Istanbul
 ```
+
+## ⚠️ ZORUNLU: PowerShell 7 Kullanimi
+
+**Tum komutlar PowerShell 7 (pwsh.exe) ile calistirilmalidir.** Windows PowerShell 5.1 (powershell.exe) kullanilmayacaktir.
+
+### Kullanim
+
+```powershell
+# DOGRU — PS7 ile:
+& "C:\Program Files\PowerShell\7\pwsh.exe" -NoProfile -Command "<komut>"
+
+# YANLIS — PS5.1:
+# powershell.exe -Command "<komut>"   ← KULLANMA
+```
+
+### PS7 Profil Alias'lari (`$PROFILE`)
+
+PS7 profilinde tanimli alias'lar (otomatik yuklenir):
+
+| Alias | Komut | Aciklama |
+|-------|-------|----------|
+| `cdgo` | `cd D:\bookMaker_Deepseek` | Proje kokune git |
+| `book` | `.\book.ps1` | Kitap komutlari |
+| `book-env` | Ortam bilgisi | Python yolunu gosterir |
+
+Profil konumu: `$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+
+### Notlar
+
+- `exec` tool'u her cagrildiginda PS7 ile calistirilmalidir
+- `cdgo` alias'i PS7 profilinde tanimlidir, `-NoProfile` ile kullanilamaz
+- Uzun sureli komutlarda `background: true` kullanilmalidir
 
 ## Repo
 

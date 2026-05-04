@@ -1,19 +1,19 @@
 flowchart TD
-    A[Import Seçenekleri] --> B[Tam Nitelikli İsim]
-    A --> C[Tek Sınıf Import]
-    A --> D[Wildcard Import]
-    A --> E[Static Import]
+    A["Import Seçenekleri"] --> B["Tam Nitelikli İsim"]
+    A --> C["Tek Sınıf Import"]
+    A --> D["Wildcard Import"]
+    A --> E["Static Import"]
     
-    B --> B1[java.util.Date bugun = new java.util.Date()]
-    C --> C1[import java.util.ArrayList;]
-    D --> D1[import java.util.*;]
-    E --> E1[import static java.lang.Math.PI;]
+    B --> B1["java.util.Date bugun = new java.util.Date()"]
+    C --> C1["import java.util.ArrayList;"]
+    D --> D1["import java.util.*;"]
+    E --> E1["import static java.lang.Math.PI;"]
     
-    B1 --> F[Avantaj: Çakışma Yok]
-    B1 --> G[Dezavantaj: Uzun Kod]
+    B1 --> F["Avantaj: Çakışma Yok"]
+    B1 --> G["Dezavantaj: Uzun Kod"]
     
-    C1 --> H[Avantaj: Net ve Belirgin]
-    C1 --> I[Dezavantaj: Çok Sayıda Import]
+    C1 --> H["Avantaj: Net ve Belirgin"]
+    C1 --> I["Dezavantaj: Çok Sayıda Import"]
     
-    D1 --> J[Avantaj: Kısa Kod]
-    D1 --> K[Dezavantaj: İsim Çakışması Riski]
+    D1 --> J["Avantaj: Kısa Kod"]
+    D1 --> K["Dezavantaj: İsim Çakışması Riski"]

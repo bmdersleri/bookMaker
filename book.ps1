@@ -81,6 +81,15 @@ switch ($Command.ToLower()) {
         & $PY tools/book_build.py --format $format
     }
 
+    "pdf" {
+        if (-not (Test-Path $PY)) {
+            Write-Error "Python venv bulunamadi: $PY"
+            exit 1
+        }
+        Write-Step "PDF uretiliyor (pandoc + xelatex)..."
+        & $PY tools/book_pdf_v3.py
+    }
+
     "status" {
         Write-Step "Git durumu"
         git -C $ROOT status --short
@@ -225,6 +234,7 @@ KOMUTLAR:
   lint                   Ruff lint kontrolu
   fmt                    Ruff format
   check                  Kitap butunluk kontrolu (tum bolumler)
+  pdf                    PDF ciktisi (pandoc + xelatex, 54 Mermaid PNG)
   log [N]                Git log (son N commit, varsayilan: 10)
 
   help                   Bu mesaj
@@ -239,6 +249,6 @@ HEDEFLER:
 
     default {
         Write-Error "Bilinmeyen komut: $Command"
-        Write-Host "Kullanilabilir: batch, build, status, push, test, lint, fmt, check, log, help"
+        Write-Host "Kullanilabilir: batch, build, pdf, status, push, test, lint, fmt, check, log, help"
     }
 }

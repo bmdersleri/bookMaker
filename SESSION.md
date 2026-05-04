@@ -8,10 +8,12 @@ Detaylı bağlam: `RESUME.md` | Optimizasyonlar: `FAULT.md` | Hedefler: `TODO.md
 ## SU AN
 
 ```
-Aktif Faz   : Production (DOCX Çıktısı Tamam)
-Son Adım    : P13 Token Optimizasyonu + Mermaid PNG + DOCX TOC
-Branch      : deepseek
-PowerShell  : 7.6.1 (C:\Program Files\PowerShell\7\pwsh.exe)
+Aktif Faz      : Production (DOCX + PDF Çıktıları Tamam)
+Son Adım       : PDF Çıktısı (pandoc + xelatex, 54 Mermaid PNG, 339 sayfa)
+Branch         : deepseek
+PowerShell     : 7.6.1 (ZORUNLU — pwsh.exe)
+PS7 Yolu       : C:\Program Files\PowerShell\7\pwsh.exe
+PS5.1          : KULLANILMAYACAK
 ```
 
 ---
@@ -31,66 +33,110 @@ PowerShell  : 7.6.1 (C:\Program Files\PowerShell\7\pwsh.exe)
 **Toplam: 23 bölüm + 4 ek = 27 dosya, ~585 KB**
 
 ### P13 Token Optimizasyonu ✅
-- Prompt %49 küçüldü (SYSTEM_COMBINED: 242→96 tok)
-- Dinamik max_tokens: küçük→8192, orta→10240, büyük→12288
-- Doğrulandı: Ek C'de %94 daha fazla içerik, %13.5 hızlı üretim
 
-### Production Çıktılar ✅
-- 58 Mermaid diyagramı → 54 PNG (~971 KB)
-- Pandoc DOCX: 1.2 MB (TOC + gömülü PNG + tüm bölümler)
-- Araçlar: `tools/book_production.py`, `tools/book_build.py`, `tools/prompt_test.py`
+| Prompt | Önce | Sonra | Kazanç |
+|--------|------|-------|--------|
+| SYSTEM_COMBINED | 242 tok | 96 tok | **%60** |
+| SYSTEM_CHAPTER | 164 tok | 73 tok | **%55** |
+
+- Dinamik max_tokens: kucuk→8192, orta→10240, buyuk→12288
+- **Doğrulandı:** Ek C optimize prompt ile %94 daha fazla icerik, %13.5 hizli
+
+### Production Ciktilar ✅
+
+| Dosya | Boyut | Icerik |
+|-------|-------|--------|
+| `build/output/java-programlamaya-giris.docx` | **1.2 MB** | Tum kitap + TOC + 54 PNG |
+| `build/output/java-programlamaya-giris.md` | **585 KB** | Birlestirilmis Markdown |
+| `build/output/images/*.png` | **~971 KB** | 54 Mermaid diyagrami |
+| `build/output/java-programlamaya-giris.pdf` | **1.8 MB** | 339 sayfa, TOC + 54 PNG |
+
+### PDF Çıktısı — YENİ ✅
+
+- **Araç:** pandoc 3.9 + xelatex (MiKTeX Portable)
+- **Ön işleme:** Placeholder temizleme (5 adet), Mermaid blokları → PNG (54/58)
+- **Sayfa sayısı:** 339 sayfa (Letter, 11pt, Arial)
+- **İçindekiler:** Var (--toc, depth 2)
+- **Görseller:** 54 Mermaid PNG gömülü
+- **Komut:** `.\book pdf` veya `python tools/book_pdf_v3.py`
 
 ### Ortam ✅
-- PowerShell 7.6.1 kurulu (C:\Program Files\PowerShell\7\pwsh.exe)
-- PS7 profili: cdgo, book, book-env alias'ları aktif
-- book.ps1: tek script ile tüm işlemler
-- justfile: uv tabanlı hızlı komutlar
+
+- ⚠️ PowerShell 7.6.1 **ZORUNLU** (`C:\Program Files\PowerShell\7\pwsh.exe`)
+- Windows PowerShell 5.1 (powershell.exe) kullanilmayacak
+- PS7 profili: `cdgo`, `book`, `book-env` alias'lari aktif
+- `book.ps1`: tek script ile tum islemler (+ pdf komutu eklendi)
+- `justfile`: uv tabanli hizli komutlar
+
+### Cozulen Hatalar
+
+| ID | Sorun | Cozum | Tarih |
+|----|-------|-------|-------|
+| F-007 | 4/58 Mermaid parse hatasi | `.mmd` dosyalari duzeltildi + 58/58 PNG render | 2026-05-04 |
+| F-008 | Bolum uzunlugu dengesiz | Incelendi, mevcut hali kabul edildi | 2026-05-04 |
 
 ---
 
-## RESTART REHBERİ
+## RESTART REHBERI
 
-Bilgisayarı açınca:
+Bilgisayari acinca:
 
-### Adım 1: PS7 Terminali Aç
+### Adim 1: PS7 Terminali Ac (ZORUNLU)
 ```
-Win + R → pwsh → Enter
+Win + R -> pwsh -> Enter
 ```
-Profil otomatik yüklenir (cdgo, book, book-env alias'ları)
+> ⚠️ **powershell.exe (PS5.1) kullanma!** Tum komutlar `pwsh.exe` ile calisir.
 
-### Adım 2: Projeye Git
+### Adim 2: Projeye Git
 ```powershell
-cdgo               # D:\bookMaker_Deepseek'e atla
+cdgo     # alias -> D:\bookMaker_Deepseek
 ```
 
-### Adım 3: Durumu Kontrol Et
+### Adim 3: Durumu Kontrol Et
 ```powershell
 .\book status      # git durumu
-.\book check       # kitap bütünlüğü (27 bölüm)
+.\book check       # 27 bolum kontrolu
 .\book log -5      # son 5 commit
 ```
 
-### Adım 4: Sıradaki Görevler
-- [ ] `.\book build` — MD + DOCX yeniden üret (istersen)
-- [ ] `.\book production` — Mermaid PNG + TOC'lu DOCX (istersen)
-- [ ] F-007: Mermaid diyagramları doğrula (4 parse hatası var)
-- [ ] F-008: Bölüm uzunluğu tutarlılığı
-- [ ] PDF çıktısı (pandoc ile)
+### Hizli Komutlar
 
-### Hızlı Komutlar
 | Komut | Ne Yapar |
 |-------|----------|
-| `.\book help` | Tüm komut listesi |
+| `.\book help` | Tum komut listesi |
 | `.\book status` | Git durumu |
-| `.\book check` | 27 bölüm kontrolü |
+| `.\book check` | 27 bolum kontrolu |
 | `.\book log 5` | Son 5 commit |
 | `.\book push "mesaj"` | Stage + commit + push |
 | `.\book build` | MD + DOCX (book_build.py) |
-| `.\book production` | Mermaid PNG + TOC'lu DOCX |
+| `.\book pdf` | PDF uret (pandoc + xelatex, yeni) |
+| `.\book production` | Mermaid PNG + TOC'lu DOCX (book_production.py) |
+
+### Sıradaki Gorevler
+- [x] F-007: 4 Mermaid parse hatasini duzelt ✅
+- [ ] F-008: Bolum uzunlugu tutarliligi
+- [ ] GitHub push (deepseek branch)
 
 ---
 
-## ENGELLEYİCİ KARARLAR
+## GIT HISTORY
 
-Yok. Tüm batch'ler tamam, DOCX çıktısı hazır.
-4 Mermaid parse hatası var (LLM kaynaklı sözdizim hatası) — düşük öncelik.
+```
+7d2172f docs: SESSION restart hazirligi + P13/production ozeti
+82d3cc6 chore: mermaid PNG goruntuleri (54 adet, 971 KB)
+232d401 feat: book production pipeline (mermaid->PNG, pandoc DOCX w/ TOC)
+b7bb0d6 docs: Ek C P13 test sonuclari guncellendi + estimate guncel
+4ed0d02 feat: P13 dogrulama - Ek C yeniden uretildi
+12ff75e feat: P13 token optimizasyonu + prompt kompresyonu
+e9deb2e feat: dev experience improvements - book.ps1 + justfile + profile
+4b14492 feat: book build tool + merged output (MD + DOCX)
+0699e95 feat: batch 3-4 chapters generated (B17-B23 + Ek A-D)
+6c668c0 feat: batch 1-2 chapters generated (B7-B16) + process optimization
+```
+
+---
+
+## ENGELLEYICI KARARLAR
+
+Yok. Tum batch'ler tamam, DOCX + PDF ciktisi hazir (1.8 MB, 339 sayfa).
+Geriye kalan: Mermaid parse hatalari (F-007) ve bolum dengesi (F-008) — dusuk oncelik.

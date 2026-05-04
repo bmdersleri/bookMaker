@@ -64,6 +64,10 @@ log n=10:
 check-book:
     uv run python tools/book_build.py --format md 2>&1 | findstr "chars"
 
+# PDF çıktısı (pandoc + xelatex, 54 Mermaid PNG)
+pdf:
+    uv run python tools/book_pdf_v3.py
+
 # Tüm dosyaları stage'le
 stage:
     git add -A

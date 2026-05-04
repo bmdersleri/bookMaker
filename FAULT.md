@@ -78,42 +78,66 @@
 
 ---
 
+## Çözülen Hatalar (devam)
+
+### F-007: ✅ 4/58 Mermaid Parse Hatası (ÇÖZÜLDÜ)
+
+| Alan | Değer |
+|---|---|
+| **Öncelik** | 🟡 Orta |
+| **Çözüm tarihi** | 2026-05-04 |
+| **Etkilenen bloklar** | mermaid-008 (B13), mermaid-021 (B16), mermaid-026 (B17), mermaid-031 (B18) |
+
+**Sorun:** 4 Mermaid bloğu mmdc ile render edilemedi. `.mmd` dosyaları oluştu ama `.png` üretilemedi.
+
+| Blok | Bölüm | Hata | Düzeltme |
+|------|-------|------|----------|
+| #008 | B13 | `java.util.Date()` → parantez Mermaid'de özel anlamlı | `["java.util.Date()"]` ile quote'landı |
+| #021 | B16 | `exists()`, `createNewFile()` vb. → parantez özel anlamlı | `["exists() metodu"]` ile quote'landı |
+| #026 | B17 | `<br/>` HTML etiketleri Mermaid'de desteklenmiyor | `<br/>` kaldırıldı, düz metin kullanıldı |
+| #031 | B18 | `"Ting"` çift tırnak Mermaid'de ayrıştırma sorunu | Tek tırnak `'Ting'` kullanıldı |
+
+**Çözüm (3 aşamalı):**
+1. `.mmd` dosyaları manuel düzeltildi → geçerli Mermaid sözdizimi
+2. Tüm 4 blok `mmdc` ile yeniden render edildi → 58/58 PNG başarılı
+3. Kaynak bölüm dosyaları (`draft_versions/v001.md`) kalıcı olarak düzeltildi (B13, B16, B17, B18)
+
+**Sonuç:** 58/58 Mermaid diyagramı başarıyla render edildi. Toplam PNG boyutu: ~1,060 KB.
+
 ## Açık Hatalar
 
-### F-007: Görsel/Mermaid Referansı Yok
+### F-008: ✅ Bölüm Uzunluğu — İncelendi, Müdahale Gerekmez (KAPANDI)
 
 | Alan | Değer |
 |---|---|
-| **Öncelik** | 🟡 Orta |
-| **Dosya** | `src/bookmaker/generation/prompts.py` |
+| **Öncelik** | 🟢 Düşük |
+| **Karar tarihi** | 2026-05-04 |
+| **Karar** | Mevcut haliyle kabul edildi — müdahale gerekmez |
 
-**Belirti:** LLM üretiminde hiçbir görsel veya Mermaid diyagramı referansı yok. Mevcut kitapta 502 görsel var.
+**Tüm Bölüm Ölçümü (2026-05-04):**
 
-**Geçici:** Sistem prompt'a Mermaid talimatı eklendi ("Her ana bölüm için 1-2 Mermaid diyagramı ekle"). Henüz doğrulanmadı.
+```
+Batch 0 (B1-B6):  10,707 — 12,974c  (3.1 — 3.7 sayfa)  🔵 KISA
+Batch 1 (B7-B11): 15,298 — 28,924c  (4.4 — 8.3 sayfa)  🟡 ORTA
+Batch 2 (B12-B16):21,348 — 27,067c  (6.1 — 7.7 sayfa)  🟡 ORTA
+Batch 3 (B17-B21):19,154 — 47,245c  (5.5 — 13.5 sayfa) 🔴 DENGESIZ
+Batch 4 (B22-EkD):18,661 — 30,358c  (5.3 — 8.7 sayfa)  🟡 ORTA
+```
 
-### F-008: Bölüm Uzunluğu Dengesiz
+| İstatistik | Değer |
+|------------|-------|
+| Ortalama | 21,635 karakter |
+| En kısa | B3 (10,707c → ~3.1 sayfa) |
+| En uzun | B21 (47,245c → ~13.5 sayfa) |
+| Fark oranı | 4.4x |
+| Std sapma | 8,101 |
 
-| Alan | Değer |
-|---|---|
-| **Öncelik** | 🟡 Orta |
-| **Dosya** | `src/bookmaker/generation/prompts.py` |
+**Değerlendirme:**
+- B1-B6 (Batch 0): Tutarlı ama kısa (~3 sayfa). LLM prompt'ta `max_tokens=8192` sınırından kaynaklanıyor.
+- B21 (47K, ~13.5 sayfa): Polimorfizm/Arayüz konusu doğal olarak kapsamlı. Aşırı değil.
+- Bölüm uzunluğu içerik yoğunluğuyla doğru orantılı — konu derinliği farklı.
 
-**Ölçüm (B7-B16):**
-
-| Bölüm | Karakter | Referans | Fark |
-|---|---|---|---|
-| B7 | 26,108 | ~15,000 | +74% |
-| B8 | 15,792 | ~15,000 | +5% |
-| B9 | 22,590 | ~15,000 | +51% |
-| B10 | 23,338 | ~15,000 | +56% |
-| B11 | 30,640 | ~15,000 | +104% |
-| B12 | 27,482 | ~15,000 | +83% |
-| B13 | 28,458 | ~15,000 | +90% |
-| B14 | 23,071 | ~15,000 | +54% |
-| B15 | 28,907 | ~15,000 | +93% |
-| B16 | 17,761 | ~15,000 | +18% |
-
-**Not:** Bölümler referans kitaptan daha uzun — bu bir hata değil, ancak tutarlılık için gözlemlenmeli.
+**Karar:** Mevcut dağılım kabul edilebilir. Anlamlı bir alt/üst sınır yok; her bölüm kendi konusunun gerektirdiği uzunlukta. Gelecek batch'lerde prompt'a hedef karakter aralığı eklenebilir (opsiyonel).
 
 ---
 
