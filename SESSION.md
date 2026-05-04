@@ -46,18 +46,19 @@ PS5.1          : KULLANILMAYACAK
 
 | Dosya | Boyut | Icerik |
 |-------|-------|--------|
-| `build/output/java-programlamaya-giris.docx` | **1.2 MB** | Tum kitap + TOC + 54 PNG |
+| `build/output/java-programlamaya-giris.docx` | **210 KB** | Tum kitap + TOC (gor sellers ayri) |
 | `build/output/java-programlamaya-giris.md` | **585 KB** | Birlestirilmis Markdown |
-| `build/output/images/*.png` | **~971 KB** | 54 Mermaid diyagrami |
-| `build/output/java-programlamaya-giris.pdf` | **1.8 MB** | 339 sayfa, TOC + 54 PNG |
+| `build/output/images/*.png` | **~1,060 KB** | 58 Mermaid diyagrami (58/58 tamam) |
+| `build/output/java-programlamaya-giris.pdf` | **1.9 MB** | 347 sayfa, TOC + 57/57 PNG |
 
-### PDF Çıktısı — YENİ ✅
+### PDF Çıktısı — GÜNCELLENDİ ✅
 
 - **Araç:** pandoc 3.9 + xelatex (MiKTeX Portable)
-- **Ön işleme:** Placeholder temizleme (5 adet), Mermaid blokları → PNG (54/58)
-- **Sayfa sayısı:** 339 sayfa (Letter, 11pt, Arial)
+- **Ön işleme:** Placeholder temizleme (5 adet), Mermaid blokları → PNG (57/57)
+- **Sayfa sayısı:** 347 sayfa (Letter, 11pt, Arial)
 - **İçindekiler:** Var (--toc, depth 2)
-- **Görseller:** 54 Mermaid PNG gömülü
+- **Görseller:** 57 Mermaid PNG gömülü (58/58 PNG üretildi, 57'si MD'e referanslandı)
+- **Boyut:** 1.9 MB (1,967,015 bytes)
 - **Komut:** `.\book pdf` veya `python tools/book_pdf_v3.py`
 
 ### Ortam ✅
@@ -112,10 +113,16 @@ cdgo     # alias -> D:\bookMaker_Deepseek
 | `.\book pdf` | PDF uret (pandoc + xelatex, yeni) |
 | `.\book production` | Mermaid PNG + TOC'lu DOCX (book_production.py) |
 
-### Sıradaki Gorevler
-- [x] F-007: 4 Mermaid parse hatasini duzelt ✅
-- [ ] F-008: Bolum uzunlugu tutarliligi
-- [ ] GitHub push (deepseek branch)
+### TAMAMLANANLAR (Bu Oturum)
+- [x] F-007: 4/58 Mermaid parse hatasi duzeltildi ✅
+- [x] F-008: Bolum uzunlugu incelendi, kabul edildi ✅
+- [x] PS7 zorunlu yapilandirma ✅
+- [x] GitHub push (deepseek branch) ✅
+
+### Siradaki Gorevler
+- [ ] DOCX'e PNG gomme (production pipeline extractor hatasi)
+- [ ] PDF sayfa sayisi dogrulama
+- [ ] Kitap duzeyinde validasyon (`bookmaker check book`)
 
 ---
 
