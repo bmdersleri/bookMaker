@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Ismail Kirbas" />
   <meta name="dcterms.date" content="2026-01-01" />
-  <title>Java Modul Sistemi</title>
+  <title>22. Java Modul Sistemi</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,13 +96,14 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Java Modul Sistemi</h1>
+<h1 class="title">22. Java Modul Sistemi</h1>
 <p class="subtitle">Java’nin Temelleri</p>
 <p class="author">Ismail Kirbas</p>
 <p class="date">2026</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#java-modul-sistemi" id="toc-java-modul-sistemi">22. Java Modul Sistemi</a></li>
 <li><a href="#bölüm-22-jdbc-ile-veritabani-programlamaya-giris" id="toc-bölüm-22-jdbc-ile-veritabani-programlamaya-giris">Bölüm 22: JDBC ile Veritabani Programlamaya Giris</a>
 <ul>
 <li><a href="#jdbc-nedir" id="toc-jdbc-nedir">22.1 JDBC Nedir?</a></li>
@@ -110,6 +111,7 @@
 <li><a href="#jdbc-temel-adımları" id="toc-jdbc-temel-adımları">22.3 JDBC Temel Adımları</a></li>
 <li><a href="#crud-işlemleri" id="toc-crud-işlemleri">22.4 CRUD İşlemleri</a></li>
 <li><a href="#preparedstatement-ve-sql-enjeksiyonu" id="toc-preparedstatement-ve-sql-enjeksiyonu">22.5 PreparedStatement ve SQL Enjeksiyonu</a></li>
+<li><a href="#mermaid-diyagram-46" id="toc-mermaid-diyagram-46"><img src="../assets/images/mermaid-046.png" alt="Mermaid Diyagram 46" /></a></li>
 <li><a href="#ileri-düzey-konular" id="toc-ileri-düzey-konular">22.6 İleri Düzey Konular</a></li>
 <li><a href="#özet" id="toc-özet">22.7 Özet</a></li>
 <li><a href="#terim-sözlüğü" id="toc-terim-sözlüğü">22.8 Terim Sözlüğü</a></li>
@@ -118,6 +120,9 @@
 </ul></li>
 </ul>
 </nav>
+<section id="java-modul-sistemi" class="level1">
+<h1>22. Java Modul Sistemi</h1>
+</section>
 <section id="bölüm-22-jdbc-ile-veritabani-programlamaya-giris" class="level1">
 <h1>Bölüm 22: JDBC ile Veritabani Programlamaya Giris</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;JDBC ile Veritabanı Programlamaya Giriş&quot;</span></span>
@@ -137,9 +142,8 @@
 <li><strong>JDBC API</strong>: Java uygulaması tarafından kullanılan soyut arayüzler ve sınıflar (<code>Connection</code>, <code>Statement</code>, <code>ResultSet</code>).</li>
 <li><strong>JDBC Sürücü Yöneticisi (DriverManager)</strong>: Uygun sürücüyü yükler ve veritabanına bağlantıyı yönetir.</li>
 </ul>
-</section>
-<section id="jdbc-sürücü-türleri" class="level3">
-<h3>1.2. JDBC Sürücü Türleri</h3>
+<p><img src="../assets/images/mermaid-044.png" alt="Mermaid Diyagram 44" />
+### 1.2. JDBC Sürücü Türleri</p>
 <p>JDBC dört tür sürücü destekler:</p>
 <table>
 <thead>
@@ -292,9 +296,8 @@
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-</section>
-<section id="kaynakları-kapatma" class="level3">
-<h3>3.4. Kaynakları Kapatma</h3>
+<p><img src="../assets/images/mermaid-045.png" alt="Mermaid Diyagram 45" />
+### 3.4. Kaynakları Kapatma</p>
 <p>Her zaman <code>Connection</code>, <code>Statement</code> ve <code>ResultSet</code> kaynaklarını kapatın. En iyi yöntem <code>try-with-resources</code> kullanmaktır.</p>
 <!-- CODE_META
 id: bolum-22_kod01
@@ -536,8 +539,10 @@ qr: dual
 <blockquote>
 <p>🔒 <strong>Güvenlik İpucu</strong>: Kullanıcı girdisi içeren tüm sorgularda <code>PreparedStatement</code> kullanın. Asla kullanıcı girdisini doğrudan SQL sorgusuna eklemeyin.</p>
 </blockquote>
-<hr />
 </section>
+</section>
+<section id="mermaid-diyagram-46" class="level2">
+<h2><img src="../assets/images/mermaid-046.png" alt="Mermaid Diyagram 46" /></h2>
 </section>
 <section id="ileri-düzey-konular" class="level2">
 <h2>22.6 İleri Düzey Konular</h2>

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Teknik Kitap Yazarı ve Pedagojik İçerik Uzmanı" />
   <meta name="dcterms.date" content="2024-01-01" />
-  <title>Collections Framework</title>
+  <title>15. Collections Framework</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,13 +96,14 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Collections Framework</h1>
+<h1 class="title">15. Collections Framework</h1>
 <p class="subtitle">try-catch-finally, Checked/Unchecked Exception, Custom Exception ve İleri Düzey Stratejiler</p>
 <p class="author">Teknik Kitap Yazarı ve Pedagojik İçerik Uzmanı</p>
 <p class="date">2024-01-01</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#collections-framework" id="toc-collections-framework">15. Collections Framework</a></li>
 <li><a href="#bölüm-15-hata-yonetimi-ve-dayanikli-programlama" id="toc-bölüm-15-hata-yonetimi-ve-dayanikli-programlama">Bölüm 15: Hata Yonetimi ve Dayanikli Programlama</a>
 <ul>
 <li><a href="#hata-yönetiminin-temel-kavramları-ve-önemi" id="toc-hata-yönetiminin-temel-kavramları-ve-önemi">15.1 Hata Yönetiminin Temel Kavramları ve Önemi</a></li>
@@ -113,6 +114,9 @@
 </ul></li>
 </ul>
 </nav>
+<section id="collections-framework" class="level1">
+<h1>15. Collections Framework</h1>
+</section>
 <section id="bölüm-15-hata-yonetimi-ve-dayanikli-programlama" class="level1">
 <h1>Bölüm 15: Hata Yonetimi ve Dayanikli Programlama</h1>
 <section id="hata-yönetiminin-temel-kavramları-ve-önemi" class="level2">
@@ -123,7 +127,8 @@
 <p><strong>Derleme Zamanı Hataları (Compile-time Errors):</strong> Kod yazarken Java derleyicisi tarafından tespit edilen hatalardır. Sözdizimi hataları, tip uyuşmazlıkları veya eksik import ifadeleri bu kategoriye girer. Bu hatalar program çalıştırılmadan önce düzeltilmelidir.</p>
 <p><strong>Çalışma Zamanı Hataları (Runtime Errors):</strong> Program çalışırken ortaya çıkan beklenmedik durumlardır. Bu hatalar genellikle dış etkenlerden (kullanıcı girdisi, dosya erişimi, ağ sorunları) kaynaklanır. Java’da bu tür hatalar <strong>istisna</strong> olarak adlandırılır.</p>
 <p>Java’nın istisna hiyerarşisi şu şekilde yapılandırılmıştır:</p>
-<p><strong>Error sınıfı:</strong> JVM (Java Virtual Machine) ile ilgili ciddi sorunları temsil eder. Örneğin, <code>OutOfMemoryError</code>, <code>StackOverflowError</code> gibi durumlar. Bu hatalar genellikle program tarafından yakalanamaz ve yönetilemez.</p>
+<p><img src="../assets/images/mermaid-016.png" alt="Mermaid Diyagram 16" />
+<strong>Error sınıfı:</strong> JVM (Java Virtual Machine) ile ilgili ciddi sorunları temsil eder. Örneğin, <code>OutOfMemoryError</code>, <code>StackOverflowError</code> gibi durumlar. Bu hatalar genellikle program tarafından yakalanamaz ve yönetilemez.</p>
 <p><strong>Exception sınıfı:</strong> Program tarafından yakalanıp yönetilebilen istisnai durumları temsil eder. İki alt kategoriye ayrılır:
 - <strong>Checked Exception:</strong> Derleme zamanında kontrol edilen istisnalar (IOException, SQLException)
 - <strong>Unchecked Exception:</strong> Çalışma zamanında ortaya çıkan istisnalar (RuntimeException alt sınıfları)</p>
@@ -207,9 +212,8 @@
 <p><strong>try bloğu:</strong> İstisna oluşma ihtimali olan kodların yazıldığı bloktur. Bu blok içinde bir istisna oluşursa, kontrol hemen uygun <code>catch</code> bloğuna geçer.</p>
 <p><strong>catch bloğu:</strong> Belirli bir istisna türünü yakalamak ve işlemek için kullanılır. Birden fazla <code>catch</code> bloğu tanımlanabilir.</p>
 <p><strong>finally bloğu:</strong> İstisna oluşsa da oluşmasa da her durumda çalıştırılması gereken kodlar için kullanılır. Genellikle kaynak temizleme işlemleri için tercih edilir.</p>
-</section>
-<section id="çoklu-catch-blokları-ve-finally-kullanımı" class="level3">
-<h3>Çoklu catch Blokları ve finally Kullanımı</h3>
+<p><img src="../assets/images/mermaid-017.png" alt="Mermaid Diyagram 17" />
+### Çoklu catch Blokları ve finally Kullanımı</p>
 <p>Aşağıdaki örnek, bir dosyayı okurken karşılaşılabilecek farklı istisna türlerini nasıl yönetebileceğinizi göstermektedir:</p>
 <!-- CODE_META: TryCatchOrnegi.java - try-catch-finally yapısı -->
 <div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.*;</span></span>
@@ -322,9 +326,8 @@
 - Derleme hatasına neden olmaz.
 - Genellikle programlama hatalarından kaynaklanır (null kontrolü, dizi sınırları).
 - Programcı isterse yakalayabilir, ancak zorunlu değildir.</p>
-</section>
-<section id="her-iki-türün-karşılaştırılması" class="level3">
-<h3>Her İki Türün Karşılaştırılması</h3>
+<p><img src="../assets/images/mermaid-018.png" alt="Mermaid Diyagram 18" />
+### Her İki Türün Karşılaştırılması</p>
 <p>Aşağıdaki örnek, checked ve unchecked exception arasındaki farkı göstermektedir:</p>
 <!-- CODE_META: ExceptionTurleri.java - Checked ve Unchecked exception karşılaştırması -->
 <div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.*;</span></span>
@@ -484,9 +487,8 @@
 <li><strong>Yapıcı metotlar:</strong> En azından <code>String message</code> parametreli bir yapıcı metot</li>
 <li><strong>Ek bilgi:</strong> İstisna ile ilgili ek bilgiler taşıyabilir (hatalı değer, hata kodu vb.)</li>
 </ol>
-</section>
-<section id="örnek-kullanıcı-doğrulama-için-özel-istisna" class="level3">
-<h3>Örnek: Kullanıcı Doğrulama için Özel İstisna</h3>
+<p><img src="../assets/images/mermaid-019.png" alt="Mermaid Diyagram 19" />
+### Örnek: Kullanıcı Doğrulama için Özel İstisna</p>
 <p>Aşağıdaki örnek, geçersiz yaş değerleri için özel bir istisna sınıfı oluşturmayı göstermektedir:</p>
 <!-- CODE_META: CustomExceptionOrnegi.java - Özel istisna oluşturma -->
 <div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Özel istisna sınıfı - Checked exception</span></span>
@@ -749,9 +751,8 @@ qr: dual
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">Exception</span> e<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hiçbir şey yapma - istisna yutuldu!</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-</section>
-<section id="modern-java-özellikleri-ile-hata-yönetimi" class="level3">
-<h3>Modern Java Özellikleri ile Hata Yönetimi</h3>
+<p><img src="../assets/images/mermaid-020.png" alt="Mermaid Diyagram 20" />
+### Modern Java Özellikleri ile Hata Yönetimi</p>
 <p>Aşağıdaki örnek, tüm ileri düzey teknikleri bir arada göstermektedir:</p>
 <!-- CODE_META: IleriHataYonetimi.java - İleri düzey hata yönetimi -->
 <p>```java

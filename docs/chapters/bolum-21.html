@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Ismail Kirbas" />
   <meta name="dcterms.date" content="2026-01-01" />
-  <title>Veritabani Programlama</title>
+  <title>21. Veritabani Programlama</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,26 +96,31 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Veritabani Programlama</h1>
+<h1 class="title">21. Veritabani Programlama</h1>
 <p class="subtitle">Java’nin Temelleri</p>
 <p class="author">Ismail Kirbas</p>
 <p class="date">2026</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#veritabani-programlama" id="toc-veritabani-programlama">21. Veritabani Programlama</a>
+<ul>
 <li><a href="#defaultlistmodel-ile-dinamik-liste-yonetimi" id="toc-defaultlistmodel-ile-dinamik-liste-yonetimi">21.3 DefaultListModel ile Dinamik Liste Yonetimi</a></li>
 <li><a href="#listselectionlistener-ile-secim-olaylari" id="toc-listselectionlistener-ile-secim-olaylari">21.4 ListSelectionListener ile Secim Olaylari</a></li>
 <li><a href="#ozellestirilmis-hucre-renderer-listcellrenderer" id="toc-ozellestirilmis-hucre-renderer-listcellrenderer">21.5 Ozellestirilmis Hucre Renderer (ListCellRenderer)</a></li>
+<li><a href="#mermaid-diyagram-40" id="toc-mermaid-diyagram-40"><img src="../assets/images/mermaid-040.png" alt="Mermaid Diyagram 40" /></a></li>
 <li><a href="#jtable-ile-tablo-verisi-sunumu" id="toc-jtable-ile-tablo-verisi-sunumu">21.6 JTable ile Tablo Verisi Sunumu</a></li>
 <li><a href="#jtable-ve-tablemodel-mimarisi" id="toc-jtable-ve-tablemodel-mimarisi">21.7 JTable ve TableModel Mimarisi</a></li>
 <li><a href="#defaulttablemodel-ile-veri-manipulasyonu" id="toc-defaulttablemodel-ile-veri-manipulasyonu">21.8 DefaultTableModel ile Veri Manipulasyonu</a></li>
 <li><a href="#tablemodellistener-ile-veri-degisiklikleri" id="toc-tablemodellistener-ile-veri-degisiklikleri">21.9 TableModelListener ile Veri Degisiklikleri</a></li>
 <li><a href="#hucre-editor-ve-renderer-ozellestirme" id="toc-hucre-editor-ve-renderer-ozellestirme">21.10 Hucre Editor ve Renderer Ozellestirme</a></li>
+<li><a href="#mermaid-diyagram-41" id="toc-mermaid-diyagram-41"><img src="../assets/images/mermaid-041.png" alt="Mermaid Diyagram 41" /></a></li>
 <li><a href="#jmenubar-ile-menu-yapisi" id="toc-jmenubar-ile-menu-yapisi">21.11 JMenuBar ile Menu Yapisi</a></li>
 <li><a href="#jmenubar-jmenu-ve-jmenuitem-hiyerarsisi" id="toc-jmenubar-jmenu-ve-jmenuitem-hiyerarsisi">21.12 JMenuBar, JMenu ve JMenuItem Hiyerarsisi</a></li>
 <li><a href="#kisa-yol-tuslari-accelerator-ve-mnemonics" id="toc-kisa-yol-tuslari-accelerator-ve-mnemonics">21.13 Kisa Yol Tuslari (Accelerator) ve Mnemonics</a></li>
 <li><a href="#action-sinifi-ile-menu-eylemleri" id="toc-action-sinifi-ile-menu-eylemleri">21.14 Action Sinifi ile Menu Eylemleri</a></li>
 <li><a href="#popup-menu-jpopupmenu" id="toc-popup-menu-jpopupmenu">21.15 Popup Menu (JPopupMenu)</a></li>
+<li><a href="#mermaid-diyagram-42" id="toc-mermaid-diyagram-42"><img src="../assets/images/mermaid-042.png" alt="Mermaid Diyagram 42" /></a></li>
 <li><a href="#jdialog-ile-ozel-diyaloglar" id="toc-jdialog-ile-ozel-diyaloglar">21.16 JDialog ile Ozel Diyaloglar</a></li>
 <li><a href="#jdialog-temel-yapisi" id="toc-jdialog-temel-yapisi">21.17 JDialog Temel Yapisi</a></li>
 <li><a href="#dialogda-veri-toplama-ve-dogrulama" id="toc-dialogda-veri-toplama-ve-dogrulama">21.18 Dialog’da Veri Toplama ve Dogrulama</a></li>
@@ -124,6 +129,7 @@
 <li><a href="#showconfirmdialog-onay-diyaloglari" id="toc-showconfirmdialog-onay-diyaloglari">21.21 showConfirmDialog: Onay Diyaloglari</a></li>
 <li><a href="#showinputdialog-kullanicidan-veri-alma" id="toc-showinputdialog-kullanicidan-veri-alma">21.22 showInputDialog: Kullanicidan Veri Alma</a></li>
 <li><a href="#showoptiondialog-ozellestirilmis-secenekler" id="toc-showoptiondialog-ozellestirilmis-secenekler">21.23 showOptionDialog: Ozellestirilmis Secenekler</a></li>
+<li><a href="#mermaid-diyagram-43" id="toc-mermaid-diyagram-43"><img src="../assets/images/mermaid-043.png" alt="Mermaid Diyagram 43" /></a></li>
 <li><a href="#veri-goruntuleme-bilesenleri" id="toc-veri-goruntuleme-bilesenleri">21.24 Veri Goruntuleme Bilesenleri</a></li>
 <li><a href="#jtree-ile-agac-yapisi-gosterimi" id="toc-jtree-ile-agac-yapisi-gosterimi">21.25 JTree ile Agac Yapisi Gosterimi</a></li>
 <li><a href="#jtextpane-ile-zengin-metin-goruntuleme" id="toc-jtextpane-ile-zengin-metin-goruntuleme">21.26 JTextPane ile Zengin Metin Goruntuleme</a></li>
@@ -131,8 +137,11 @@
 <li><a href="#uygulama-tam-bir-veri-yonetim-araci" id="toc-uygulama-tam-bir-veri-yonetim-araci">21.28 Uygulama: Tam Bir Veri Yonetim Araci</a></li>
 <li><a href="#uygulama-gereksinimleri" id="toc-uygulama-gereksinimleri">21.29 Uygulama Gereksinimleri</a></li>
 <li><a href="#kod-yapisi-ve-sinif-diyagrami" id="toc-kod-yapisi-ve-sinif-diyagrami">21.30 Kod Yapisi ve Sinif Diyagrami</a></li>
+</ul></li>
 </ul>
 </nav>
+<section id="veritabani-programlama" class="level1">
+<h1>21. Veritabani Programlama</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Liste, Tablo, Menu ve Diyaloglarla GUI Veri Sunumu&quot;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Java Swing ile Veri Gosterim Bilesenleri&quot;</span></span>
@@ -389,7 +398,9 @@ qr: dual
 <span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
 <span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<hr />
+</section>
+<section id="mermaid-diyagram-40" class="level2">
+<h2><img src="../assets/images/mermaid-040.png" alt="Mermaid Diyagram 40" /></h2>
 </section>
 <section id="jtable-ile-tablo-verisi-sunumu" class="level2">
 <h2>21.6 JTable ile Tablo Verisi Sunumu</h2>
@@ -661,7 +672,9 @@ qr: dual
 <span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
 <span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<hr />
+</section>
+<section id="mermaid-diyagram-41" class="level2">
+<h2><img src="../assets/images/mermaid-041.png" alt="Mermaid Diyagram 41" /></h2>
 </section>
 <section id="jmenubar-ile-menu-yapisi" class="level2">
 <h2>21.11 JMenuBar ile Menu Yapisi</h2>
@@ -904,7 +917,9 @@ qr: dual
 <span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
 <span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<hr />
+</section>
+<section id="mermaid-diyagram-42" class="level2">
+<h2><img src="../assets/images/mermaid-042.png" alt="Mermaid Diyagram 42" /></h2>
 </section>
 <section id="jdialog-ile-ozel-diyaloglar" class="level2">
 <h2>21.16 JDialog ile Ozel Diyaloglar</h2>
@@ -1292,7 +1307,9 @@ qr: dual
 <span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
 <span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<hr />
+</section>
+<section id="mermaid-diyagram-43" class="level2">
+<h2><img src="../assets/images/mermaid-043.png" alt="Mermaid Diyagram 43" /></h2>
 </section>
 <section id="veri-goruntuleme-bilesenleri" class="level2">
 <h2>21.24 Veri Goruntuleme Bilesenleri</h2>
@@ -1606,6 +1623,7 @@ private void deletePerson() {
         int result = JOptionPane.showConfirmDialog(this,
             &quot;Bu kisiyi silmek istediginize emin misiniz?&quot;,
             &quot;Kisi Sil&quot;, JOption</code></pre>
+</section>
 </section>
 </body>
 </html>

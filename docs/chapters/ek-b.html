@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Ismail Kirbas" />
   <meta name="dcterms.date" content="2026-01-01" />
-  <title>Temel Linux Komutlari</title>
+  <title>Ek B: Temel Linux Komutlari</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,13 +96,14 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Temel Linux Komutlari</h1>
+<h1 class="title">Ek B: Temel Linux Komutlari</h1>
 <p class="subtitle">Java’nin Temelleri</p>
 <p class="author">Ismail Kirbas</p>
 <p class="date">2026</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#ek-b-temel-linux-komutlari" id="toc-ek-b-temel-linux-komutlari">Ek B: Temel Linux Komutlari</a></li>
 <li><a href="#ek-b-javafxe-kisa-bakis" id="toc-ek-b-javafxe-kisa-bakis">Ek B: JavaFX’e Kisa Bakis</a>
 <ul>
 <li><a href="#javafx-nedir" id="toc-javafx-nedir">25.1 JavaFX Nedir?</a></li>
@@ -117,6 +118,8 @@
 </ul></li>
 </ul>
 </nav>
+<section id="ek-b-temel-linux-komutlari" class="level1">
+<h1>Ek B: Temel Linux Komutlari</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;JavaFX&#39;e Kisa Bakis&quot;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Modern Java Masaustu Uygulama Gelistirme&quot;</span></span>
@@ -129,6 +132,7 @@
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  FXML ve Scene Builder ile gorsel arayuz tasariminin temellerini atacak, kontroller ve olay yonetimi </span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  konularina giris yapacaksiniz.</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+</section>
 <section id="ek-b-javafxe-kisa-bakis" class="level1">
 <h1>Ek B: JavaFX’e Kisa Bakis</h1>
 <p>JavaFX, Java platformu icin gelistirilmis modern bir masaustu uygulama kutuphanesidir. Swing’in yetersiz kaldigi noktalari gidermek ve daha zengin, daha esnek kullanici arayuzleri olusturmak amaciyla Oracle tarafindan gelistirilmistir. Bu bolumde JavaFX’in temel yapisini, FXML ve Scene Builder ile nasil calistigini ve Swing’den JavaFX’e nasil gecis yapabileceginizi ogreneceksiniz.</p>
@@ -214,7 +218,8 @@
 <section id="sahne-grafı-scene-graph" class="level3">
 <h3>Sahne Grafı (Scene Graph)</h3>
 <p>Sahne Grafı, JavaFX uygulamasindaki tum gorsel elemanlarin hiyerarsik bir agac yapisinda duzenlenmesidir. Bu agacin her bir dugumu bir <code>Node</code> sinifi tarafindan temsil edilir.</p>
-<p><strong>Temel Node Turleri:</strong></p>
+<p><img src="../assets/images/mermaid-052.png" alt="Mermaid Diyagram 52" />
+<strong>Temel Node Turleri:</strong></p>
 <ul>
 <li><strong>Parent</strong>: Cocuk dugumleri icerebilen dugumler (VBox, HBox, GridPane, AnchorPane vb.)</li>
 <li><strong>Control</strong>: Kullanici etkilesimi saglayan bilesenler (Button, Label, TextField vb.)</li>
@@ -261,9 +266,8 @@
 <li><strong>Stage</strong>: Bir pencereyi temsil eder. Uygulamanin ana penceresi <code>primaryStage</code> olarak adlandirilir.</li>
 <li><strong>Scene</strong>: Pencere icinde goruntulenecek icerigi temsil eder. Bir Stage birden fazla Scene icerebilir.</li>
 </ul>
-</section>
-<section id="pencerelerin-yasam-dongusu" class="level3">
-<h3>Pencerelerin Yasam Dongusu</h3>
+<p><img src="../assets/images/mermaid-053.png" alt="Mermaid Diyagram 53" />
+### Pencerelerin Yasam Dongusu</p>
 <p>JavaFX uygulamalarinin yasam dongusu belirli asamalardan olusur:</p>
 <ol type="1">
 <li><strong>init()</strong>: Uygulama baslatilmadan once cagrilir. Burada gerekli on hazirliklar yapilir.</li>
@@ -309,9 +313,8 @@
 <li>FXML dosyasi olusturma</li>
 <li>Controller sinifi ile baglanti kurma</li>
 </ul>
-</section>
-<section id="fxml-dosyasi-ile-java-kodu-arasindaki-iliski" class="level3">
-<h3>FXML Dosyasi ile Java Kodu Arasindaki Iliski</h3>
+<p><img src="../assets/images/mermaid-054.png" alt="Mermaid Diyagram 54" />
+### FXML Dosyasi ile Java Kodu Arasindaki Iliski</p>
 <p>FXML dosyasi, Java kodunda <code>FXMLLoader</code> sinifi kullanilarak yuklenir.</p>
 <!-- CODE_META: dosya="Main.java", dil="Java", aciklama="FXML dosyasini yukleme ornegi" -->
 <div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javafx</span><span class="op">.</span><span class="im">application</span><span class="op">.</span><span class="im">Application</span><span class="op">;</span></span>

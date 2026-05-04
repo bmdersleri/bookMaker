@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Ismail Kirbas" />
   <meta name="dcterms.date" content="2026-01-01" />
-  <title>Generics</title>
+  <title>14. Generics</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,12 +96,14 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Generics</h1>
+<h1 class="title">14. Generics</h1>
 <p class="subtitle">Java’nin Temelleri</p>
 <p class="author">Ismail Kirbas</p>
 <p class="date">2026</p>
 </header>
 <nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#generics" id="toc-generics">14. Generics</a>
 <ul>
 <li><a href="#arraylist-dinamik-dizi-yapısı" id="toc-arraylist-dinamik-dizi-yapısı">14.2 ArrayList: Dinamik Dizi Yapısı</a></li>
 <li><a href="#linkedlist-bağlı-liste-yapısı" id="toc-linkedlist-bağlı-liste-yapısı">14.3 LinkedList: Bağlı Liste Yapısı</a></li>
@@ -113,8 +115,11 @@
 <li><a href="#terim-sözlüğü" id="toc-terim-sözlüğü">14.9 Terim Sözlüğü</a></li>
 <li><a href="#sorular" id="toc-sorular">14.10 Sorular</a></li>
 <li><a href="#alıştırmalar" id="toc-alıştırmalar">14.11 Alıştırmalar</a></li>
+</ul></li>
 </ul>
 </nav>
+<section id="generics" class="level1">
+<h1>14. Generics</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Koleksiyonlar ve Dinamik Veri Yönetimi&quot;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Java&#39;da Veri Yapıları ve Algoritmalar&quot;</span></span>
@@ -178,6 +183,7 @@
 <section id="koleksiyon-türlerine-genel-bakış" class="level3">
 <h3>Koleksiyon Türlerine Genel Bakış</h3>
 <p>Java Collection Framework üç ana arayüz etrafında şekillenir:</p>
+<p><img src="../assets/images/mermaid-012.png" alt="Mermaid Diyagram 12" />
 <!-- CODE_META
 id: bolum-14_kod02
 chapter_id: bolum-14
@@ -189,7 +195,7 @@ extract: true
 test: compile
 github: true
 qr: dual
--->
+--></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CollectionTypesDemo <span class="op">{</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// List - Sıralı, tekrarlanabilir</span></span>
@@ -217,6 +223,7 @@ qr: dual
 <section id="arraylistin-çalışma-prensibi" class="level3">
 <h3>ArrayList’in Çalışma Prensibi</h3>
 <p>ArrayList’in iç yapısı bir Object[] dizisidir. Kapasite dolduğunda, yeni bir dizi oluşturulur ve elemanlar kopyalanır.</p>
+<p><img src="../assets/images/mermaid-013.png" alt="Mermaid Diyagram 13" />
 <!-- CODE_META
 id: bolum-14_kod03
 chapter_id: bolum-14
@@ -228,7 +235,7 @@ extract: true
 test: compile
 github: true
 qr: dual
--->
+--></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ArrayListExample <span class="op">{</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">ArrayList</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> ogrenciler <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
@@ -297,6 +304,7 @@ qr: dual
 <section id="linkedlistin-yapısı-ve-özellikleri" class="level3">
 <h3>LinkedList’in Yapısı ve Özellikleri</h3>
 <p>LinkedList, her elemanın bir önceki ve sonraki elemanı işaret ettiği node’lardan oluşur.</p>
+<p><img src="../assets/images/mermaid-014.png" alt="Mermaid Diyagram 14" />
 <!-- CODE_META
 id: bolum-14_kod05
 chapter_id: bolum-14
@@ -308,7 +316,7 @@ extract: true
 test: compile
 github: true
 qr: dual
--->
+--></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> LinkedListDemo <span class="op">{</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">LinkedList</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> kuyruk <span class="op">=</span> <span class="kw">new</span> <span class="bu">LinkedList</span><span class="op">&lt;&gt;();</span></span>
@@ -391,6 +399,7 @@ qr: dual
 <section id="hashmapin-çalışma-prensibi" class="level3">
 <h3>HashMap’in Çalışma Prensibi</h3>
 <p>HashMap, hash fonksiyonu kullanarak anahtarları bucket’lara dağıtır ve O(1) ortalama erişim süresi sağlar.</p>
+<p><img src="../assets/images/mermaid-015.png" alt="Mermaid Diyagram 15" />
 <!-- CODE_META
 id: bolum-14_kod07
 chapter_id: bolum-14
@@ -402,7 +411,7 @@ extract: true
 test: compile
 github: true
 qr: dual
--->
+--></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> HashMapExample <span class="op">{</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">HashMap</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">Integer</span><span class="op">&gt;</span> ogrenciNotlari <span class="op">=</span> <span class="kw">new</span> <span class="bu">HashMap</span><span class="op">&lt;&gt;();</span></span>
@@ -889,6 +898,7 @@ qr: dual
 <li><p><strong>Zor Seviye</strong>: Çoklu iş parçacığı kullanarak büyük bir veri kümesini işleyen ve thread-safe koleksiyonlar kullanan bir uygulama geliştirin.</p></li>
 <li><p><strong>Proje Seviyesi</strong>: Bir kütüphane yönetim sistemi geliştirin (kitap ekleme, silme, arama, ödünç verme işlemleri için uygun koleksiyonları kullanın).</p></li>
 </ol>
+</section>
 </section>
 </body>
 </html>

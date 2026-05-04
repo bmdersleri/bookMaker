@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Ismail Kirbas" />
   <meta name="dcterms.date" content="2026-01-01" />
-  <title>Hata Yonetimi</title>
+  <title>13. Hata Yonetimi</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,26 +96,30 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Hata Yonetimi</h1>
+<h1 class="title">13. Hata Yonetimi</h1>
 <p class="subtitle">Java’nin Temelleri</p>
 <p class="author">Ismail Kirbas</p>
 <p class="date">2026</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#hata-yonetimi" id="toc-hata-yonetimi">13. Hata Yonetimi</a></li>
 <li><a href="#bölüm-13-paketler-import-kullanimi-ve-proje-duzeni" id="toc-bölüm-13-paketler-import-kullanimi-ve-proje-duzeni">Bölüm 13: Paketler, import Kullanimi ve Proje Duzeni</a>
 <ul>
 <li><a href="#java-paket-sistemi-import-mekanizması-ve-modüler-proje-yapılandırması" id="toc-java-paket-sistemi-import-mekanizması-ve-modüler-proje-yapılandırması">13.1 Java Paket Sistemi, Import Mekanizması ve Modüler Proje Yapılandırması</a></li>
 </ul></li>
 </ul>
 </nav>
+<section id="hata-yonetimi" class="level1">
+<h1>13. Hata Yonetimi</h1>
+</section>
 <section id="bölüm-13-paketler-import-kullanimi-ve-proje-duzeni" class="level1">
 <h1>Bölüm 13: Paketler, import Kullanimi ve Proje Duzeni</h1>
 <section id="java-paket-sistemi-import-mekanizması-ve-modüler-proje-yapılandırması" class="level2">
 <h2>13.1 Java Paket Sistemi, Import Mekanizması ve Modüler Proje Yapılandırması</h2>
 <p>Bu bölümde, Java programlama dilinde sınıfların organize edilmesini sağlayan paket sistemini, sınıflar arası erişimi kolaylaştıran import mekanizmasını ve profesyonel projelerde kullanılan modüler yapılandırma tekniklerini öğreneceksiniz. Java’da büyük ölçekli projeler geliştirirken, kodun düzenli, bakımı kolay ve yeniden kullanılabilir olması için bu kavramları doğru anlamak kritik öneme sahiptir.</p>
-<section id="java-paket-sisteminin-temelleri-ve-adlandırma-kuralları" class="level3">
-<h3>Java Paket Sisteminin Temelleri ve Adlandırma Kuralları</h3>
+<p><img src="../assets/images/mermaid-006.png" alt="Mermaid Diyagram 6" />
+### Java Paket Sisteminin Temelleri ve Adlandırma Kuralları</p>
 <p><strong>Kavram</strong>: Paket, Java’da ilgili sınıfları, arayüzleri ve alt paketleri bir arada tutan bir organizasyon birimidir. Paketler sayesinde:</p>
 <ul>
 <li>İsim çakışmaları önlenir (farklı paketlerde aynı isimde sınıflar olabilir)</li>
@@ -241,12 +245,12 @@ qr: dual
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>com<span class="op">.</span><span class="fu">my_company</span><span class="op">.</span><span class="fu">app</span>       <span class="co">// GEÇERSİZ: Alt çizgi kullanılmış</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>COM<span class="op">.</span><span class="fu">Example</span><span class="op">.</span><span class="fu">Project</span>      <span class="co">// GEÇERSİZ: Büyük harf kullanılmış</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>org<span class="op">.</span><span class="fu">teknik</span><span class="op">.</span><span class="fu">egitim</span><span class="op">.</span><span class="fu">bolum1</span> <span class="co">// GEÇERLİ: Tümü küçük harf ve nokta ile ayrılmış</span></span></code></pre></div>
-</section>
 <section id="paket-bildirimi-ve-dizin-yapısı-ile-çalışma" class="level3">
 <h3>Paket Bildirimi ve Dizin Yapısı ile Çalışma</h3>
 <p><strong>Kavram</strong>: Java’da <code>package</code> anahtar kelimesi ile bir sınıfın hangi pakete ait olduğu bildirilir. Kritik bir kural vardır: <strong>Fiziksel dizin yapısı ile paket yapısı birebir eşleşmelidir</strong>.</p>
 <p>Örneğin, <code>com.egitim.uygulama.model</code> paketinde bir sınıf varsa, bu sınıfın kaynak kodu <code>com/egitim/uygulama/model/</code> dizininde bulunmalıdır.</p>
-<p><strong>Örnek</strong>: Çok katmanlı bir projede dizin organizasyonu:</p>
+<p><img src="../assets/images/mermaid-007.png" alt="Mermaid Diyagram 7" />
+<strong>Örnek</strong>: Çok katmanlı bir projede dizin organizasyonu:</p>
 <pre><code>proje/
 ├── src/
 │   ├── main/
@@ -400,7 +404,8 @@ qr: dual
 <li><strong>Tek Sınıf Import</strong>: Belirli bir sınıfın import edilmesi</li>
 <li><strong>Wildcard Import</strong>: Bir paketteki tüm sınıfların import edilmesi</li>
 </ol>
-<p><strong>Uygulama</strong>: Üç farklı import türünü karşılaştırmalı gösterelim:</p>
+<p><img src="../assets/images/mermaid-008.png" alt="Mermaid Diyagram 8" />
+<strong>Uygulama</strong>: Üç farklı import türünü karşılaştırmalı gösterelim:</p>
 <!-- CODE_META: Dosya: ImportOrnekleri.java, Konu: Farklı import türlerinin karşılaştırılması, Zorluk: Orta -->
 <div class="sourceCode" id="cb12"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: ImportOrnekleri.java</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">ArrayList</span><span class="op">;</span>        <span class="co">// Tek sınıf import</span></span>
@@ -497,7 +502,8 @@ qr: dual
 <h3>Static Import ve Özel Kullanım Durumları</h3>
 <p><strong>Kavram</strong>: <code>import static</code> ifadesi, bir sınıftaki statik üyelere (sabitler ve statik metotlar) doğrudan sınıf adı kullanmadan erişmeyi sağlar. Bu özellik özellikle matematiksel işlemler, test framework’leri (JUnit) ve sabit tanımlamalarında kullanışlıdır.</p>
 <p><strong>Örnek</strong>: Math sınıfı sabitlerinin ve metotlarının static import ile kullanımı:</p>
-<p><strong>Uygulama</strong>: Static import öncesi ve sonrası kod karşılaştırması:</p>
+<p><img src="../assets/images/mermaid-009.png" alt="Mermaid Diyagram 9" />
+<strong>Uygulama</strong>: Static import öncesi ve sonrası kod karşılaştırması:</p>
 <!-- CODE_META: Dosya: StaticImportKarsilastirma.java, Konu: Static import kullanımı karşılaştırması, Zorluk: Orta -->
 <div class="sourceCode" id="cb14"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: StaticImportKarsilastirma.java</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -614,7 +620,8 @@ qr: dual
 <h3>Modüler Proje Yapılandırması ve Best Practices</h3>
 <p><strong>Kavram</strong>: Java 9 ile birlikte gelen modül sistemi (Project Jigsaw), büyük ölçekli projelerde daha iyi bir yapılandırma sağlar. Modüler yapı, hangi paketlerin dışa açılacağını (exports) ve hangi modüllerin kullanılacağını (requires) belirler.</p>
 <p><strong>Maven/Gradle Proje Yapısı</strong>: Modern Java projelerinde standart dizin yapısı:</p>
-<p><strong>Uygulama</strong>: module-info.java ile modül tanımlama:</p>
+<p><img src="../assets/images/mermaid-010.png" alt="Mermaid Diyagram 10" />
+<strong>Uygulama</strong>: module-info.java ile modül tanımlama:</p>
 <!-- CODE_META: Dosya: module-info.java, Konu: Java modül tanımlaması, Zorluk: İleri -->
 <div class="sourceCode" id="cb17"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: module-info.java</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>module com<span class="op">.</span><span class="fu">egitim</span><span class="op">.</span><span class="fu">uygulama</span> <span class="op">{</span></span>
@@ -742,7 +749,8 @@ qr: dual
 </tbody>
 </table>
 <p><strong>JAR Dosyaları ve Classpath Yönetimi</strong>:</p>
-<p><strong>Uygulama</strong>: Kendi JAR’ımızı oluşturma ve başka projede kullanma:</p>
+<p><img src="../assets/images/mermaid-011.png" alt="Mermaid Diyagram 11" />
+<strong>Uygulama</strong>: Kendi JAR’ımızı oluşturma ve başka projede kullanma:</p>
 <!-- CODE_META: Dosya: com/egitim/arac/Kasa.java (JAR için), Konu: JAR oluşturma, Zorluk: İleri -->
 <div class="sourceCode" id="cb20"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: com/egitim/arac/Kasa.java</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> com</span><span class="op">.</span><span class="im">egitim</span><span class="op">.</span><span class="im">arac</span><span class="op">;</span></span>

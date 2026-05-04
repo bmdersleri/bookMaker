@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Teknik İçerik Uzmanı" />
   <meta name="dcterms.date" content="2025-01-18" />
-  <title>Dosya ve Akis Islems</title>
+  <title>16. Dosya ve Akis Islems</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,27 +96,26 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Dosya ve Akis Islems</h1>
+<h1 class="title">16. Dosya ve Akis Islems</h1>
 <p class="subtitle">File, FileReader/Writer, BufferedReader/BufferedWriter, NIO.2 ve Serileştirme</p>
 <p class="author">Teknik İçerik Uzmanı</p>
 <p class="date">2025-01-18</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#dosya-ve-akis-islems" id="toc-dosya-ve-akis-islems">16. Dosya ve Akis Islems</a></li>
 <li><a href="#bölüm-16-dosya-islemleri-ve-kalici-veri-saklama" id="toc-bölüm-16-dosya-islemleri-ve-kalici-veri-saklama">Bölüm 16: Dosya Islemleri ve Kalici Veri Saklama</a>
 <ul>
 <li><a href="#temel-dosya-işlemleri-file-sınıfı-ve-dosya-sistemi-ile-etkileşim" id="toc-temel-dosya-işlemleri-file-sınıfı-ve-dosya-sistemi-ile-etkileşim">16.1 Temel Dosya İşlemleri: <code>File</code> Sınıfı ve Dosya Sistemi ile Etkileşim</a></li>
-<li><a href="#karakter-tabanlı-okumayazma-filereader-ve-filewriter" id="toc-karakter-tabanlı-okumayazma-filereader-ve-filewriter">16.2 Karakter Tabanlı Okuma/Yazma: <code>FileReader</code> ve <code>FileWriter</code></a></li>
-<li><a href="#tamponlu-okumayazma-bufferedreader-ve-bufferedwriter" id="toc-tamponlu-okumayazma-bufferedreader-ve-bufferedwriter">16.3 Tamponlu Okuma/Yazma: <code>BufferedReader</code> ve <code>BufferedWriter</code></a></li>
-<li><a href="#modern-dosya-işlemleri-nio.2-path-files-bufferedreaderbufferedwriter" id="toc-modern-dosya-işlemleri-nio.2-path-files-bufferedreaderbufferedwriter">16.4 Modern Dosya İşlemleri: NIO.2 (<code>Path</code>, <code>Files</code>, <code>BufferedReader/BufferedWriter</code>)</a></li>
-<li><a href="#nesne-kalıcılığı-serileştirme-serialization" id="toc-nesne-kalıcılığı-serileştirme-serialization">16.5 Nesne Kalıcılığı: Serileştirme (Serialization)</a></li>
-<li><a href="#bölüm-özeti" id="toc-bölüm-özeti">16.6 Bölüm Özeti</a></li>
 <li><a href="#terim-sözlüğü" id="toc-terim-sözlüğü">16.7 Terim Sözlüğü</a></li>
 <li><a href="#sorular" id="toc-sorular">16.8 Sorular</a></li>
 <li><a href="#alıştırmalar" id="toc-alıştırmalar">16.9 Alıştırmalar</a></li>
 </ul></li>
 </ul>
 </nav>
+<section id="dosya-ve-akis-islems" class="level1">
+<h1>16. Dosya ve Akis Islems</h1>
+</section>
 <section id="bölüm-16-dosya-islemleri-ve-kalici-veri-saklama" class="level1">
 <h1>Bölüm 16: Dosya Islemleri ve Kalici Veri Saklama</h1>
 <p>Bu bölümde, Java programlama dilinde dosya işlemlerini ve kalıcı veri saklama yöntemlerini adım adım öğreneceksiniz. Geleneksel <code>java.io</code> paketinden modern NIO.2 yaklaşımına kadar geniş bir yelpazede konuları ele alacağız. Ayrıca, nesnelerinizi dosyalara kaydetmek ve geri yüklemek için serileştirme (serialization) kavramını keşfedeceksiniz.</p>
@@ -192,11 +191,10 @@ Bu bölümdeki tüm kod örnekleri Java 11 veya üzeri sürümlerle uyumludur. N
 <p>[!TIP]
 <code>File</code> sınıfı yerine, daha modern ve esnek olan <code>java.nio.file.Path</code> ve <code>java.nio.file.Files</code> sınıflarını kullanmayı tercih edin. Bu konuyu Bölüm 4’te detaylı olarak ele alacağız.</p>
 </blockquote>
-</section>
-</section>
-<section id="karakter-tabanlı-okumayazma-filereader-ve-filewriter" class="level2">
-<h2>16.2 Karakter Tabanlı Okuma/Yazma: <code>FileReader</code> ve <code>FileWriter</code></h2>
+<p><img src="../assets/images/mermaid-021.png" alt="Mermaid Diyagram 21" />
+## 16.2 Karakter Tabanlı Okuma/Yazma: <code>FileReader</code> ve <code>FileWriter</code></p>
 <p>Metin dosyalarıyla çalışırken karakter akışları (character streams) kullanılır. <code>java.io</code> paketindeki <code>FileReader</code> ve <code>FileWriter</code> sınıfları, metin dosyalarına okuma ve yazma işlemleri için temel karakter akışı sınıflarıdır.</p>
+</section>
 <section id="temel-kavramlar-1" class="level3">
 <h3>Temel Kavramlar</h3>
 <ul>
@@ -251,11 +249,10 @@ Bu bölümdeki tüm kod örnekleri Java 11 veya üzeri sürümlerle uyumludur. N
 <p>[!WARNING]
 <code>FileReader</code> ve <code>FileWriter</code> sınıflarını doğrudan kullanmak yerine, bir sonraki bölümde göreceğiniz <code>BufferedReader</code> ve <code>BufferedWriter</code> ile sarmalayarak kullanmanız önerilir.</p>
 </blockquote>
-</section>
-</section>
-<section id="tamponlu-okumayazma-bufferedreader-ve-bufferedwriter" class="level2">
-<h2>16.3 Tamponlu Okuma/Yazma: <code>BufferedReader</code> ve <code>BufferedWriter</code></h2>
+<p><img src="../assets/images/mermaid-022.png" alt="Mermaid Diyagram 22" />
+## 16.3 Tamponlu Okuma/Yazma: <code>BufferedReader</code> ve <code>BufferedWriter</code></p>
 <p>Tamponlama (buffering), performansı artırmak için kullanılan bir tekniktir. <code>BufferedReader</code> ve <code>BufferedWriter</code> sınıfları, karakter akışlarını tamponlayarak daha verimli okuma/yazma işlemleri sağlar.</p>
+</section>
 <section id="temel-kavramlar-2" class="level3">
 <h3>Temel Kavramlar</h3>
 <ul>
@@ -315,11 +312,10 @@ Bu bölümdeki tüm kod örnekleri Java 11 veya üzeri sürümlerle uyumludur. N
 <p>[!TIP]
 <code>BufferedReader</code> ve <code>BufferedWriter</code> sınıflarını kullanırken, varsayılan tampon boyutu (8192 karakter) genellikle yeterlidir. Ancak özel durumlar için farklı boyutlar belirleyebilirsiniz: <code>new BufferedReader(reader, 16384)</code></p>
 </blockquote>
-</section>
-</section>
-<section id="modern-dosya-işlemleri-nio.2-path-files-bufferedreaderbufferedwriter" class="level2">
-<h2>16.4 Modern Dosya İşlemleri: NIO.2 (<code>Path</code>, <code>Files</code>, <code>BufferedReader/BufferedWriter</code>)</h2>
+<p><img src="../assets/images/mermaid-023.png" alt="Mermaid Diyagram 23" />
+## 16.4 Modern Dosya İşlemleri: NIO.2 (<code>Path</code>, <code>Files</code>, <code>BufferedReader/BufferedWriter</code>)</p>
 <p>Java 7 ile birlikte gelen NIO.2 (New I/O 2) paketi, dosya işlemleri için daha modern, esnek ve güvenilir bir yaklaşım sunar. <code>java.nio.file</code> paketindeki <code>Path</code> ve <code>Files</code> sınıfları, geleneksel IO’ya göre birçok avantaj sağlar.</p>
+</section>
 <section id="temel-kavramlar-3" class="level3">
 <h3>Temel Kavramlar</h3>
 <ul>
@@ -404,11 +400,10 @@ Bu bölümdeki tüm kod örnekleri Java 11 veya üzeri sürümlerle uyumludur. N
 <p>[!IMPORTANT]
 NIO.2 kullanırken <code>Files.list()</code> veya <code>Files.walk()</code> gibi metotlarla açılan stream’leri mutlaka kapatın. Aksi takdirde kaynak sızıntısı (resource leak) oluşabilir.</p>
 </blockquote>
-</section>
-</section>
-<section id="nesne-kalıcılığı-serileştirme-serialization" class="level2">
-<h2>16.5 Nesne Kalıcılığı: Serileştirme (Serialization)</h2>
+<p><img src="../assets/images/mermaid-024.png" alt="Mermaid Diyagram 24" />
+## 16.5 Nesne Kalıcılığı: Serileştirme (Serialization)</p>
 <p>Serileştirme, Java nesnelerini byte akışına dönüştürme (serialization) ve byte akışından nesne oluşturma (deserialization) işlemidir. Bu sayede nesnelerinizi dosyalara kaydedebilir, ağ üzerinden gönderebilir veya veritabanında saklayabilirsiniz.</p>
+</section>
 <section id="temel-kavramlar-4" class="level3">
 <h3>Temel Kavramlar</h3>
 <ul>
@@ -489,10 +484,8 @@ NIO.2 kullanırken <code>Files.list()</code> veya <code>Files.walk()</code> gibi
 <p>[!CAUTION]
 Serileştirme, Java’ya özgü bir formattır. Farklı platformlar veya diller arasında veri alışverişi yapacaksanız JSON, XML veya Protocol Buffers gibi standart formatları tercih edin.</p>
 </blockquote>
-</section>
-</section>
-<section id="bölüm-özeti" class="level2">
-<h2>16.6 Bölüm Özeti</h2>
+<p><img src="../assets/images/mermaid-025.png" alt="Mermaid Diyagram 25" />
+## 16.6 Bölüm Özeti</p>
 <p>Bu bölümde, Java’da dosya işlemleri ve kalıcı veri saklama konularını kapsamlı bir şekilde ele aldık:</p>
 <ol type="1">
 <li><strong>File Sınıfı</strong>: Dosya ve dizin yollarını temsil eder, metaveri erişimi ve temel dosya işlemleri için kullanılır.</li>
@@ -501,6 +494,7 @@ Serileştirme, Java’ya özgü bir formattır. Farklı platformlar veya diller 
 <li><strong>NIO.2</strong>: Modern, esnek ve güvenilir dosya işlemleri için <code>Path</code> ve <code>Files</code> sınıflarını kullanır.</li>
 <li><strong>Serileştirme</strong>: Java nesnelerini byte akışına dönüştürerek kalıcı hale getirme yöntemidir.</li>
 </ol>
+</section>
 </section>
 <section id="terim-sözlüğü" class="level2">
 <h2>16.7 Terim Sözlüğü</h2>

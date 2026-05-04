@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Ismail Kirbas" />
   <meta name="dcterms.date" content="2026-01-01" />
-  <title>Java Swing ile GUI Programlama</title>
+  <title>19. Java Swing ile GUI Programlama</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,18 +96,18 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Java Swing ile GUI Programlama</h1>
+<h1 class="title">19. Java Swing ile GUI Programlama</h1>
 <p class="subtitle">Java’nin Temelleri</p>
 <p class="author">Ismail Kirbas</p>
 <p class="date">2026</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#java-swing-ile-gui-programlama" id="toc-java-swing-ile-gui-programlama">19. Java Swing ile GUI Programlama</a></li>
 <li><a href="#bölüm-19-gui-programlamaya-giris-ve-swing-arayuz-tasarimi" id="toc-bölüm-19-gui-programlamaya-giris-ve-swing-arayuz-tasarimi">Bölüm 19: GUI Programlamaya Giris ve Swing Arayuz Tasarimi</a>
 <ul>
 <li><a href="#giris" id="toc-giris">19.1 Giris</a></li>
 <li><a href="#swing-mimarisi" id="toc-swing-mimarisi">19.2 Swing Mimarisi</a></li>
-<li><a href="#jframe---uygulama-penceresi" id="toc-jframe---uygulama-penceresi">19.3 JFrame - Uygulama Penceresi</a></li>
 <li><a href="#jpanel-ve-icerik-bilesenleri" id="toc-jpanel-ve-icerik-bilesenleri">19.4 JPanel ve Icerik Bilesenleri</a></li>
 <li><a href="#layout-yoneticileri" id="toc-layout-yoneticileri">19.5 Layout Yoneticileri</a></li>
 <li><a href="#olay-isleme-event-handling" id="toc-olay-isleme-event-handling">19.6 Olay Isleme (Event Handling)</a></li>
@@ -117,6 +117,9 @@
 </ul></li>
 </ul>
 </nav>
+<section id="java-swing-ile-gui-programlama" class="level1">
+<h1>19. Java Swing ile GUI Programlama</h1>
+</section>
 <section id="bölüm-19-gui-programlamaya-giris-ve-swing-arayuz-tasarimi" class="level1">
 <h1>Bölüm 19: GUI Programlamaya Giris ve Swing Arayuz Tasarimi</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
@@ -163,10 +166,8 @@
 <section id="olay-tabanli-programlama" class="level3">
 <h3>Olay Tabanli Programlama</h3>
 <p>GUI uygulamalari, olay tabanli (event-driven) bir programlama modeli kullanir. Kullanici bir dugmeye tikladiginda, bir metin kutusuna yazi yazdiginda veya fareyi hareket ettirdiginde, bir “olay” (event) olusturulur. Bu olay, ilgili “dinleyici” (listener) tarafindan yakalanir ve islenir.</p>
-</section>
-</section>
-<section id="jframe---uygulama-penceresi" class="level2">
-<h2>19.3 JFrame - Uygulama Penceresi</h2>
+<p><img src="../assets/images/mermaid-033.png" alt="Mermaid Diyagram 33" />
+## 19.3 JFrame - Uygulama Penceresi</p>
 <p>JFrame, Swing uygulamalarinin ana penceresini temsil eder. Bir JFrame olusturmak icin:</p>
 <ul>
 <li><code>javax.swing.JFrame</code> sinifindan bir nesne olusturulur.</li>
@@ -215,6 +216,7 @@ qr: dual
 <blockquote>
 <p><strong>Pedagojik Not:</strong> JFrame olustururken <code>setSize</code> ve <code>setLocationRelativeTo</code> metodlarini kullanmak, uygulamanizin farkli ekran cozunurluklerinde duzgun goruntulenmesini saglar. Ayrica, <code>setDefaultCloseOperation</code> ile uygulamanin dogru bir sekilde sonlandirilmasini garantileyin.</p>
 </blockquote>
+</section>
 </section>
 <section id="jpanel-ve-icerik-bilesenleri" class="level2">
 <h2>19.4 JPanel ve Icerik Bilesenleri</h2>
@@ -295,17 +297,14 @@ qr: dual
 <section id="flowlayout" class="level3">
 <h3>FlowLayout</h3>
 <p>Bilesenleri soldan saga, ustten alta dogru siralar. Satir doldugunda bir sonraki satira gecer. Varsayilan olarak bilesenlerin tercih edilen boyutlarini kullanir.</p>
-</section>
-<section id="borderlayout" class="level3">
-<h3>BorderLayout</h3>
+<p><img src="../assets/images/mermaid-034.png" alt="Mermaid Diyagram 34" />
+### BorderLayout</p>
 <p>Container’i bes bolgeye ayirir: NORTH, SOUTH, EAST, WEST, CENTER. Her bolgeye yalnizca bir bilesen eklenebilir. CENTER bolgesi, diger bolgelerdeki bilesenlerin boyutlarina gore kalan alani kaplar.</p>
-</section>
-<section id="gridlayout" class="level3">
-<h3>GridLayout</h3>
+<p><img src="../assets/images/mermaid-035.png" alt="Mermaid Diyagram 35" />
+### GridLayout</p>
 <p>Bilesenleri esit boyutlu bir tablo (satir ve sutun) seklinde duzenler. Satir ve sutun sayisi belirtilir. Bilesenler, satir oncelikli olarak (once satirlar, sonra sutunlar) yerlestirilir.</p>
-</section>
-<section id="gridbaglayout-temel-seviye" class="level3">
-<h3>GridBagLayout (Temel Seviye)</h3>
+<p><img src="../assets/images/mermaid-036.png" alt="Mermaid Diyagram 36" />
+### GridBagLayout (Temel Seviye)</p>
 <p>En guclu ve esnek layout yoneticisidir. Bilesenlerin konumunu, boyutunu ve hizalama sekillerini ince ayar yaparak belirlemeyi saglar. Ancak, kullanimi digerlerine gore daha karmasiktir. Bu bolumde temel kullanimini gorecegiz.</p>
 <!-- CODE_META: Layout yoneticileri karsilastirmasi -->
 <p><strong>Dosya adi:</strong> <code>LayoutKarsilastirma.java</code></p>

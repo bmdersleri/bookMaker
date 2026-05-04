@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Ismail Kirbas" />
   <meta name="dcterms.date" content="2026-01-01" />
-  <title>Lambda ifadeleri ve Stream API</title>
+  <title>18. Lambda Ifadeleri ve Stream API</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,27 +96,35 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Lambda ifadeleri ve Stream API</h1>
+<h1 class="title">18. Lambda Ifadeleri ve Stream API</h1>
 <p class="subtitle">Java’nin Temelleri</p>
 <p class="author">Ismail Kirbas</p>
 <p class="date">2026</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#lambda-ifadeleri-ve-stream-api" id="toc-lambda-ifadeleri-ve-stream-api">18. Lambda Ifadeleri ve Stream API</a></li>
 <li><a href="#bölüm-18-kalitim-ve-interfacee-kisa-on-bakis" id="toc-bölüm-18-kalitim-ve-interfacee-kisa-on-bakis">Bölüm 18: Kalitim ve Interface’e Kisa On Bakis</a>
 <ul>
 <li><a href="#giris-kalitim-ve-arayuz-kavramlarina-giris" id="toc-giris-kalitim-ve-arayuz-kavramlarina-giris">18.1 Giris: Kalitim ve Arayuz Kavramlarina Giris</a></li>
 <li><a href="#kalitim-inheritance-temelleri" id="toc-kalitim-inheritance-temelleri">18.2 Kalitim (Inheritance) Temelleri</a></li>
+<li><a href="#mermaid-diyagram-29" id="toc-mermaid-diyagram-29"><img src="../assets/images/mermaid-029.png" alt="Mermaid Diyagram 29" /></a></li>
 <li><a href="#abstract-siniflar" id="toc-abstract-siniflar">18.3 Abstract Siniflar</a></li>
 <li><a href="#interface-arayuz-kavrami" id="toc-interface-arayuz-kavrami">18.4 Interface (Arayuz) Kavrami</a></li>
+<li><a href="#mermaid-diyagram-30" id="toc-mermaid-diyagram-30"><img src="../assets/images/mermaid-030.png" alt="Mermaid Diyagram 30" /></a></li>
 <li><a href="#polymorphism-cok-bicimlilik-temelleri" id="toc-polymorphism-cok-bicimlilik-temelleri">18.5 Polymorphism (Cok Bicimlilik) Temelleri</a></li>
+<li><a href="#mermaid-diyagram-31" id="toc-mermaid-diyagram-31"><img src="../assets/images/mermaid-031.png" alt="Mermaid Diyagram 31" /></a></li>
 <li><a href="#kalitim-ve-interface-karsilastirmasi" id="toc-kalitim-ve-interface-karsilastirmasi">18.6 Kalitim ve Interface Karsilastirmasi</a></li>
 <li><a href="#uygulamali-ornek-hayvanat-bahcesi-sistemi" id="toc-uygulamali-ornek-hayvanat-bahcesi-sistemi">18.7 Uygulamali Ornek: Hayvanat Bahcesi Sistemi</a></li>
+<li><a href="#mermaid-diyagram-32" id="toc-mermaid-diyagram-32"><img src="../assets/images/mermaid-032.png" alt="Mermaid Diyagram 32" /></a></li>
 <li><a href="#yaygin-hatalar-ve-ipuclari" id="toc-yaygin-hatalar-ve-ipuclari">18.8 Yaygin Hatalar ve Ipuclari</a></li>
 <li><a href="#ozet-ve-terim-sozlugu" id="toc-ozet-ve-terim-sozlugu">18.9 Ozet ve Terim Sozlugu</a></li>
 </ul></li>
 </ul>
 </nav>
+<section id="lambda-ifadeleri-ve-stream-api" class="level1">
+<h1>18. Lambda Ifadeleri ve Stream API</h1>
+</section>
 <section id="bölüm-18-kalitim-ve-interfacee-kisa-on-bakis" class="level1">
 <h1>Bölüm 18: Kalitim ve Interface’e Kisa On Bakis</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
@@ -187,9 +195,8 @@
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>name <span class="op">+</span> <span class="st">&quot; havlıyor: Hav hav!&quot;</span><span class="op">);</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-</section>
-<section id="super-anahtar-kelimesi" class="level3">
-<h3>2.2. super Anahtar Kelimesi</h3>
+<p><img src="../assets/images/mermaid-028.png" alt="Mermaid Diyagram 28" />
+### 2.2. super Anahtar Kelimesi</p>
 <p><code>super</code>, ust sinifin uyelerine (degiskenler, metotlar, yapicilar) erismek icin kullanilir. Ozellikle:
 - Ust sinifin yapicisini cagirmak icin: <code>super(parametreler)</code>
 - Ust sinifin override edilmis bir metodunu cagirmak icin: <code>super.metotAdi()</code></p>
@@ -242,8 +249,10 @@ Karabas havlıyor: Hav hav!</code></pre>
 <section id="javada-kalitim-zinciri" class="level3">
 <h3>2.5. Java’da Kalitim Zinciri</h3>
 <p>Java’da siniflar hiyerarsik bir yapi olusturabilir. Ornegin: <code>Animal -&gt; Mammal -&gt; Dog</code>.</p>
-<hr />
 </section>
+</section>
+<section id="mermaid-diyagram-29" class="level2">
+<h2><img src="../assets/images/mermaid-029.png" alt="Mermaid Diyagram 29" /></h2>
 </section>
 <section id="abstract-siniflar" class="level2">
 <h2>18.3 Abstract Siniflar</h2>
@@ -389,8 +398,10 @@ Karabas havlıyor: Hav hav!</code></pre>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Bir sey yapiyorum.&quot;</span><span class="op">);</span></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<hr />
 </section>
+</section>
+<section id="mermaid-diyagram-30" class="level2">
+<h2><img src="../assets/images/mermaid-030.png" alt="Mermaid Diyagram 30" /></h2>
 </section>
 <section id="polymorphism-cok-bicimlilik-temelleri" class="level2">
 <h2>18.5 Polymorphism (Cok Bicimlilik) Temelleri</h2>
@@ -440,8 +451,10 @@ Karabas havlıyor: Hav hav!</code></pre>
 <section id="polimorfizmin-gercek-hayat-ornekleri" class="level3">
 <h3>5.4. Polimorfizmin Gercek Hayat Ornekleri</h3>
 <p>Bir ses sistemi dusunun: <code>playSound()</code> metodu, hangi enstrumanin kullanildigina gore farkli calisir.</p>
-<hr />
 </section>
+</section>
+<section id="mermaid-diyagram-31" class="level2">
+<h2><img src="../assets/images/mermaid-031.png" alt="Mermaid Diyagram 31" /></h2>
 </section>
 <section id="kalitim-ve-interface-karsilastirmasi" class="level2">
 <h2>18.6 Kalitim ve Interface Karsilastirmasi</h2>
@@ -619,8 +632,10 @@ Karabas havlıyor: Hav hav!</code></pre>
 <pre><code>Simba kükrüyor: ROAR!
 Pingu cıvıldıyor.
 Pingu yüzüyor.</code></pre>
-<hr />
 </section>
+</section>
+<section id="mermaid-diyagram-32" class="level2">
+<h2><img src="../assets/images/mermaid-032.png" alt="Mermaid Diyagram 32" /></h2>
 </section>
 <section id="yaygin-hatalar-ve-ipuclari" class="level2">
 <h2>18.8 Yaygin Hatalar ve Ipuclari</h2>

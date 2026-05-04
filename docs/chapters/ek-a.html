@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Ismail Kirbas" />
   <meta name="dcterms.date" content="2026-01-01" />
-  <title>Java Geli tirme Ortaminin Kurulumu</title>
+  <title>Ek A: Java Gelistirme Ortaminin Kurulumu</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,24 +96,23 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Java Geli tirme Ortaminin Kurulumu</h1>
+<h1 class="title">Ek A: Java Gelistirme Ortaminin Kurulumu</h1>
 <p class="subtitle">Java’nin Temelleri</p>
 <p class="author">Ismail Kirbas</p>
 <p class="date">2026</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#ek-a-java-gelistirme-ortaminin-kurulumu" id="toc-ek-a-java-gelistirme-ortaminin-kurulumu">Ek A: Java Gelistirme Ortaminin Kurulumu</a></li>
 <li><a href="#ek-a-sik-yapilan-java-hatalari-ve-cozum-rehberi" id="toc-ek-a-sik-yapilan-java-hatalari-ve-cozum-rehberi">Ek A: Sik Yapilan Java Hatalari ve Cozum Rehberi</a>
 <ul>
 <li><a href="#derleme-zamani-vs-calisma-zamani-hatalari" id="toc-derleme-zamani-vs-calisma-zamani-hatalari">24.1 Derleme Zamani vs Calisma Zamani Hatalari</a></li>
 <li><a href="#hata-yonetiminin-onemi" id="toc-hata-yonetiminin-onemi">24.2 Hata Yonetiminin Onemi</a></li>
-<li><a href="#derleme-zamani-hatalari" id="toc-derleme-zamani-hatalari">24.3 Derleme Zamani Hatalari</a></li>
 <li><a href="#syntax-hatalari" id="toc-syntax-hatalari">24.4 Syntax Hatalari</a></li>
 <li><a href="#tip-uyumsuzlugu-hatalari" id="toc-tip-uyumsuzlugu-hatalari">24.5 Tip Uyumsuzlugu Hatalari</a></li>
 <li><a href="#erisim-belirteci-hatalari" id="toc-erisim-belirteci-hatalari">24.6 Erisim Belirteci Hatalari</a></li>
 <li><a href="#import-ve-paket-hatalari" id="toc-import-ve-paket-hatalari">24.7 Import ve Paket Hatalari</a></li>
 <li><a href="#calisma-zamani-hatalari-exceptions" id="toc-calisma-zamani-hatalari-exceptions">24.8 Calisma Zamani Hatalari (Exceptions)</a></li>
-<li><a href="#nullpointerexception" id="toc-nullpointerexception">24.9 NullPointerException</a></li>
 <li><a href="#arrayindexoutofboundsexception" id="toc-arrayindexoutofboundsexception">24.10 ArrayIndexOutOfBoundsException</a></li>
 <li><a href="#arithmeticexception" id="toc-arithmeticexception">24.11 ArithmeticException</a></li>
 <li><a href="#classcastexception" id="toc-classcastexception">24.12 ClassCastException</a></li>
@@ -125,7 +124,6 @@
 <li><a href="#hata-ayiklama-debugging-teknikleri" id="toc-hata-ayiklama-debugging-teknikleri">24.18 Hata Ayiklama (Debugging) Teknikleri</a></li>
 <li><a href="#konsol-ciktilari-kullanma" id="toc-konsol-ciktilari-kullanma">24.19 Konsol Ciktilari Kullanma</a></li>
 <li><a href="#ide-debugger-kullanimi" id="toc-ide-debugger-kullanimi">24.20 IDE Debugger Kullanimi</a></li>
-<li><a href="#stack-trace-okuma" id="toc-stack-trace-okuma">24.21 Stack Trace Okuma</a></li>
 <li><a href="#en-iyi-uygulamalar-ve-kacinilmasi-gerekenler" id="toc-en-iyi-uygulamalar-ve-kacinilmasi-gerekenler">24.22 En Iyi Uygulamalar ve Kacinilmasi Gerekenler</a></li>
 <li><a href="#try-catch-kullanimi" id="toc-try-catch-kullanimi">24.23 Try-Catch Kullanimi</a></li>
 <li><a href="#ozel-exception-siniflari-olusturma" id="toc-ozel-exception-siniflari-olusturma">24.24 Ozel Exception Siniflari Olusturma</a></li>
@@ -138,6 +136,8 @@
 </ul></li>
 </ul>
 </nav>
+<section id="ek-a-java-gelistirme-ortaminin-kurulumu" class="level1">
+<h1>Ek A: Java Gelistirme Ortaminin Kurulumu</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Sik Yapilan Java Hatalari ve Cozum Rehberi&quot;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Derleme ve Calisma Zamani Hatalarini Tanima ve Cozme&quot;</span></span>
@@ -147,6 +147,7 @@
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">keywords</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">Java</span><span class="kw">,</span><span class="at"> hata</span><span class="kw">,</span><span class="at"> exception</span><span class="kw">,</span><span class="at"> debugging</span><span class="kw">,</span><span class="at"> derleme</span><span class="kw">,</span><span class="at"> calisma zamani</span><span class="kw">]</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">abstract</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Bu bolumde Java programlamada en sik karsilasilan hata turlerini, cozum yontemlerini ve etkili debugging tekniklerini ogreneceksiniz.&quot;</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+</section>
 <section id="ek-a-sik-yapilan-java-hatalari-ve-cozum-rehberi" class="level1">
 <h1>Ek A: Sik Yapilan Java Hatalari ve Cozum Rehberi</h1>
 <p>Java’da hatalarla karsilasmak, programlama yolculugunun kacinilmaz bir parcasidir. Bu hatalari anlamak ve cozmek, sizi daha iyi bir gelistirici yapar. Bu bolumde, en yaygin Java hatalarini tanimlayacak, nedenlerini anlayacak ve etkili cozum stratejileri gelistireceksiniz.</p>
@@ -167,9 +168,8 @@
 <li>Kullanici deneyimini iyilestirir</li>
 <li>Hata ayiklama surecini kolaylastirir</li>
 </ul>
-</section>
-<section id="derleme-zamani-hatalari" class="level2">
-<h2>24.3 Derleme Zamani Hatalari</h2>
+<p><img src="../assets/images/mermaid-049.png" alt="Mermaid Diyagram 49" />
+## 24.3 Derleme Zamani Hatalari</p>
 <p>Derleme zamani hatalari, kodunuzu calistirmadan once Java derleyicisi tarafindan tespit edilir. Bu hatalari duzeltmek genellikle basittir.</p>
 </section>
 <section id="syntax-hatalari" class="level2">
@@ -277,9 +277,8 @@
 <section id="calisma-zamani-hatalari-exceptions" class="level2">
 <h2>24.8 Calisma Zamani Hatalari (Exceptions)</h2>
 <p>Calisma zamani hatalari, program calisirken ortaya cikan ve programin aniden sonlanmasina neden olabilen hatalardir.</p>
-</section>
-<section id="nullpointerexception" class="level2">
-<h2>24.9 NullPointerException</h2>
+<p><img src="../assets/images/mermaid-050.png" alt="Mermaid Diyagram 50" />
+## 24.9 NullPointerException</p>
 <p>En yaygin Java hatalarindan biridir. <code>null</code> degerine sahip bir nesne uzerinde metot cagirmaya calistiginizda olusur.</p>
 <!-- CODE_META: NullPointerOrnegi.java -->
 <div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> NullPointerOrnegi <span class="op">{</span></span>
@@ -552,9 +551,8 @@
 - <strong>Step Out</strong>: Metottan cikma
 - <strong>Watch</strong>: Degisken degerlerini izleme
 - <strong>Evaluate Expression</strong>: Anlik ifade degerlendirme</p>
-</section>
-<section id="stack-trace-okuma" class="level2">
-<h2>24.21 Stack Trace Okuma</h2>
+<p><img src="../assets/images/mermaid-051.png" alt="Mermaid Diyagram 51" />
+## 24.21 Stack Trace Okuma</p>
 <p>Bir exception firlatildiginda, Java size stack trace (yigin izi) gosterir. Bu, hatanin nerede olustugunu anlamak icin cok degerlidir.</p>
 <!-- CODE_META: StackTraceOrnegi.java -->
 <div class="sourceCode" id="cb16"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> StackTraceOrnegi <span class="op">{</span></span>

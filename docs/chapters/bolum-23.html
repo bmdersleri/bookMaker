@@ -7,7 +7,7 @@
   <meta name="author" content="Teknik Kitap Ekibi" />
   <meta name="dcterms.date" content="2025-01-01" />
   <meta name="keywords" content="Spring Boot, Final Proje, Butunlesik Uygulama, Java, REST API, DevOps" />
-  <title>Java'nin Gelecegi ve Yeni Ozellikler</title>
+  <title>23. Java'nin Gelecegi ve Yeni Ozellikler</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -97,13 +97,14 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Java'nin Gelecegi ve Yeni Ozellikler</h1>
+<h1 class="title">23. Java'nin Gelecegi ve Yeni Ozellikler</h1>
 <p class="subtitle">Spring Boot ile Kapsamli Bir Uygulama Gelistirme</p>
 <p class="author">Teknik Kitap Ekibi</p>
 <p class="date">2025-01-01</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#javanin-gelecegi-ve-yeni-ozellikler" id="toc-javanin-gelecegi-ve-yeni-ozellikler">23. Java’nin Gelecegi ve Yeni Ozellikler</a></li>
 <li><a href="#bölüm-23-butunlesik-uygulama-ve-final-proje-rehberi" id="toc-bölüm-23-butunlesik-uygulama-ve-final-proje-rehberi">Bölüm 23: Butunlesik Uygulama ve Final Proje Rehberi</a>
 <ul>
 <li><a href="#proje-amaci-ve-kapsami" id="toc-proje-amaci-ve-kapsami">23.1 Proje Amaci ve Kapsami</a></li>
@@ -111,11 +112,9 @@
 <li><a href="#teknolojik-yigin" id="toc-teknolojik-yigin">23.3 Teknolojik Yigin</a></li>
 <li><a href="#proje-mimarisi" id="toc-proje-mimarisi">23.4 Proje Mimarisi</a></li>
 <li><a href="#genel-mimari-yapi" id="toc-genel-mimari-yapi">23.5 Genel Mimari Yapi</a></li>
-<li><a href="#katmanli-mimari-layered-architecture" id="toc-katmanli-mimari-layered-architecture">23.6 Katmanli Mimari (Layered Architecture)</a></li>
 <li><a href="#bilesenler-arasi-iletisim" id="toc-bilesenler-arasi-iletisim">23.7 Bilesenler Arasi Iletisim</a></li>
 <li><a href="#veri-katmani-data-layer" id="toc-veri-katmani-data-layer">23.8 Veri Katmani (Data Layer)</a></li>
 <li><a href="#veritabani-tasarimi" id="toc-veritabani-tasarimi">23.9 Veritabani Tasarimi</a></li>
-<li><a href="#jpa-entityleri-ve-iliskiler" id="toc-jpa-entityleri-ve-iliskiler">23.10 JPA Entity’leri ve Iliskiler</a></li>
 <li><a href="#repository-katmani" id="toc-repository-katmani">23.11 Repository Katmani</a></li>
 <li><a href="#is-mantigi-katmani-business-layer" id="toc-is-mantigi-katmani-business-layer">23.12 Is Mantigi Katmani (Business Layer)</a></li>
 <li><a href="#servis-siniflari-ve-is-akislari" id="toc-servis-siniflari-ve-is-akislari">23.13 Servis Siniflari ve Is Akislari</a></li>
@@ -152,6 +151,9 @@
 </ul></li>
 </ul>
 </nav>
+<section id="javanin-gelecegi-ve-yeni-ozellikler" class="level1">
+<h1>23. Java’nin Gelecegi ve Yeni Ozellikler</h1>
+</section>
 <section id="bölüm-23-butunlesik-uygulama-ve-final-proje-rehberi" class="level1">
 <h1>Bölüm 23: Butunlesik Uygulama ve Final Proje Rehberi</h1>
 <p>Bu bolumde, ogrendiginiz tum konulari birlestiren kapsamli bir uygulama gelistirme surecini adim adim inceleyeceksiniz. Gercek hayattan bir senaryo uzerinden, Spring Boot ile tam yigin (full-stack) bir uygulama olusturacak, test edecek ve devreye alacaksiniz.</p>
@@ -194,9 +196,8 @@
 <section id="genel-mimari-yapi" class="level2">
 <h2>23.5 Genel Mimari Yapi</h2>
 <p>Projemiz, katmanli mimari (layered architecture) kullanacak. Bu mimari, her katmanin belirli bir sorumlulugu olmasi prensibine dayanir.</p>
-</section>
-<section id="katmanli-mimari-layered-architecture" class="level2">
-<h2>23.6 Katmanli Mimari (Layered Architecture)</h2>
+<p><img src="../assets/images/mermaid-047.png" alt="Mermaid Diyagram 47" />
+## 23.6 Katmanli Mimari (Layered Architecture)</p>
 <p>Katmanli mimari, uygulamayi mantiksal olarak ayirir:
 1. <strong>Sunum Katmani</strong>: REST controller’lar, DTO’lar
 2. <strong>Is Mantigi Katmani</strong>: Servis siniflari, is akislari
@@ -222,9 +223,8 @@
 - <code>orders</code>: Siparis bilgileri
 - <code>order_items</code>: Siparis detaylari
 - <code>users</code>: Kullanici bilgileri</p>
-</section>
-<section id="jpa-entityleri-ve-iliskiler" class="level2">
-<h2>23.10 JPA Entity’leri ve Iliskiler</h2>
+<p><img src="../assets/images/mermaid-048.png" alt="Mermaid Diyagram 48" />
+## 23.10 JPA Entity’leri ve Iliskiler</p>
 <!-- CODE_META: Entity siniflari - Category.java -->
 <div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">entity</span><span class="op">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>

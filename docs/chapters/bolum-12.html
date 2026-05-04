@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Ismail Kirbas" />
   <meta name="dcterms.date" content="2026-01-01" />
-  <title>Icerdelenmis Siniflar</title>
+  <title>12. Icerdelenmis Siniflar</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -96,19 +96,23 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Icerdelenmis Siniflar</h1>
+<h1 class="title">12. Icerdelenmis Siniflar</h1>
 <p class="subtitle">Java’nin Temelleri</p>
 <p class="author">Ismail Kirbas</p>
 <p class="date">2026</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#icerdelenmis-siniflar" id="toc-icerdelenmis-siniflar">12. Icerdelenmis Siniflar</a></li>
 <li><a href="#bölüm-12-tarih-ve-zaman-islemleri" id="toc-bölüm-12-tarih-ve-zaman-islemleri">Bölüm 12: Tarih ve Zaman Islemleri</a>
 <ul>
 <li><a href="#java-8-ile-tarih-ve-zaman-yönetimi" id="toc-java-8-ile-tarih-ve-zaman-yönetimi">12.1 Java 8+ ile Tarih ve Zaman Yönetimi</a></li>
 </ul></li>
 </ul>
 </nav>
+<section id="icerdelenmis-siniflar" class="level1">
+<h1>12. Icerdelenmis Siniflar</h1>
+</section>
 <section id="bölüm-12-tarih-ve-zaman-islemleri" class="level1">
 <h1>Bölüm 12: Tarih ve Zaman Islemleri</h1>
 <hr />
@@ -129,9 +133,8 @@
 <li><p><strong>Zaman Dilimi Karmaşası:</strong> <code>Date</code> sınıfı, zaman dilimi bilgisini doğrudan desteklemez. <code>Calendar</code> ise bu konuda karmaşık bir yapıya sahiptir.</p></li>
 <li><p><strong>API Tasarım Sorunları:</strong> Aylar 0’dan başlar (Ocak = 0), yıllar 1900’den itibaren sayılır. Bu, sürekli hata kaynağıdır.</p></li>
 </ol>
-</section>
-<section id="kavram-yeni-apinin-felsefesi" class="level4">
-<h4>Kavram: Yeni API’nin Felsefesi</h4>
+<p><img src="../assets/images/mermaid-001.png" alt="Mermaid Diyagram 1" />
+#### Kavram: Yeni API’nin Felsefesi</p>
 <p>Java 8 ile gelen <code>java.time</code> paketi, aşağıdaki temel prensipler üzerine inşa edilmiştir:</p>
 <ul>
 <li><strong>Immutable (Değiştirilemez):</strong> Tüm sınıflar immutable’dır. Bir kez oluşturulduktan sonra değiştirilemezler.</li>
@@ -208,9 +211,8 @@ Konu: Yeni API ile şu anki tarihi yazdırma
 <li><strong><code>LocalTime</code>:</strong> Sadece zaman bilgisi (saat, dakika, saniye, nanosaniye) içerir. Mesai başlangıç saati, yemek molası gibi durumlar için kullanılır.</li>
 <li><strong><code>LocalDateTime</code>:</strong> Hem tarih hem zaman bilgisini bir arada tutar. Etkinlik başlangıcı, uçuş saati gibi durumlar için idealdir.</li>
 </ul>
-</section>
-<section id="örnek-sınıfların-oluşturulması-ve-kullanımı" class="level4">
-<h4>Örnek: Sınıfların Oluşturulması ve Kullanımı</h4>
+<p><img src="../assets/images/mermaid-002.png" alt="Mermaid Diyagram 2" />
+#### Örnek: Sınıfların Oluşturulması ve Kullanımı</p>
 <!-- CODE_META
 Dosya: TemelSiniflar.java
 Konu: LocalDate, LocalTime, LocalDateTime kullanımı
@@ -366,9 +368,8 @@ Konu: Kullanıcıdan alınan bilgilerle LocalDateTime oluşturma
 </tr>
 </tbody>
 </table>
-</section>
-<section id="örnek-formatlama-ve-parse-etme" class="level4">
-<h4>Örnek: Formatlama ve Parse Etme</h4>
+<p><img src="../assets/images/mermaid-003.png" alt="Mermaid Diyagram 3" />
+#### Örnek: Formatlama ve Parse Etme</p>
 <!-- CODE_META
 Dosya: TarihFormatlama.java
 Konu: DateTimeFormatter ile formatlama ve parse etme
@@ -499,9 +500,8 @@ Konu: Kullanıcı girdisini parse edip farklı formatta gösterme
 <li><strong><code>Period</code>:</strong> Tarih tabanlı farklar için (yıl, ay, gün)</li>
 <li><strong><code>Duration</code>:</strong> Zaman tabanlı farklar için (saat, dakika, saniye, nanosaniye)</li>
 </ul>
-</section>
-<section id="örnek-tarihzaman-hesaplamaları" class="level4">
-<h4>Örnek: Tarih/Zaman Hesaplamaları</h4>
+<p><img src="../assets/images/mermaid-004.png" alt="Mermaid Diyagram 4" />
+#### Örnek: Tarih/Zaman Hesaplamaları</p>
 <!-- CODE_META
 Dosya: TarihHesaplamalari.java
 Konu: Tarih ve zaman hesaplamaları
@@ -642,9 +642,8 @@ Konu: İki tarih arasındaki farkı hesaplama
 <section id="kavram-chronounit-ile-esnek-hesaplamalar" class="level4">
 <h4>Kavram: ChronoUnit ile Esnek Hesaplamalar</h4>
 <p><code>ChronoUnit</code> enum’u, <code>Period</code> ve <code>Duration</code>’a alternatif olarak daha esnek ve okunabilir bir hesaplama yöntemi sunar.</p>
-</section>
-<section id="örnek-zaman-dilimleri-ve-gelişmiş-hesaplamalar" class="level4">
-<h4>Örnek: Zaman Dilimleri ve Gelişmiş Hesaplamalar</h4>
+<p><img src="../assets/images/mermaid-005.png" alt="Mermaid Diyagram 5" />
+#### Örnek: Zaman Dilimleri ve Gelişmiş Hesaplamalar</p>
 <!-- CODE_META
 Dosya: ZamanDilimleri.java
 Konu: Zaman dilimleri ve ChronoUnit kullanımı
