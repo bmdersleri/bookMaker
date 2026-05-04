@@ -40,7 +40,7 @@ RETRY_DELAYS = [5, 15, 45]  # saniye (ustel backoff)
 PROGRESS_INTERVAL = 5  # saniye
 
 # Proje kokunu bul
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 
 # Stdout/stderr encoding (Windows icin)

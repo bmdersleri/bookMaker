@@ -1,7 +1,7 @@
 # SESSION
 
 Bu dosya her oturum sonunda güncellenir. Yeni oturumda **sadece bu dosyayı** oku.
-Detaylı bağlam: `RESUME.md` | Optimizasyonlar: `FAULT.md` | Hedefler: `TODO.md`
+Detaylı bağlam: `resume.md` | Optimizasyonlar: `fault.md` | Hedefler: `todo.md`
 
 ---
 

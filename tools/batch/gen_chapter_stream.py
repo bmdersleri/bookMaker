@@ -2,7 +2,7 @@
 import sys, time, json, httpx
 from pathlib import Path
 
-root = Path(__file__).resolve().parent.parent
+root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(root))
 
 from bookmaker.generation.postprocess import process as postprocess

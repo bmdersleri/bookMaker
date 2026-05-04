@@ -2,10 +2,10 @@
 
 Bu dosya `bookMaker` yazılımının tüm geliştirme aşamalarını, her aşamada yapılacak işleri, üretilecek çıktıları ve kabul kriterlerini tanımlar.
 
-> **Oturum takibi için:** `SESSION.md` — aktif faz, tamamlananlar, sıradaki görevler.
+> **Oturum takibi için:** `session.md` — aktif faz, tamamlananlar, sıradaki görevler.
 > Bu dosyadaki `[ ]` kutucukları görev tamamlandığında `[x]` olarak işaretlenir.
 
-Kaynak dokümanlar: `CODING_PLAN.md`, `TODO.md`, `CHAPTER_SPEC.md`, `CHAPTER_AUTHORING_WORKFLOW.md`.
+Kaynak dokümanlar: `coding_plan.md`, `todo.md`, `chapter_spec.md`, `chapter_authoring_workflow.md`.
 
 ---
 

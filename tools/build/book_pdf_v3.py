@@ -13,7 +13,7 @@ import sys
 import subprocess
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 INPUT_MD = ROOT / "build" / "output" / "java-programlamaya-giris.md"
 IMAGES_DIR = ROOT / "build" / "output" / "images"
 OUTPUT_DIR = ROOT / "build" / "output"

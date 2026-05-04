@@ -2,7 +2,7 @@
 import sys
 from pathlib import Path
 
-root = Path(__file__).resolve().parent.parent
+root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(root))
 
 from bookmaker.generation.pipeline import GenerationPipeline

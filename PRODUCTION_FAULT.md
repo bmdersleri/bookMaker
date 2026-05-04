@@ -24,7 +24,7 @@ Production pipeline üç aşamalıdır:
 |------|-------|
 | **Öncelik** | 🟡 Orta |
 | **Çözüm tarihi** | 2026-05-04 |
-| **Çözüm detayı** | `FAULT.md` → F-007 |
+| **Çözüm detayı** | `fault.md` → F-007 |
 
 **Sorun:** 4 Mermaid bloğu mmdc ile render edilemedi (mermaid-008, 021, 026, 031). Sebepler: Mermaid'de özel anlamlı karakterler (`()`, `"`, `<br/>`).
 

@@ -28,17 +28,17 @@
       "Bash(.venv\\\\Scripts\\\\python.exe *)",
       "PowerShell(.venv\\\\Scripts\\\\python.exe -m bookmaker --version 2>&1)",
       "PowerShell(uv run *)",
-      "Bash(git -C D:/bookMaker add -A)",
-      "Bash(git -C D:/bookMaker commit -m \"faz-0: pyproject.toml, paket iskeleti, CLI, testler, justfile\")",
-      "Bash(git -C D:/bookMaker rm -r --cached \"src/bookmaker/__pycache__\" \"src/bookmaker/core/__pycache__\" \"tests/__pycache__\" \"tests/cli/__pycache__\" \"tests/unit/__pycache__\")",
-      "Bash(git -C D:/bookMaker add .gitignore)",
-      "Bash(git -C D:/bookMaker commit -m \"add .gitignore, remove cached pycache\")",
-      "Bash(git -C D:/bookMaker add SESSION.md .gitignore)",
-      "Bash(git -C D:/bookMaker commit -m \"session: faz-0 tamamlandi, faz-1 siradaki gorevler guncellendi\")",
+      "Bash(git -C D:/bookMaker_Deepseek add -A)",
+      "Bash(git -C D:/bookMaker_Deepseek commit -m \"faz-0: pyproject.toml, paket iskeleti, CLI, testler, justfile\")",
+      "Bash(git -C D:/bookMaker_Deepseek rm -r --cached \"src/bookmaker/__pycache__\" \"src/bookmaker/core/__pycache__\" \"tests/__pycache__\" \"tests/cli/__pycache__\" \"tests/unit/__pycache__\")",
+      "Bash(git -C D:/bookMaker_Deepseek add .gitignore)",
+      "Bash(git -C D:/bookMaker_Deepseek commit -m \"add .gitignore, remove cached pycache\")",
+      "Bash(git -C D:/bookMaker_Deepseek add SESSION.md .gitignore)",
+      "Bash(git -C D:/bookMaker_Deepseek commit -m \"session: faz-0 tamamlandi, faz-1 siradaki gorevler guncellendi\")",
       "Bash(uv run *)",
-      "Bash(git -C D:/bookMaker commit -m \"faz-1: Pydantic modelleri, SQLite depolama, bookmaker init komutu\")",
-      "Bash(git -C D:/bookMaker add SESSION.md)",
-      "Bash(git -C D:/bookMaker commit -m \"session: faz-1 tamamlandi, faz-2 siradaki gorevler\")"
+      "Bash(git -C D:/bookMaker_Deepseek commit -m \"faz-1: Pydantic modelleri, SQLite depolama, bookmaker init komutu\")",
+      "Bash(git -C D:/bookMaker_Deepseek add SESSION.md)",
+      "Bash(git -C D:/bookMaker_Deepseek commit -m \"session: faz-1 tamamlandi, faz-2 siradaki gorevler\")"
     ]
   }
 }

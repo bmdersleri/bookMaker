@@ -2,7 +2,7 @@
 import sys, time
 from pathlib import Path
 
-root = Path(__file__).resolve().parent.parent
+root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(root))
 
 from bookmaker.llm.openai import OpenAICompatibleClient

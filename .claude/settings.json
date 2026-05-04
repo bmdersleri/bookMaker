@@ -1,6 +1,6 @@
 {
   "statusLine": {
     "type": "command",
-    "command": "sh 'D:/bookMaker/.claude/statusline-command.sh'"
+    "command": "sh 'D:/bookMaker_Deepseek/.claude/statusline-command.sh'"
   }
 }

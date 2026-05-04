@@ -63,7 +63,7 @@ switch ($Command.ToLower()) {
         $batchFlag = if ($batchNum) { "--batch $batchNum" } else { "" }
 
         Write-Step "Batch $batchNum baslatiliyor... (extra: $extraArgs)"
-        $cmd = "& `"$PY`" tools/batch_v2.py $batchFlag $extraArgs"
+        $cmd = "& `"$PY`" tools/batch/batch_v2.py $batchFlag $extraArgs"
         Write-Host "  $cmd" -ForegroundColor Gray
         Invoke-Expression $cmd
     }
@@ -78,7 +78,7 @@ switch ($Command.ToLower()) {
         if ($Args -contains "--docx") { $format = "docx" }
 
         Write-Step "Kitap birlestiriliyor... (format: $format)"
-        & $PY tools/book_build.py --format $format
+        & $PY tools/build/book_build.py --format $format
     }
 
     "pdf" {
@@ -87,7 +87,7 @@ switch ($Command.ToLower()) {
             exit 1
         }
         Write-Step "PDF uretiliyor (pandoc + xelatex)..."
-        & $PY tools/book_pdf_v3.py
+        & $PY tools/build/book_pdf_v3.py
     }
 
     "status" {

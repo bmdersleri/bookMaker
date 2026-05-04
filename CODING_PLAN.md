@@ -2,7 +2,7 @@
 
 Bu belge, kodlamaya baslamadan once kilitlenen teknik kararları, mimari taslagi, modül sinirlarini, veri modellerini, CLI/GUI yaklasimini ve ilk MVP uygulama sirasini tanimlar.
 
-Bu dosya kod yazimina baslarken ana referans kabul edilecektir. `TODO.md` urun hedeflerini, `CHAPTER_SPEC.md` bolum Markdown sozlesmesini, `CHAPTER_AUTHORING_WORKFLOW.md` bolum yazim akisini, `RESUME.md` ise oturumlar arasi kisa hafizayi tutar. `CODING_PLAN.md` bunlari uygulama mimarisine cevirir.
+Bu dosya kod yazimina baslarken ana referans kabul edilecektir. `todo.md` urun hedeflerini, `chapter_spec.md` bolum Markdown sozlesmesini, `chapter_authoring_workflow.md` bolum yazim akisini, `resume.md` ise oturumlar arasi kisa hafizayi tutar. `coding_plan.md` bunlari uygulama mimarisine cevirir.
 
 ## 1. Kilitlenmis Kararlar
 
@@ -874,7 +874,7 @@ Tam metin promptu LLM'e sunlari acikca soylemelidir:
 
 - Cikti Markdown olacak.
 - Basliklar elle numaralandirilmayacak.
-- `CHAPTER_SPEC.md` yapisi izlenecek.
+- `chapter_spec.md` yapisi izlenecek.
 - Her dosyaya cikarilacak/test edilecek kod blogundan hemen once `CODE_META` uretilecek.
 - `CODE_META` kod fence icine yazilmayacak.
 - Bilerek hatali ornekler `broken_example`, `intentional_mismatch: true`, `validation_mode: review_only`, `test: skip` ile isaretlenecek.

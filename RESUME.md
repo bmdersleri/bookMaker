@@ -1,6 +1,6 @@
 # RESUME
 
-> **Yeni oturumda once `SESSION.md` oku — 60 saniyede hazir olursun.**
+> **Yeni oturumda once `session.md` oku — 60 saniyede hazir olursun.**
 > Bu dosya gecmis kararlarin ve baglamin arsividir; degismez.
 
 Bu dosya yeni bir sohbet veya sifir baglamla baslandiginda `bookMaker` projesi hakkinda bilinmesi gerekenleri ozetler.
@@ -107,11 +107,11 @@ Istenen sistem:
 
 ## Anahtar Dosyalar
 
-- `SESSION.md` — oturum takibi (**once bunu oku**)
-- `KULLANIM_KILAVUZU.md` — tum CLI komutlari + batch_v2.py
-- `FAULT.md` — hata listesi + P1-P12 iyilestirmeleri
-- `MASTER_PLAN.md` — faz plani
-- `TODO.md` — urun hedefleri
+- `session.md` — oturum takibi (**once bunu oku**)
+- `kullanim_kilavuzu.md` — tum CLI komutlari + batch_v2.py
+- `fault.md` — hata listesi + P1-P12 iyilestirmeleri
+- `master_plan.md` — faz plani
+- `todo.md` — urun hedefleri
 - `src/bookmaker/generation/postprocess.py` — son duzeltmeler
 - `tools/batch_v2.py` — optimize edilmis batch uretim (P1-P12)
 - `tools/book_pdf_v3.py` — PDF uretimi (pandoc + xelatex)

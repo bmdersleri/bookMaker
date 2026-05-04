@@ -1,6 +1,6 @@
 # Chapter Authoring Workflow v0.1
 
-Bu belge, `bookMaker` icinde tek bir bolumun fikir/tohum asamasindan `CHAPTER_SPEC.md` ile uyumlu onayli Markdown bolumune nasil donusecegini tanimlar.
+Bu belge, `bookMaker` icinde tek bir bolumun fikir/tohum asamasindan `chapter_spec.md` ile uyumlu onayli Markdown bolumune nasil donusecegini tanimlar.
 
 Ana tasarim kararlari:
 
@@ -195,7 +195,7 @@ Girdi:
 - `book_profile`
 - `book_architecture`
 - `chapter_seed`
-- `CHAPTER_SPEC.md`
+- `chapter_spec.md`
 - prompt template
 
 Cikti:
@@ -399,7 +399,7 @@ Girdi:
 - `book_architecture`
 - `chapter_seed`
 - `approved_outline`
-- `CHAPTER_SPEC.md`
+- `chapter_spec.md`
 - `sample/sample_chapter.md` referans ozeti
 
 Cikti:
@@ -409,7 +409,7 @@ Cikti:
 Prompt kurallari:
 
 - Markdown uret.
-- `CHAPTER_SPEC.md` kurallarina uy.
+- `chapter_spec.md` kurallarina uy.
 - Basliklari elle numaralandirma.
 - Kod bloklarindan hemen once `CODE_META` uret; metadata'yi kod blogunun icine yazma.
 - Her `CODE_META` icin `code_id`, `extension`, `kind`, `title`, `file`, `main_class`, `link`, `qrfile`, `extract`, `test`, `github`, `qr_policy`, `intentional_mismatch`, `validation_mode` alanlarini doldur.
@@ -456,7 +456,7 @@ Amaç: LLM ciktisindeki mekanik uyumsuzluklari onaydan once islenebilir hale get
 Girdi:
 
 - `full_text_response`
-- `CHAPTER_SPEC.md`
+- `chapter_spec.md`
 
 Cikti:
 
@@ -499,7 +499,7 @@ Girdi:
 - `normalized_chapter`
 - `chapter_seed`
 - `approved_outline`
-- `CHAPTER_SPEC.md`
+- `chapter_spec.md`
 
 Cikti:
 
