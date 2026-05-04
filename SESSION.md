@@ -46,7 +46,7 @@ PS5.1          : KULLANILMAYACAK
 
 | Dosya | Boyut | Icerik |
 |-------|-------|--------|
-| `build/output/java-programlamaya-giris.docx` | **210 KB** | Tum kitap + TOC (gor sellers ayri) |
+| `build/output/java-programlamaya-giris.docx` | **1.2 MB** | 277 sayfa, TOC + **57/57 PNG gomulu** |
 | `build/output/java-programlamaya-giris.md` | **585 KB** | Birlestirilmis Markdown |
 | `build/output/images/*.png` | **~1,060 KB** | 58 Mermaid diyagrami (58/58 tamam) |
 | `build/output/java-programlamaya-giris.pdf` | **1.9 MB** | 347 sayfa, TOC + 57/57 PNG |
@@ -119,10 +119,17 @@ cdgo     # alias -> D:\bookMaker_Deepseek
 - [x] PS7 zorunlu yapilandirma ✅
 - [x] GitHub push (deepseek branch) ✅
 
-### Siradaki Gorevler
-- [ ] DOCX'e PNG gomme (production pipeline extractor hatasi)
-- [ ] PDF sayfa sayisi dogrulama
+### TAMAMLANANLAR (Bu Oturum — Tumu Tamamlandi)
+- [x] F-007: 4/58 Mermaid parse hatasi duzeltildi ✅
+- [x] F-008: Bolum uzunlugu incelendi, kabul edildi ✅
+- [x] PS7 zorunlu yapilandirma ✅
+- [x] GitHub push (deepseek branch, 3 commit) ✅
+- [x] DOCX PNG gomme (57/57, 1.2 MB) ✅
+- [x] PDF guncelleme (57/57 PNG, 347 sayfa, 1.9 MB) ✅
+
+### Siradaki (Istege Bagli)
 - [ ] Kitap duzeyinde validasyon (`bookmaker check book`)
+- [ ] GitHub Pages icin web yayini
 
 ---
 
