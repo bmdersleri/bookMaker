@@ -1,15 +1,17 @@
 # =============================================================================
 # bookMaker — GitHub Pages Deploy Workflow
 # Tetik: her push -> deepseek branch
-# Is: pandoc ile HTML build -> gh-pages branch'ine deploy
+# Is: pandoc ile HTML build -> GitHub Pages deploy
 # =============================================================================
 name: Deploy GitHub Pages
 
 on:
   push:
     branches: [deepseek]
-
   workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 permissions:
   contents: read
@@ -39,16 +41,13 @@ jobs:
         run: python tools/build/pages_build.py
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./docs
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
