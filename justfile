@@ -1,3 +1,7 @@
+# bookMaker — Justfile
+# Kullanim: just <recipe>
+# Kurulum: winget install casey.just  veya  scoop install just
+
 dev:
     uv sync
 
@@ -33,3 +37,43 @@ studio:
 
 help:
     uv run python -m bookmaker --help
+
+# === bookMaker Ek Recipes ===
+
+# Kitap birleştir + DOCX
+build-book:
+    uv run python tools/book_build.py --format both
+
+# Batch üretim (combined prompt, varsayılan)
+batch n:
+    uv run python tools/batch_v2.py --batch {{n}}
+
+# Batch üretim (iki aşamalı)
+batch-two-step n:
+    uv run python tools/batch_v2.py --two-step --batch {{n}}
+
+# Git durumu
+status:
+    git status --short
+
+# Git log (son N)
+log n=10:
+    git log --oneline -{{n}}
+
+# Kitap bütünlük kontrolü
+check-book:
+    uv run python tools/book_build.py --format md 2>&1 | findstr "chars"
+
+# Tüm dosyaları stage'le
+stage:
+    git add -A
+
+# Stage + commit + push
+push m="auto":
+    git add -A
+    git commit -m {{m}}
+    git push origin deepseek
+
+# Branch bilgisi
+branch:
+    git branch -a
