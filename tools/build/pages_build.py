@@ -104,7 +104,7 @@ def build_html() -> bool:
         "--toc",
         "--toc-depth", "3",
         "--metadata", f"title=Java Programlamaya Giris",
-        f"--css={css_path}",
+        "--css=assets/style.css",
         "--highlight-style", "pygments",
         "--section-divs",
         "--wrap=preserve",
