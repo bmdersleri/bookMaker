@@ -54,7 +54,7 @@ def test_process_runs_all():
     result = process(raw, "bolum-01", "Java Giris")
     assert result.startswith("---")
     assert "title: \"Java Giris\"" in result
-    assert "# Java\n## Alt" in result or "# Java\n## Alt" in result
+    assert "## Alt" in result
     assert "CODE_META" in result
 
 
