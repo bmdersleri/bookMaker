@@ -1,1 +1,282 @@
-<!DOCTYPE html><html lang='tr'><head><meta charset='UTF-8'><title>bookMaker Studio</title><style>body{font-family:sans-serif;max-width:800px;margin:auto;padding:2em;}h1{color:#333;}.card{border:1px solid #ddd;padding:1em;margin:1em 0;border-radius:8px;}</style></head><body><h1>📚 bookMaker Studio</h1><div class='card'><h2>Kitap Bilgisi</h2><p id='info'></p></div><div class='card'><h2>Durum</h2><p id='status'>Yukleniyor...</p></div><script>fetch('/api/status').then(r=>r.json()).then(d=>{document.getElementById('info').textContent=d.book||'Yok';document.getElementById('status').textContent=d.status||'Calisiyor';})</script></body></html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bookMaker Studio</title>
+<link rel="stylesheet" href="/static/styles.css">
+<style>
+.drag-handle{cursor:grab;color:#999;font-size:1.1rem;user-select:none;width:30px}
+.drag-handle:active{cursor:grabbing}
+.chapter-row td{padding:.45rem .5rem;vertical-align:middle}
+.filter-bar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.filter-bar select,.filter-bar input{padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem}
+.filter-bar .result-count{font-size:.8rem;color:var(--muted);margin-left:auto}
+.bulk-bar{display:flex;gap:6px;align-items:center;padding:.5rem 0;font-size:.85rem;color:var(--muted)}
+.bulk-bar .btn{font-size:.78rem}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>bookMaker Studio</h1>
+  <span id="book-title" class="sub">Yukleniyor...</span>
+  <button class="btn success" onclick="openWizard()" style="margin-left:auto;font-size:.8rem">+ Yeni Kitap</button>
+</div>
+
+<div class="container">
+
+<!-- Stats -->
+<div class="stats" id="stats">
+  <div class="stat-card"><div class="num" id="stat-chapters">-</div><div class="lbl">Bölüm</div></div>
+  <div class="stat-card"><div class="num" id="stat-approved">-</div><div class="lbl">Onaylı</div></div>
+  <div class="stat-card"><div class="num" id="stat-stage">-</div><div class="lbl">Pipeline Aşaması</div></div>
+  <div class="stat-card"><div class="num" id="stat-llm">-</div><div class="lbl">LLM</div></div>
+</div>
+
+<!-- Actions -->
+<div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+  <button class="btn outline" onclick="refreshAll()">🔄 Yenile</button>
+  <button class="btn outline" onclick="showLlmConfig()">⚙️ LLM Ayarları</button>
+  <button class="btn outline" onclick="showAllPipeline()">📊 Pipeline Durumu</button>
+</div>
+
+<div id="messages"></div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" data-tab="chapters" onclick="switchTab('chapters')">Bölümler</button>
+  <button class="tab" data-tab="pipeline" onclick="switchTab('pipeline')">Pipeline</button>
+  <button class="tab" data-tab="config" onclick="switchTab('config')">Yapılandırma</button>
+</div>
+
+<!-- TAB: Chapters -->
+<div class="tab-content active" id="tab-chapters">
+  <div class="card">
+    <div class="card-header">
+      <h2>Bölüm Listesi</h2>
+      <span class="badge" id="chapter-count">0</span>
+    </div>
+    <div class="card-body">
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <select onchange="setFilter(this.value)">
+          <option value="all">Tum Durumlar</option>
+          <option value="approved">Onayli</option>
+          <option value="full_text_pasted">Uretildi</option>
+          <option value="enriched">Zenginlastirildi</option>
+          <option value="planned">Planli</option>
+        </select>
+        <input type="text" placeholder="Ara (ID / başlık)..." oninput="setSearch(this.value)" style="min-width:200px">
+        <span class="result-count" id="result-count"></span>
+      </div>
+
+      <!-- Bulk actions -->
+      <div class="bulk-bar" id="bulk-bar">
+        <input type="checkbox" onchange="selectAll(this.checked)" title="Tumunu sec">
+        <span>Secili: <strong id="bulk-count">0</strong></span>
+        <button class="btn btn-sm primary bulk-only" style="display:none" onclick="bulkAction('generate')">Toplu Uret</button>
+        <button class="btn btn-sm outline bulk-only" style="display:none" onclick="bulkAction('build')">Toplu Build</button>
+        <button class="btn btn-sm outline bulk-only" style="display:none" onclick="bulkAction('reset')">Sifirla</button>
+      </div>
+
+      <div id="chapter-loading" class="loading"><span class="spinner"></span> Yukleniyor...</div>
+      <div id="chapter-error" class="error hidden"></div>
+      <div style="overflow-x:auto">
+        <table id="chapter-table" class="hidden">
+          <thead>
+            <tr>
+              <th style="width:30px"></th>
+              <th style="width:30px"></th>
+              <th onclick="setSort('chapter_id')" style="cursor:pointer;width:100px">ID <span id="sort-icon-id"></span></th>
+              <th onclick="setSort('title')" style="cursor:pointer">Baslik <span id="sort-icon-title"></span></th>
+              <th onclick="setSort('current_step')" style="cursor:pointer;width:110px">Durum <span id="sort-icon-step"></span></th>
+              <th onclick="setSort('score')" style="cursor:pointer;width:70px">Skor <span id="sort-icon-score"></span></th>
+              <th style="width:230px">Islem</th>
+            </tr>
+          </thead>
+          <tbody id="chapter-body"></tbody>
+        </table>
+      </div>
+      <div id="pagination" style="display:flex;gap:4px;justify-content:center;margin-top:1rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Pipeline -->
+<div class="tab-content" id="tab-pipeline">
+  <div class="card">
+    <div class="card-header"><h2>Pipeline Kontrol</h2></div>
+    <div class="card-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">SPEC → VALIDATE → SEED → NORMALIZE → ENRICH → ASSEMBLE</p>
+      <div class="config-form">
+        <div class="form-group"><label>Bölüm ID</label><input type="text" id="gen-chapter-id" placeholder="bolum-XX" value="bolum-04"></div>
+        <div class="form-group"><label>Başlık</label><input type="text" id="gen-title" placeholder="Bölüm başlığı"></div>
+        <div class="form-group"><label>Kavramlar (virgülle ayır)</label><input type="text" id="gen-concepts" placeholder="Java döngüler, for, while, do-while"></div>
+        <button class="btn primary" onclick="runGeneration()">🚀 Pipeline'ı Çalıştır</button>
+      </div>
+      <div id="gen-output" class="hidden" style="margin-top:1rem">
+        <div class="gen-progress" style="margin-bottom:.5rem">
+          <span id="gen-step">Hazirlaniyor...</span>
+          <div class="bar"><div class="bar-fill" id="gen-bar" style="width:0%"></div></div>
+        </div>
+        <pre id="gen-result" style="font-size:.8rem;background:#f3f4f6;padding:.8rem;border-radius:6px;max-height:200px;overflow-y:auto"></pre>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h2>Pipeline State</h2></div>
+    <div class="card-body">
+      <pre id="pipeline-state-view" style="font-size:.8rem;background:#f3f4f6;padding:.8rem;border-radius:6px;max-height:300px;overflow-y:auto">Yukleniyor...</pre>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Config -->
+<div class="tab-content" id="tab-config">
+  <div class="card">
+    <div class="card-header"><h2>LLM Yapilandirmasi</h2></div>
+    <div class="card-body">
+      <div class="config-form">
+        <div class="form-group"><label>Sağlayıcı</label>
+          <select id="llm-provider"><option value="deepseek">DeepSeek</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option></select>
+        </div>
+        <div class="form-group"><label>API Anahtari</label><input type="password" id="llm-key" placeholder="sk-..."></div>
+        <div class="form-group"><label>Model</label><input type="text" id="llm-model" placeholder="deepseek-chat" value="deepseek-chat"></div>
+        <button class="btn primary" onclick="saveLlmConfig()">💾 Kaydet</button>
+      </div>
+      <div id="llm-current" style="margin-top:1rem;font-size:.85rem;color:var(--muted)">Yukleniyor...</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="tab-content" id="tab-build">
+  <div class="card">
+    <div class="card-header"><h2>Kod Cikarma</h2></div>
+    <div class="card-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Java kod bloklarini .java dosyasi olarak ayiklayip build/code/ altina kaydeder.</p>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="extract-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem;min-width:120px">
+          <option value="">Tum Bolumler</option>
+        </select>
+        <button class="btn primary" onclick="runExtractCode()">Kod Cikar</button>
+      </div>
+      <div id="extract-result" style="margin-top:.5rem;font-size:.85rem"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Diyagram Render (Mermaid -> PNG)</h2></div>
+    <div class="card-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Mermaid semalarini mmdc ile PNG goruntuye donusturur.</p>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="mermaid-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem;min-width:120px">
+          <option value="">Tum Bolumler</option>
+        </select>
+        <button class="btn primary" onclick="runRenderMermaid()">PNG Render</button>
+      </div>
+      <div id="mermaid-result" style="margin-top:.5rem;font-size:.85rem"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Kitap Birlestirme ve Export</h2></div>
+    <div class="card-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Tum bolumleri tek .md dosyada birlestir ve DOCX/PDF/EPUB/HTML olarak disa aktar.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn outline" onclick="runAssemble()">Birlestir (.md)</button>
+        <select id="export-format" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem">
+          <option value="docx">DOCX</option>
+          <option value="pdf">PDF</option>
+          <option value="epub">EPUB</option>
+          <option value="html">HTML</option>
+        </select>
+        <button class="btn primary" onclick="runExport()">Export Et</button>
+      </div>
+      <div id="export-result" style="margin-top:.5rem;font-size:.85rem"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Yedekleme</h2></div>
+    <div class="card-body">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Projenin .zip yedegini olusturur veya yedekten geri yukler.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn primary" onclick="runBackup()">Yedek Olustur</button>
+      </div>
+      <div id="backup-result" style="margin-top:.5rem;font-size:.85rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Quality -->
+<div class="tab-content" id="tab-quality">
+  <div class="card">
+    <div class="card-header"><h2>Kalite Raporu</h2><span class="badge" id="quality-score-avg">-</span></div>
+    <div class="card-body">
+      <div id="quality-loading" class="loading"><span class="spinner"></span> Yukleniyor...</div>
+      <div style="overflow-x:auto">
+        <table id="quality-table" class="hidden">
+          <thead><tr>
+            <th>Bolum</th>
+            <th onclick="sortQuality('score')" style="cursor:pointer">Skor</th>
+            <th onclick="sortQuality('decision')" style="cursor:pointer">Karar</th>
+            <th onclick="sortQuality('errors')" style="cursor:pointer">Hata</th>
+            <th onclick="sortQuality('warnings')" style="cursor:pointer">Uyari</th>
+            <th>Islem</th>
+          </tr></thead>
+          <tbody id="quality-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="card">
+    <div class="card-header"><h2>Kitap Istatistikleri</h2></div>
+    <div class="card-body">
+      <div id="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem">
+        <div class="stat-card"><div class="num" id="stat-total-words">-</div><div class="lbl">Toplam Kelime</div></div>
+        <div class="stat-card"><div class="num" id="stat-total-code">-</div><div class="lbl">Kod Blogu</div></div>
+        <div class="stat-card"><div class="num" id="stat-total-mermaid">-</div><div class="lbl">Diyagram</div></div>
+        <div class="stat-card"><div class="num" id="stat-reading-time">-</div><div class="lbl">Okuma Suresi</div></div>
+        <div class="stat-card"><div class="num" id="stat-chapter-count">-</div><div class="lbl">Bolum</div></div>
+        <div class="stat-card"><div class="num" id="stat-avg-words">-</div><div class="lbl">Ort. Kelime</div></div>
+      </div>
+      <div id="word-distribution" style="margin-top:1rem"></div>
+    </div>
+  </div>
+
+  <!-- Arama -->
+  <div class="card">
+    <div class="card-header"><h2>Tam Metin Arama</h2></div>
+    <div class="card-body">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="search-query" placeholder="Arama kelimesi..." style="min-width:200px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem">
+        <select id="search-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem">
+          <option value="">Tum Bolumler</option>
+        </select>
+        <label style="font-size:.8rem"><input type="checkbox" id="search-regex"> Regex</label>
+        <button class="btn primary" onclick="runSearch()">Ara</button>
+      </div>
+      <div id="search-results" style="margin-top:.5rem;font-size:.85rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay hidden" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modal-title">Baslik</h3>
+      <button class="close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

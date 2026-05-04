@@ -10,6 +10,7 @@ from bookmaker.commands.init import init_command
 from bookmaker.commands.llm_commands import llm_app as llm_typer
 from bookmaker.commands.manifest import manifest_app as manifest_typer
 from bookmaker.commands.production import production_app as production_typer
+from bookmaker.commands.studio import studio_app as studio_typer
 
 app = typer.Typer(
     name="bookmaker",
@@ -35,6 +36,7 @@ app.add_typer(production_typer, name="production")
 app.add_typer(github_typer, name="github")
 app.add_typer(llm_typer, name="llm")
 app.add_typer(generate_typer, name="generate")
+app.add_typer(studio_typer, name="studio")
 app.command("init")(init_command)
 
 

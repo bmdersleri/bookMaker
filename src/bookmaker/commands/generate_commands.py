@@ -9,7 +9,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from bookmaker.generation.pipeline import GenerationPipeline
+from bookmaker.generation.pipeline import ChapterGenerator as GenerationPipeline
 from bookmaker.llm.config import LLMConfig
 
 console = Console()

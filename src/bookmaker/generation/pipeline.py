@@ -90,7 +90,7 @@ class ChapterGenerator:
             chapter_title=chapter_title, concepts=concepts,
             outline=outline, chapter_no=chapter_no)
         model = self.llm_config.model
-        print(f"  [SEED:{model_name}] {chapter_title}...")
+        print(f"  [SEED:{model}] {chapter_title}...")
         t0 = time.time()
         raw = self.client.generate_text(SYSTEM_AUTHOR, user_prompt)
         elapsed = time.time() - t0
@@ -152,7 +152,7 @@ class ChapterGenerator:
             return {}
 
         model = self.llm_config.model
-        print(f"  [ENRICH:{model_name}] {len(pending)} eksik, paralel...")
+        print(f"  [ENRICH:{model}] {len(pending)} eksik, paralel...")
         enriched, start = {}, time.time()
 
         with concurrent.futures.ThreadPoolExecutor(
