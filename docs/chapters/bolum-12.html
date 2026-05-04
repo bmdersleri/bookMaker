@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Icerdelenmis Siniflar</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Icerdelenmis Siniflar</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#bölüm-12-tarih-ve-zaman-islemleri" id="toc-bölüm-12-tarih-ve-zaman-islemleri">Bölüm 12: Tarih ve Zaman Islemleri</a>
+<ul>
+<li><a href="#java-8-ile-tarih-ve-zaman-yönetimi" id="toc-java-8-ile-tarih-ve-zaman-yönetimi">12.1 Java 8+ ile Tarih ve Zaman Yönetimi</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="bölüm-12-tarih-ve-zaman-islemleri" class="level1">
+<h1>Bölüm 12: Tarih ve Zaman Islemleri</h1>
+<hr />
+<section id="java-8-ile-tarih-ve-zaman-yönetimi" class="level2">
+<h2>12.1 Java 8+ ile Tarih ve Zaman Yönetimi</h2>
+<p>Java’da tarih ve zaman işlemleri, dilin en çok eleştirilen yönlerinden biriydi. Java 8 ile gelen <code>java.time</code> paketi, bu alanda devrim niteliğinde bir yenilik getirdi. Bu bölümde, modern Java’nın tarih ve zaman yönetimini nasıl kolaylaştırdığını, temel sınıfları ve pratik kullanım senaryolarını öğreneceksiniz.</p>
+<blockquote>
+<p>💡 <strong>Pedagojik Not:</strong> Bu bölümdeki tüm kod örnekleri Java 8 veya üzeri sürümlerde çalışmaktadır. Eğer eski bir Java sürümü kullanıyorsanız, öncelikle güncelleme yapmanız önerilir.</p>
+</blockquote>
+<hr />
+<section id="tarih-ve-zaman-apisine-giriş-java.time-paketi" class="level3">
+<h3>1. Tarih ve Zaman API’sine Giriş: <code>java.time</code> Paketi</h3>
+<section id="kavram-eski-apinin-sorunları" class="level4">
+<h4>Kavram: Eski API’nin Sorunları</h4>
+<p>Java’nın ilk günlerinden beri var olan <code>java.util.Date</code> ve <code>java.util.Calendar</code> sınıfları, yıllar boyunca geliştiricilere büyük zorluklar çıkardı. Bu sorunları maddeler halinde inceleyelim:</p>
+<ol type="1">
+<li><p><strong>Thread Güvenliği Eksikliği:</strong> <code>Date</code> ve <code>Calendar</code> sınıfları mutable (değiştirilebilir) yapıdadır. Bu, çoklu iş parçacığı ortamlarında beklenmedik hatalara yol açar.</p></li>
+<li><p><strong>Zaman Dilimi Karmaşası:</strong> <code>Date</code> sınıfı, zaman dilimi bilgisini doğrudan desteklemez. <code>Calendar</code> ise bu konuda karmaşık bir yapıya sahiptir.</p></li>
+<li><p><strong>API Tasarım Sorunları:</strong> Aylar 0’dan başlar (Ocak = 0), yıllar 1900’den itibaren sayılır. Bu, sürekli hata kaynağıdır.</p></li>
+</ol>
+</section>
+<section id="kavram-yeni-apinin-felsefesi" class="level4">
+<h4>Kavram: Yeni API’nin Felsefesi</h4>
+<p>Java 8 ile gelen <code>java.time</code> paketi, aşağıdaki temel prensipler üzerine inşa edilmiştir:</p>
+<ul>
+<li><strong>Immutable (Değiştirilemez):</strong> Tüm sınıflar immutable’dır. Bir kez oluşturulduktan sonra değiştirilemezler.</li>
+<li><strong>Thread-Safe:</strong> Immutable yapı sayesinde doğal olarak thread-safe’dir.</li>
+<li><strong>ISO 8601 Uyumlu:</strong> Uluslararası tarih ve zaman standardına tam uyumludur.</li>
+<li><strong>Açık ve Anlaşılır:</strong> Sınıf isimleri ve metotlar, ne yaptıklarını net bir şekilde ifade eder.</li>
+</ul>
+</section>
+<section id="örnek-eski-ve-yeni-api-karşılaştırması" class="level4">
+<h4>Örnek: Eski ve Yeni API Karşılaştırması</h4>
+<p>Aşağıdaki örnek, eski ve yeni API arasındaki farkı açıkça göstermektedir:</p>
+<!-- CODE_META
+Dosya: TarihKarsilastirma.java
+Konu: Eski ve yeni API karşılaştırması
+-->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Date</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalDate</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TarihKarsilastirma <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Eski yöntem - java.util.Date</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">@SuppressWarnings</span><span class="op">(</span><span class="st">&quot;deprecation&quot;</span><span class="op">)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Date</span> eskiTarih <span class="op">=</span> <span class="kw">new</span> <span class="bu">Date</span><span class="op">(</span><span class="dv">2023</span><span class="op">,</span> <span class="dv">11</span><span class="op">,</span> <span class="dv">25</span><span class="op">);</span> <span class="co">// Dikkat: Ay 11 = Aralık, yıl 2023 = 123</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Eski API ile: &quot;</span> <span class="op">+</span> eskiTarih<span class="op">);</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Çıktı: Mon Dec 25 00:00:00 TRT 3923 (Yanlış yıl!)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Yeni yöntem - java.time.LocalDate</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        LocalDate yeniTarih <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">2023</span><span class="op">,</span> <span class="dv">12</span><span class="op">,</span> <span class="dv">25</span><span class="op">);</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yeni API ile: &quot;</span> <span class="op">+</span> yeniTarih<span class="op">);</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Çıktı: 2023-12-25 (Doğru ve anlaşılır)</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="uygulama-şu-anki-tarihi-yazdırma" class="level4">
+<h4>Uygulama: Şu Anki Tarihi Yazdırma</h4>
+<p>Aşağıdaki programı yazın ve çalıştırın:</p>
+<!-- CODE_META
+Dosya: SuAnkiTarih.java
+Konu: Yeni API ile şu anki tarihi yazdırma
+-->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalDate</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">format</span><span class="op">.</span><span class="im">DateTimeFormatter</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SuAnkiTarih <span class="op">{</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Şu anki tarihi al</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        LocalDate bugun <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">now</span><span class="op">();</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Varsayılan formatta yazdır (ISO 8601)</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Bugünün tarihi: &quot;</span> <span class="op">+</span> bugun<span class="op">);</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Özel formatta yazdır</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        DateTimeFormatter formatter <span class="op">=</span> DateTimeFormatter<span class="op">.</span><span class="fu">ofPattern</span><span class="op">(</span><span class="st">&quot;dd.MM.yyyy&quot;</span><span class="op">);</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> formatliTarih <span class="op">=</span> bugun<span class="op">.</span><span class="fu">format</span><span class="op">(</span>formatter<span class="op">);</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Formatlı tarih: &quot;</span> <span class="op">+</span> formatliTarih<span class="op">);</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>📝 <strong>Değerlendirme:</strong> Neden yeni API tercih edilmelidir?
+1. <strong>Immutable yapı</strong> sayesinde thread-safe çalışma
+2. <strong>ISO 8601 standardına uyum</strong> sayesinde uluslararası uyumluluk
+3. <strong>Açık ve anlaşılır API</strong> sayesinde daha az hata ve kolay bakım</p>
+</blockquote>
+<hr />
+</section>
+</section>
+<section id="temel-sınıflar-localdate-localtime-localdatetime" class="level3">
+<h3>2. Temel Sınıflar: <code>LocalDate</code>, <code>LocalTime</code>, <code>LocalDateTime</code></h3>
+<section id="kavram-sınıfların-amacı" class="level4">
+<h4>Kavram: Sınıfların Amacı</h4>
+<p>Bu üç sınıf, günlük programlama ihtiyaçlarının %90’ını karşılar. Her biri belirli bir kullanım senaryosu için optimize edilmiştir:</p>
+<ul>
+<li><strong><code>LocalDate</code>:</strong> Sadece tarih bilgisi (yıl, ay, gün) içerir. Doğum günü, tatil tarihi gibi zaman bilgisinin önemsiz olduğu durumlar için idealdir.</li>
+<li><strong><code>LocalTime</code>:</strong> Sadece zaman bilgisi (saat, dakika, saniye, nanosaniye) içerir. Mesai başlangıç saati, yemek molası gibi durumlar için kullanılır.</li>
+<li><strong><code>LocalDateTime</code>:</strong> Hem tarih hem zaman bilgisini bir arada tutar. Etkinlik başlangıcı, uçuş saati gibi durumlar için idealdir.</li>
+</ul>
+</section>
+<section id="örnek-sınıfların-oluşturulması-ve-kullanımı" class="level4">
+<h4>Örnek: Sınıfların Oluşturulması ve Kullanımı</h4>
+<!-- CODE_META
+Dosya: TemelSiniflar.java
+Konu: LocalDate, LocalTime, LocalDateTime kullanımı
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalDate</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalTime</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalDateTime</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">Month</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TemelSiniflar <span class="op">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Şu anki değerleri alma</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        LocalDate bugun <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">now</span><span class="op">();</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        LocalTime suAn <span class="op">=</span> LocalTime<span class="op">.</span><span class="fu">now</span><span class="op">();</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        LocalDateTime bugunVeSaat <span class="op">=</span> LocalDateTime<span class="op">.</span><span class="fu">now</span><span class="op">();</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Bugün: &quot;</span> <span class="op">+</span> bugun<span class="op">);</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Şu an: &quot;</span> <span class="op">+</span> suAn<span class="op">);</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Şu anki tarih ve saat: &quot;</span> <span class="op">+</span> bugunVeSaat<span class="op">);</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Özel değerler oluşturma</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        LocalDate ozelTarih <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">2023</span><span class="op">,</span> Month<span class="op">.</span><span class="fu">DECEMBER</span><span class="op">,</span> <span class="dv">25</span><span class="op">);</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        LocalTime ozelZaman <span class="op">=</span> LocalTime<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">14</span><span class="op">,</span> <span class="dv">30</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        LocalDateTime ozelZamanliTarih <span class="op">=</span> LocalDateTime<span class="op">.</span><span class="fu">of</span><span class="op">(</span>ozelTarih<span class="op">,</span> ozelZaman<span class="op">);</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Özel tarih: &quot;</span> <span class="op">+</span> ozelTarih<span class="op">);</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Özel zaman: &quot;</span> <span class="op">+</span> ozelZaman<span class="op">);</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Özel tarih ve zaman: &quot;</span> <span class="op">+</span> ozelZamanliTarih<span class="op">);</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Parçalara erişim</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">--- Parçalara Erişim ---&quot;</span><span class="op">);</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yıl: &quot;</span> <span class="op">+</span> bugun<span class="op">.</span><span class="fu">getYear</span><span class="op">());</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Ay: &quot;</span> <span class="op">+</span> bugun<span class="op">.</span><span class="fu">getMonth</span><span class="op">());</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Ay (sayı): &quot;</span> <span class="op">+</span> bugun<span class="op">.</span><span class="fu">getMonthValue</span><span class="op">());</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Gün: &quot;</span> <span class="op">+</span> bugun<span class="op">.</span><span class="fu">getDayOfMonth</span><span class="op">());</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Haftanın günü: &quot;</span> <span class="op">+</span> bugun<span class="op">.</span><span class="fu">getDayOfWeek</span><span class="op">());</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yılın günü: &quot;</span> <span class="op">+</span> bugun<span class="op">.</span><span class="fu">getDayOfYear</span><span class="op">());</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Zaman parçaları</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Saat: &quot;</span> <span class="op">+</span> suAn<span class="op">.</span><span class="fu">getHour</span><span class="op">());</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dakika: &quot;</span> <span class="op">+</span> suAn<span class="op">.</span><span class="fu">getMinute</span><span class="op">());</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Saniye: &quot;</span> <span class="op">+</span> suAn<span class="op">.</span><span class="fu">getSecond</span><span class="op">());</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Nanosaniye: &quot;</span> <span class="op">+</span> suAn<span class="op">.</span><span class="fu">getNano</span><span class="op">());</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="uygulama-doğum-tarihi-ve-saati-programı" class="level4">
+<h4>Uygulama: Doğum Tarihi ve Saati Programı</h4>
+<p>Kullanıcıdan doğum tarihi ve saati bilgilerini alarak <code>LocalDateTime</code> nesnesi oluşturan bir program yazın:</p>
+<!-- CODE_META
+Dosya: DogumZamani.java
+Konu: Kullanıcıdan alınan bilgilerle LocalDateTime oluşturma
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalDate</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalTime</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalDateTime</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> DogumZamani <span class="op">{</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> scanner <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== Doğum Zamanı Bilgileri ===&quot;</span><span class="op">);</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Tarih bilgilerini al</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Doğum yılınızı girin (örn: 1990): &quot;</span><span class="op">);</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> yil <span class="op">=</span> scanner<span class="op">.</span><span class="fu">nextInt</span><span class="op">();</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Doğum ayınızı girin (1-12): &quot;</span><span class="op">);</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> ay <span class="op">=</span> scanner<span class="op">.</span><span class="fu">nextInt</span><span class="op">();</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Doğum gününüzü girin (1-31): &quot;</span><span class="op">);</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> gun <span class="op">=</span> scanner<span class="op">.</span><span class="fu">nextInt</span><span class="op">();</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Zaman bilgilerini al</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Doğum saatinizi girin (0-23): &quot;</span><span class="op">);</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> saat <span class="op">=</span> scanner<span class="op">.</span><span class="fu">nextInt</span><span class="op">();</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Doğum dakikanızı girin (0-59): &quot;</span><span class="op">);</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> dakika <span class="op">=</span> scanner<span class="op">.</span><span class="fu">nextInt</span><span class="op">();</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        <span class="co">// LocalDateTime oluştur</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        LocalDate dogumTarihi <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">of</span><span class="op">(</span>yil<span class="op">,</span> ay<span class="op">,</span> gun<span class="op">);</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        LocalTime dogumZamani <span class="op">=</span> LocalTime<span class="op">.</span><span class="fu">of</span><span class="op">(</span>saat<span class="op">,</span> dakika<span class="op">);</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        LocalDateTime dogumZamaniTarih <span class="op">=</span> LocalDateTime<span class="op">.</span><span class="fu">of</span><span class="op">(</span>dogumTarihi<span class="op">,</span> dogumZamani<span class="op">);</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Doğum zamanınız: &quot;</span> <span class="op">+</span> dogumZamaniTarih<span class="op">);</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Bugün: &quot;</span> <span class="op">+</span> LocalDateTime<span class="op">.</span><span class="fu">now</span><span class="op">());</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>        scanner<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>📝 <strong>Değerlendirme:</strong> Aşağıdaki senaryolarda hangi sınıf kullanılmalıdır?
+- <strong>Bir uçuşun kalkış saati:</strong> <code>LocalDateTime</code> (hem tarih hem saat önemli)
+- <strong>Bir kişinin doğum günü:</strong> <code>LocalDate</code> (sadece tarih önemli)
+- <strong>Bir etkinliğin başlangıç zamanı:</strong> <code>LocalDateTime</code> (tarih ve saat birlikte gerekli)</p>
+</blockquote>
+<hr />
+</section>
+</section>
+<section id="tarihzaman-biçimlendirme-ve-ayrıştırma-datetimeformatter" class="level3">
+<h3>3. Tarih/Zaman Biçimlendirme ve Ayrıştırma: <code>DateTimeFormatter</code></h3>
+<section id="kavram-formatlama-ve-parse-etme" class="level4">
+<h4>Kavram: Formatlama ve Parse Etme</h4>
+<p>Tarih ve zaman nesneleriyle çalışırken iki temel işlem vardır:</p>
+<ol type="1">
+<li><strong>Formatlama (Formatting):</strong> Bir <code>LocalDate</code>, <code>LocalTime</code> veya <code>LocalDateTime</code> nesnesini insan tarafından okunabilir bir metne dönüştürme.</li>
+<li><strong>Ayrıştırma (Parsing):</strong> Bir metni (String) uygun bir tarih/zaman nesnesine dönüştürme.</li>
+</ol>
+</section>
+<section id="kavram-format-desenleri" class="level4">
+<h4>Kavram: Format Desenleri</h4>
+<p><code>DateTimeFormatter</code> sınıfı, format desenleri oluşturmak için harf kodları kullanır:</p>
+<table>
+<thead>
+<tr>
+<th>Harf</th>
+<th>Anlamı</th>
+<th>Örnek</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>y</td>
+<td>Yıl</td>
+<td>yy: 23, yyyy: 2023</td>
+</tr>
+<tr>
+<td>M</td>
+<td>Ay</td>
+<td>M: 12, MM: 12, MMM: Dec, MMMM: December</td>
+</tr>
+<tr>
+<td>d</td>
+<td>Gün</td>
+<td>d: 5, dd: 05</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Saat (0-23)</td>
+<td>H: 9, HH: 09</td>
+</tr>
+<tr>
+<td>m</td>
+<td>Dakika</td>
+<td>m: 5, mm: 05</td>
+</tr>
+<tr>
+<td>s</td>
+<td>Saniye</td>
+<td>s: 3, ss: 03</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="örnek-formatlama-ve-parse-etme" class="level4">
+<h4>Örnek: Formatlama ve Parse Etme</h4>
+<!-- CODE_META
+Dosya: TarihFormatlama.java
+Konu: DateTimeFormatter ile formatlama ve parse etme
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalDateTime</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">format</span><span class="op">.</span><span class="im">DateTimeFormatter</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">format</span><span class="op">.</span><span class="im">FormatStyle</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Locale</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TarihFormatlama <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        LocalDateTime simdi <span class="op">=</span> LocalDateTime<span class="op">.</span><span class="fu">now</span><span class="op">();</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== Önceden Tanımlı Formatlar ===&quot;</span><span class="op">);</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// ISO formatları</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> isoDate <span class="op">=</span> simdi<span class="op">.</span><span class="fu">format</span><span class="op">(</span>DateTimeFormatter<span class="op">.</span><span class="fu">ISO_LOCAL_DATE</span><span class="op">);</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;ISO Tarih: &quot;</span> <span class="op">+</span> isoDate<span class="op">);</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> isoDateTime <span class="op">=</span> simdi<span class="op">.</span><span class="fu">format</span><span class="op">(</span>DateTimeFormatter<span class="op">.</span><span class="fu">ISO_LOCAL_DATE_TIME</span><span class="op">);</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;ISO Tarih-Zaman: &quot;</span> <span class="op">+</span> isoDateTime<span class="op">);</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Yerel formatlar</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> kisaFormat <span class="op">=</span> simdi<span class="op">.</span><span class="fu">format</span><span class="op">(</span>DateTimeFormatter<span class="op">.</span><span class="fu">ofLocalizedDateTime</span><span class="op">(</span>FormatStyle<span class="op">.</span><span class="fu">SHORT</span><span class="op">));</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Kısa format: &quot;</span> <span class="op">+</span> kisaFormat<span class="op">);</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> ortaFormat <span class="op">=</span> simdi<span class="op">.</span><span class="fu">format</span><span class="op">(</span>DateTimeFormatter<span class="op">.</span><span class="fu">ofLocalizedDateTime</span><span class="op">(</span>FormatStyle<span class="op">.</span><span class="fu">MEDIUM</span><span class="op">));</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Orta format: &quot;</span> <span class="op">+</span> ortaFormat<span class="op">);</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Özel Desenler ===&quot;</span><span class="op">);</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Özel desenler</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        DateTimeFormatter ozelFormat1 <span class="op">=</span> DateTimeFormatter<span class="op">.</span><span class="fu">ofPattern</span><span class="op">(</span><span class="st">&quot;dd/MM/yyyy - HH:mm:ss&quot;</span><span class="op">);</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> formatli1 <span class="op">=</span> simdi<span class="op">.</span><span class="fu">format</span><span class="op">(</span>ozelFormat1<span class="op">);</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Format 1: &quot;</span> <span class="op">+</span> formatli1<span class="op">);</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        DateTimeFormatter ozelFormat2 <span class="op">=</span> DateTimeFormatter<span class="op">.</span><span class="fu">ofPattern</span><span class="op">(</span><span class="st">&quot;yyyy.MM.dd G &#39;at&#39; HH:mm:ss&quot;</span><span class="op">);</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> formatli2 <span class="op">=</span> simdi<span class="op">.</span><span class="fu">format</span><span class="op">(</span>ozelFormat2<span class="op">);</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Format 2: &quot;</span> <span class="op">+</span> formatli2<span class="op">);</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        DateTimeFormatter ozelFormat3 <span class="op">=</span> DateTimeFormatter<span class="op">.</span><span class="fu">ofPattern</span><span class="op">(</span><span class="st">&quot;EEEE, MMMM d, yyyy&quot;</span><span class="op">);</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> formatli3 <span class="op">=</span> simdi<span class="op">.</span><span class="fu">format</span><span class="op">(</span>ozelFormat3<span class="op">);</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Format 3: &quot;</span> <span class="op">+</span> formatli3<span class="op">);</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== String&#39;den Tarih Oluşturma (Parse) ===&quot;</span><span class="op">);</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>        <span class="co">// String&#39;den parse etme</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> tarihMetni <span class="op">=</span> <span class="st">&quot;25-12-2023 14:30&quot;</span><span class="op">;</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>        DateTimeFormatter parseFormat <span class="op">=</span> DateTimeFormatter<span class="op">.</span><span class="fu">ofPattern</span><span class="op">(</span><span class="st">&quot;dd-MM-yyyy HH:mm&quot;</span><span class="op">);</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>        LocalDateTime ayrismaTarihi <span class="op">=</span> LocalDateTime<span class="op">.</span><span class="fu">parse</span><span class="op">(</span>tarihMetni<span class="op">,</span> parseFormat<span class="op">);</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Ayrıştırılan tarih: &quot;</span> <span class="op">+</span> ayrismaTarihi<span class="op">);</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Farklı bir format</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> baskaTarih <span class="op">=</span> <span class="st">&quot;2023/12/25 14:30:45&quot;</span><span class="op">;</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>        DateTimeFormatter baskaFormat <span class="op">=</span> DateTimeFormatter<span class="op">.</span><span class="fu">ofPattern</span><span class="op">(</span><span class="st">&quot;yyyy/MM/dd HH:mm:ss&quot;</span><span class="op">);</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>        LocalDateTime baskaAyrisma <span class="op">=</span> LocalDateTime<span class="op">.</span><span class="fu">parse</span><span class="op">(</span>baskaTarih<span class="op">,</span> baskaFormat<span class="op">);</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Diğer ayrıştırma: &quot;</span> <span class="op">+</span> baskaAyrisma<span class="op">);</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="uygulama-tarih-dönüştürücü-programı" class="level4">
+<h4>Uygulama: Tarih Dönüştürücü Programı</h4>
+<p>Kullanıcıdan “gg.AA.yyyy HH:mm” formatında bir tarih metni alın, bunu <code>LocalDateTime</code> nesnesine çevirin ve “yyyy/MM/dd - HH:mm” formatında ekrana yazdırın:</p>
+<!-- CODE_META
+Dosya: TarihDonusturucu.java
+Konu: Kullanıcı girdisini parse edip farklı formatta gösterme
+-->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalDateTime</span><span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">format</span><span class="op">.</span><span class="im">DateTimeFormatter</span><span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">format</span><span class="op">.</span><span class="im">DateTimeParseException</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TarihDonusturucu <span class="op">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> scanner <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== Tarih Dönüştürücü ===&quot;</span><span class="op">);</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Lütfen tarihi &#39;gg.AA.yyyy HH:mm&#39; formatında girin:&quot;</span><span class="op">);</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Örnek: 25.12.2023 14:30&quot;</span><span class="op">);</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> girdi <span class="op">=</span> scanner<span class="op">.</span><span class="fu">nextLine</span><span class="op">();</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Girdiyi parse et</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>            DateTimeFormatter girdiFormati <span class="op">=</span> DateTimeFormatter<span class="op">.</span><span class="fu">ofPattern</span><span class="op">(</span><span class="st">&quot;dd.MM.yyyy HH:mm&quot;</span><span class="op">);</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            LocalDateTime tarih <span class="op">=</span> LocalDateTime<span class="op">.</span><span class="fu">parse</span><span class="op">(</span>girdi<span class="op">,</span> girdiFormati<span class="op">);</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>            <span class="co">// İstenen formata çevir</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>            DateTimeFormatter ciktiFormati <span class="op">=</span> DateTimeFormatter<span class="op">.</span><span class="fu">ofPattern</span><span class="op">(</span><span class="st">&quot;yyyy/MM/dd - HH:mm&quot;</span><span class="op">);</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> sonuc <span class="op">=</span> tarih<span class="op">.</span><span class="fu">format</span><span class="op">(</span>ciktiFormati<span class="op">);</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Dönüştürülen tarih: &quot;</span> <span class="op">+</span> sonuc<span class="op">);</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>DateTimeParseException e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hata: Geçersiz tarih formatı! Lütfen &#39;gg.AA.yyyy HH:mm&#39; formatını kullanın.&quot;</span><span class="op">);</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hata detayı: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        scanner<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>📝 <strong>Değerlendirme:</strong> <code>DateTimeFormatter.ofPattern()</code> içinde kullanılan harflerin anlamları:
+- <strong>y (year):</strong> Yıl bilgisi. <code>yy</code> = 23 (2 haneli), <code>yyyy</code> = 2023 (4 haneli)
+- <strong>M (month):</strong> Ay bilgisi. <code>M</code> = 12, <code>MM</code> = 12, <code>MMM</code> = Dec, <code>MMMM</code> = December
+- <strong>d (day):</strong> Gün bilgisi. <code>d</code> = 5, <code>dd</code> = 05
+- <strong>H (hour):</strong> Saat (0-23). <code>H</code> = 9, <code>HH</code> = 09
+- <strong>m (minute):</strong> Dakika. <code>m</code> = 5, <code>mm</code> = 05
+- <strong>s (second):</strong> Saniye. <code>s</code> = 3, <code>ss</code> = 03</p>
+</blockquote>
+<hr />
+</section>
+</section>
+<section id="tarih-ve-zaman-hesaplamaları-ekleme-çıkarma-ve-fark-bulma" class="level3">
+<h3>4. Tarih ve Zaman Hesaplamaları: Ekleme, Çıkarma ve Fark Bulma</h3>
+<section id="kavram-artimetik-işlemler" class="level4">
+<h4>Kavram: Artimetik İşlemler</h4>
+<p>Java 8+ API’si, tarih ve zaman üzerinde kolayca aritmetik işlemler yapmanızı sağlar:</p>
+<ul>
+<li><strong><code>plus</code> metotları:</strong> <code>plusDays()</code>, <code>plusWeeks()</code>, <code>plusMonths()</code>, <code>plusYears()</code></li>
+<li><strong><code>minus</code> metotları:</strong> <code>minusDays()</code>, <code>minusWeeks()</code>, <code>minusMonths()</code>, <code>minusYears()</code></li>
+</ul>
+</section>
+<section id="kavram-period-ve-duration" class="level4">
+<h4>Kavram: Period ve Duration</h4>
+<p>İki tarih veya zaman arasındaki farkı hesaplamak için iki özel sınıf kullanılır:</p>
+<ul>
+<li><strong><code>Period</code>:</strong> Tarih tabanlı farklar için (yıl, ay, gün)</li>
+<li><strong><code>Duration</code>:</strong> Zaman tabanlı farklar için (saat, dakika, saniye, nanosaniye)</li>
+</ul>
+</section>
+<section id="örnek-tarihzaman-hesaplamaları" class="level4">
+<h4>Örnek: Tarih/Zaman Hesaplamaları</h4>
+<!-- CODE_META
+Dosya: TarihHesaplamalari.java
+Konu: Tarih ve zaman hesaplamaları
+-->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.*;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">temporal</span><span class="op">.</span><span class="im">ChronoUnit</span><span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TarihHesaplamalari <span class="op">{</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        LocalDate bugun <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">now</span><span class="op">();</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== Tarih Ekleme/Çıkarma ===&quot;</span><span class="op">);</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Gün ekleme/çıkarma</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        LocalDate birHaftaSonra <span class="op">=</span> bugun<span class="op">.</span><span class="fu">plusWeeks</span><span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        LocalDate onGunOnce <span class="op">=</span> bugun<span class="op">.</span><span class="fu">minusDays</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Bugün: &quot;</span> <span class="op">+</span> bugun<span class="op">);</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;1 hafta sonra: &quot;</span> <span class="op">+</span> birHaftaSonra<span class="op">);</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;10 gün önce: &quot;</span> <span class="op">+</span> onGunOnce<span class="op">);</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Ay ve yıl işlemleri</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        LocalDate ucAyOnce <span class="op">=</span> bugun<span class="op">.</span><span class="fu">minusMonths</span><span class="op">(</span><span class="dv">3</span><span class="op">);</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        LocalDate ikiYilSonra <span class="op">=</span> bugun<span class="op">.</span><span class="fu">plusYears</span><span class="op">(</span><span class="dv">2</span><span class="op">);</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;3 ay önce: &quot;</span> <span class="op">+</span> ucAyOnce<span class="op">);</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;2 yıl sonra: &quot;</span> <span class="op">+</span> ikiYilSonra<span class="op">);</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Period ile Tarih Farkı ===&quot;</span><span class="op">);</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Period kullanımı</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        LocalDate dogumGunu <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">1990</span><span class="op">,</span> Month<span class="op">.</span><span class="fu">MARCH</span><span class="op">,</span> <span class="dv">15</span><span class="op">);</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        Period yas <span class="op">=</span> Period<span class="op">.</span><span class="fu">between</span><span class="op">(</span>dogumGunu<span class="op">,</span> bugun<span class="op">);</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Doğum günü: &quot;</span> <span class="op">+</span> dogumGunu<span class="op">);</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yaş: &quot;</span> <span class="op">+</span> yas<span class="op">.</span><span class="fu">getYears</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; yıl &quot;</span> <span class="op">+</span> </span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>                           yas<span class="op">.</span><span class="fu">getMonths</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; ay &quot;</span> <span class="op">+</span> yas<span class="op">.</span><span class="fu">getDays</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; gün&quot;</span><span class="op">);</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Duration ile Zaman Farkı ===&quot;</span><span class="op">);</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Duration kullanımı</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>        LocalTime baslangic <span class="op">=</span> LocalTime<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">9</span><span class="op">,</span> <span class="dv">30</span><span class="op">);</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>        LocalTime bitis <span class="op">=</span> LocalTime<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">17</span><span class="op">,</span> <span class="dv">45</span><span class="op">);</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Duration</span> calismaSuresi <span class="op">=</span> <span class="bu">Duration</span><span class="op">.</span><span class="fu">between</span><span class="op">(</span>baslangic<span class="op">,</span> bitis<span class="op">);</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Başlangıç: &quot;</span> <span class="op">+</span> baslangic<span class="op">);</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Bitiş: &quot;</span> <span class="op">+</span> bitis<span class="op">);</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Çalışma süresi: &quot;</span> <span class="op">+</span> calismaSuresi<span class="op">.</span><span class="fu">toHours</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; saat &quot;</span> <span class="op">+</span> </span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>                           calismaSuresi<span class="op">.</span><span class="fu">toMinutesPart</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; dakika&quot;</span><span class="op">);</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== ChronoUnit ile Hesaplama ===&quot;</span><span class="op">);</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>        <span class="co">// ChronoUnit kullanımı</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> gunFarki <span class="op">=</span> ChronoUnit<span class="op">.</span><span class="fu">DAYS</span><span class="op">.</span><span class="fu">between</span><span class="op">(</span>dogumGunu<span class="op">,</span> bugun<span class="op">);</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> ayFarki <span class="op">=</span> ChronoUnit<span class="op">.</span><span class="fu">MONTHS</span><span class="op">.</span><span class="fu">between</span><span class="op">(</span>dogumGunu<span class="op">,</span> bugun<span class="op">);</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> yilFarki <span class="op">=</span> ChronoUnit<span class="op">.</span><span class="fu">YEARS</span><span class="op">.</span><span class="fu">between</span><span class="op">(</span>dogumGunu<span class="op">,</span> bugun<span class="op">);</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Toplam gün: &quot;</span> <span class="op">+</span> gunFarki<span class="op">);</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Toplam ay: &quot;</span> <span class="op">+</span> ayFarki<span class="op">);</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Toplam yıl: &quot;</span> <span class="op">+</span> yilFarki<span class="op">);</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="uygulama-iki-tarih-arasındaki-farkı-hesaplama" class="level4">
+<h4>Uygulama: İki Tarih Arasındaki Farkı Hesaplama</h4>
+<p>Kullanıcıdan iki farklı tarih alın ve aralarındaki farkı yıl, ay, gün cinsinden hesaplayın:</p>
+<!-- CODE_META
+Dosya: TarihFarkHesapla.java
+Konu: İki tarih arasındaki farkı hesaplama
+-->
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">LocalDate</span><span class="op">;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">Period</span><span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">format</span><span class="op">.</span><span class="im">DateTimeFormatter</span><span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">format</span><span class="op">.</span><span class="im">DateTimeParseException</span><span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TarihFarkHesapla <span class="op">{</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> scanner <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        DateTimeFormatter formatter <span class="op">=</span> DateTimeFormatter<span class="op">.</span><span class="fu">ofPattern</span><span class="op">(</span><span class="st">&quot;dd.MM.yyyy&quot;</span><span class="op">);</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== İki Tarih Arasındaki Fark ===&quot;</span><span class="op">);</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            <span class="co">// İlk tarihi al</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;İlk tarihi girin (gg.AA.yyyy): &quot;</span><span class="op">);</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> ilkTarihStr <span class="op">=</span> scanner<span class="op">.</span><span class="fu">nextLine</span><span class="op">();</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>            LocalDate ilkTarih <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">parse</span><span class="op">(</span>ilkTarihStr<span class="op">,</span> formatter<span class="op">);</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>            <span class="co">// İkinci tarihi al</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;İkinci tarihi girin (gg.AA.yyyy): &quot;</span><span class="op">);</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> ikinciTarihStr <span class="op">=</span> scanner<span class="op">.</span><span class="fu">nextLine</span><span class="op">();</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>            LocalDate ikinciTarih <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">parse</span><span class="op">(</span>ikinciTarihStr<span class="op">,</span> formatter<span class="op">);</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Farkı hesapla</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>            Period fark <span class="op">=</span> Period<span class="op">.</span><span class="fu">between</span><span class="op">(</span>ilkTarih<span class="op">,</span> ikinciTarih<span class="op">);</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Sonuç ===&quot;</span><span class="op">);</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İlk tarih: &quot;</span> <span class="op">+</span> ilkTarih<span class="op">);</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İkinci tarih: &quot;</span> <span class="op">+</span> ikinciTarih<span class="op">);</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Fark: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span><span class="op">(</span>fark<span class="op">.</span><span class="fu">getYears</span><span class="op">())</span> <span class="op">+</span> <span class="st">&quot; yıl &quot;</span> <span class="op">+</span> </span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>                               <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span><span class="op">(</span>fark<span class="op">.</span><span class="fu">getMonths</span><span class="op">())</span> <span class="op">+</span> <span class="st">&quot; ay &quot;</span> <span class="op">+</span> </span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>                               <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span><span class="op">(</span>fark<span class="op">.</span><span class="fu">getDays</span><span class="op">())</span> <span class="op">+</span> <span class="st">&quot; gün&quot;</span><span class="op">);</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Hangi tarihin daha büyük olduğunu göster</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>ilkTarih<span class="op">.</span><span class="fu">isBefore</span><span class="op">(</span>ikinciTarih<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İlk tarih, ikinci tarihten önce.&quot;</span><span class="op">);</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>ilkTarih<span class="op">.</span><span class="fu">isAfter</span><span class="op">(</span>ikinciTarih<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İlk tarih, ikinci tarihten sonra.&quot;</span><span class="op">);</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İki tarih aynı.&quot;</span><span class="op">);</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>DateTimeParseException e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hata: Geçersiz tarih formatı!&quot;</span><span class="op">);</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>        scanner<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>📝 <strong>Değerlendirme:</strong> <code>Period</code> ve <code>Duration</code> arasındaki temel fark:
+- <strong><code>Period</code>:</strong> Tarih tabanlı farklar için kullanılır. Yıl, ay, gün cinsinden sonuç verir. Örneğin: 2 yıl 3 ay 5 gün
+- <strong><code>Duration</code>:</strong> Zaman tabanlı farklar için kullanılır. Saat, dakika, saniye, nanosaniye cinsinden sonuç verir. Örneğin: 8 saat 15 dakika</p>
+<p><strong>Hangi durumda hangisini kullanırsınız?</strong>
+- <strong><code>Period</code>:</strong> İki tarih arasındaki farkı yıl/ay/gün olarak hesaplamak istediğinizde (örn: yaş hesaplama)
+- <strong><code>Duration</code>:</strong> İki zaman arasındaki farkı saat/dakika olarak hesaplamak istediğinizde (örn: çalışma süresi)</p>
+</blockquote>
+<hr />
+</section>
+</section>
+<section id="zaman-dilimleri-ve-gelecekzamanlanmış-işlemler" class="level3">
+<h3>5. Zaman Dilimleri ve Gelecek/Zamanlanmış İşlemler</h3>
+<section id="kavram-zaman-dilimleri" class="level4">
+<h4>Kavram: Zaman Dilimleri</h4>
+<p>Dünya üzerinde farklı bölgeler farklı zaman dilimlerini kullanır. <code>ZonedDateTime</code> sınıfı, zaman dilimi bilgisini de içeren tarih-zaman nesneleri oluşturmanızı sağlar.</p>
+</section>
+<section id="kavram-chronounit-ile-esnek-hesaplamalar" class="level4">
+<h4>Kavram: ChronoUnit ile Esnek Hesaplamalar</h4>
+<p><code>ChronoUnit</code> enum’u, <code>Period</code> ve <code>Duration</code>’a alternatif olarak daha esnek ve okunabilir bir hesaplama yöntemi sunar.</p>
+</section>
+<section id="örnek-zaman-dilimleri-ve-gelişmiş-hesaplamalar" class="level4">
+<h4>Örnek: Zaman Dilimleri ve Gelişmiş Hesaplamalar</h4>
+<!-- CODE_META
+Dosya: ZamanDilimleri.java
+Konu: Zaman dilimleri ve ChronoUnit kullanımı
+-->
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.*;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">time</span><span class="op">.</span><span class="im">temporal</span><span class="op">.</span><span class="im">ChronoUnit</span><span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Set</span><span class="op">;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ZamanDilimleri <span class="op">{</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== Zaman Dilimleri ===&quot;</span><span class="op">);</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Mevcut zaman dilimlerini listeleme</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Mevcut zaman dilimleri (ilk 5):&quot;</span><span class="op">);</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Set</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> zoneIds <span class="op">=</span> ZoneId<span class="op">.</span><span class="fu">getAvailableZoneIds</span><span class="op">();</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        zoneIds<span class="op">.</span><span class="fu">stream</span><span class="op">()</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>               <span class="op">.</span><span class="fu">filter</span><span class="op">(</span>id <span class="op">-&gt;</span> id<span class="op">.</span><span class="fu">contains</span><span class="op">(</span><span class="st">&quot;Europe&quot;</span><span class="op">)</span> <span class="op">||</span> id<span class="op">.</span><span class="fu">contains</span><span class="op">(</span><span class="st">&quot;America&quot;</span><span class="op">)</span> <span class="op">||</span> id<span class="op">.</span><span class="fu">contains</span><span class="op">(</span><span class="st">&quot;Asia&quot;</span><span class="op">))</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>               <span class="op">.</span><span class="fu">limit</span><span class="op">(</span><span class="dv">5</span><span class="op">)</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>               <span class="op">.</span><span class="fu">forEach</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">::</span>println<span class="op">);</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Farklı Şehirlerde Şu Anki Zaman ===&quot;</span><span class="op">);</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Farklı zaman dilimlerinde şu anki zaman</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        ZonedDateTime istanbul <span class="op">=</span> ZonedDateTime<span class="op">.</span><span class="fu">now</span><span class="op">(</span>ZoneId<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">&quot;Europe/Istanbul&quot;</span><span class="op">));</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        ZonedDateTime newYork <span class="op">=</span> ZonedDateTime<span class="op">.</span><span class="fu">now</span><span class="op">(</span>ZoneId<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">&quot;America/New_York&quot;</span><span class="op">));</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        ZonedDateTime tokyo <span class="op">=</span> ZonedDateTime<span class="op">.</span><span class="fu">now</span><span class="op">(</span>ZoneId<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">&quot;Asia/Tokyo&quot;</span><span class="op">));</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        ZonedDateTime londra <span class="op">=</span> ZonedDateTime<span class="op">.</span><span class="fu">now</span><span class="op">(</span>ZoneId<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">&quot;Europe/London&quot;</span><span class="op">));</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İstanbul: &quot;</span> <span class="op">+</span> istanbul<span class="op">);</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;New York: &quot;</span> <span class="op">+</span> newYork<span class="op">);</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Tokyo: &quot;</span> <span class="op">+</span> tokyo<span class="op">);</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Londra: &quot;</span> <span class="op">+</span> londra<span class="op">);</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Zaman Dilimi Dönüşümü ===&quot;</span><span class="op">);</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Bir zamanı başka bir zaman dilimine çevirme</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        ZonedDateTime istanbulZamani <span class="op">=</span> ZonedDateTime<span class="op">.</span><span class="fu">now</span><span class="op">(</span>ZoneId<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">&quot;Europe/Istanbul&quot;</span><span class="op">));</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        ZonedDateTime newYorkZamani <span class="op">=</span> istanbulZamani<span class="op">.</span><span class="fu">withZoneSameInstant</span><span class="op">(</span>ZoneId<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="st">&quot;America/New_York&quot;</span><span class="op">));</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İstanbul&#39;da şu an: &quot;</span> <span class="op">+</span> istanbulZamani<span class="op">);</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;New York&#39;ta aynı an: &quot;</span> <span class="op">+</span> newYorkZamani<span class="op">);</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== ChronoUnit ile Hesaplamalar ===&quot;</span><span class="op">);</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        <span class="co">// ChronoUnit kullanımı</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        LocalDate yilbasi <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="dv">2025</span><span class="op">,</span> Month<span class="op">.</span><span class="fu">JANUARY</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        LocalDate bugun <span class="op">=</span> LocalDate<span class="op">.</span><span class="fu">now</span><span class="op">();</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> kalanGun <span class="op">=</span> ChronoUnit<span class="op">.</span><span class="fu">DAYS</span><span class="op">.</span><span class="fu">between</span><span class="op">(</span>bugun<span class="op">,</span> yilbasi<span class="op">);</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> kalanAy <span class="op">=</span> ChronoUnit<span class="op">.</span><span class="fu">MONTHS</span><span class="op">.</span><span class="fu">between</span><span class="op">(</span>bugun<span class="op">,</span> yilbasi<span class="op">);</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> kalanHafta <span class="op">=</span> ChronoUnit<span class="op">.</span><span class="fu">WEEKS</span><span class="op">.</span><span class="fu">between</span><span class="op">(</span>bugun<span class="op">,</span> yilbasi<span class="op">);</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yılbaşına kalan gün: &quot;</span> <span class="op">+</span> kalanGun<span class="op">);</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yılbaşına kalan ay: &quot;</span> <span class="op">+</span> kalanAy<span class="op">);</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yılbaşına kalan hafta: &quot;</span> <span class="op">+</span> kalanHafta<span class="op">);</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Tarih karşılaştırmaları</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>        <span class="dt">boolean</span> onceMi <span class="op">=</span> bugun<span class="op">.</span><span class="fu">isBefore</span><span class="op">(</span>yilbasi<span class="op">);</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>        <span class="dt">boolean</span> sonraMi <span class="op">=</span> bugun<span class="op">.</span><span class="fu">isAfter</span><span class="op">(</span>yilbasi<span class="op">);</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>        <span class="dt">boolean</span> esitMi <span class="op">=</span> bugun<span class="op">.</span><span class="fu">isEqual</span><span class="op">(</span>yilbasi<span class="op">);</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Yılbaşından önce mi? &quot;</span> <span class="op">+</span> onceMi<span class="op">);</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yılbaşından sonra mi? &quot;</span> <span class="op">+</span> sonraMi<span class="op">);</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yılbaşına eşit mi? &quot;</span> <span class="op">+</span> esitMi<span class="op">);</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Saat bazlı hesaplama</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>        LocalTime simdi <span class="op">=</span> LocalTime<span class="op">.</span><span class="fu">now</span><span class="op">();</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>        LocalTime geceYarisi <span class="op">=</span> LocalTime<span class="op">.</span><span class="fu">MIDNIGHT</span><span class="op">;</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> kalanSaat <span class="op">=</span> ChronoUnit<span class="op">.</span><span class="fu">HOURS</span><span class="op">.</span><span class="fu">between</span><span class="op">(</span>simdi<span class="op">,</span> geceYarisi<span class="op">);</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> kalanDakika <span class="op">=</span> ChronoUnit<span class="op">.</span><span class="fu">MINUTES</span><span class="op">.</span><span class="fu">between</span><span class="op">(</span>simdi<span class="op">,</span> geceYarisi<span class="op">);</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Gece yarısına kalan saat: &quot;</span> <span class="op">+</span> kalanSaat<span class="op">);</span></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Gece yarısına kalan dakika: &quot;</span> <span class="op">+</span> kalanDakika<span class="op">);</span></span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="uygulama-hedef-tarih-ve-zaman-dilimi-programı" class="level4">
+<h4>Uygulama: Hedef Tarih ve Zaman Dilimi Programı</h4>
+<p>Kullanıcıdan bir hedef tarih alın ve bu tarihe kalan süreyi hesaplayın. Ayrıca farklı şehirlerdeki anlık zamanı gösterin:</p>
+<!-- CODE_META
+Dosya: HedefTarihSuresi.java
+Konu: Hedef tarihe kalan süre ve zaman dilimleri
+-->
+<p>```java
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.util.Scanner;</p>
+<p>public class HedefTari</p>
+</section>
+</section>
+</section>
+</section>
+</body>
+</html>

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Arayuzler ve Soyut Siniflar</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Arayuzler ve Soyut Siniflar</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#bölüm-11-matematiksel-yardimcilar-ve-rastgelelik" id="toc-bölüm-11-matematiksel-yardimcilar-ve-rastgelelik">Bölüm 11: Matematiksel Yardimcilar ve Rastgelelik</a>
+<ul>
+<li><a href="#giriş" id="toc-giriş">11.1 Giriş</a></li>
+<li><a href="#math-sınıfının-temel-metotları-ve-kullanımı" id="toc-math-sınıfının-temel-metotları-ve-kullanımı">11.2 Math Sınıfının Temel Metotları ve Kullanımı</a></li>
+<li><a href="#rastgele-sayı-üretimi-temelleri" id="toc-rastgele-sayı-üretimi-temelleri">11.3 Rastgele Sayı Üretimi Temelleri</a></li>
+<li><a href="#rastgele-sayı-üretiminde-ileri-teknikler" id="toc-rastgele-sayı-üretiminde-ileri-teknikler">11.4 Rastgele Sayı Üretiminde İleri Teknikler</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="bölüm-11-matematiksel-yardimcilar-ve-rastgelelik" class="level1">
+<h1>Bölüm 11: Matematiksel Yardimcilar ve Rastgelelik</h1>
+<hr />
+<section id="giriş" class="level2">
+<h2>11.1 Giriş</h2>
+<p>Yazılım geliştirme sürecinde matematiksel işlemler, günlük programlama pratiğinin vazgeçilmez bir parçasıdır. Bir e-ticaret sitesinde sepetteki ürünlerin toplam fiyatını hesaplamaktan, bir oyun motorunda karakterlerin hareketini simüle etmeye kadar pek çok alanda matematiksel hesaplamalara ihtiyaç duyulur.</p>
+<p>Java, geliştiricilere bu hesaplamaları kolaylaştırmak için güçlü araçlar sunar. Bu bölümde, Java’nın <code>Math</code> sınıfı ile temel matematiksel işlemleri, rastgele sayı üretim mekanizmalarını ve karşılaşılan problemleri çözmek için kullanılabilecek yaklaşımları öğreneceksiniz.</p>
+<blockquote>
+<p>💡 <strong>Pedagojik Not:</strong> Bu bölümde öğreneceğiniz kavramlar, ilerleyen konularda (özellikle oyun geliştirme, simülasyon ve veri analizi) sıkça karşınıza çıkacaktır. Her bir metodu sadece ezberlemek yerine, hangi durumda hangi aracı kullanmanız gerektiğini anlamaya odaklanın.</p>
+</blockquote>
+<section id="gerçek-dünya-uygulamaları" class="level3">
+<h3>Gerçek Dünya Uygulamaları</h3>
+<p>Rastgele sayı üretimi ve matematiksel hesaplamalar şu alanlarda kritik öneme sahiptir:</p>
+<ul>
+<li><strong>Simülasyon:</strong> Hava durumu tahmini, trafik akışı modelleme</li>
+<li><strong>Oyun Geliştirme:</strong> Karakter davranışları, tesadüfi olaylar</li>
+<li><strong>Kriptografi:</strong> Güvenli anahtar üretimi, şifreleme</li>
+<li><strong>Veri Analizi:</strong> İstatistiksel örnekleme, Monte Carlo yöntemleri</li>
+<li><strong>Yapay Zeka:</strong> Rastgele başlangıç değerleri, genetik algoritmalar</li>
+</ul>
+</section>
+<section id="bölüm-hedefleri" class="level3">
+<h3>Bölüm Hedefleri</h3>
+<p>Bu bölümü tamamladığınızda:
+- <code>Math</code> sınıfının temel metotlarını etkin bir şekilde kullanabileceksiniz
+- Farklı rastgele sayı üretim yöntemlerini karşılaştırabileceksiniz
+- Matematiksel problemleri Java’da modelleyip çözebileceksiniz
+- Gerçek hayat problemlerine uygun çözüm stratejileri geliştirebileceksiniz</p>
+<hr />
+</section>
+</section>
+<section id="math-sınıfının-temel-metotları-ve-kullanımı" class="level2">
+<h2>11.2 Math Sınıfının Temel Metotları ve Kullanımı</h2>
+<p>Java’nın <code>Math</code> sınıfı, <code>java.lang</code> paketinin bir parçası olduğu için herhangi bir import ifadesine gerek duymadan kullanılabilir. Tüm metotları <strong>statik</strong> olduğu için, sınıf adı üzerinden doğrudan çağrılabilirler.</p>
+<!-- CODE_META
+id: bolum-11_kod01
+chapter_id: bolum-11
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Math sınıfına ihtiyacımız yok - java.lang paketinin parçasıdır</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MathOrnek <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> sayi <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span><span class="op">(-</span><span class="fl">15.7</span><span class="op">);</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Mutlak değer: &quot;</span> <span class="op">+</span> sayi<span class="op">);</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>⚠️ <strong>Önemli Not:</strong> <code>Math</code> sınıfının metotları statik olduğu için, <code>Math</code> nesnesi oluşturmanıza gerek yoktur. <code>new Math()</code> ifadesi derleme hatası verecektir çünkü <code>Math</code> sınıfının constructor’ı private’dır.</p>
+</blockquote>
+<section id="temel-aritmetik-metotlar" class="level3">
+<h3>Temel Aritmetik Metotlar</h3>
+<section id="abs---mutlak-değer" class="level4">
+<h4><code>abs()</code> - Mutlak Değer</h4>
+<p>Mutlak değer, bir sayının sıfıra olan uzaklığını ifade eder. Pozitif sayılar olduğu gibi kalırken, negatif sayılar pozitife dönüşür.</p>
+<!-- CODE_META
+id: bolum-11_kod02
+chapter_id: bolum-11
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MutlakDegerOrnek <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> tamSayi <span class="op">=</span> <span class="op">-</span><span class="dv">42</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> ondalikli <span class="op">=</span> <span class="op">-</span><span class="fl">3.14</span><span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Tam sayı mutlak: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span><span class="op">(</span>tamSayi<span class="op">));</span>      <span class="co">// 42</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Ondalıklı mutlak: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span><span class="op">(</span>ondalikli<span class="op">));</span>    <span class="co">// 3.14</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Özel durum: Integer.MIN_VALUE</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;MIN_VALUE mutlak: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span><span class="op">(</span><span class="bu">Integer</span><span class="op">.</span><span class="fu">MIN_VALUE</span><span class="op">));</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Bu durumda negatif değer döner çünkü 2^31 pozitif gösterilemez</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="max-ve-min---karşılaştırma" class="level4">
+<h4><code>max()</code> ve <code>min()</code> - Karşılaştırma</h4>
+<p>İki değer arasında büyük veya küçük olanı bulmak için kullanılır.</p>
+<!-- CODE_META
+id: bolum-11_kod03
+chapter_id: bolum-11
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> KarsilastirmaOrnek <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> <span class="dv">45</span><span class="op">,</span> b <span class="op">=</span> <span class="dv">78</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> x <span class="op">=</span> <span class="fl">3.14</span><span class="op">,</span> y <span class="op">=</span> <span class="fl">2.71</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;En büyük: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span><span class="op">(</span>a<span class="op">,</span> b<span class="op">));</span>      <span class="co">// 78</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;En küçük: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span><span class="op">(</span>a<span class="op">,</span> b<span class="op">));</span>      <span class="co">// 45</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Ondalıklı en büyük: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span><span class="op">(</span>x<span class="op">,</span> y<span class="op">));</span>  <span class="co">// 3.14</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Ondalıklı en küçük: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span><span class="op">(</span>x<span class="op">,</span> y<span class="op">));</span>  <span class="co">// 2.71</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Pratik kullanım: bir dizide en büyük değeri bulma</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> sayilar <span class="op">=</span> <span class="op">{</span><span class="dv">12</span><span class="op">,</span> <span class="dv">45</span><span class="op">,</span> <span class="dv">67</span><span class="op">,</span> <span class="dv">23</span><span class="op">,</span> <span class="dv">89</span><span class="op">,</span> <span class="dv">34</span><span class="op">,</span> <span class="dv">56</span><span class="op">};</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> enBuyuk <span class="op">=</span> sayilar<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> sayi <span class="op">:</span> sayilar<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            enBuyuk <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span><span class="op">(</span>enBuyuk<span class="op">,</span> sayi<span class="op">);</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dizideki en büyük: &quot;</span> <span class="op">+</span> enBuyuk<span class="op">);</span>  <span class="co">// 89</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="pow---üs-alma" class="level4">
+<h4><code>pow()</code> - Üs Alma</h4>
+<p>Bir sayının belirli bir kuvvetini hesaplar. <code>double</code> türünde değer döndürür.</p>
+<!-- CODE_META
+id: bolum-11_kod04
+chapter_id: bolum-11
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> UsAlmaOrnek <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 2^3 = 8</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;2^3 = &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">));</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 5^2 = 25</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;5^2 = &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> <span class="dv">2</span><span class="op">));</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 10^0 = 1</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;10^0 = &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">0</span><span class="op">));</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Karekök için 0.5 üssü</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;16^(1/2) = &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">16</span><span class="op">,</span> <span class="fl">0.5</span><span class="op">));</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Negatif üs</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;2^(-3) = &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="op">-</span><span class="dv">3</span><span class="op">));</span>  <span class="co">// 0.125</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Pratik: Bileşik faiz hesaplama</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> anapara <span class="op">=</span> <span class="dv">1000</span><span class="op">;</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> faizOrani <span class="op">=</span> <span class="fl">0.05</span><span class="op">;</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> yil <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> toplam <span class="op">=</span> anapara <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">1</span> <span class="op">+</span> faizOrani<span class="op">,</span> yil<span class="op">);</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">printf</span><span class="op">(</span><span class="st">&quot;3 yıl sonraki toplam: </span><span class="sc">%.2f</span><span class="st"> TL</span><span class="sc">%n</span><span class="st">&quot;</span><span class="op">,</span> toplam<span class="op">);</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="sqrt---karekök" class="level4">
+<h4><code>sqrt()</code> - Karekök</h4>
+<p>Bir sayının karekökünü hesaplar. Negatif sayılar için <code>NaN</code> (Not a Number) döndürür.</p>
+<!-- CODE_META
+id: bolum-11_kod05
+chapter_id: bolum-11
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> KarekokOrnek <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;25&#39;in karekökü: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span><span class="op">(</span><span class="dv">25</span><span class="op">));</span>      <span class="co">// 5.0</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;2&#39;nin karekökü: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span><span class="op">(</span><span class="dv">2</span><span class="op">));</span>       <span class="co">// 1.414...</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;0&#39;ın karekökü: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span><span class="op">(</span><span class="dv">0</span><span class="op">));</span>        <span class="co">// 0.0</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;-4&#39;ün karekökü: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span><span class="op">(-</span><span class="dv">4</span><span class="op">));</span>      <span class="co">// NaN</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Pratik: Pisagor teoremi</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> kenarA <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> kenarB <span class="op">=</span> <span class="dv">4</span><span class="op">;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> hipotenus <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span><span class="op">(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span>kenarA<span class="op">,</span> <span class="dv">2</span><span class="op">)</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span>kenarB<span class="op">,</span> <span class="dv">2</span><span class="op">));</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hipotenüs: &quot;</span> <span class="op">+</span> hipotenus<span class="op">);</span>  <span class="co">// 5.0</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+</section>
+<section id="yuvarlama-metotları" class="level3">
+<h3>Yuvarlama Metotları</h3>
+<p>Ondalıklı sayıları farklı şekillerde yuvarlamak için kullanılan metotlardır.</p>
+<section id="ceil---yukarı-yuvarlama" class="level4">
+<h4><code>ceil()</code> - Yukarı Yuvarlama</h4>
+<p>Sayıyı her zaman bir üst tamsayıya yuvarlar. Pozitif sayılarda olduğu gibi negatif sayılarda da “yukarı” kavramı matematiksel anlamda kullanılır.</p>
+<!-- CODE_META
+id: bolum-11_kod06
+chapter_id: bolum-11
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CeilOrnek <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;3.2&#39;nin tavanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span><span class="op">(</span><span class="fl">3.2</span><span class="op">));</span>      <span class="co">// 4.0</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;3.8&#39;in tavanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span><span class="op">(</span><span class="fl">3.8</span><span class="op">));</span>       <span class="co">// 4.0</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;-3.2&#39;nin tavanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span><span class="op">(-</span><span class="fl">3.2</span><span class="op">));</span>    <span class="co">// -3.0</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;-3.8&#39;in tavanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span><span class="op">(-</span><span class="fl">3.8</span><span class="op">));</span>     <span class="co">// -3.0</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;5.0&#39;ın tavanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span><span class="op">(</span><span class="fl">5.0</span><span class="op">));</span>       <span class="co">// 5.0</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Pratik: Bir sınavda geçme notu hesaplama</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> puan <span class="op">=</span> <span class="fl">67.3</span><span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> yuvarlanmisPuan <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span><span class="op">(</span>puan<span class="op">);</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yuvarlanmış puan: &quot;</span> <span class="op">+</span> yuvarlanmisPuan<span class="op">);</span>  <span class="co">// 68.0</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="floor---aşağı-yuvarlama" class="level4">
+<h4><code>floor()</code> - Aşağı Yuvarlama</h4>
+<p>Sayıyı her zaman bir alt tamsayıya yuvarlar.</p>
+<!-- CODE_META
+id: bolum-11_kod07
+chapter_id: bolum-11
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> FloorOrnek <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;3.2&#39;nin tabanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span><span class="op">(</span><span class="fl">3.2</span><span class="op">));</span>     <span class="co">// 3.0</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;3.8&#39;in tabanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span><span class="op">(</span><span class="fl">3.8</span><span class="op">));</span>      <span class="co">// 3.0</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;-3.2&#39;nin tabanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span><span class="op">(-</span><span class="fl">3.2</span><span class="op">));</span>   <span class="co">// -4.0</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;-3.8&#39;in tabanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span><span class="op">(-</span><span class="fl">3.8</span><span class="op">));</span>    <span class="co">// -4.0</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;5.0&#39;ın tabanı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span><span class="op">(</span><span class="fl">5.0</span><span class="op">));</span>      <span class="co">// 5.0</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Pratik: KDV hesaplama</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> fiyat <span class="op">=</span> <span class="fl">99.99</span><span class="op">;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> kdvOrani <span class="op">=</span> <span class="fl">0.18</span><span class="op">;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> kdvliFiyat <span class="op">=</span> fiyat <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">+</span> kdvOrani<span class="op">);</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> yuvarlanmisFiyat <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span><span class="op">(</span>kdvliFiyat <span class="op">*</span> <span class="dv">100</span><span class="op">)</span> <span class="op">/</span> <span class="dv">100</span><span class="op">;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;KDV&#39;li fiyat: &quot;</span> <span class="op">+</span> yuvarlanmisFiyat<span class="op">);</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="round---en-yakın-tamsayıya-yuvarlama" class="level4">
+<h4><code>round()</code> - En Yakın Tamsayıya Yuvarlama</h4>
+<p>Matematiksel yuvarlama kurallarına göre en yakın tamsayıya yuvarlar. .5 ve üzeri yukarı, altı aşağı yuvarlanır.</p>
+<!-- CODE_META
+id: bolum-11_kod08
+chapter_id: bolum-11
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> RoundOrnek <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;3.2&#39;nin yuvarlanmışı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(</span><span class="fl">3.2</span><span class="op">));</span>     <span class="co">// 3</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;3.5&#39;in yuvarlanmışı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(</span><span class="fl">3.5</span><span class="op">));</span>      <span class="co">// 4</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;3.8&#39;in yuvarlanmışı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(</span><span class="fl">3.8</span><span class="op">));</span>      <span class="co">// 4</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;-3.2&#39;nin yuvarlanmışı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(-</span><span class="fl">3.2</span><span class="op">));</span>   <span class="co">// -3</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;-3.5&#39;in yuvarlanmışı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(-</span><span class="fl">3.5</span><span class="op">));</span>    <span class="co">// -3</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;-3.8&#39;in yuvarlanmışı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(-</span><span class="fl">3.8</span><span class="op">));</span>    <span class="co">// -4</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Not: round() float için int, double için long döndürür</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">float</span> f <span class="op">=</span> <span class="fl">3.7f</span><span class="op">;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> d <span class="op">=</span> <span class="fl">3.7</span><span class="op">;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;float round: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(</span>f<span class="op">));</span>   <span class="co">// 4 (int)</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;double round: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(</span>d<span class="op">));</span>  <span class="co">// 4 (long)</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>📝 <strong>Önemli:</strong> <code>round()</code> metodu, <code>float</code> parametre için <code>int</code>, <code>double</code> parametre için <code>long</code> döndürür. Bu, büyük sayılarla çalışırken taşma riskini önlemek içindir.</p>
+</blockquote>
+</section>
+</section>
+<section id="trigonometrik-ve-logaritmik-metotlar" class="level3">
+<h3>Trigonometrik ve Logaritmik Metotlar</h3>
+<p>Bu metotlar, bilimsel ve mühendislik hesaplamalarında sıkça kullanılır.</p>
+<section id="trigonometrik-metotlar" class="level4">
+<h4>Trigonometrik Metotlar</h4>
+<p><code>Math</code> sınıfı, standart trigonometrik fonksiyonları sağlar. Tüm trigonometrik metotlar radyan cinsinden açı değerleri alır.</p>
+<!-- CODE_META
+id: bolum-11_kod09
+chapter_id: bolum-11
+kind: example
+title: "Kod 9"
+file: "Ornek08.java"
+mainClass: Ornek08
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TrigonometriOrnek <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> aciDerece <span class="op">=</span> <span class="dv">45</span><span class="op">;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> aciRadyan <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">toRadians</span><span class="op">(</span>aciDerece<span class="op">);</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;45° = &quot;</span> <span class="op">+</span> aciRadyan <span class="op">+</span> <span class="st">&quot; radyan&quot;</span><span class="op">);</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sin 45°: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sin</span><span class="op">(</span>aciRadyan<span class="op">));</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Cos 45°: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">cos</span><span class="op">(</span>aciRadyan<span class="op">));</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Tan 45°: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">tan</span><span class="op">(</span>aciRadyan<span class="op">));</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Ters trigonometrik fonksiyonlar</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> sinDeger <span class="op">=</span> <span class="fl">0.5</span><span class="op">;</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> aci <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">asin</span><span class="op">(</span>sinDeger<span class="op">);</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Arcsin(0.5) = &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">toDegrees</span><span class="op">(</span>aci<span class="op">)</span> <span class="op">+</span> <span class="st">&quot;°&quot;</span><span class="op">);</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Pratik: Dairenin alanı</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> yaricap <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> alan <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">PI</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span>yaricap<span class="op">,</span> <span class="dv">2</span><span class="op">);</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Daire alanı: &quot;</span> <span class="op">+</span> alan<span class="op">);</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="logaritmik-metotlar" class="level4">
+<h4>Logaritmik Metotlar</h4>
+<p>Doğal logaritma ve 10 tabanında logaritma hesaplamaları için kullanılır.</p>
+<!-- CODE_META
+id: bolum-11_kod10
+chapter_id: bolum-11
+kind: example
+title: "Kod 10"
+file: "Ornek09.java"
+mainClass: Ornek09
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb10"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> LogaritmaOrnek <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;ln(e): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">log</span><span class="op">(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">E</span><span class="op">));</span>           <span class="co">// 1.0</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;ln(10): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">log</span><span class="op">(</span><span class="dv">10</span><span class="op">));</span>              <span class="co">// 2.302...</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;log10(100): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">log10</span><span class="op">(</span><span class="dv">100</span><span class="op">));</span>       <span class="co">// 2.0</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;log10(1000): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">log10</span><span class="op">(</span><span class="dv">1000</span><span class="op">));</span>     <span class="co">// 3.0</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Pratik: Bir sayının kaç basamaklı olduğunu bulma</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayi <span class="op">=</span> <span class="dv">12345</span><span class="op">;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> basamakSayisi <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)</span><span class="bu">Math</span><span class="op">.</span><span class="fu">log10</span><span class="op">(</span>sayi<span class="op">)</span> <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>sayi <span class="op">+</span> <span class="st">&quot; sayısı &quot;</span> <span class="op">+</span> basamakSayisi <span class="op">+</span> <span class="st">&quot; basamaklı&quot;</span><span class="op">);</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META -->
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: MathTemelMetotlar.java</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MathTemelMetotlar <span class="op">{</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Demo: Temel matematiksel işlemler</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> sayi <span class="op">=</span> <span class="op">-</span><span class="fl">5.7</span><span class="op">;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== TEMEL METOTLAR ===&quot;</span><span class="op">);</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sayı: &quot;</span> <span class="op">+</span> sayi<span class="op">);</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Mutlak değer: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span><span class="op">(</span>sayi<span class="op">));</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yukarı yuvarla: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span><span class="op">(</span>sayi<span class="op">));</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Aşağı yuvarla: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span><span class="op">(</span>sayi<span class="op">));</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;En yakın: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(</span>sayi<span class="op">));</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;2^3 = &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">));</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;25&#39;in karekökü = &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span><span class="op">(</span><span class="dv">25</span><span class="op">));</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Karşılaştırma</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== KARŞILAŞTIRMA ===&quot;</span><span class="op">);</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;max(10, 20): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">));</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;min(10, 20): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">));</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Matematiksel sabitler</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== SABİTLER ===&quot;</span><span class="op">);</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;PI: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">PI</span><span class="op">);</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;E: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">E</span><span class="op">);</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META -->
+<div class="sourceCode" id="cb12"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: TrigonometriSabitler.java</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TrigonometriSabitler <span class="op">{</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== TRİGONOMETRİK İŞLEMLER ===&quot;</span><span class="op">);</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> aci <span class="op">=</span> <span class="dv">45</span><span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> radyan <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">toRadians</span><span class="op">(</span>aci<span class="op">);</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Pi sayısı: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">PI</span><span class="op">);</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sin 45°: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sin</span><span class="op">(</span>radyan<span class="op">));</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Cos 45°: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">cos</span><span class="op">(</span>radyan<span class="op">));</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Tan 45°: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">tan</span><span class="op">(</span>radyan<span class="op">));</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Ters trigonometrik</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== TERS TRİGONOMETRİK ===&quot;</span><span class="op">);</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Arcsin(1): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">toDegrees</span><span class="op">(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">asin</span><span class="op">(</span><span class="dv">1</span><span class="op">))</span> <span class="op">+</span> <span class="st">&quot;°&quot;</span><span class="op">);</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Arccos(0): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">toDegrees</span><span class="op">(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">acos</span><span class="op">(</span><span class="dv">0</span><span class="op">))</span> <span class="op">+</span> <span class="st">&quot;°&quot;</span><span class="op">);</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Arctan(1): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">toDegrees</span><span class="op">(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">atan</span><span class="op">(</span><span class="dv">1</span><span class="op">))</span> <span class="op">+</span> <span class="st">&quot;°&quot;</span><span class="op">);</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Hiperbolik</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== HİPERBOLİK ===&quot;</span><span class="op">);</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sinh(1): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sinh</span><span class="op">(</span><span class="dv">1</span><span class="op">));</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Cosh(1): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">cosh</span><span class="op">(</span><span class="dv">1</span><span class="op">));</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Tanh(1): &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">tanh</span><span class="op">(</span><span class="dv">1</span><span class="op">));</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<hr />
+</section>
+</section>
+</section>
+<section id="rastgele-sayı-üretimi-temelleri" class="level2">
+<h2>11.3 Rastgele Sayı Üretimi Temelleri</h2>
+<p>Rastgele sayı üretimi, birçok uygulamada kritik bir role sahiptir. Java, farklı ihtiyaçlara yönelik çeşitli rastgele sayı üretim mekanizmaları sunar.</p>
+<section id="math.random-metodu" class="level3">
+<h3><code>Math.random()</code> Metodu</h3>
+<p><code>Math.random()</code> metodu, 0.0 (dahil) ile 1.0 (hariç) arasında rastgele bir <code>double</code> değer üretir.</p>
+<!-- CODE_META
+id: bolum-11_kod11
+chapter_id: bolum-11
+kind: example
+title: "Kod 11"
+file: "Ornek10.java"
+mainClass: Ornek10
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb13"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MathRandomTemel <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Temel kullanım</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> rastgele <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">();</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;0-1 arası rastgele: &quot;</span> <span class="op">+</span> rastgele<span class="op">);</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Belirli aralıkta sayı üretme formülü:</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// (int)(Math.random() * (max - min + 1)) + min</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 1-10 arası tamsayı</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> birOn <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">()</span> <span class="op">*</span> <span class="dv">10</span><span class="op">)</span> <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;1-10 arası: &quot;</span> <span class="op">+</span> birOn<span class="op">);</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 50-100 arası tamsayı</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> elliYuz <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">()</span> <span class="op">*</span> <span class="dv">51</span><span class="op">)</span> <span class="op">+</span> <span class="dv">50</span><span class="op">;</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;50-100 arası: &quot;</span> <span class="op">+</span> elliYuz<span class="op">);</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 0-100 arası çift sayı</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> ciftSayi <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">()</span> <span class="op">*</span> <span class="dv">51</span><span class="op">)</span> <span class="op">*</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;0-100 arası çift: &quot;</span> <span class="op">+</span> ciftSayi<span class="op">);</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>💡 <strong>İpucu:</strong> <code>Math.random()</code> ile belirli bir aralıkta sayı üretirken formülü şöyle hatırlayın: <code>(int)(Math.random() * aralikGenisligi) + baslangicDegeri</code></p>
+</blockquote>
+</section>
+<section id="random-sınıfı" class="level3">
+<h3><code>Random</code> Sınıfı</h3>
+<p><code>Random</code> sınıfı, <code>Math.random()</code>’a göre daha esnek ve zengin bir API sunar. Farklı veri türlerinde rastgele değerler üretebilir.</p>
+<!-- CODE_META
+id: bolum-11_kod12
+chapter_id: bolum-11
+kind: example
+title: "Kod 12"
+file: "Ornek11.java"
+mainClass: Ornek11
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb14"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Random</span><span class="op">;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> RandomSinifiOrnek <span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Random</span> rastgele <span class="op">=</span> <span class="kw">new</span> <span class="bu">Random</span><span class="op">();</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Farklı türlerde rastgele değerler</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele tamsayı: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">());</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;0-100 arası: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">101</span><span class="op">));</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele ondalık: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextDouble</span><span class="op">());</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele boolean: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextBoolean</span><span class="op">());</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele float: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextFloat</span><span class="op">());</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele long: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextLong</span><span class="op">());</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Belirli aralıkta sayı üretme</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> min <span class="op">=</span> <span class="dv">10</span><span class="op">,</span> max <span class="op">=</span> <span class="dv">20</span><span class="op">;</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> aralik <span class="op">=</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span>max <span class="op">-</span> min <span class="op">+</span> <span class="dv">1</span><span class="op">)</span> <span class="op">+</span> min<span class="op">;</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>min <span class="op">+</span> <span class="st">&quot;-&quot;</span> <span class="op">+</span> max <span class="op">+</span> <span class="st">&quot; arası: &quot;</span> <span class="op">+</span> aralik<span class="op">);</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="seed-kavramı-ve-deterministik-rastgelelik" class="level3">
+<h3>Seed Kavramı ve Deterministik Rastgelelik</h3>
+<p>Seed (tohum değeri), rastgele sayı üretecinin başlangıç durumunu belirler. Aynı seed ile başlatılan üreteçler, her zaman aynı sayı dizisini üretir.</p>
+<!-- CODE_META
+id: bolum-11_kod13
+chapter_id: bolum-11
+kind: example
+title: "Kod 13"
+file: "Ornek12.java"
+mainClass: Ornek12
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb15"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Random</span><span class="op">;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SeedOrnek <span class="op">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Aynı seed ile aynı sayılar üretilir</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Random</span> r1 <span class="op">=</span> <span class="kw">new</span> <span class="bu">Random</span><span class="op">(</span><span class="dv">42</span><span class="op">);</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Random</span> r2 <span class="op">=</span> <span class="kw">new</span> <span class="bu">Random</span><span class="op">(</span><span class="dv">42</span><span class="op">);</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== AYNI SEED ===&quot;</span><span class="op">);</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;r1: &quot;</span> <span class="op">+</span> r1<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">100</span><span class="op">));</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;r2: &quot;</span> <span class="op">+</span> r2<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">100</span><span class="op">));</span>  <span class="co">// Aynı sayı</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;r1: &quot;</span> <span class="op">+</span> r1<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">100</span><span class="op">));</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;r2: &quot;</span> <span class="op">+</span> r2<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">100</span><span class="op">));</span>  <span class="co">// Aynı sayı</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Farklı seed ile farklı sayılar</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Random</span> r3 <span class="op">=</span> <span class="kw">new</span> <span class="bu">Random</span><span class="op">(</span><span class="dv">100</span><span class="op">);</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== FARKLI SEED ===&quot;</span><span class="op">);</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;r3: &quot;</span> <span class="op">+</span> r3<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">100</span><span class="op">));</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Seed kullanım alanları:</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 1. Testlerde tekrarlanabilirlik</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 2. Oyunlarda harita oluşturma</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 3. Bilimsel simülasyonlar</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="threadlocalrandom-sınıfı" class="level3">
+<h3><code>ThreadLocalRandom</code> Sınıfı</h3>
+<p>Çoklu iş parçacığı (multi-thread) ortamlarında performanslı rastgele sayı üretimi için kullanılır.</p>
+<!-- CODE_META
+id: bolum-11_kod14
+chapter_id: bolum-11
+kind: example
+title: "Kod 14"
+file: "Ornek13.java"
+mainClass: Ornek13
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb16"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">concurrent</span><span class="op">.</span><span class="im">ThreadLocalRandom</span><span class="op">;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ThreadLocalRandomOrnek <span class="op">{</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Thread-safe rastgele sayı üretimi</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayi <span class="op">=</span> ThreadLocalRandom<span class="op">.</span><span class="fu">current</span><span class="op">().</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">101</span><span class="op">);</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Thread-safe rastgele: &quot;</span> <span class="op">+</span> sayi<span class="op">);</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Belirli aralıkta sayı</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> ondalik <span class="op">=</span> ThreadLocalRandom<span class="op">.</span><span class="fu">current</span><span class="op">().</span><span class="fu">nextDouble</span><span class="op">(</span><span class="fl">0.0</span><span class="op">,</span> <span class="fl">1.0</span><span class="op">);</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;0-1 arası thread-safe: &quot;</span> <span class="op">+</span> ondalik<span class="op">);</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Performans karşılaştırması (tek thread&#39;de bile avantajlı)</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> baslangic <span class="op">=</span> <span class="bu">System</span><span class="op">.</span><span class="fu">nanoTime</span><span class="op">();</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">1000000</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>            ThreadLocalRandom<span class="op">.</span><span class="fu">current</span><span class="op">().</span><span class="fu">nextInt</span><span class="op">();</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>        <span class="dt">long</span> sure <span class="op">=</span> <span class="bu">System</span><span class="op">.</span><span class="fu">nanoTime</span><span class="op">()</span> <span class="op">-</span> baslangic<span class="op">;</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;ThreadLocalRandom süresi: &quot;</span> <span class="op">+</span> sure <span class="op">+</span> <span class="st">&quot; ns&quot;</span><span class="op">);</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META -->
+<div class="sourceCode" id="cb17"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: RastgeleSayiTemel.java</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> RastgeleSayiTemel <span class="op">{</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== Math.random() KULLANIMI ===&quot;</span><span class="op">);</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;0-1 arası rastgele: &quot;</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">());</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;1-10 arası rastgele tamsayı: &quot;</span> <span class="op">+</span> </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span><span class="dt">int</span><span class="op">)(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">()</span> <span class="op">*</span> <span class="dv">10</span> <span class="op">+</span> <span class="dv">1</span><span class="op">));</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;50-100 arası rastgele tamsayı: &quot;</span> <span class="op">+</span> </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span><span class="dt">int</span><span class="op">)(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">()</span> <span class="op">*</span> <span class="dv">51</span> <span class="op">+</span> <span class="dv">50</span><span class="op">));</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Birden fazla rastgele sayı</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">5 adet rastgele sayı (1-100):&quot;</span><span class="op">);</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">5</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">((</span><span class="dt">int</span><span class="op">)(</span><span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">()</span> <span class="op">*</span> <span class="dv">100</span> <span class="op">+</span> <span class="dv">1</span><span class="op">)</span> <span class="op">+</span> <span class="st">&quot; &quot;</span><span class="op">);</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">();</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Rastgele boolean (0.5 olasılıkla)</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">boolean</span> yaziMi <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">()</span> <span class="op">&lt;</span> <span class="fl">0.5</span><span class="op">;</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yazı mı? &quot;</span> <span class="op">+</span> <span class="op">(</span>yaziMi <span class="op">?</span> <span class="st">&quot;Evet&quot;</span> <span class="op">:</span> <span class="st">&quot;Hayır&quot;</span><span class="op">));</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META -->
+<div class="sourceCode" id="cb18"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: RandomSinifiKullanim.java</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Random</span><span class="op">;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> RandomSinifiKullanim <span class="op">{</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Random</span> rastgele <span class="op">=</span> <span class="kw">new</span> <span class="bu">Random</span><span class="op">();</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== Random SINIFI ===&quot;</span><span class="op">);</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele tamsayı: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">());</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;0-100 arası: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">101</span><span class="op">));</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele ondalık: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextDouble</span><span class="op">());</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele boolean: &quot;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextBoolean</span><span class="op">());</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Rastgele dizi oluşturma</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> dizi <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span><span class="dv">10</span><span class="op">];</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> dizi<span class="op">.</span><span class="fu">length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>            dizi<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">100</span><span class="op">);</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Rastgele dizi: &quot;</span><span class="op">);</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> sayi <span class="op">:</span> dizi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span>sayi <span class="op">+</span> <span class="st">&quot; &quot;</span><span class="op">);</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">();</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Rastgele renk üretme (RGB)</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> kirmizi <span class="op">=</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">256</span><span class="op">);</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> yesil <span class="op">=</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">256</span><span class="op">);</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> mavi <span class="op">=</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">256</span><span class="op">);</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">printf</span><span class="op">(</span><span class="st">&quot;Rastgele renk: RGB(</span><span class="sc">%d</span><span class="st">, </span><span class="sc">%d</span><span class="st">, </span><span class="sc">%d</span><span class="st">)</span><span class="sc">%n</span><span class="st">&quot;</span><span class="op">,</span> kirmizi<span class="op">,</span> yesil<span class="op">,</span> mavi<span class="op">);</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<hr />
+</section>
+</section>
+<section id="rastgele-sayı-üretiminde-ileri-teknikler" class="level2">
+<h2>11.4 Rastgele Sayı Üretiminde İleri Teknikler</h2>
+<section id="gaussian-normal-dağılım" class="level3">
+<h3>Gaussian (Normal) Dağılım</h3>
+<p>Normal dağılım, doğada sıkça karşılaşılan bir olasılık dağılımıdır. <code>nextGaussian()</code> metodu, ortalaması 0 ve standart sapması 1 olan normal dağılımdan rastgele değerler üretir.</p>
+<!-- CODE_META
+id: bolum-11_kod15
+chapter_id: bolum-11
+kind: example
+title: "Kod 15"
+file: "Ornek14.java"
+mainClass: Ornek14
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb19"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Random</span><span class="op">;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> GaussianOrnek <span class="op">{</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Random</span> rastgele <span class="op">=</span> <span class="kw">new</span> <span class="bu">Random</span><span class="op">();</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Normal dağılım (ortalama=0, std=1)</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Normal dağılım örnekleri:&quot;</span><span class="op">);</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>            <span class="dt">double</span> gaussian <span class="op">=</span> rastgele<span class="op">.</span><span class="fu">nextGaussian</span><span class="op">();</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%.3f</span><span class="st"> &quot;</span><span class="op">,</span> gaussian<span class="op">);</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">();</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Belirli ortalama ve standart sapma için dönüşüm</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> ortalama <span class="op">=</span> <span class="fl">75.0</span><span class="op">;</span>  <span class="co">// Sınav notu ortalaması</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> stdSapma <span class="op">=</span> <span class="fl">10.0</span><span class="op">;</span>  <span class="co">// Standart sapma</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Sınav notu simülasyonu (ort=75, std=10):&quot;</span><span class="op">);</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">5</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>            <span class="dt">double</span> not <span class="op">=</span> ortalama <span class="op">+</span> stdSapma <span class="op">*</span> rastgele<span class="op">.</span><span class="fu">nextGaussian</span><span class="op">();</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Notu 0-100 arasında sınırla</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>            not <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span><span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span><span class="op">(</span><span class="dv">100</span><span class="op">,</span> not<span class="op">));</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%.1f</span><span class="st"> &quot;</span><span class="op">,</span> not<span class="op">);</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">();</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="securerandom-sınıfı" class="level3">
+<h3><code>SecureRandom</code> Sınıfı</h3>
+<p>Kriptografik olarak güvenli rastgele sayı üretimi için kullanılır. Şifreleme anahtarları, token’lar ve güvenlik sertifikaları gibi hassas uygulamalarda tercih edilir.</p>
+<!-- CODE_META
+id: bolum-11_kod16
+chapter_id: bolum-11
+kind: example
+title: "Kod 16"
+file: "Ornek15.java"
+mainClass: Ornek15
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb20"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">security</span><span class="op">.</span><span class="im">SecureRandom</span><span class="op">;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SecureRandomOrnek <span class="op">{</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SecureRandom</span> guvenli <span class="op">=</span> <span class="kw">new</span> <span class="bu">SecureRandom</span><span class="op">();</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;=== GÜVENLİ RASTGELE SAYILAR ===&quot;</span><span class="op">);</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Güvenli tamsayı: &quot;</span> <span class="op">+</span> guvenli<span class="op">.</span><span class="fu">nextInt</span><span class="op">());</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;0-100 arası güvenli: &quot;</span> <span class="op">+</span> guvenli<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">100</span><span class="op">));</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Rastgele byte dizisi</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">byte</span><span class="op">[]</span> rastgeleBytes <span class="op">=</span> <span class="kw">new</span> <span class="dt">byte</span><span class="op">[</span><span class="dv">16</span><span class="op">];</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        guvenli<span class="op">.</span><span class="fu">nextBytes</span><span class="op">(</span>rastgeleBytes<span class="op">);</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Rastgele byte dizisi: &quot;</span><span class="op">);</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">byte</span> b <span class="op">:</span> rastgeleBytes<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%02X</span><span class="st"> &quot;</span><span class="op">,</span> b<span class="op">);</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">();</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Güvenli şifre oluşturma</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> sifre <span class="op">=</span> <span class="fu">guvenliSifreUret</span><span class="op">(</span><span class="dv">12</span><span class="op">);</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Güvenli şifre: &quot;</span> <span class="op">+</span> sifre<span class="op">);</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="bu">String</span> <span class="fu">guvenliSifreUret</span><span class="op">(</span><span class="dt">int</span> uzunluk<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SecureRandom</span> rastgele <span class="op">=</span> <span class="kw">new</span> <span class="bu">SecureRandom</span><span class="op">();</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> karakterler <span class="op">=</span> <span class="st">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;</span> <span class="op">+</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>                           <span class="st">&quot;abcdefghijklmnopqrstuvwxyz&quot;</span> <span class="op">+</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>                           <span class="st">&quot;0123456789!@#$%^&amp;*()_+-=[]{}|;:,.&lt;&gt;?&quot;</span><span class="op">;</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">StringBuilder</span> sifre <span class="op">=</span> <span class="kw">new</span> <span class="bu">StringBuilder</span><span class="op">();</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> uzunluk<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> index <span class="op">=</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span>karakterler<span class="op">.</span><span class="fu">length</span><span class="op">());</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>            sifre<span class="op">.</span><span class="fu">append</span><span class="op">(</span>karakterler<span class="op">.</span><span class="fu">charAt</span><span class="op">(</span>index<span class="op">));</span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sifre<span class="op">.</span><span class="fu">toString</span><span class="op">();</span></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="rastgele-karakter-ve-dizi-üretimi" class="level3">
+<h3>Rastgele Karakter ve Dizi Üretimi</h3>
+<p>Rastgele karakter dizileri, şifre oluşturma, test verisi hazırlama ve oyun geliştirme gibi alanlarda kullanılır.</p>
+<!-- CODE_META
+id: bolum-11_kod17
+chapter_id: bolum-11
+kind: example
+title: "Kod 17"
+file: "Ornek16.java"
+mainClass: Ornek16
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb21"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Random</span><span class="op">;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> RastgeleKarakterOrnek <span class="op">{</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Random</span> rastgele <span class="op">=</span> <span class="kw">new</span> <span class="bu">Random</span><span class="op">();</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Rastgele büyük harf</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> buyukHarf <span class="op">=</span> <span class="op">(</span><span class="dt">char</span><span class="op">)(</span><span class="ch">&#39;A&#39;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">26</span><span class="op">));</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele büyük harf: &quot;</span> <span class="op">+</span> buyukHarf<span class="op">);</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Rastgele küçük harf</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> kucukHarf <span class="op">=</span> <span class="op">(</span><span class="dt">char</span><span class="op">)(</span><span class="ch">&#39;a&#39;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">26</span><span class="op">));</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele küçük harf: &quot;</span> <span class="op">+</span> kucukHarf<span class="op">);</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Rastgele rakam</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> rakam <span class="op">=</span> <span class="op">(</span><span class="dt">char</span><span class="op">)(</span><span class="ch">&#39;0&#39;</span> <span class="op">+</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">10</span><span class="op">));</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele rakam: &quot;</span> <span class="op">+</span> rakam<span class="op">);</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Rastgele string oluşturma</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> rastgeleString <span class="op">=</span> <span class="fu">rastgeleStringUret</span><span class="op">(</span><span class="dv">8</span><span class="op">);</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele string: &quot;</span> <span class="op">+</span> rastgeleString<span class="op">);</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Rastgele isim oluşturma (basit)</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span><span class="op">[]</span> isimler <span class="op">=</span> <span class="op">{</span><span class="st">&quot;Ali&quot;</span><span class="op">,</span> <span class="st">&quot;Ayşe&quot;</span><span class="op">,</span> <span class="st">&quot;Mehmet&quot;</span><span class="op">,</span> <span class="st">&quot;Zeynep&quot;</span><span class="op">,</span> <span class="st">&quot;Ahmet&quot;</span><span class="op">};</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span><span class="op">[]</span> soyisimler <span class="op">=</span> <span class="op">{</span><span class="st">&quot;Yılmaz&quot;</span><span class="op">,</span> <span class="st">&quot;Demir&quot;</span><span class="op">,</span> <span class="st">&quot;Çelik&quot;</span><span class="op">,</span> <span class="st">&quot;Kaya&quot;</span><span class="op">,</span> <span class="st">&quot;Öztürk&quot;</span><span class="op">};</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> tamIsim <span class="op">=</span> isimler<span class="op">[</span>rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span>isimler<span class="op">.</span><span class="fu">length</span><span class="op">)]</span> <span class="op">+</span> <span class="st">&quot; &quot;</span> <span class="op">+</span> </span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>                        soyisimler<span class="op">[</span>rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span>soyisimler<span class="op">.</span><span class="fu">length</span><span class="op">)];</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Rastgele isim: &quot;</span> <span class="op">+</span> tamIsim<span class="op">);</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="bu">String</span> <span class="fu">rastgeleStringUret</span><span class="op">(</span><span class="dt">int</span> uzunluk<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Random</span> rastgele <span class="op">=</span> <span class="kw">new</span> <span class="bu">Random</span><span class="op">();</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> karakterler <span class="op">=</span> <span class="st">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;</span><span class="op">;</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>        <span class="bu">StringBuilder</span> sb <span class="op">=</span> <span class="kw">new</span> <span class="bu">StringBuilder</span><span class="op">();</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> uzunluk<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> index <span class="op">=</span> rastgele<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span>karakterler<span class="op">.</span><span class="fu">length</span><span class="op">());</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>            sb<span class="op">.</span><span class="fu">append</span><span class="op">(</span>karakterler<span class="op">.</span><span class="fu">charAt</span><span class="op">(</span>index<span class="op">));</span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sb<span class="op">.</span><span class="fu">toString</span><span class="op">();</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="performans-optimizasyonu" class="level3">
+<h3>Performans Optimizasyonu</h3>
+<p>Rastgele sayı üretiminde performans, özellikle büyük ölçekli simülasyonlarda önemli bir faktördür.</p>
+<p>```java
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;</p>
+<p>public class PerformansKarsilastirma {
+public static void main(String[] args) {
+int iterasyon = 10_000_000;</p>
+<pre><code>    // Math.random() performansı
+    long baslangic = System.nanoTime();
+    for (int i = 0; i &lt; iterasyon; i++) {
+        Math.random();
+    }
+    long mathSure = System.nanoTime() - baslangic;
+    System.out.println(&quot;Math.random(): &quot; + mathSure / 1_000_000 + &quot; ms&quot;);
+    
+    // Random sınıfı performansı
+    Random rastgele = new Random();
+    baslangic = System.nanoTime();
+    for (int i = 0; i &lt; iterasyon; i++) {
+        rastgele.nextDouble();
+    }
+    long randomSure = System.nanoTime() - baslangic;
+    System.out.println(&quot;Random sınıfı: &quot; + randomSure / 1_000_000 + &quot; ms&quot;);
+    
+    // ThreadLocalRandom performansı
+    baslangic = System.nanoTime();
+    for (int i = 0; i &lt; iterasyon; i++) {
+        ThreadLocalRandom.current().nextDouble();
+    }
+    long threadSure = System.nanoTime() - baslangic;
+    System.out.println(&quot;ThreadLocalRandom:</code></pre>
+</section>
+</section>
+</section>
+</body>
+</html>

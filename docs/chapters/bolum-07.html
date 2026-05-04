@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Teknik Kitap Yazarı" />
+  <meta name="dcterms.date" content="2025-04-09" />
+  <meta name="description" content="Temel algoritma desenlerini (doğrusal arama, sayma, toplama, min/max bulma, bayrak değişkeni) ve akış şeması ile problem çözme yaklaşımını tanıtmak." />
+  <title>Metotlar</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Metotlar</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Teknik Kitap Yazarı</p>
+<p class="date">2025-04-09</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#bölüm-7-algoritmik-problem-cozme-desenleri" id="toc-bölüm-7-algoritmik-problem-cozme-desenleri">Bölüm 7: Algoritmik Problem Cozme Desenleri</a>
+<ul>
+<li><a href="#algoritmik-düşünmenin-temelleri-ve-akış-şeması-yaklaşımı" id="toc-algoritmik-düşünmenin-temelleri-ve-akış-şeması-yaklaşımı">7.1 Algoritmik Düşünmenin Temelleri ve Akış Şeması Yaklaşımı</a></li>
+<li><a href="#doğrusal-arama-linear-search-deseni" id="toc-doğrusal-arama-linear-search-deseni">7.2 Doğrusal Arama (Linear Search) Deseni</a></li>
+<li><a href="#sayma-counting-deseni" id="toc-sayma-counting-deseni">7.3 Sayma (Counting) Deseni</a></li>
+<li><a href="#toplama-summation-ve-ortalama-deseni" id="toc-toplama-summation-ve-ortalama-deseni">7.4 Toplama (Summation) ve Ortalama Deseni</a></li>
+<li><a href="#minimummaksimum-bulma-minmax-deseni" id="toc-minimummaksimum-bulma-minmax-deseni">7.5 Minimum/Maksimum Bulma (Min/Max) Deseni</a></li>
+<li><a href="#bayrak-değişkeni-flag-variable-deseni" id="toc-bayrak-değişkeni-flag-variable-deseni">7.6 Bayrak Değişkeni (Flag Variable) Deseni</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="bölüm-7-algoritmik-problem-cozme-desenleri" class="level1">
+<h1>Bölüm 7: Algoritmik Problem Cozme Desenleri</h1>
+<section id="algoritmik-düşünmenin-temelleri-ve-akış-şeması-yaklaşımı" class="level2">
+<h2>7.1 Algoritmik Düşünmenin Temelleri ve Akış Şeması Yaklaşımı</h2>
+<section id="algoritma-nedir-günlük-hayattan-algoritma-örnekleri" class="level3">
+<h3>Algoritma Nedir? Günlük Hayattan Algoritma Örnekleri</h3>
+<p>Algoritma, bir problemi çözmek veya belirli bir hedefe ulaşmak için izlenen adım adım, sıralı ve kesin talimatlar bütünüdür. Günlük hayatta farkında olmadan sürekli algoritmalar kullanırız. Örneğin, bir yemek tarifi, bir mobilyayı kurma kılavuzu veya bir yol tarifi, aslında birer algoritmadır.</p>
+<p><strong>Günlük Hayattan Algoritma Örnekleri:</strong></p>
+<ul>
+<li><strong>Çay Demleme Algoritması:</strong>
+<ol type="1">
+<li>Su ısıtıcısını çalıştır.</li>
+<li>Su kaynayana kadar bekle.</li>
+<li>Demliğe çay koy.</li>
+<li>Kaynayan suyu demliğe ekle.</li>
+<li>5 dakika demlenmeye bırak.</li>
+<li>Çayı bardağa doldur.</li>
+</ol></li>
+<li><strong>ATM’den Para Çekme Algoritması:</strong>
+<ol type="1">
+<li>Kartı tak.</li>
+<li>Şifreyi gir.</li>
+<li>İşlem türünü seç (Para Çekme).</li>
+<li>Çekilecek miktarı gir.</li>
+<li>Onayla.</li>
+<li>Parayı al.</li>
+<li>Kartı geri al.</li>
+</ol></li>
+</ul>
+<blockquote>
+<p><strong>Pedagojik Kutu:</strong> Algoritmaların günlük hayattaki varlığını anlamak, soyut kavramları somutlaştırmanın ilk adımıdır. Öğrenciler, kendi günlük rutinlerinden algoritma örnekleri çıkarmaya teşvik edilmelidir.</p>
+</blockquote>
+</section>
+<section id="problem-çözme-sürecinin-aşamaları-anlama-planlama-uygulama-değerlendirme" class="level3">
+<h3>Problem Çözme Sürecinin Aşamaları: Anlama → Planlama → Uygulama → Değerlendirme</h3>
+<p>Bir problemi algoritmik olarak çözmek için sistematik bir yaklaşım izlemek gerekir. Bu süreç dört temel aşamadan oluşur:</p>
+<ol type="1">
+<li><strong>Anlama:</strong> Problemi dikkatlice okuyun, girdileri ve çıktıları belirleyin. “Problem tam olarak ne istiyor?” sorusuna cevap verin.</li>
+<li><strong>Planlama:</strong> Problemi çözmek için bir yol haritası oluşturun. Adımları sıralayın, gerekirse akış şeması veya sözde kod kullanın.</li>
+<li><strong>Uygulama:</strong> Planladığınız adımları bir programlama dilinde (örneğin Java) kodlayın.</li>
+<li><strong>Değerlendirme:</strong> Kodunuzu farklı test senaryolarıyla çalıştırın. Beklenen çıktıları alıp almadığınızı kontrol edin. Varsa hataları düzeltin (debugging).</li>
+</ol>
+<blockquote>
+<p><strong>Pedagojik Kutu:</strong> Bu dört aşamalı döngü, profesyonel yazılım geliştirme süreçlerinin temelidir. Özellikle “Anlama” aşaması, yeni başlayanların en çok atladığı ama en kritik olan aşamadır.</p>
+</blockquote>
+</section>
+<section id="akış-şeması-sembolleri-ve-anlamları" class="level3">
+<h3>Akış Şeması Sembolleri ve Anlamları</h3>
+<p>Akış şeması, bir algoritmanın adımlarını görsel olarak temsil eden bir diyagramdır. Standart semboller kullanarak algoritmanın mantığını anlaşılır kılar.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Sembol</th>
+<th style="text-align: left;">İsim</th>
+<th style="text-align: left;">Anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><img src="https://via.placeholder.com/50x30/4CAF50/FFFFFF?text=Oval" alt="Başlangıç/Bitiş" /></td>
+<td style="text-align: left;">Başlangıç/Bitiş</td>
+<td style="text-align: left;">Algoritmanın başladığı veya bittiği noktayı belirtir.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><img src="https://via.placeholder.com/50x30/2196F3/FFFFFF?text=Dikdörtgen" alt="İşlem" /></td>
+<td style="text-align: left;">İşlem</td>
+<td style="text-align: left;">Bir hesaplama, atama veya değer değiştirme gibi bir eylemi temsil eder.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><img src="https://via.placeholder.com/50x30/FF9800/FFFFFF?text=Eşkenar+Dörtgen" alt="Karar" /></td>
+<td style="text-align: left;">Karar</td>
+<td style="text-align: left;">Bir koşula bağlı olarak (Evet/Hayır) iki farklı yola ayrılmayı sağlar.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><img src="https://via.placeholder.com/50x30/9C27B0/FFFFFF?text=Paralelkenar" alt="Girdi/Çıktı" /></td>
+<td style="text-align: left;">Girdi/Çıktı</td>
+<td style="text-align: left;">Kullanıcıdan veri okumayı (girdi) veya sonucu ekrana yazdırmayı (çıktı) temsil eder.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><img src="https://via.placeholder.com/50x30/607D8B/FFFFFF?text=Ok" alt="Ok" /></td>
+<td style="text-align: left;">Akış Yönü</td>
+<td style="text-align: left;">Adımlar arasındaki sırayı ve yönü gösterir.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="akış-şeması-ile-algoritma-ifade-etmenin-avantajları" class="level3">
+<h3>Akış Şeması ile Algoritma İfade Etmenin Avantajları</h3>
+<ul>
+<li><strong>Görsellik:</strong> Karmaşık mantığı basit ve anlaşılır bir şekilde görselleştirir.</li>
+<li><strong>Kolay İletişim:</strong> Programcı olmayan kişilerle bile algoritmanın mantığını paylaşmayı kolaylaştırır.</li>
+<li><strong>Hata Ayıklama:</strong> Algoritmadaki mantıksal hataları görmeyi ve düzeltmeyi kolaylaştırır.</li>
+<li><strong>Dilden Bağımsız:</strong> Herhangi bir programlama diline bağımlı olmadan algoritmayı tasarlamaya olanak tanır.</li>
+</ul>
+<p><strong>Kod Örneği: Akış Şemasından Java Koduna Dönüşüm</strong></p>
+<p><strong>Problem:</strong> Kullanıcıdan bir sayı alıp ekrana yazdıran algoritmayı akış şeması ile gösterip Java koduna dönüştürün.</p>
+<p><strong>Akış Şeması (Sözel Anlatım):</strong></p>
+<ol type="1">
+<li><strong>Başla</strong></li>
+<li><strong>Girdi:</strong> Kullanıcıdan bir sayı oku (sayi)</li>
+<li><strong>İşlem:</strong> sayi değişkenine okunan değeri ata</li>
+<li><strong>Çıktı:</strong> “Girilen sayı:” + sayi metnini yazdır</li>
+<li><strong>Bitir</strong></li>
+</ol>
+<p><strong>Java Kodu:</strong></p>
+<!-- CODE_META
+id: bolum-07_kod01
+chapter_id: bolum-07
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dil: Java</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Kullanıcıdan bir sayı alıp ekrana yazdıran basit bir program.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Karmaşıklık: O(1)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SayiOkuYazdir <span class="op">{</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 1. Başla (main metodu çalışmaya başlar)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> input <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 2. Girdi: Kullanıcıdan bir sayı oku</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Bir sayı giriniz: &quot;</span><span class="op">);</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayi <span class="op">=</span> input<span class="op">.</span><span class="fu">nextInt</span><span class="op">();</span> <span class="co">// sayi değişkenine okunan değeri ata</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 3. Çıktı: Sonucu yazdır</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Girilen sayı: &quot;</span> <span class="op">+</span> sayi<span class="op">);</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 4. Bitir (main metodu sonlanır)</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        input<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Uygulama:</strong> Bir öğrencinin vize ve final notlarını alıp, ortalamasını (vize %40, final %60) hesaplayan ve geçip geçmediğini (ortalama &gt;= 60) söyleyen bir algoritmanın akış şemasını çiziniz.</p>
+<blockquote>
+<p><strong>Pedagojik Kutu:</strong> Bu uygulama, öğrencilerin hem akış şeması sembollerini (karar, işlem, girdi/çıktı) kullanmalarını hem de gerçek bir problemi modellemelerini sağlar.</p>
+</blockquote>
+</section>
+</section>
+<section id="doğrusal-arama-linear-search-deseni" class="level2">
+<h2>7.2 Doğrusal Arama (Linear Search) Deseni</h2>
+<section id="doğrusal-aramanın-temel-mantığı-sıralı-kontrol-etme" class="level3">
+<h3>Doğrusal Aramanın Temel Mantığı: Sıralı Kontrol Etme</h3>
+<p>Doğrusal arama, bir listede belirli bir elemanı bulmak için kullanılan en basit arama algoritmasıdır. Listenin başından sonuna kadar sırayla her bir elemanı kontrol eder. Aranan eleman bulunduğunda arama durur; listenin sonuna kadar bulunamazsa, elemanın listede olmadığı sonucuna varılır.</p>
+</section>
+<section id="hangi-durumlarda-kullanılır" class="level3">
+<h3>Hangi Durumlarda Kullanılır?</h3>
+<ul>
+<li><strong>Sırasız Listeler:</strong> Liste sıralı değilse, doğrusal arama tek seçenektir.</li>
+<li><strong>Küçük Veri Kümeleri:</strong> Liste çok küçükse (örneğin 10-20 eleman), doğrusal arama yeterince hızlıdır.</li>
+<li><strong>Tek Seferlik Arama:</strong> Arama işlemi çok sık yapılmayacaksa.</li>
+</ul>
+</section>
+<section id="akış-şeması-ile-doğrusal-arama-algoritmasının-gösterimi" class="level3">
+<h3>Akış Şeması ile Doğrusal Arama Algoritmasının Gösterimi</h3>
+<p><strong>Problem:</strong> Bir tamsayı listesinde, kullanıcının girdiği bir sayıyı arayan algoritma.</p>
+<p><strong>Akış Şeması Adımları:</strong></p>
+<ol type="1">
+<li><strong>Başla</strong></li>
+<li><strong>Girdi:</strong> Aranacak sayıyı al (<code>hedef</code>)</li>
+<li><strong>Girdi:</strong> Listeyi al (<code>liste</code>)</li>
+<li><strong>İşlem:</strong> <code>index</code> değişkenini 0 olarak ata</li>
+<li><strong>Karar:</strong> <code>index &lt; listenin uzunluğu</code> mu?
+<ul>
+<li><strong>Evet:</strong> Devam et.</li>
+<li><strong>Hayır:</strong> “Eleman bulunamadı” yazdır ve <strong>Bitir</strong>’e git.</li>
+</ul></li>
+<li><strong>Karar:</strong> <code>liste[index] == hedef</code> mi?
+<ul>
+<li><strong>Evet:</strong> “Eleman bulundu, indeks: index” yazdır ve <strong>Bitir</strong>’e git.</li>
+<li><strong>Hayır:</strong> <code>index</code>’i 1 arttır ve <strong>5. adıma</strong> git.</li>
+</ul></li>
+</ol>
+<p><strong>Kod Örneği: Bir Listedeki Elemanı Arayan Java Fonksiyonu</strong></p>
+<!-- CODE_META
+id: bolum-07_kod02
+chapter_id: bolum-07
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dil: Java</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Bir tamsayı dizisinde belirli bir sayıyı arayan doğrusal arama fonksiyonu.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Karmaşıklık: O(n)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> LinearSearch <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/**</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> Bir dizide hedef de<span class="co">ğ</span>eri arar<span class="co">.</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">dizi</span><span class="co"> </span>Aranacak tamsay<span class="co">ı</span> dizisi<span class="co">.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">hedef</span><span class="co"> </span>Aranacak de<span class="co">ğ</span>er<span class="co">.</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@return</span> Hedef de<span class="co">ğ</span>erin bulundu<span class="co">ğ</span>u indeks<span class="co">,</span> bulunamazsa <span class="co">-1.</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>     <span class="co">*/</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">linearSearch</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> dizi<span class="op">,</span> <span class="dt">int</span> hedef<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> dizi<span class="op">.</span><span class="fu">length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>dizi<span class="op">[</span>i<span class="op">]</span> <span class="op">==</span> hedef<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> i<span class="op">;</span> <span class="co">// Eleman bulundu, indeksini döndür</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span> <span class="co">// Eleman bulunamadı</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> sayilar <span class="op">=</span> <span class="op">{</span><span class="dv">10</span><span class="op">,</span> <span class="dv">23</span><span class="op">,</span> <span class="dv">45</span><span class="op">,</span> <span class="dv">70</span><span class="op">,</span> <span class="dv">11</span><span class="op">,</span> <span class="dv">15</span><span class="op">};</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> aranan <span class="op">=</span> <span class="dv">70</span><span class="op">;</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sonuc <span class="op">=</span> <span class="fu">linearSearch</span><span class="op">(</span>sayilar<span class="op">,</span> aranan<span class="op">);</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>sonuc <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>aranan <span class="op">+</span> <span class="st">&quot; sayısı dizide bulunamadı.&quot;</span><span class="op">);</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>aranan <span class="op">+</span> <span class="st">&quot; sayısı dizide &quot;</span> <span class="op">+</span> sonuc <span class="op">+</span> <span class="st">&quot;. indekste bulundu.&quot;</span><span class="op">);</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Uygulama:</strong> Bir <code>String</code> dizisinde (“Ali”, “Ayşe”, “Ahmet”, “Zeynep”) “Ayşe” ismini arayan bir Java programı yazınız.</p>
+<p><strong>Değerlendirme:</strong> Doğrusal aramanın zaman karmaşıklığı O(n)’dir. Bu, listenin boyutu arttıkça arama süresinin de doğrusal olarak arttığı anlamına gelir. En kötü durumda (aranan eleman sonda veya hiç yok) tüm liste taranır. Bu nedenle büyük ve sıralı listeler için verimsizdir.</p>
+</section>
+</section>
+<section id="sayma-counting-deseni" class="level2">
+<h2>7.3 Sayma (Counting) Deseni</h2>
+<section id="sayma-deseninin-temel-prensibi-koşul-sağlayan-elemanları-sayma" class="level3">
+<h3>Sayma Deseninin Temel Prensibi: Koşul Sağlayan Elemanları Sayma</h3>
+<p>Sayma deseni, bir koleksiyondaki (liste, dizi, metin) belirli bir koşulu sağlayan elemanların sayısını bulmak için kullanılır. Temel mantık, bir sayaç değişkeni kullanmak ve koşul sağlanan her eleman için bu sayacı bir arttırmaktır.</p>
+</section>
+<section id="sayaç-değişkeni-kullanımı-ve-başlangıç-değeri-atama" class="level3">
+<h3>Sayaç Değişkeni Kullanımı ve Başlangıç Değeri Atama</h3>
+<p>Sayaç değişkeni, sayma işlemini gerçekleştirmek için kullanılan bir tamsayı değişkendir. Sayma işlemi başlamadan önce mutlaka <strong>0</strong> değeri ile başlatılmalıdır. Aksi takdirde, rastgele bir değer üzerinden sayma yapılır ve yanlış sonuç elde edilir.</p>
+</section>
+<section id="sayma-işleminin-akış-şeması-ile-gösterimi" class="level3">
+<h3>Sayma İşleminin Akış Şeması ile Gösterimi</h3>
+<p><strong>Problem:</strong> Bir tamsayı listesinde, belirli bir değerden büyük olan elemanların sayısını bulan algoritma.</p>
+<p><strong>Akış Şeması Adımları:</strong></p>
+<ol type="1">
+<li><strong>Başla</strong></li>
+<li><strong>Girdi:</strong> Eşik değerini al (<code>esik</code>)</li>
+<li><strong>Girdi:</strong> Listeyi al (<code>liste</code>)</li>
+<li><strong>İşlem:</strong> <code>sayac</code> değişkenini 0 olarak ata</li>
+<li><strong>İşlem:</strong> <code>index</code> değişkenini 0 olarak ata</li>
+<li><strong>Karar:</strong> <code>index &lt; listenin uzunluğu</code> mu?
+<ul>
+<li><strong>Evet:</strong> Devam et.</li>
+<li><strong>Hayır:</strong> <code>sayac</code> değerini yazdır ve <strong>Bitir</strong>’e git.</li>
+</ul></li>
+<li><strong>Karar:</strong> <code>liste[index] &gt; esik</code> mi?
+<ul>
+<li><strong>Evet:</strong> <code>sayac</code>’ı 1 arttır.</li>
+<li><strong>Hayır:</strong> Hiçbir şey yapma.</li>
+</ul></li>
+<li><strong>İşlem:</strong> <code>index</code>’i 1 arttır ve <strong>6. adıma</strong> git.</li>
+</ol>
+<p><strong>Kod Örneği: Belirli Bir Değerden Büyük Elemanları Sayan Fonksiyon</strong></p>
+<!-- CODE_META
+id: bolum-07_kod03
+chapter_id: bolum-07
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dil: Java</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Bir tamsayı dizisinde belirli bir eşik değerinden büyük olan elemanların sayısını bulan fonksiyon.</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Karmaşıklık: O(n)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CountingExample <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/**</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> Bir dizide e<span class="co">ş</span>ik de<span class="co">ğ</span>erinden b<span class="co">ü</span>y<span class="co">ü</span>k elemanlar<span class="co">ı</span>n say<span class="co">ı</span>s<span class="co">ı</span>n<span class="co">ı</span> sayar<span class="co">.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">dizi</span><span class="co"> </span>Tamsay<span class="co">ı</span> dizisi<span class="co">.</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">esik</span><span class="co"> </span>Kar<span class="co">şı</span>la<span class="co">ş</span>t<span class="co">ı</span>rma e<span class="co">ş</span>i<span class="co">ğ</span>i<span class="co">.</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@return</span> E<span class="co">ş</span>ik de<span class="co">ğ</span>erinden b<span class="co">ü</span>y<span class="co">ü</span>k eleman say<span class="co">ı</span>s<span class="co">ı.</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>     <span class="co">*/</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">countGreaterThan</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> dizi<span class="op">,</span> <span class="dt">int</span> esik<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayac <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="co">// Sayaç başlangıç değeri 0</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> eleman <span class="op">:</span> dizi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>eleman <span class="op">&gt;</span> esik<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>                sayac<span class="op">++;</span> <span class="co">// Koşul sağlanırsa sayacı arttır</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sayac<span class="op">;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> notlar <span class="op">=</span> <span class="op">{</span><span class="dv">45</span><span class="op">,</span> <span class="dv">78</span><span class="op">,</span> <span class="dv">90</span><span class="op">,</span> <span class="dv">34</span><span class="op">,</span> <span class="dv">88</span><span class="op">,</span> <span class="dv">67</span><span class="op">};</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> gecmeNotu <span class="op">=</span> <span class="dv">60</span><span class="op">;</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> gecenSayisi <span class="op">=</span> <span class="fu">countGreaterThan</span><span class="op">(</span>notlar<span class="op">,</span> gecmeNotu<span class="op">);</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Geçen öğrenci sayısı: &quot;</span> <span class="op">+</span> gecenSayisi<span class="op">);</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Kod Örneği: Metin İçinde Sesli Harfleri Sayan Program</strong></p>
+<!-- CODE_META
+id: bolum-07_kod04
+chapter_id: bolum-07
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dil: Java</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Bir metin içindeki sesli harflerin (a, e, i, o, u) sayısını bulan program.</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Karmaşıklık: O(n)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CountVowels <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/**</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> Bir metindeki sesli harflerin say<span class="co">ı</span>s<span class="co">ı</span>n<span class="co">ı</span> sayar<span class="co">.</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">metin</span><span class="co"> </span>Kontrol edilecek metin<span class="co">.</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@return</span> Sesli harf say<span class="co">ı</span>s<span class="co">ı.</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>     <span class="co">*/</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">countVowels</span><span class="op">(</span><span class="bu">String</span> metin<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayac <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> kucukMetin <span class="op">=</span> metin<span class="op">.</span><span class="fu">toLowerCase</span><span class="op">();</span> <span class="co">// Büyük/küçük harf duyarlılığını kaldır</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> kucukMetin<span class="op">.</span><span class="fu">length</span><span class="op">();</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">char</span> harf <span class="op">=</span> kucukMetin<span class="op">.</span><span class="fu">charAt</span><span class="op">(</span>i<span class="op">);</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>harf <span class="op">==</span> <span class="ch">&#39;a&#39;</span> <span class="op">||</span> harf <span class="op">==</span> <span class="ch">&#39;e&#39;</span> <span class="op">||</span> harf <span class="op">==</span> <span class="ch">&#39;i&#39;</span> <span class="op">||</span> harf <span class="op">==</span> <span class="ch">&#39;o&#39;</span> <span class="op">||</span> harf <span class="op">==</span> <span class="ch">&#39;u&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                sayac<span class="op">++;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sayac<span class="op">;</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> yazi <span class="op">=</span> <span class="st">&quot;Merhaba Dünya!&quot;</span><span class="op">;</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sesliSayisi <span class="op">=</span> <span class="fu">countVowels</span><span class="op">(</span>yazi<span class="op">);</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Metindeki sesli harf sayısı: &quot;</span> <span class="op">+</span> sesliSayisi<span class="op">);</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Uygulama:</strong> Bir sınıftaki 20 öğrencinin sınav notlarını içeren bir listede, 50’nin altında kalan (kalan) öğrenci sayısını hesaplayan bir Java programı yazınız.</p>
+<p><strong>Değerlendirme:</strong> Sayma deseni, birçok farklı probleme uyarlanabilir. Örneğin, bir listede kaç tane çift sayı olduğunu bulma, bir metinde kaç tane boşluk olduğunu bulma gibi problemlerde kullanılabilir.</p>
+</section>
+</section>
+<section id="toplama-summation-ve-ortalama-deseni" class="level2">
+<h2>7.4 Toplama (Summation) ve Ortalama Deseni</h2>
+<section id="toplama-deseninin-temeli-biriktirici-accumulator-değişken-kullanımı" class="level3">
+<h3>Toplama Deseninin Temeli: Biriktirici (Accumulator) Değişken Kullanımı</h3>
+<p>Toplama deseni, bir listedeki tüm sayısal değerlerin toplamını bulmak için kullanılır. Biriktirici adı verilen bir değişken kullanılır ve listenin her bir elemanı bu değişkene eklenir. Biriktirici değişkeninin başlangıç değeri <strong>0</strong> olmalıdır.</p>
+</section>
+<section id="toplama-ve-sayma-desenlerinin-birlikte-kullanımı-ile-ortalama-hesaplama" class="level3">
+<h3>Toplama ve Sayma Desenlerinin Birlikte Kullanımı ile Ortalama Hesaplama</h3>
+<p>Ortalama hesaplamak için hem toplama desenine (tüm notların toplamı) hem de sayma desenine (kaç tane not olduğu) ihtiyaç vardır. Ortalama = Toplam / Eleman Sayısı formülü ile hesaplanır.</p>
+</section>
+<section id="akış-şeması-ile-toplama-işleminin-gösterimi" class="level3">
+<h3>Akış Şeması ile Toplama İşleminin Gösterimi</h3>
+<p><strong>Problem:</strong> Bir listedeki tüm sayıların toplamını bulan algoritma.</p>
+<p><strong>Akış Şeması Adımları:</strong></p>
+<ol type="1">
+<li><strong>Başla</strong></li>
+<li><strong>Girdi:</strong> Listeyi al (<code>liste</code>)</li>
+<li><strong>İşlem:</strong> <code>toplam</code> değişkenini 0 olarak ata (biriktirici)</li>
+<li><strong>İşlem:</strong> <code>index</code> değişkenini 0 olarak ata</li>
+<li><strong>Karar:</strong> <code>index &lt; listenin uzunluğu</code> mu?
+<ul>
+<li><strong>Evet:</strong> Devam et.</li>
+<li><strong>Hayır:</strong> <code>toplam</code> değerini yazdır ve <strong>Bitir</strong>’e git.</li>
+</ul></li>
+<li><strong>İşlem:</strong> <code>toplam = toplam + liste[index]</code></li>
+<li><strong>İşlem:</strong> <code>index</code>’i 1 arttır ve <strong>5. adıma</strong> git.</li>
+</ol>
+<p><strong>Kod Örneği: Bir Listedeki Sayıların Toplamını Bulan Fonksiyon</strong></p>
+<!-- CODE_META
+id: bolum-07_kod05
+chapter_id: bolum-07
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dil: Java</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Bir tamsayı dizisindeki tüm elemanların toplamını bulan fonksiyon.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Karmaşıklık: O(n)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SummationExample <span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/**</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> Bir tamsay<span class="co">ı</span> dizisinin toplam<span class="co">ı</span>n<span class="co">ı</span> hesaplar<span class="co">.</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">dizi</span><span class="co"> </span>Tamsay<span class="co">ı</span> dizisi<span class="co">.</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@return</span> Dizideki elemanlar<span class="co">ı</span>n toplam<span class="co">ı.</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>     <span class="co">*/</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">sumArray</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> dizi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> toplam <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="co">// Biriktirici başlangıç değeri 0</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> eleman <span class="op">:</span> dizi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>            toplam <span class="op">+=</span> eleman<span class="op">;</span> <span class="co">// Her elemanı toplama ekle</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> toplam<span class="op">;</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> sayilar <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">5</span><span class="op">};</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> toplam <span class="op">=</span> <span class="fu">sumArray</span><span class="op">(</span>sayilar<span class="op">);</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dizinin toplamı: &quot;</span> <span class="op">+</span> toplam<span class="op">);</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Kod Örneği: Kullanıcıdan Alınan 10 Sayının Ortalamasını Hesaplayan Program</strong></p>
+<!-- CODE_META
+id: bolum-07_kod06
+chapter_id: bolum-07
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dil: Java</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Kullanıcıdan alınan 10 sayının ortalamasını hesaplayan program.</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Karmaşıklık: O(n)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> AverageCalculator <span class="op">{</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> input <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> toplam <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayiAdedi <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> sayiAdedi<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span>i <span class="op">+</span> <span class="st">&quot;. sayıyı giriniz: &quot;</span><span class="op">);</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> sayi <span class="op">=</span> input<span class="op">.</span><span class="fu">nextInt</span><span class="op">();</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>            toplam <span class="op">+=</span> sayi<span class="op">;</span> <span class="co">// Toplama deseni</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> ortalama <span class="op">=</span> <span class="op">(</span><span class="dt">double</span><span class="op">)</span> toplam <span class="op">/</span> sayiAdedi<span class="op">;</span> <span class="co">// Sayma deseni (sayiAdedi değişkeni ile)</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Girilen sayıların ortalaması: &quot;</span> <span class="op">+</span> ortalama<span class="op">);</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        input<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Uygulama:</strong> Bir mağazanın bir haftalık günlük satış miktarlarını (bir dizi olarak düşünün) kullanarak haftalık toplam satışı ve günlük ortalama satışı hesaplayan bir Java programı yazınız.</p>
+<p><strong>Değerlendirme:</strong> Toplama deseni, kayan noktalı (float/double) sayılarla çalışırken hassasiyet sorunlarına yol açabilir. Ayrıca, çok büyük sayılar toplanırken, toplam değişkeninin veri tipinin (int, long, BigInteger) yeterli büyüklükte olmasına dikkat edilmelidir.</p>
+</section>
+</section>
+<section id="minimummaksimum-bulma-minmax-deseni" class="level2">
+<h2>7.5 Minimum/Maksimum Bulma (Min/Max) Deseni</h2>
+<section id="minmax-deseninin-temel-mantığı-karşılaştırmalı-güncelleme" class="level3">
+<h3>Min/Max Deseninin Temel Mantığı: Karşılaştırmalı Güncelleme</h3>
+<p>Bu desen, bir listedeki en küçük (minimum) veya en büyük (maksimum) elemanı bulmak için kullanılır. Bir değişkene (min veya max) listenin ilk elemanı atanır. Daha sonra liste taranır ve her bir eleman bu değişkenle karşılaştırılır. Eğer daha küçük (min için) veya daha büyük (max için) bir eleman bulunursa, değişken güncellenir.</p>
+</section>
+<section id="başlangıç-değeri-seçimi" class="level3">
+<h3>Başlangıç Değeri Seçimi</h3>
+<ul>
+<li><strong>İlk Eleman:</strong> En yaygın ve güvenli yöntemdir. <code>min</code> veya <code>max</code> değişkenine listenin ilk elemanı atanır.</li>
+<li><strong>Sabit Değer:</strong> Listenin alabileceği en büyük değerden büyük (min için) veya en küçük değerden küçük (max için) bir sabit değer kullanılabilir. Örneğin, <code>Integer.MAX_VALUE</code> veya <code>Integer.MIN_VALUE</code>.</li>
+</ul>
+</section>
+<section id="akış-şeması-ile-minmax-bulma-algoritmasının-gösterimi" class="level3">
+<h3>Akış Şeması ile Min/Max Bulma Algoritmasının Gösterimi</h3>
+<p><strong>Problem:</strong> Bir listedeki en büyük elemanı bulan algoritma.</p>
+<p><strong>Akış Şeması Adımları:</strong></p>
+<ol type="1">
+<li><strong>Başla</strong></li>
+<li><strong>Girdi:</strong> Listeyi al (<code>liste</code>)</li>
+<li><strong>İşlem:</strong> <code>enBuyuk</code> değişkenine listenin ilk elemanını ata (<code>liste[0]</code>)</li>
+<li><strong>İşlem:</strong> <code>index</code> değişkenini 1 olarak ata (ilk elemanı zaten atadık)</li>
+<li><strong>Karar:</strong> <code>index &lt; listenin uzunluğu</code> mu?
+<ul>
+<li><strong>Evet:</strong> Devam et.</li>
+<li><strong>Hayır:</strong> <code>enBuyuk</code> değerini yazdır ve <strong>Bitir</strong>’e git.</li>
+</ul></li>
+<li><strong>Karar:</strong> <code>liste[index] &gt; enBuyuk</code> mu?
+<ul>
+<li><strong>Evet:</strong> <code>enBuyuk = liste[index]</code> yap.</li>
+<li><strong>Hayır:</strong> Hiçbir şey yapma.</li>
+</ul></li>
+<li><strong>İşlem:</strong> <code>index</code>’i 1 arttır ve <strong>5. adıma</strong> git.</li>
+</ol>
+<p><strong>Kod Örneği: Bir Listedeki En Büyük ve En Küçük Elemanı Bulan Fonksiyon</strong></p>
+<!-- CODE_META
+id: bolum-07_kod07
+chapter_id: bolum-07
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dil: Java</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Bir tamsayı dizisindeki en büyük ve en küçük elemanı bulan fonksiyon.</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Karmaşıklık: O(n)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MinMaxExample <span class="op">{</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/**</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> Bir dizideki en b<span class="co">ü</span>y<span class="co">ü</span>k eleman<span class="co">ı</span> bulur<span class="co">.</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">dizi</span><span class="co"> </span>Tamsay<span class="co">ı</span> dizisi<span class="co">.</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@return</span> Dizideki en b<span class="co">ü</span>y<span class="co">ü</span>k eleman<span class="co">.</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>     <span class="co">*/</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">findMax</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> dizi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> enBuyuk <span class="op">=</span> dizi<span class="op">[</span><span class="dv">0</span><span class="op">];</span> <span class="co">// Başlangıç değeri ilk eleman</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> dizi<span class="op">.</span><span class="fu">length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>dizi<span class="op">[</span>i<span class="op">]</span> <span class="op">&gt;</span> enBuyuk<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                enBuyuk <span class="op">=</span> dizi<span class="op">[</span>i<span class="op">];</span> <span class="co">// Daha büyük bir eleman bulundu, güncelle</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> enBuyuk<span class="op">;</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">/**</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> Bir dizideki en k<span class="co">üçü</span>k eleman<span class="co">ı</span> bulur<span class="co">.</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">dizi</span><span class="co"> </span>Tamsay<span class="co">ı</span> dizisi<span class="co">.</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@return</span> Dizideki en k<span class="co">üçü</span>k eleman<span class="co">.</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>     <span class="co">*/</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">findMin</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> dizi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> enKucuk <span class="op">=</span> dizi<span class="op">[</span><span class="dv">0</span><span class="op">];</span> <span class="co">// Başlangıç değeri ilk eleman</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> dizi<span class="op">.</span><span class="fu">length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>dizi<span class="op">[</span>i<span class="op">]</span> <span class="op">&lt;</span> enKucuk<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>                enKucuk <span class="op">=</span> dizi<span class="op">[</span>i<span class="op">];</span> <span class="co">// Daha küçük bir eleman bulundu, güncelle</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> enKucuk<span class="op">;</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> notlar <span class="op">=</span> <span class="op">{</span><span class="dv">85</span><span class="op">,</span> <span class="dv">92</span><span class="op">,</span> <span class="dv">78</span><span class="op">,</span> <span class="dv">95</span><span class="op">,</span> <span class="dv">88</span><span class="op">};</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> enYuksekNot <span class="op">=</span> <span class="fu">findMax</span><span class="op">(</span>notlar<span class="op">);</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> enDusukNot <span class="op">=</span> <span class="fu">findMin</span><span class="op">(</span>notlar<span class="op">);</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;En yüksek not: &quot;</span> <span class="op">+</span> enYuksekNot<span class="op">);</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;En düşük not: &quot;</span> <span class="op">+</span> enDusukNot<span class="op">);</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Kod Örneği: En Yüksek ve En Düşük Sınav Notunu Bulan Program</strong></p>
+<!-- CODE_META
+id: bolum-07_kod08
+chapter_id: bolum-07
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dil: Java</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Bir öğrenci grubunun sınav notlarından en yüksek ve en düşük notu bulan program.</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Karmaşıklık: O(n)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ExamMinMax <span class="op">{</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> ogrenciNotlari <span class="op">=</span> <span class="op">{</span><span class="dv">45</span><span class="op">,</span> <span class="dv">78</span><span class="op">,</span> <span class="dv">92</span><span class="op">,</span> <span class="dv">34</span><span class="op">,</span> <span class="dv">88</span><span class="op">,</span> <span class="dv">67</span><span class="op">,</span> <span class="dv">100</span><span class="op">,</span> <span class="dv">56</span><span class="op">};</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> enYuksek <span class="op">=</span> ogrenciNotlari<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> enDusuk <span class="op">=</span> ogrenciNotlari<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> ogrenciNotlari<span class="op">.</span><span class="fu">length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>ogrenciNotlari<span class="op">[</span>i<span class="op">]</span> <span class="op">&gt;</span> enYuksek<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                enYuksek <span class="op">=</span> ogrenciNotlari<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>ogrenciNotlari<span class="op">[</span>i<span class="op">]</span> <span class="op">&lt;</span> enDusuk<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>                enDusuk <span class="op">=</span> ogrenciNotlari<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sınıfın en yüksek notu: &quot;</span> <span class="op">+</span> enYuksek<span class="op">);</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sınıfın en düşük notu: &quot;</span> <span class="op">+</span> enDusuk<span class="op">);</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Uygulama:</strong> Bir haftanın günlük sıcaklık değerlerini (Pazartesi=25, Salı=28, Çarşamba=22, Perşembe=30, Cuma=27, Cumartesi=26, Pazar=24) içeren bir diziden en sıcak ve en soğuk günün sıcaklık değerini bulan bir Java programı yazınız.</p>
+<p><strong>Değerlendirme:</strong> Min/Max deseni sadece sayılarla değil, karşılaştırılabilir (<code>Comparable</code>) herhangi bir veri tipiyle (String, Date) de kullanılabilir. Örneğin, bir listedeki en uzun veya en kısa metni bulmak için kullanılabilir.</p>
+</section>
+</section>
+<section id="bayrak-değişkeni-flag-variable-deseni" class="level2">
+<h2>7.6 Bayrak Değişkeni (Flag Variable) Deseni</h2>
+<section id="bayrak-değişkeninin-amacı-bir-durumun-gerçekleşip-gerçekleşmediğini-izleme" class="level3">
+<h3>Bayrak Değişkeninin Amacı: Bir Durumun Gerçekleşip Gerçekleşmediğini İzleme</h3>
+<p>Bayrak değişkeni, bir döngü veya işlem sırasında belirli bir koşulun gerçekleşip gerçekleşmediğini izlemek için kullanılan bir boolean (mantıksal) değişkendir. Başlangıçta genellikle <code>false</code> olarak atanır ve istenen durum gerçekleştiğinde <code>true</code> yapılır.</p>
+</section>
+<section id="boolean-bayrak-kullanımı-ve-mantıksal-operatörler" class="level3">
+<h3>Boolean Bayrak Kullanımı ve Mantıksal Operatörler</h3>
+<p>Bayrak değişkeni genellikle <code>boolean</code> tipindedir (<code>true</code> veya <code>false</code>). Mantıksal operatörler (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>) ile birlikte kullanılarak daha karmaşık koşullar ifade edilebilir.</p>
+</section>
+<section id="bayrak-deseninin-akış-şeması-ile-gösterimi" class="level3">
+<h3>Bayrak Deseninin Akış Şeması ile Gösterimi</h3>
+<p><strong>Problem:</strong> Bir listede en az bir çift sayı olup olmadığını kontrol eden algoritma.</p>
+<p><strong>Akış Şeması Adımları:</strong></p>
+<ol type="1">
+<li><strong>Başla</strong></li>
+<li><strong>Girdi:</strong> Listeyi al (<code>liste</code>)</li>
+<li><strong>İşlem:</strong> <code>ciftVarMi</code> bayrağını <code>false</code> olarak ata</li>
+<li><strong>İşlem:</strong> <code>index</code> değişkenini 0 olarak ata</li>
+<li><strong>Karar:</strong> <code>index &lt; listenin uzunluğu</code> ve <code>ciftVarMi == false</code> mu?
+<ul>
+<li><strong>Evet:</strong> Devam et.</li>
+<li><strong>Hayır:</strong> <code>ciftVarMi</code> değerini yazdır ve <strong>Bitir</strong>’e git.</li>
+</ul></li>
+<li><strong>Karar:</strong> <code>liste[index] % 2 == 0</code> mı?
+<ul>
+<li><strong>Evet:</strong> <code>ciftVarMi = true</code> yap.</li>
+<li><strong>Hayır:</strong> Hiçbir şey yapma.</li>
+</ul></li>
+<li><strong>İşlem:</strong> <code>index</code>’i 1 arttır ve <strong>5. adıma</strong> git.</li>
+</ol>
+<p><strong>Kod Örneği: Bir Listedeki En Az Bir Çift Sayıyı Kontrol Eden Fonksiyon</strong></p>
+<!-- CODE_META
+id: bolum-07_kod09
+chapter_id: bolum-07
+kind: example
+title: "Kod 9"
+file: "Ornek08.java"
+mainClass: Ornek08
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dil: Java</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Bir tamsayı dizisinde en az bir çift sayı olup olmadığını kontrol eden fonksiyon.</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Karmaşıklık: O(n) (erken çıkış ile optimize edilebilir)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> FlagExample <span class="op">{</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/**</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> Bir dizide en az bir <span class="co">ç</span>ift say<span class="co">ı</span> olup olmad<span class="co">ığı</span>n<span class="co">ı</span> kontrol eder<span class="co">.</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">dizi</span><span class="co"> </span>Tamsay<span class="co">ı</span> dizisi<span class="co">.</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@return</span> En az bir <span class="co">ç</span>ift say<span class="co">ı</span> varsa true<span class="co">,</span> yoksa false<span class="co">.</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>     <span class="co">*/</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">boolean</span> <span class="fu">hasEvenNumber</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> dizi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">boolean</span> ciftVarMi <span class="op">=</span> <span class="kw">false</span><span class="op">;</span> <span class="co">// Bayrak başlangıçta false</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> eleman <span class="op">:</span> dizi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>eleman <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                ciftVarMi <span class="op">=</span> <span class="kw">true</span><span class="op">;</span> <span class="co">// Koşul sağlandı, bayrağı true yap</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span> <span class="co">// Erken çıkış optimizasyonu</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ciftVarMi<span class="op">;</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> sayilar <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">7</span><span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="dv">9</span><span class="op">};</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="fu">hasEvenNumber</span><span class="op">(</span>sayilar<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dizide en az bir çift sayı var.&quot;</span><span class="op">);</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dizide hiç çift sayı yok.&quot;</span><span class="op">);</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Kod Örneği: Bir Metnin Palindrom Olup Olmadığını Kontrol Eden Program</strong></p>
+<p>```java
+// Dil: Java
+// Aç</p>
+</section>
+</section>
+</section>
+</body>
+</html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Java'ya Giris</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Java'ya Giris</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#bölüm-1-javaya-giris-calisma-modeli-ve-gelistirme-ortami" id="toc-bölüm-1-javaya-giris-calisma-modeli-ve-gelistirme-ortami">Bölüm 1: Java’ya Giris, Calisma Modeli ve Gelistirme Ortami</a>
+<ul>
+<li><a href="#java-nedir-ve-neden-kullanılır" id="toc-java-nedir-ve-neden-kullanılır">1.1 Java Nedir ve Neden Kullanılır?</a></li>
+<li><a href="#javanın-çalışma-modeli-jvm-jre-ve-jdk" id="toc-javanın-çalışma-modeli-jvm-jre-ve-jdk">1.2 Java’nın Çalışma Modeli: JVM, JRE ve JDK</a></li>
+<li><a href="#java-geliştirme-ortamı-kurulumu" id="toc-java-geliştirme-ortamı-kurulumu">1.7 Java Geliştirme Ortamı Kurulumu</a></li>
+<li><a href="#ilk-java-programı-merhaba-dünya" id="toc-ilk-java-programı-merhaba-dünya">1.26 İlk Java Programı: “Merhaba Dünya”</a></li>
+<li><a href="#java-programlama-süreci-ve-iyi-uygulamalar" id="toc-java-programlama-süreci-ve-iyi-uygulamalar">1.35 Java Programlama Süreci ve İyi Uygulamalar</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="bölüm-1-javaya-giris-calisma-modeli-ve-gelistirme-ortami" class="level1">
+<h1>Bölüm 1: Java’ya Giris, Calisma Modeli ve Gelistirme Ortami</h1>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> Bu bölüm, Java programlama diline ilk adımınızı atmanızı sağlayacak temel kavramları içermektedir. Özellikle JVM, JRE ve JDK arasındaki farkları anlamak, ilerleyen bölümlerde karşılaşacağınız birçok kavramın temelini oluşturacaktır.</p>
+</blockquote>
+<section id="java-nedir-ve-neden-kullanılır" class="level2">
+<h2>1.1 Java Nedir ve Neden Kullanılır?</h2>
+<section id="javanın-tarihçesi-ve-gelişimi" class="level3">
+<h3>Java’nın Tarihçesi ve Gelişimi</h3>
+<p>Java, 1991 yılında James Gosling ve ekibi tarafından Sun Microsystems’de geliştirilmeye başlanmıştır. Başlangıçta “Oak” (Meşe) adıyla anılan dil, daha sonra Java olarak yeniden adlandırılmıştır. Java’nın evrimi şu şekilde özetlenebilir:</p>
+<ul>
+<li><strong>Java 1.0 (1996):</strong> İlk resmi sürüm, temel kütüphaneler ve applet desteği</li>
+<li><strong>Java 2 (1998):</strong> Swing GUI kütüphanesi, Collections Framework</li>
+<li><strong>Java 5 (2004):</strong> Generics, annotations, enum, foreach döngüsü</li>
+<li><strong>Java 8 (2014):</strong> Lambda ifadeleri, Stream API, Optional sınıfı</li>
+<li><strong>Java 11 (2018):</strong> Uzun süreli destek (LTS) sürümü, HTTP Client API</li>
+<li><strong>Java 17 (2021):</strong> En son LTS sürümü, sealed classes, pattern matching</li>
+</ul>
+<blockquote>
+<p><strong>Önemli Bilgi:</strong> Java’nın en büyük avantajlarından biri geriye dönük uyumluluktur. 20 yıl önce yazılmış bir Java kodu, günümüzdeki en son Java sürümünde de çalışabilir.</p>
+</blockquote>
+</section>
+<section id="javanın-kullanım-alanları" class="level3">
+<h3>Java’nın Kullanım Alanları</h3>
+<p>Java, çok geniş bir kullanım yelpazesine sahiptir:</p>
+<ul>
+<li><strong>Web Uygulamaları:</strong> Spring Framework, Java EE (Enterprise Edition) ile kurumsal web uygulamaları</li>
+<li><strong>Mobil Uygulamalar:</strong> Android işletim sistemi Java tabanlıdır</li>
+<li><strong>Kurumsal Yazılımlar:</strong> Bankacılık, sigorta, e-ticaret gibi sektörlerde yaygın</li>
+<li><strong>Büyük Veri ve Yapay Zeka:</strong> Apache Hadoop, Apache Spark gibi teknolojiler Java ile geliştirilmiştir</li>
+<li><strong>Gömülü Sistemler ve IoT:</strong> Akıllı kartlar, sensörler, otomotiv sistemleri</li>
+</ul>
+</section>
+<section id="javanın-avantajları" class="level3">
+<h3>Java’nın Avantajları</h3>
+<p>Java’nın bu kadar yaygın kullanılmasının başlıca nedenleri:</p>
+<ol type="1">
+<li><strong>Platform Bağımsızlık:</strong> “Write Once, Run Anywhere” (Bir kere yaz, her yerde çalıştır) felsefesi</li>
+<li><strong>Nesne Yönelimli Programlama:</strong> Modüler, yeniden kullanılabilir kod yapısı</li>
+<li><strong>Güçlü Bellek Yönetimi:</strong> Garbage Collection ile otomatik bellek temizliği</li>
+<li><strong>Geniş Kütüphane ve Topluluk Desteği:</strong> Milyonlarca geliştirici ve binlerce açık kaynak kütüphane</li>
+</ol>
+</section>
+</section>
+<section id="javanın-çalışma-modeli-jvm-jre-ve-jdk" class="level2">
+<h2>1.2 Java’nın Çalışma Modeli: JVM, JRE ve JDK</h2>
+<section id="jdk-java-development-kit" class="level3">
+<h3>JDK (Java Development Kit)</h3>
+<p>JDK, Java uygulamaları geliştirmek için ihtiyaç duyulan tüm araçları içeren pakettir. JDK’nın içerdiği temel bileşenler:</p>
+<ul>
+<li><strong>javac:</strong> Java derleyicisi (compiler)</li>
+<li><strong>java:</strong> Java yorumlayıcısı (interpreter)</li>
+<li><strong>jdb:</strong> Hata ayıklayıcı (debugger)</li>
+<li><strong>javadoc:</strong> Dokümantasyon oluşturucu</li>
+<li><strong>jar:</strong> Java arşiv aracı</li>
+</ul>
+<p><strong>Kod Örneği:</strong> JDK kurulumunu doğrulama</p>
+<!-- CODE_META
+id: bolum-01_kod01
+chapter_id: bolum-01
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.3 Java sürümünü kontrol etme</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">java</span> <span class="at">-version</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.4 Java derleyici sürümünü kontrol etme</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">javac</span> <span class="at">-version</span></span></code></pre></div>
+</section>
+<section id="jre-java-runtime-environment" class="level3">
+<h3>JRE (Java Runtime Environment)</h3>
+<p>JRE, Java programlarını çalıştırmak için gerekli olan minimum ortamdır. JRE şunları içerir:</p>
+<ul>
+<li>JVM (Java Virtual Machine)</li>
+<li>Temel sınıf kütüphaneleri</li>
+<li>Destek dosyaları</li>
+</ul>
+<blockquote>
+<p><strong>Uyarı:</strong> JRE sadece Java programlarını <strong>çalıştırmak</strong> içindir. Yeni bir Java programı <strong>geliştirmek</strong> için JDK gereklidir.</p>
+</blockquote>
+<p><strong>Kod Örneği:</strong> Basit bir Java programını JRE ile çalıştırma</p>
+<!-- CODE_META
+id: bolum-01_kod02
+chapter_id: bolum-01
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"></code></pre></div>
+<!-- CODE_META
+id: bolum-01_kod03
+chapter_id: bolum-01
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> HelloWorld <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Java çalışıyor!&quot;</span><span class="op">);</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="jvm-java-virtual-machine" class="level3">
+<h3>JVM (Java Virtual Machine)</h3>
+<p>JVM, Java’nın platform bağımsızlığının temel taşıdır. JVM’in görevleri:</p>
+<ol type="1">
+<li><strong>Bytecode Yorumlama:</strong> <code>.class</code> dosyalarındaki bytecode’u okur ve çalıştırır</li>
+<li><strong>Bellek Yönetimi:</strong> Heap ve Stack bellek bölgelerini yönetir</li>
+<li><strong>Garbage Collection:</strong> Kullanılmayan nesneleri bellekten temizler</li>
+<li><strong>Güvenlik:</strong> Bytecode doğrulama ve güvenlik kontrolleri</li>
+</ol>
+<p><strong>Kod Örneği:</strong> Bytecode üretme süreci</p>
+<!-- CODE_META
+id: bolum-01_kod04
+chapter_id: bolum-01
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"></code></pre></div>
+<!-- CODE_META
+id: bolum-01_kod05
+chapter_id: bolum-01
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> BytecodeDemo <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> toplam <span class="op">=</span> <span class="dv">5</span> <span class="op">+</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Toplam: &quot;</span> <span class="op">+</span> toplam<span class="op">);</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Derleme ve çalıştırma komutları:</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.5 Kaynak kodu bytecode&#39;a çevir</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">javac</span> BytecodeDemo.java</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.6 Bytecode&#39;u çalıştır</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">java</span> BytecodeDemo</span></code></pre></div>
+</section>
+<section id="jdk-jre-ve-jvm-arasındaki-ilişki" class="level3">
+<h3>JDK, JRE ve JVM Arasındaki İlişki</h3>
+<p>Bu üç bileşen arasındaki hiyerarşik ilişki:</p>
+<pre><code>JDK (Java Development Kit)
+  ├── JRE (Java Runtime Environment)
+  │    ├── JVM (Java Virtual Machine)
+  │    ├── Çekirdek Kütüphaneler
+  │    └── Diğer Çalışma Zamanı Bileşenleri
+  ├── Geliştirme Araçları (javac, jdb, javadoc, jar)
+  └── API Kütüphaneleri</code></pre>
+<blockquote>
+<p><strong>Pratik İpucu:</strong>
+- Sadece Java programı <strong>çalıştıracaksanız</strong> → JRE yeterlidir
+- Java programı <strong>geliştirecekseniz</strong> → JDK gereklidir
+- JDK, JRE’yi de içerdiği için her zaman JDK kurmanız önerilir</p>
+</blockquote>
+</section>
+</section>
+<section id="java-geliştirme-ortamı-kurulumu" class="level2">
+<h2>1.7 Java Geliştirme Ortamı Kurulumu</h2>
+<section id="işletim-sistemine-göre-kurulum" class="level3">
+<h3>İşletim Sistemine Göre Kurulum</h3>
+<section id="windowsa-jdk-kurulumu" class="level4">
+<h4>Windows’a JDK Kurulumu</h4>
+<ol type="1">
+<li>Oracle JDK veya OpenJDK indir</li>
+<li><code>.msi</code> veya <code>.exe</code> dosyasını çalıştır</li>
+<li>Kurulum sihirbazını takip et</li>
+<li>Varsayılan kurulum dizini: <code>C:\Program Files\Java\jdk-17</code></li>
+</ol>
+</section>
+<section id="macosa-jdk-kurulumu" class="level4">
+<h4>macOS’a JDK Kurulumu</h4>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.8 Homebrew ile kurulum</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install openjdk@17</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.9 Manuel kurulum için .dmg dosyasını indir</span></span></code></pre></div>
+</section>
+<section id="linuxa-jdk-kurulumu" class="level4">
+<h4>Linux’a JDK Kurulumu</h4>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.10 Debian/Ubuntu tabanlı sistemler</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install openjdk-17-jdk</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.11 RHEL/CentOS/Fedora tabanlı sistemler</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> yum install java-17-openjdk-devel</span></code></pre></div>
+</section>
+</section>
+<section id="path-ve-java_home-değişkenleri" class="level3">
+<h3>PATH ve JAVA_HOME Değişkenleri</h3>
+<section id="windowsta-path-ve-java_home-ayarlama" class="level4">
+<h4>Windows’ta PATH ve JAVA_HOME Ayarlama</h4>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.16 JAVA_HOME değişkenini ayarlama</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">setx</span> JAVA_HOME <span class="st">&quot;C:\Program Files\Java\jdk-17&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.17 PATH değişkenine JDK bin dizinini ekleme</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ex">setx</span> PATH <span class="st">&quot;%PATH%;%JAVA_HOME%\bin&quot;</span></span></code></pre></div>
+</section>
+<section id="macoslinuxta-path-ve-java_home-ayarlama" class="level4">
+<h4>macOS/Linux’ta PATH ve JAVA_HOME Ayarlama</h4>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.22 ~/.bashrc veya ~/.zshrc dosyasına ekleyin</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">JAVA_HOME</span><span class="op">=</span>/usr/lib/jvm/java-17-openjdk-amd64</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="va">$JAVA_HOME</span>/bin:<span class="va">$PATH</span></span></code></pre></div>
+<p><strong>Kurulum doğrulama komutları:</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.23 Java sürümünü kontrol et</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">java</span> <span class="at">-version</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.24 Derleyici sürümünü kontrol et</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ex">javac</span> <span class="at">-version</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.25 JAVA_HOME değişkenini kontrol et</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> %JAVA_HOME%  <span class="co"># Windows</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$JAVA_HOME</span>   <span class="co"># macOS/Linux</span></span></code></pre></div>
+</section>
+</section>
+<section id="integre-geliştirme-ortamları-ide" class="level3">
+<h3>İntegre Geliştirme Ortamları (IDE)</h3>
+<p>Java geliştirme için en popüler IDE’ler:</p>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 36%" />
+<col style="width: 48%" />
+</colgroup>
+<thead>
+<tr>
+<th>IDE</th>
+<th>Özellikler</th>
+<th>Kullanım Alanı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IntelliJ IDEA</strong></td>
+<td>Akıllı kod tamamlama, refactoring, Spring desteği</td>
+<td>Profesyonel geliştirme</td>
+</tr>
+<tr>
+<td><strong>Eclipse</strong></td>
+<td>Ücretsiz, geniş eklenti desteği</td>
+<td>Kurumsal projeler</td>
+</tr>
+<tr>
+<td><strong>NetBeans</strong></td>
+<td>Swing GUI builder, JavaFX desteği</td>
+<td>Masaüstü uygulamaları</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Tavsiye:</strong> Yeni başlayanlar için IntelliJ IDEA Community Edition (ücretsiz) önerilir.</p>
+</blockquote>
+</section>
+</section>
+<section id="ilk-java-programı-merhaba-dünya" class="level2">
+<h2>1.26 İlk Java Programı: “Merhaba Dünya”</h2>
+<section id="kaynak-kod-yazma" class="level3">
+<h3>Kaynak Kod Yazma</h3>
+<!-- CODE_META
+id: bolum-01_kod06
+chapter_id: bolum-01
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb16"><pre class="sourceCode java"><code class="sourceCode java"></code></pre></div>
+<!-- CODE_META
+id: bolum-01_kod07
+chapter_id: bolum-01
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb17"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a> <span class="co">*</span> MerhabaDunya <span class="co">-</span> <span class="co">İ</span>lk Java Program<span class="co">ı</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a> <span class="co">*</span> Bu program ekrana <span class="co">&quot;</span>Merhaba D<span class="co">ü</span>nya<span class="co">!&quot;</span> yazd<span class="co">ı</span>r<span class="co">ı</span>r</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a> <span class="co">*/</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MerhabaDunya <span class="op">{</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Ekrana mesaj yazdır</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Merhaba Dünya!&quot;</span><span class="op">);</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Java programının temel yapısı:</strong></p>
+<ol type="1">
+<li><strong>Class Tanımı:</strong> <code>public class MerhabaDunya</code> - Programın ana sınıfı</li>
+<li><strong>Main Metodu:</strong> <code>public static void main(String[] args)</code> - Programın başlangıç noktası</li>
+<li><strong>Çıktı İşlemi:</strong> <code>System.out.println()</code> - Ekrana yazdırma</li>
+</ol>
+</section>
+<section id="derleme-ve-çalıştırma-süreci" class="level3">
+<h3>Derleme ve Çalıştırma Süreci</h3>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.31 Kaynak kodu derle (bytecode üret)</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">javac</span> MerhabaDunya.java</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.32 Bytecode&#39;u çalıştır</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="ex">java</span> MerhabaDunya</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.33 Beklenen çıktı:</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">## 1.34 Merhaba Dünya!</span></span></code></pre></div>
+<p><strong>Derleme sonrası oluşan dosyalar:</strong>
+- <code>MerhabaDunya.java</code> → Kaynak kod (insan tarafından okunabilir)
+- <code>MerhabaDunya.class</code> → Bytecode (JVM tarafından okunabilir)</p>
+</section>
+<section id="hata-ayıklama-ve-çıktı-analizi" class="level3">
+<h3>Hata Ayıklama ve Çıktı Analizi</h3>
+<section id="yaygın-derleme-hataları" class="level4">
+<h4>Yaygın Derleme Hataları</h4>
+<!-- CODE_META
+id: bolum-01_kod08
+chapter_id: bolum-01
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb20"><pre class="sourceCode java"><code class="sourceCode java"></code></pre></div>
+<!-- CODE_META
+id: bolum-01_kod09
+chapter_id: bolum-01
+kind: example
+title: "Kod 9"
+file: "Ornek08.java"
+mainClass: Ornek08
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb21"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> HataliProgram <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// HATA 1: Noktalı virgül eksik</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Merhaba&quot;</span><span class="op">)</span>  <span class="co">// ; eksik</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// HATA 2: String tırnak işareti eksik</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> mesaj <span class="op">=</span> <span class="st">&quot;Merhaba;  // &quot;</span> eksik</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// HATA 3: Yanlış veri tipi</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayi <span class="op">=</span> <span class="st">&quot;on&quot;</span><span class="op">;</span>  <span class="co">// String int&#39;e atanamaz</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Derleme hatası çıktısı:</strong></p>
+<pre><code>HataliProgram.java:5: error: &#39;;&#39; expected
+        System.out.println(&quot;Merhaba&quot;)
+                                    ^
+HataliProgram.java:8: error: unclosed string literal
+        String mesaj = &quot;Merhaba;
+                        ^
+HataliProgram.java:11: error: incompatible types: String cannot be converted to int
+        int sayi = &quot;on&quot;;
+                   ^
+3 errors</code></pre>
+<blockquote>
+<p><strong>Önemli Uyarı:</strong> Derleme hataları, kodunuzda sözdizimi (syntax) hatası olduğunu gösterir. Bu hatalar düzeltilmeden program çalıştırılamaz.</p>
+</blockquote>
+</section>
+<section id="çalışma-zamanı-hataları" class="level4">
+<h4>Çalışma Zamanı Hataları</h4>
+<!-- CODE_META
+id: bolum-01_kod10
+chapter_id: bolum-01
+kind: example
+title: "Kod 10"
+file: "Ornek09.java"
+mainClass: Ornek09
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb23"><pre class="sourceCode java"><code class="sourceCode java"></code></pre></div>
+<!-- CODE_META
+id: bolum-01_kod11
+chapter_id: bolum-01
+kind: example
+title: "Kod 11"
+file: "Ornek10.java"
+mainClass: Ornek10
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb24"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> RuntimeHata <span class="op">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayi1 <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayi2 <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Bu satır çalışma zamanında hata verecek</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sonuc <span class="op">=</span> sayi1 <span class="op">/</span> sayi2<span class="op">;</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sonuç: &quot;</span> <span class="op">+</span> sonuc<span class="op">);</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Çalışma zamanı hatası çıktısı:</strong></p>
+<pre><code>Exception in thread &quot;main&quot; java.lang.ArithmeticException: / by zero
+    at RuntimeHata.main(RuntimeHata.java:8)</code></pre>
+</section>
+</section>
+</section>
+<section id="java-programlama-süreci-ve-iyi-uygulamalar" class="level2">
+<h2>1.35 Java Programlama Süreci ve İyi Uygulamalar</h2>
+<section id="kaynak-kod-düzeni" class="level3">
+<h3>Kaynak Kod Düzeni</h3>
+<!-- CODE_META
+id: bolum-01_kod12
+chapter_id: bolum-01
+kind: example
+title: "Kod 12"
+file: "Ornek11.java"
+mainClass: Ornek11
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb26"><pre class="sourceCode java"><code class="sourceCode java"></code></pre></div>
+<p>```java
+package com.example.ilkprogram;</p>
+<p>/**
+* Bu sınıf, doğru kod düzenini gösterir.
+*
+* <span class="citation" data-cites="author">@author</span> Ali Yılmaz
+* <span class="citation" data-cites="version">@version</span> 1.0
+* <span class="citation" data-cites="since">@since</span> 2024-01-01
+*/
+public class DogruDosyaAdi {</p>
+<pre><code>// Değişken isimleri camelCase kuralına uygun olmalı
+private String kullaniciAdi;
+private int yas;
+
+/**
+ * Programın başlangıç noktası</code></pre>
+</section>
+</section>
+</section>
+</body>
+</html>

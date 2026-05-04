@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Donguler</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Donguler</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#bölüm-5-karar-yapilari-ve-kosullu-programlama" id="toc-bölüm-5-karar-yapilari-ve-kosullu-programlama">Bölüm 5: Karar Yapilari ve Kosullu Programlama</a>
+<ul>
+<li><a href="#koşullu-programlamaya-giriş" id="toc-koşullu-programlamaya-giriş">5.1 Koşullu Programlamaya Giriş</a></li>
+<li><a href="#karşılaştırma-operatörleri" id="toc-karşılaştırma-operatörleri">5.9 Karşılaştırma Operatörleri</a></li>
+<li><a href="#if-ve-else-yapıları" id="toc-if-ve-else-yapıları">5.10 if ve else Yapıları</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="bölüm-5-karar-yapilari-ve-kosullu-programlama" class="level1">
+<h1>Bölüm 5: Karar Yapilari ve Kosullu Programlama</h1>
+<section id="koşullu-programlamaya-giriş" class="level2">
+<h2>5.1 Koşullu Programlamaya Giriş</h2>
+<section id="koşullu-programlama-nedir" class="level3">
+<h3>1.1. Koşullu Programlama Nedir?</h3>
+<p>Programlama dünyasında, bir uygulamanın her durumda aynı şekilde davranması genellikle yeterli değildir. Gerçek hayatta olduğu gibi, yazılımlar da farklı durumlara göre farklı tepkiler vermelidir. İşte bu noktada <strong>koşullu programlama</strong> devreye girer.</p>
+<p>Koşullu programlama, program akışının belirli koşullara göre yönlendirilmesini sağlayan bir programlama paradigmasıdır. Bu sayede bir uygulama, kullanıcının girdilerine, sistem durumuna veya başka değişkenlere bağlı olarak farklı kod bloklarını çalıştırabilir.</p>
+<p>Gerçek hayattan basit bir örnek düşünelim:</p>
+<blockquote>
+<p><strong>“Yağmur yağıyorsa şemsiye al, yağmıyorsa alma”</strong></p>
+</blockquote>
+<p>Bu basit karar verme süreci, koşullu programlamanın temel mantığını mükemmel bir şekilde yansıtır. Programlama dillerinde bu tür kararları <code>if</code>, <code>else</code>, <code>switch</code> gibi yapılarla kodlarız.</p>
+</section>
+<section id="algoritmik-düşüncede-karar-yapılarının-yeri" class="level3">
+<h3>1.2. Algoritmik Düşüncede Karar Yapılarının Yeri</h3>
+<p>Algoritma geliştirme sürecinde karar yapıları, akış diyagramlarında eşkenar dörtgen (baklava dilimi) şeklinde gösterilir. Bu şekil, programın bir karar noktasına geldiğini ve bu noktada iki veya daha fazla yoldan birini seçeceğini belirtir.</p>
+<p><strong>Karar yapılarının temel bileşenleri:</strong></p>
+<ol type="1">
+<li><strong>Koşul İfadesi:</strong> Doğru (true) veya yanlış (false) değer üreten bir ifade</li>
+<li><strong>Doğru Durum Bloğu:</strong> Koşul sağlandığında çalışacak kod</li>
+<li><strong>Yanlış Durum Bloğu (opsiyonel):</strong> Koşul sağlanmadığında çalışacak kod</li>
+</ol>
+<p><strong>Boolean Değer Kavramı</strong></p>
+<p>Koşul ifadelerinin temelinde <strong>boolean</strong> (mantıksal) değerler yatar. Boolean veri tipi, yalnızca iki değer alabilir: <code>true</code> (doğru) veya <code>false</code> (yanlış). Bu ikili değer sistemi, bilgisayarların temel çalışma mantığıyla doğrudan ilişkilidir.</p>
+</section>
+<section id="kod-örneği-basit-koşul-akışı" class="level3">
+<h3>1.3. Kod Örneği: Basit Koşul Akışı</h3>
+<p>Aşağıdaki örnekte, koşulsuz bir akış ile koşullu bir akış arasındaki farkı göreceksiniz:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 5.3 Dosya: kosulsuz_akis.py</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">## 5.4 Açıklama: Koşulsuz ve koşullu program akışı karşılaştırması</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">## 5.5 Anahtar Kavramlar: koşullu programlama, boolean mantığı</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">## 5.6 Çıktı: Kullanıcı girişine göre farklı mesajlar</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">## 5.7 Koşulsuz akış - her zaman çalışır</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Bu mesaj her zaman görüntülenir.&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">## 5.8 Koşullu akış - sadece belirli durumda çalışır</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>yemek_yer misiniz <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Yemek yediniz mi? (e/h): &quot;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> yemek_yer misiniz <span class="op">==</span> <span class="st">&quot;h&quot;</span>:</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Hadi yemek yiyelim!&quot;</span>)</span></code></pre></div>
+<blockquote>
+<p><strong>PEDAGOJİK NOT:</strong> Koşullu programlama, programlama öğrenme sürecinde atlanmaması gereken kritik bir konudur. Bu yapıları iyi anlamadan daha karmaşık programlar geliştirmek neredeyse imkansızdır. Her gün kullandığınız uygulamalardaki “kullanıcı girişi”, “şifre kontrolü”, “yaş doğrulama” gibi özelliklerin tamamı koşullu programlama ile çalışır.</p>
+</blockquote>
+<hr />
+</section>
+</section>
+<section id="karşılaştırma-operatörleri" class="level2">
+<h2>5.9 Karşılaştırma Operatörleri</h2>
+<section id="temel-karşılaştırma-operatörleri" class="level3">
+<h3>2.1. Temel Karşılaştırma Operatörleri</h3>
+<p>Karşılaştırma operatörleri, iki değeri birbiriyle karşılaştırmak için kullanılır ve sonuç olarak boolean (<code>true</code> veya <code>false</code>) değer üretir. Java’da kullanılan temel karşılaştırma operatörleri şunlardır:</p>
+<table>
+<thead>
+<tr>
+<th>Operatör</th>
+<th>Anlamı</th>
+<th>Kullanım Örneği</th>
+<th>Sonuç (a=5, b=10)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>==</code></td>
+<td>Eşitlik</td>
+<td><code>a == b</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td>Eşitsizlik</td>
+<td><code>a != b</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td>Büyüktür</td>
+<td><code>a &gt; b</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td>Küçüktür</td>
+<td><code>a &lt; b</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>&gt;=</code></td>
+<td>Büyük eşit</td>
+<td><code>a &gt;= b</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>&lt;=</code></td>
+<td>Küçük eşit</td>
+<td><code>a &lt;= b</code></td>
+<td><code>true</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>ÖNEMLİ UYARI:</strong> Java’da <code>=</code> (tek eşittir) atama operatörü, <code>==</code> (çift eşittir) ise karşılaştırma operatörüdür. Bu iki operatörü karıştırmak, yeni başlayanların en sık yaptığı hatalardan biridir ve genellikle mantıksal hatalara yol açar.</p>
+</blockquote>
+</section>
+<section id="karşılaştırma-operatörlerinin-kullanımı" class="level3">
+<h3>2.2. Karşılaştırma Operatörlerinin Kullanımı</h3>
+<p><strong>Sayısal Değerlerle Karşılaştırma:</strong></p>
+<p>Sayısal veri tipleri (<code>int</code>, <code>double</code>, <code>float</code>, <code>long</code>, etc.) ile karşılaştırma operatörleri doğrudan kullanılabilir:</p>
+<!-- CODE_META
+id: bolum-05_kod01
+chapter_id: bolum-05
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> yas <span class="op">=</span> <span class="dv">25</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> ortalama <span class="op">=</span> <span class="fl">3.5</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">long</span> nufus <span class="op">=</span> <span class="dv">85000000L</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> yetiskinMi <span class="op">=</span> yas <span class="op">&gt;=</span> <span class="dv">18</span><span class="op">;</span>          <span class="co">// true</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> gecerliNot <span class="op">=</span> ortalama <span class="op">&gt;</span> <span class="fl">2.0</span><span class="op">;</span>     <span class="co">// true</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> buyukSehir <span class="op">=</span> nufus <span class="op">&gt;</span> <span class="dv">10000000</span><span class="op">;</span>   <span class="co">// true</span></span></code></pre></div>
+<p><strong>String (Metin) Karşılaştırmaları:</strong></p>
+<p>String karşılaştırmalarında dikkatli olmak gerekir. Java’da String’ler nesne olduğu için <code>==</code> operatörü referans karşılaştırması yapar. Metinlerin içeriğini karşılaştırmak için <code>equals()</code> metodu kullanılmalıdır:</p>
+<!-- CODE_META
+id: bolum-05_kod02
+chapter_id: bolum-05
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> isim1 <span class="op">=</span> <span class="st">&quot;Ahmet&quot;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> isim2 <span class="op">=</span> <span class="st">&quot;Ahmet&quot;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> isim3 <span class="op">=</span> <span class="kw">new</span> <span class="bu">String</span><span class="op">(</span><span class="st">&quot;Ahmet&quot;</span><span class="op">);</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>isim1 <span class="op">==</span> isim2<span class="op">);</span>      <span class="co">// true (aynı referans)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>isim1 <span class="op">==</span> isim3<span class="op">);</span>      <span class="co">// false (farklı referans)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>isim1<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>isim3<span class="op">));</span> <span class="co">// true (içerik aynı)</span></span></code></pre></div>
+<p><strong>Farklı Veri Tiplerinde Karşılaştırma Davranışları:</strong></p>
+<p>Java’da farklı veri tipleri arasında karşılaştırma yaparken otomatik tür dönüşümü (type promotion) gerçekleşebilir:</p>
+<!-- CODE_META
+id: bolum-05_kod03
+chapter_id: bolum-05
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sayi <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> ondalikliSayi <span class="op">=</span> <span class="fl">10.0</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>sayi <span class="op">==</span> ondalikliSayi<span class="op">);</span> <span class="co">// true (int -&gt; double dönüşümü)</span></span></code></pre></div>
+</section>
+<section id="kod-örneği-karşılaştırma-operatörleri" class="level3">
+<h3>2.3. Kod Örneği: Karşılaştırma Operatörleri</h3>
+<!-- CODE_META
+id: bolum-05_kod04
+chapter_id: bolum-05
+kind: example
+title: "Kod 4"
+file: "KarsilastirmaOperatorleri.java"
+mainClass: KarsilastirmaOperatorleri
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: KarsilastirmaOperatorleri.java</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Tüm karşılaştırma operatörlerinin kullanımı</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Anahtar Kavramlar: karşılaştırma, boolean, operatörler</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Çıktı: Her operatör için true/false sonuçları</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> KarsilastirmaOperatorleri <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> yas <span class="op">=</span> <span class="dv">18</span><span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Eşitlik ve eşitsizlik</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yaş 18&#39;e eşit mi? &quot;</span> <span class="op">+</span> <span class="op">(</span>yas <span class="op">==</span> <span class="dv">18</span><span class="op">));</span>   <span class="co">// true</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yaş 20&#39;den farklı mı? &quot;</span> <span class="op">+</span> <span class="op">(</span>yas <span class="op">!=</span> <span class="dv">20</span><span class="op">));</span> <span class="co">// true</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Büyüklük ve küçüklük</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yaş 15&#39;ten büyük mü? &quot;</span> <span class="op">+</span> <span class="op">(</span>yas <span class="op">&gt;</span> <span class="dv">15</span><span class="op">));</span>  <span class="co">// true</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yaş 20&#39;den küçük mü? &quot;</span> <span class="op">+</span> <span class="op">(</span>yas <span class="op">&lt;</span> <span class="dv">20</span><span class="op">));</span>  <span class="co">// true</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Büyük eşit ve küçük eşit</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yaş 18&#39;den büyük veya eşit mi? &quot;</span> <span class="op">+</span> <span class="op">(</span>yas <span class="op">&gt;=</span> <span class="dv">18</span><span class="op">));</span> <span class="co">// true</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yaş 17&#39;den küçük veya eşit mi? &quot;</span> <span class="op">+</span> <span class="op">(</span>yas <span class="op">&lt;=</span> <span class="dv">17</span><span class="op">));</span> <span class="co">// false</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Yaş 18&#39;e eşit mi? true
+Yaş 20&#39;den farklı mı? true
+Yaş 15&#39;ten büyük mü? true
+Yaş 20&#39;den küçük mü? true
+Yaş 18&#39;den büyük veya eşit mi? true
+Yaş 17&#39;den küçük veya eşit mi? false</code></pre>
+</section>
+<section id="uygulama-kullanıcı-girişi-ile-karşılaştırma" class="level3">
+<h3>2.4. Uygulama: Kullanıcı Girişi ile Karşılaştırma</h3>
+<!-- CODE_META
+id: bolum-05_kod05
+chapter_id: bolum-05
+kind: example
+title: "Kod 5"
+file: "KullaniciGirisiKarsilastirma.java"
+mainClass: KullaniciGirisiKarsilastirma
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: KullaniciGirisiKarsilastirma.java</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: Kullanıcıdan alınan değerleri karşılaştırma</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Anahtar Kavramlar: kullanıcı girişi, Scanner, karşılaştırma</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Girdi: Kullanıcı yaşı</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Çıktı: Yetişkinlik durumu</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> KullaniciGirisiKarsilastirma <span class="op">{</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> input <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Yaşınızı girin: &quot;</span><span class="op">);</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> kullaniciYas <span class="op">=</span> input<span class="op">.</span><span class="fu">nextInt</span><span class="op">();</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> yetiskinSiniri <span class="op">=</span> <span class="dv">18</span><span class="op">;</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">boolean</span> yetiskinMi <span class="op">=</span> kullaniciYas <span class="op">&gt;=</span> yetiskinSiniri<span class="op">;</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yetişkin misiniz? &quot;</span> <span class="op">+</span> yetiskinMi<span class="op">);</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        input<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Örnek Çalışma:</strong></p>
+<pre><code>Yaşınızı girin: 25
+Yetişkin misiniz? true</code></pre>
+<blockquote>
+<p><strong>PEDAGOJİK NOT:</strong> Karşılaştırma operatörleri, koşullu programlamanın temel yapı taşlarıdır. Bu operatörleri iyi kavramadan <code>if-else</code> yapılarını etkili bir şekilde kullanmak mümkün değildir. Özellikle <code>==</code> ve <code>=</code> karışıklığına dikkat edin ve String karşılaştırmalarında <code>equals()</code> kullanmayı unutmayın.</p>
+</blockquote>
+<hr />
+</section>
+</section>
+<section id="if-ve-else-yapıları" class="level2">
+<h2>5.10 if ve else Yapıları</h2>
+<section id="if-yapısının-temel-kullanımı" class="level3">
+<h3>3.1. if Yapısının Temel Kullanımı</h3>
+<p><code>if</code> yapısı, Java’da karar verme mekanizmalarının en temel ve en sık kullanılan bileşenidir. Belirli bir koşul sağlandığında belirli bir kod bloğunun çalıştırılmasını sağlar.</p>
+<p><strong>Sözdizimi:</strong></p>
+<!-- CODE_META
+id: bolum-05_kod06
+chapter_id: bolum-05
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>koşul<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Koşul doğru olduğunda çalışacak kod</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Girintileme (Indentation) Kuralları:</strong></p>
+<p>Java’da girintileme zorunlu olmasa da (Python’dan farklı olarak), kodun okunabilirliği için kritik öneme sahiptir. Standart olarak 4 boşluk veya bir tab kullanılır.</p>
+<!-- CODE_META
+id: bolum-05_kod07
+chapter_id: bolum-05
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb10"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// İyi girintileme</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>koşul<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Koşul sağlandı&quot;</span><span class="op">);</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Bu da çalışır&quot;</span><span class="op">);</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Kötü girintileme</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>koşul<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Okunması zor&quot;</span><span class="op">);</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Tutarsız girintileme&quot;</span><span class="op">);</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Tek Koşullu Karar Yapısı:</strong></p>
+<p>En basit haliyle <code>if</code> yapısı, tek bir koşulu kontrol eder ve koşul doğruysa kod bloğunu çalıştırır:</p>
+<!-- CODE_META
+id: bolum-05_kod08
+chapter_id: bolum-05
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> not <span class="op">=</span> <span class="dv">85</span><span class="op">;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>not <span class="op">&gt;=</span> <span class="dv">60</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Tebrikler, geçtiniz!&quot;</span><span class="op">);</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="if-else-yapısı" class="level3">
+<h3>3.2. if-else Yapısı</h3>
+<p><code>if-else</code> yapısı, koşulun iki olası sonucu için de kod tanımlamamızı sağlar. Koşul doğruysa <code>if</code> bloğu, yanlışsa <code>else</code> bloğu çalışır.</p>
+<p><strong>Sözdizimi:</strong></p>
+<!-- CODE_META
+id: bolum-05_kod09
+chapter_id: bolum-05
+kind: example
+title: "Kod 9"
+file: "Ornek08.java"
+mainClass: Ornek08
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb12"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>koşul<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Koşul doğru olduğunda çalışacak kod</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Koşul yanlış olduğunda çalışacak kod</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>İki Yönlü Karar Mekanizması:</strong></p>
+<!-- CODE_META
+id: bolum-05_kod10
+chapter_id: bolum-05
+kind: example
+title: "Kod 10"
+file: "Ornek09.java"
+mainClass: Ornek09
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb13"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> yas <span class="op">=</span> <span class="dv">16</span><span class="op">;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>yas <span class="op">&gt;=</span> <span class="dv">18</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Oy kullanabilirsiniz.&quot;</span><span class="op">);</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Oy kullanamazsınız. &quot;</span> <span class="op">+</span> <span class="op">(</span><span class="dv">18</span> <span class="op">-</span> yas<span class="op">)</span> <span class="op">+</span> <span class="st">&quot; yıl beklemeniz gerekiyor.&quot;</span><span class="op">);</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="kod-örneği-if-else-kullanımı" class="level3">
+<h3>3.3. Kod Örneği: if-else Kullanımı</h3>
+<!-- CODE_META
+id: bolum-05_kod11
+chapter_id: bolum-05
+kind: example
+title: "Kod 11"
+file: "IfElseOrnegi.java"
+mainClass: IfElseOrnegi
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb14"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya: IfElseOrnegi.java</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Açıklama: if-else yapısı ile sınav notu değerlendirme</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Anahtar Kavramlar: if, else, karar yapıları</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Girdi: Sınav notu (sabit)</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Çıktı: Geçme/kalma durumu</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> IfElseOrnegi <span class="op">{</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> not <span class="op">=</span> <span class="dv">75</span><span class="op">;</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>not <span class="op">&gt;=</span> <span class="dv">60</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Geçtiniz!&quot;</span><span class="op">);</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Notunuz: &quot;</span> <span class="op">+</span> not<span class="op">);</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Kaldınız!&quot;</span><span class="op">);</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Bir sonraki sınavda başarılar.&quot;</span><span class="op">);</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Program sonlandı.&quot;</span><span class="op">);</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Geçtiniz!
+Notunuz: 75
+Program sonlandı.</code></pre>
+</section>
+<section id="iç-içe-if-yapıları-nested-if" class="level3">
+<h3>3.4. İç İçe if Yapıları (Nested if)</h3>
+<p>Bazen bir koşulun sonucuna bağlı olarak başka koşulları kontrol etmek gerekebilir. Bu durumda <code>if</code> blokları iç içe kullanılır.</p>
+<p><strong>Sözdizimi:</strong></p>
+<!-- CODE_META
+id: bolum-05_kod12
+chapter_id: bolum-05
+kind: example
+title: "Kod 12"
+file: "Ornek11.java"
+mainClass: Ornek11
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb16"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>dışKoşul<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>içKoşul1<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Her iki koşul da doğru</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dış koşul doğru, iç koşul yanlış</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Dış koşul yanlış</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Dikkat Edilmesi Gerekenler:</strong></p>
+<ol type="1">
+<li>Her <code>if</code> için mutlaka parantez kullanın</li>
+<li>Girintilemeye çok dikkat edin</li>
+<li>İç içe geçmişlik 3 seviyeyi geçmemeli (kod karmaşıklaşır)</li>
+<li>Mümkünse mantıksal operatörlerle birleştirin</li>
+</ol>
+</section>
+<section id="uygulama-kullanıcı-doğrulama-sistemi" class="level3">
+<h3>3.5. Uygulama: Kullanıcı Doğrulama Sistemi</h3>
+<p>```java
+// Dosya: KullaniciDogrulama.java
+// Açıklama: İç içe if yapıları ile kullanıcı doğrulama sistemi
+// Anahtar Kavramlar: iç içe if, kullanıcı girişi, doğrulama
+// Girdi: Kullanıcı adı ve şifre
+// Çıktı: Giriş durumu mesajı</p>
+<p>import java.util.Scanner;</p>
+<p>public class KullaniciD</p>
+</section>
+</section>
+</section>
+</body>
+</html>

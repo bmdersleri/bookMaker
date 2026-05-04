@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Kaynakca ve Ileri Okumalar</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Kaynakca ve Ileri Okumalar</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#ek-d-java-programlama-kontrol-rehberi-sik-hatalar-ve-kod-kalitesi" id="toc-ek-d-java-programlama-kontrol-rehberi-sik-hatalar-ve-kod-kalitesi">Ek D: Java Programlama Kontrol Rehberi, Sik Hatalar ve Kod Kalitesi</a>
+<ul>
+<li><a href="#giriş" id="toc-giriş">27.1 Giriş</a></li>
+<li><a href="#kod-kalitesi-nedir-ve-neden-önemlidir" id="toc-kod-kalitesi-nedir-ve-neden-önemlidir">27.2 Kod Kalitesi Nedir ve Neden Önemlidir?</a></li>
+<li><a href="#sık-yapılan-hata-desenleri" id="toc-sık-yapılan-hata-desenleri">27.3 Sık Yapılan Hata Desenleri</a></li>
+<li><a href="#kod-review-checklist" id="toc-kod-review-checklist">27.4 Kod Review Checklist</a></li>
+<li><a href="#en-iyi-uygulamalar" id="toc-en-iyi-uygulamalar">27.5 En İyi Uygulamalar</a></li>
+<li><a href="#özet" id="toc-özet">27.6 Özet</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="ek-d-java-programlama-kontrol-rehberi-sik-hatalar-ve-kod-kalitesi" class="level1">
+<h1>Ek D: Java Programlama Kontrol Rehberi, Sik Hatalar ve Kod Kalitesi</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Java Programlama Kontrol Rehberi: Sık Hatalar ve Kod Kalitesi&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Profesyonel Java Geliştiricileri İçin Kapsamlı Rehber&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Teknik İçerik Ekibi&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;2024&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lang</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;tr&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">keywords</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">&quot;Java&quot;</span><span class="kw">,</span><span class="at"> </span><span class="st">&quot;kod kalitesi&quot;</span><span class="kw">,</span><span class="at"> </span><span class="st">&quot;hata desenleri&quot;</span><span class="kw">,</span><span class="at"> </span><span class="st">&quot;kod review&quot;</span><span class="kw">,</span><span class="at"> </span><span class="st">&quot;clean code&quot;</span><span class="kw">]</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">abstract</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Bu bölüm, Java programlamada sık karşılaşılan hataları, kod kalite standartlarını ve en iyi uygulamaları kapsamlı bir şekilde ele alır. Kod review süreçleri için checklist ve pratik örnekler sunar.&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">license</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;CC BY-NC-SA 4.0&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+<section id="giriş" class="level2">
+<h2>27.1 Giriş</h2>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> Bu bölüm, Java geliştiricilerinin günlük çalışmalarında karşılaştıkları yaygın hataları ve bunları önleme yöntemlerini öğretmeyi amaçlar. Her konsept, gerçek dünya senaryoları ve kod örnekleriyle desteklenmiştir.</p>
+</blockquote>
+<p>Java programlama dünyasında, sadece çalışan kod yazmak yeterli değildir. Profesyonel bir geliştirici olarak, kodunuzun kalitesi, bakımı, okunabilirliği ve genişletilebilirliği de en az işlevselliği kadar önemlidir. Bu bölümde, sık yapılan hataları tanıyacak, kod kalite standartlarını öğrenecek ve etkili kod review süreçleri için gerekli araçları kazanacaksınız.</p>
+</section>
+<section id="kod-kalitesi-nedir-ve-neden-önemlidir" class="level2">
+<h2>27.2 Kod Kalitesi Nedir ve Neden Önemlidir?</h2>
+<p>Kod kalitesi, bir yazılımın belirli standartlara uygunluğunu ve beklenen davranışları sergileme yeteneğini ifade eder. İyi kalite kod, sadece doğru çalışmakla kalmaz, aynı zamanda okunabilir, bakımı kolay ve genişletilebilir olmalıdır.</p>
+<section id="iyi-kalite-kodun-faydaları" class="level3">
+<h3>1.1 İyi Kalite Kodun Faydaları</h3>
+<p>İyi kalite kod, yazılım geliştirme sürecinde uzun vadeli faydalar sağlar:</p>
+<ul>
+<li><strong>Daha Az Hata:</strong> Temiz kod, hata olasılığını azaltır</li>
+<li><strong>Daha Hızlı Geliştirme:</strong> Okunabilir kod, yeni özellik eklemeyi kolaylaştırır</li>
+<li><strong>Daha Düşük Maliyet:</strong> Bakım maliyetleri önemli ölçüde azalır</li>
+<li><strong>Daha İyi İşbirliği:</strong> Ekip üyeleri birbirlerinin kodunu daha kolay anlar</li>
+</ul>
+</section>
+<section id="kötü-kodun-maliyeti" class="level3">
+<h3>1.2 Kötü Kodun Maliyeti</h3>
+<p>Kötü kod (technical debt) aşağıdaki sorunlara yol açar:</p>
+<ul>
+<li>Artan hata oranı</li>
+<li>Yavaş geliştirme hızı</li>
+<li>Yüksek bakım maliyeti</li>
+<li>Ekip moralinin düşmesi</li>
+<li>Müşteri memnuniyetsizliği</li>
+</ul>
+</section>
+</section>
+<section id="sık-yapılan-hata-desenleri" class="level2">
+<h2>27.3 Sık Yapılan Hata Desenleri</h2>
+<p>Bu bölümde, Java geliştiricilerinin en sık karşılaştığı hata desenlerini inceleyeceğiz.</p>
+<section id="nullpointerexception-ve-null-güvenliği" class="level3">
+<h3>2.1 NullPointerException ve Null Güvenliği</h3>
+<p>NullPointerException, Java’da en yaygın runtime hatasıdır.</p>
+<!-- CODE_META: Java, NullSafetyExample.java, NullPointerException önleme örnekleri -->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// NullSafetyExample.java</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> NullSafetyExample <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı yaklaşım</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getCityNameHatali</span><span class="op">(</span>User user<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> user<span class="op">.</span><span class="fu">getAddress</span><span class="op">().</span><span class="fu">getCity</span><span class="op">().</span><span class="fu">getName</span><span class="op">();</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// NullPointerException riski!</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru yaklaşım - null kontrolleri ile</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getCityNameDogru</span><span class="op">(</span>User user<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>user <span class="op">==</span> <span class="kw">null</span><span class="op">)</span> <span class="cf">return</span> <span class="st">&quot;Bilinmiyor&quot;</span><span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        Address address <span class="op">=</span> user<span class="op">.</span><span class="fu">getAddress</span><span class="op">();</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>address <span class="op">==</span> <span class="kw">null</span><span class="op">)</span> <span class="cf">return</span> <span class="st">&quot;Bilinmiyor&quot;</span><span class="op">;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        City city <span class="op">=</span> address<span class="op">.</span><span class="fu">getCity</span><span class="op">();</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>city <span class="op">==</span> <span class="kw">null</span><span class="op">)</span> <span class="cf">return</span> <span class="st">&quot;Bilinmiyor&quot;</span><span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> city<span class="op">.</span><span class="fu">getName</span><span class="op">();</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Modern yaklaşım - Optional kullanımı</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getCityNameModern</span><span class="op">(</span>User user<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Optional<span class="op">.</span><span class="fu">ofNullable</span><span class="op">(</span>user<span class="op">)</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">map</span><span class="op">(</span>User<span class="op">::</span>getAddress<span class="op">)</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">map</span><span class="op">(</span>Address<span class="op">::</span>getCity<span class="op">)</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">map</span><span class="op">(</span>City<span class="op">::</span>getName<span class="op">)</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">orElse</span><span class="op">(</span><span class="st">&quot;Bilinmiyor&quot;</span><span class="op">);</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>İpucu:</strong> Java 8’den itibaren <code>Optional</code> sınıfı, null güvenliği için güçlü bir araç sunar. Ancak, Optional’ı metod parametreleri veya alanlar için değil, dönüş değerleri için kullanın.</p>
+</blockquote>
+</section>
+<section id="yanlış-döngü-ve-koşul-yapıları" class="level3">
+<h3>2.2 Yanlış Döngü ve Koşul Yapıları</h3>
+<p>Döngü ve koşul yapılarındaki hatalar, mantıksal hatalara yol açar.</p>
+<!-- CODE_META: Java, LoopConditionExample.java, Döngü ve koşul hataları örnekleri -->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// LoopConditionExample.java</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> LoopConditionExample <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - sonsuz döngü</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">sonsuzDongu</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span>i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>i<span class="op">);</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            <span class="co">// i değeri artırılmıyor!</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">dogruDongu</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>i<span class="op">);</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - off-by-one hatası</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span><span class="op">[]</span> <span class="fu">yanlisDiziKopyala</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> kaynak<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> hedef <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span>kaynak<span class="op">.</span><span class="fu">length</span><span class="op">];</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;=</span> kaynak<span class="op">.</span><span class="fu">length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span> <span class="co">// &lt;= hatalı!</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>            hedef<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> kaynak<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> hedef<span class="op">;</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span><span class="op">[]</span> <span class="fu">dogruDiziKopyala</span><span class="op">(</span><span class="dt">int</span><span class="op">[]</span> kaynak<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span><span class="op">[]</span> hedef <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">[</span>kaynak<span class="op">.</span><span class="fu">length</span><span class="op">];</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> kaynak<span class="op">.</span><span class="fu">length</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>            hedef<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> kaynak<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> hedef<span class="op">;</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="kaynak-yönetimi-hataları" class="level3">
+<h3>2.3 Kaynak Yönetimi Hataları</h3>
+<p>Kaynakların doğru yönetilmemesi, bellek sızıntılarına ve performans sorunlarına yol açar.</p>
+<!-- CODE_META: Java, ResourceManagementExample.java, Kaynak yönetimi örnekleri -->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ResourceManagementExample.java</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.*;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ResourceManagementExample <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - kaynak kapatılmıyor</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">hataliDosyaOkuma</span><span class="op">(</span><span class="bu">String</span> dosyaYolu<span class="op">)</span> <span class="kw">throws</span> <span class="bu">IOException</span> <span class="op">{</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">BufferedReader</span> reader <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedReader</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileReader</span><span class="op">(</span>dosyaYolu<span class="op">));</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> line <span class="op">=</span> reader<span class="op">.</span><span class="fu">readLine</span><span class="op">();</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>line<span class="op">);</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// reader.close() çağrılmıyor!</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru - try-with-resources (Java 7+)</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">dogruDosyaOkuma</span><span class="op">(</span><span class="bu">String</span> dosyaYolu<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="bu">BufferedReader</span> reader <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedReader</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileReader</span><span class="op">(</span>dosyaYolu<span class="op">)))</span> <span class="op">{</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> line <span class="op">=</span> reader<span class="op">.</span><span class="fu">readLine</span><span class="op">();</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>line<span class="op">);</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            e<span class="op">.</span><span class="fu">printStackTrace</span><span class="op">();</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - finally bloğunda null kontrolü yok</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">hataliKaynakYonetimi</span><span class="op">(</span><span class="bu">String</span> dosyaYolu<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">BufferedReader</span> reader <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>            reader <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedReader</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileReader</span><span class="op">(</span>dosyaYolu<span class="op">));</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>            <span class="co">// işlemler</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>            e<span class="op">.</span><span class="fu">printStackTrace</span><span class="op">();</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">finally</span> <span class="op">{</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>            reader<span class="op">.</span><span class="fu">close</span><span class="op">();</span> <span class="co">// NullPointerException riski!</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru - finally bloğunda null kontrolü</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">dogruKaynakYonetimi</span><span class="op">(</span><span class="bu">String</span> dosyaYolu<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        <span class="bu">BufferedReader</span> reader <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>            reader <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedReader</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileReader</span><span class="op">(</span>dosyaYolu<span class="op">));</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>            <span class="co">// işlemler</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>            e<span class="op">.</span><span class="fu">printStackTrace</span><span class="op">();</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">finally</span> <span class="op">{</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>reader <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>                <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>                    reader<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>                    e<span class="op">.</span><span class="fu">printStackTrace</span><span class="op">();</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="concurrency-sorunları" class="level3">
+<h3>2.4 Concurrency Sorunları</h3>
+<p>Çoklu iş parçacığı (multithreading) ortamında sık karşılaşılan hatalar.</p>
+<!-- CODE_META: Java, ConcurrencyExample.java, Thread güvenliği örnekleri -->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ConcurrencyExample.java</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ConcurrencyExample <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> counter <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - thread-safe değil</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">incrementHatali</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        counter<span class="op">++;</span> <span class="co">// atomik değil!</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru - synchronized metod</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">synchronized</span> <span class="dt">void</span> <span class="fu">incrementDogru</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        counter<span class="op">++;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Alternatif - AtomicInteger</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">concurrent</span><span class="op">.</span><span class="fu">atomic</span><span class="op">.</span><span class="fu">AtomicInteger</span> atomicCounter <span class="op">=</span> </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">new</span> java<span class="op">.</span><span class="fu">util</span><span class="op">.</span><span class="fu">concurrent</span><span class="op">.</span><span class="fu">atomic</span><span class="op">.</span><span class="fu">AtomicInteger</span><span class="op">(</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">incrementAtomic</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        atomicCounter<span class="op">.</span><span class="fu">incrementAndGet</span><span class="op">();</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="string-immutable-yanılgısı" class="level3">
+<h3>2.5 String Immutable Yanılgısı</h3>
+<p>String’lerin immutable olduğunu unutmak, performans sorunlarına yol açar.</p>
+<!-- CODE_META: Java, StringExample.java, String immutable örnekleri -->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// StringExample.java</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> StringExample <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - çok sayıda String nesnesi oluşturur</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">hataliStringBirlestirme</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> kelimeler<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> sonuc <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> kelime <span class="op">:</span> kelimeler<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            sonuc <span class="op">+=</span> kelime <span class="op">+</span> <span class="st">&quot; &quot;</span><span class="op">;</span> <span class="co">// Her iterasyonda yeni String!</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sonuc<span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru - StringBuilder kullanımı</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">dogruStringBirlestirme</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> kelimeler<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">StringBuilder</span> sb <span class="op">=</span> <span class="kw">new</span> <span class="bu">StringBuilder</span><span class="op">();</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> kelime <span class="op">:</span> kelimeler<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>            sb<span class="op">.</span><span class="fu">append</span><span class="op">(</span>kelime<span class="op">).</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot; &quot;</span><span class="op">);</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sb<span class="op">.</span><span class="fu">toString</span><span class="op">().</span><span class="fu">trim</span><span class="op">();</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="equalshashcode-uyumsuzluğu" class="level3">
+<h3>2.6 Equals/hashCode Uyumsuzluğu</h3>
+<p><code>equals()</code> ve <code>hashCode()</code> metodlarının uyumsuz implementasyonu, koleksiyonlarla ilgili hatalara yol açar.</p>
+<!-- CODE_META: Java, EqualsHashCodeExample.java, equals/hashCode örnekleri -->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// EqualsHashCodeExample.java</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Objects</span><span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> EqualsHashCodeExample <span class="op">{</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span> id<span class="op">;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">EqualsHashCodeExample</span><span class="op">(</span><span class="dt">int</span> id<span class="op">,</span> <span class="bu">String</span> name<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">id</span> <span class="op">=</span> id<span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">name</span> <span class="op">=</span> name<span class="op">;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru equals implementasyonu</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span><span class="op">(</span><span class="bu">Object</span> o<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="kw">this</span> <span class="op">==</span> o<span class="op">)</span> <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>o <span class="op">==</span> <span class="kw">null</span> <span class="op">||</span> <span class="fu">getClass</span><span class="op">()</span> <span class="op">!=</span> o<span class="op">.</span><span class="fu">getClass</span><span class="op">())</span> <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        EqualsHashCodeExample that <span class="op">=</span> <span class="op">(</span>EqualsHashCodeExample<span class="op">)</span> o<span class="op">;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> id <span class="op">==</span> that<span class="op">.</span><span class="fu">id</span> <span class="op">&amp;&amp;</span> Objects<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>name<span class="op">,</span> that<span class="op">.</span><span class="fu">name</span><span class="op">);</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru hashCode implementasyonu</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">hashCode</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Objects<span class="op">.</span><span class="fu">hash</span><span class="op">(</span>id<span class="op">,</span> name<span class="op">);</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+</section>
+<section id="kod-review-checklist" class="level2">
+<h2>27.4 Kod Review Checklist</h2>
+<p>Etkili bir kod review süreci için aşağıdaki kontrol listesini kullanın.</p>
+<section id="isimlendirme-kuralları" class="level3">
+<h3>3.1 İsimlendirme Kuralları</h3>
+<table>
+<thead>
+<tr>
+<th>Öğe</th>
+<th>Kural</th>
+<th>Örnek</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sınıf</td>
+<td>PascalCase</td>
+<td><code>CustomerService</code></td>
+</tr>
+<tr>
+<td>Metod</td>
+<td>camelCase</td>
+<td><code>getCustomerById()</code></td>
+</tr>
+<tr>
+<td>Değişken</td>
+<td>camelCase</td>
+<td><code>customerName</code></td>
+</tr>
+<tr>
+<td>Sabit</td>
+<td>UPPER_SNAKE_CASE</td>
+<td><code>MAX_RETRY_COUNT</code></td>
+</tr>
+<tr>
+<td>Paket</td>
+<td>lowercase</td>
+<td><code>com.company.project</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metod-boyutu-ve-sorumluluk" class="level3">
+<h3>3.2 Metod Boyutu ve Sorumluluk</h3>
+<ul>
+<li><strong>Tek Sorumluluk Prensibi:</strong> Her metod tek bir iş yapmalı</li>
+<li><strong>Maksimum 20 satır:</strong> Uzun metodlar refactor edilmeli</li>
+<li><strong>Anlamlı İsim:</strong> Metod adı ne yaptığını açıklamalı</li>
+</ul>
+<!-- CODE_META: Java, MethodDesignExample.java, Metod tasarımı örnekleri -->
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// MethodDesignExample.java</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MethodDesignExample <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - çok fazla sorumluluk</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">processOrder</span><span class="op">(</span>Order order<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Validasyon</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>order <span class="op">==</span> <span class="kw">null</span> <span class="op">||</span> order<span class="op">.</span><span class="fu">getItems</span><span class="op">().</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">&quot;Geçersiz sipariş&quot;</span><span class="op">);</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Fiyat hesaplama</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> total <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>Item item <span class="op">:</span> order<span class="op">.</span><span class="fu">getItems</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            total <span class="op">+=</span> item<span class="op">.</span><span class="fu">getPrice</span><span class="op">()</span> <span class="op">*</span> item<span class="op">.</span><span class="fu">getQuantity</span><span class="op">();</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">// İndirim uygulama</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>order<span class="op">.</span><span class="fu">getCustomer</span><span class="op">().</span><span class="fu">isPremium</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>            total <span class="op">*=</span> <span class="fl">0.9</span><span class="op">;</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Veritabanı kaydetme</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">saveToDatabase</span><span class="op">(</span>order<span class="op">,</span> total<span class="op">);</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Email gönderme</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sendEmail</span><span class="op">(</span>order<span class="op">.</span><span class="fu">getCustomer</span><span class="op">().</span><span class="fu">getEmail</span><span class="op">(),</span> total<span class="op">);</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru - tek sorumluluk</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">processOrderDogru</span><span class="op">(</span>Order order<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">validateOrder</span><span class="op">(</span>order<span class="op">);</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> total <span class="op">=</span> <span class="fu">calculateTotal</span><span class="op">(</span>order<span class="op">);</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> discountedTotal <span class="op">=</span> <span class="fu">applyDiscount</span><span class="op">(</span>order<span class="op">,</span> total<span class="op">);</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">saveOrder</span><span class="op">(</span>order<span class="op">,</span> discountedTotal<span class="op">);</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sendConfirmationEmail</span><span class="op">(</span>order<span class="op">,</span> discountedTotal<span class="op">);</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">void</span> <span class="fu">validateOrder</span><span class="op">(</span>Order order<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>order <span class="op">==</span> <span class="kw">null</span> <span class="op">||</span> order<span class="op">.</span><span class="fu">getItems</span><span class="op">().</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">IllegalArgumentException</span><span class="op">(</span><span class="st">&quot;Geçersiz sipariş&quot;</span><span class="op">);</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> <span class="fu">calculateTotal</span><span class="op">(</span>Order order<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> order<span class="op">.</span><span class="fu">getItems</span><span class="op">().</span><span class="fu">stream</span><span class="op">()</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">mapToDouble</span><span class="op">(</span>item <span class="op">-&gt;</span> item<span class="op">.</span><span class="fu">getPrice</span><span class="op">()</span> <span class="op">*</span> item<span class="op">.</span><span class="fu">getQuantity</span><span class="op">())</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">sum</span><span class="op">();</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> <span class="fu">applyDiscount</span><span class="op">(</span>Order order<span class="op">,</span> <span class="dt">double</span> total<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> order<span class="op">.</span><span class="fu">getCustomer</span><span class="op">().</span><span class="fu">isPremium</span><span class="op">()</span> <span class="op">?</span> total <span class="op">*</span> <span class="fl">0.9</span> <span class="op">:</span> total<span class="op">;</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="exception-handling" class="level3">
+<h3>3.3 Exception Handling</h3>
+<ul>
+<li><strong>Checked vs Unchecked:</strong> Doğru exception tipini seçin</li>
+<li><strong>Anlamlı Mesaj:</strong> Exception mesajları açıklayıcı olmalı</li>
+<li><strong>Try-with-resources:</strong> Kaynakları otomatik kapatın</li>
+<li><strong>Asla boş catch bloğu:</strong> Exception’ı yutmayın</li>
+</ul>
+</section>
+<section id="test-edilebilirlik" class="level3">
+<h3>3.4 Test Edilebilirlik</h3>
+<ul>
+<li><strong>Dependency Injection:</strong> Bağımlılıkları enjekte edin</li>
+<li><strong>Interface Kullanımı:</strong> Somut sınıflar yerine interface’ler</li>
+<li><strong>Mock Desteği:</strong> Test edilebilir kod yazın</li>
+</ul>
+</section>
+<section id="dökümantasyon" class="level3">
+<h3>3.5 Dökümantasyon</h3>
+<ul>
+<li><strong>Javadoc:</strong> Public API’ler için zorunlu</li>
+<li><strong>Karmaşık Mantık:</strong> Algoritma açıklamaları</li>
+<li><strong>TODO’ları Temizleyin:</strong> Geçici çözümleri işaretleyin</li>
+</ul>
+</section>
+</section>
+<section id="en-iyi-uygulamalar" class="level2">
+<h2>27.5 En İyi Uygulamalar</h2>
+<section id="solid-prensipleri" class="level3">
+<h3>4.1 SOLID Prensipleri</h3>
+<p>SOLID, nesne yönelimli programlamada beş temel prensibi ifade eder:</p>
+<table>
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 52%" />
+</colgroup>
+<thead>
+<tr>
+<th>Prensip</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>S</strong>ingle Responsibility</td>
+<td>Bir sınıfın tek bir sorumluluğu olmalı</td>
+</tr>
+<tr>
+<td><strong>O</strong>pen/Closed</td>
+<td>Genişletmeye açık, değişikliğe kapalı</td>
+</tr>
+<tr>
+<td><strong>L</strong>iskov Substitution</td>
+<td>Alt sınıflar, üst sınıfların yerine geçebilmeli</td>
+</tr>
+<tr>
+<td><strong>I</strong>nterface Segregation</td>
+<td>Küçük, spesifik interface’ler</td>
+</tr>
+<tr>
+<td><strong>D</strong>ependency Inversion</td>
+<td>Soyutlamalara bağımlı olun, somut sınıflara değil</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="design-patternler" class="level3">
+<h3>4.2 Design Pattern’ler</h3>
+<p>Yaygın kullanılan tasarım desenleri:</p>
+<ul>
+<li><strong>Singleton:</strong> Tek bir örnek</li>
+<li><strong>Factory Method:</strong> Nesne oluşturma</li>
+<li><strong>Observer:</strong> Olay bildirimi</li>
+<li><strong>Strategy:</strong> Algoritma değiştirme</li>
+</ul>
+</section>
+<section id="clean-code-teknikleri" class="level3">
+<h3>4.3 Clean Code Teknikleri</h3>
+<blockquote>
+<p><strong>Temiz Kod İlkeleri:</strong>
+- Kodu yorumlarla değil, kodun kendisiyle açıklayın
+- Anlamlı isimler kullanın
+- Fonksiyonlar küçük olmalı
+- DRY (Don’t Repeat Yourself) prensibi
+- YAGNI (You Aren’t Gonna Need It)</p>
+</blockquote>
+</section>
+<section id="performans-iyileştirmeleri" class="level3">
+<h3>4.4 Performans İyileştirmeleri</h3>
+<!-- CODE_META: Java, PerformanceExample.java, Performans iyileştirme örnekleri -->
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// PerformanceExample.java</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.*;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> PerformanceExample <span class="op">{</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - gereksiz nesne oluşturma</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">hataliContains</span><span class="op">(</span><span class="bu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> list<span class="op">,</span> <span class="bu">String</span> value<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> list<span class="op">.</span><span class="fu">contains</span><span class="op">(</span><span class="kw">new</span> <span class="bu">String</span><span class="op">(</span>value<span class="op">));</span> <span class="co">// Gereksiz String nesnesi!</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">dogruContains</span><span class="op">(</span><span class="bu">List</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> list<span class="op">,</span> <span class="bu">String</span> value<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> list<span class="op">.</span><span class="fu">contains</span><span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - StringBuilder yerine String birleştirme</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">hataliLogOlustur</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> messages<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> log <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> msg <span class="op">:</span> messages<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>            log <span class="op">+=</span> msg <span class="op">+</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="co">// Her seferinde yeni String</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> log<span class="op">;</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">dogruLogOlustur</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> messages<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">StringBuilder</span> sb <span class="op">=</span> <span class="kw">new</span> <span class="bu">StringBuilder</span><span class="op">();</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> msg <span class="op">:</span> messages<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>            sb<span class="op">.</span><span class="fu">append</span><span class="op">(</span>msg<span class="op">).</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sb<span class="op">.</span><span class="fu">toString</span><span class="op">();</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hatalı - ArrayList yerine LinkedList kullanımı</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">hataliListeKullanimi</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        <span class="bu">List</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> list <span class="op">=</span> <span class="kw">new</span> <span class="bu">LinkedList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">100000</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>            list<span class="op">.</span><span class="fu">add</span><span class="op">(</span>i<span class="op">);</span> <span class="co">// LinkedList&#39;te add O(1), get O(n)</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> list<span class="op">.</span><span class="fu">size</span><span class="op">();</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>list<span class="op">.</span><span class="fu">get</span><span class="op">(</span>i<span class="op">));</span> <span class="co">// Çok yavaş!</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Doğru</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">dogruListeKullanimi</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>        <span class="bu">List</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> list <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">100000</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>            list<span class="op">.</span><span class="fu">add</span><span class="op">(</span>i<span class="op">);</span> <span class="co">// ArrayList&#39;te add O(1)</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> list<span class="op">.</span><span class="fu">size</span><span class="op">();</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>list<span class="op">.</span><span class="fu">get</span><span class="op">(</span>i<span class="op">));</span> <span class="co">// ArrayList&#39;te get O(1)</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Alternatif - for-each döngüsü</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">dogruListeKullanimiForEach</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>        <span class="bu">List</span><span class="op">&lt;</span><span class="bu">Integer</span><span class="op">&gt;</span> list <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">100000</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>            list<span class="op">.</span><span class="fu">add</span><span class="op">(</span>i<span class="op">);</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">Integer</span> value <span class="op">:</span> list<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+</section>
+<section id="özet" class="level2">
+<h2>27.6 Özet</h2>
+<p>Bu bölümde, Java programlamada kod kalitesinin önemini, sık yapılan hata desenlerini, kod review checklist’ini ve en iyi uygulamaları öğrendik.</p>
+<section id="anahtar-noktalar" class="level3">
+<h3>Anahtar Noktalar</h3>
+<ol type="1">
+<li><strong>Kod kalitesi</strong> sadece çalışan kod değil, okunabilir, bakımı kolay ve genişletilebilir koddur</li>
+<li><strong>NullPointerException</strong> en yaygın hatadır; Optional ve null kontrolleri kullanın</li>
+<li><strong>Kaynak yönetimi</strong> için try-with-resources kullanın</li>
+<li><strong>Concurrency</strong> sorunları için synchronized veya Atomic sınıfları kullanın</li>
+<li><strong>String işlemleri</strong> için StringBuilder kullanın</li>
+<li><strong>equals() ve hashCode()</strong> her zaman birlikte override edin</li>
+<li><strong>Kod review</strong> sürecinde isimlendirme, metod boyutu, exception handling ve test edilebilirliği kontrol edin</li>
+<li><strong>SOLID prensipleri</strong> ve <strong>Clean Code</strong> tekniklerini uygulayın</li>
+</ol>
+</section>
+<section id="terim-sözlüğü" class="level3">
+<h3>Terim Sözlüğü</h3>
+<table>
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 58%" />
+</colgroup>
+<thead>
+<tr>
+<th>Terim</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Technical Debt</strong></td>
+<td>Kötü kodun gelecekte yaratacağı ek maliyet</td>
+</tr>
+<tr>
+<td><strong>NullPointerException</strong></td>
+<td>Null referans üzerinden metod çağırma hatası</td>
+</tr>
+<tr>
+<td><strong>Thread-safe</strong></td>
+<td>Çoklu iş parçacığında güvenli çalışan kod</td>
+</tr>
+<tr>
+<td><strong>Immutable</strong></td>
+<td>Oluşturulduktan sonra değiştirilemeyen nesne</td>
+</tr>
+<tr>
+<td><strong>Refactoring</strong></td>
+<td>Kodu dış davranışını değiştirmeden iyileştirme</td>
+</tr>
+<tr>
+<td><strong>SOLID</strong></td>
+<td>Nesne yönelimli programlamada beş temel prensip</td>
+</tr>
+<tr>
+<td><strong>DRY</strong></td>
+<td>Don’t Repeat Yourself - Kendini Tekrarlama</td>
+</tr>
+<tr>
+<td><strong>YAGNI</strong></td>
+<td>You Aren’t Gonna Need It - İhtiyacın Olmayacak</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="kontrol-soruları" class="level3">
+<h3>Kontrol Soruları</h3>
+<ol type="1">
+<li>Kod kalitesi neden önemlidir? En az üç faydasını sayın.</li>
+<li>NullPointerException’ı önlemek için hangi yöntemleri kullanabilirsiniz?</li>
+<li>try-with-resources ifadesinin avantajları nelerdir?</li>
+<li>equals() ve hashCode() metodları neden birlikte override edilmelidir?</li>
+<li>Kod review sırasında hangi beş ana alanı kontrol etmelisiniz?</li>
+<li>SOLID prensiplerini kısaca açıklayın.</li>
+<li>StringBuilder kullanmanın String birleştirmeye göre avantajı nedir?</li>
+<li>Thread-safe olmayan bir kodu nasıl thread-safe hale getirebilirsiniz?</li>
+</ol>
+</section>
+<section id="alıştırmalar" class="level3">
+<h3>Alıştırmalar</h3>
+<p><strong>Alıştırma 1: Null Güvenliği</strong>
+Aşağıdaki kodu null-safe hale getirin:
+<!-- CODE_META
+id: ek-d_kod01
+chapter_id: ek-d
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="bu">String</span> <span class="fu">getUserFullName</span><span class="op">(</span>User user<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> user<span class="op">.</span><span class="fu">getFirstName</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; &quot;</span> <span class="op">+</span> user<span class="op">.</span><span class="fu">getLastName</span><span class="op">();</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Alıştırma 2: Kaynak Yönetimi</strong>
+Aşağıdaki kodu try-with-resources kullanarak yeniden yazın:
+<!-- CODE_META
+id: ek-d_kod02
+chapter_id: ek-d
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">readFile</span><span class="op">(</span><span class="bu">String</span> path<span class="op">)</span> <span class="kw">throws</span> <span class="bu">IOException</span> <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">FileInputStream</span> fis <span class="op">=</span> <span class="kw">new</span> <span class="bu">FileInputStream</span><span class="op">(</span>path<span class="op">);</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">BufferedReader</span> br <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedReader</span><span class="op">(</span><span class="kw">new</span> <span class="bu">InputStreamReader</span><span class="op">(</span>fis<span class="op">));</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> line<span class="op">;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">((</span>line <span class="op">=</span> br<span class="op">.</span><span class="fu">readLine</span><span class="op">())</span> <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>line<span class="op">);</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    br<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Alıştırma 3: Concurrency</strong>
+Aşağıdaki sınıfı thread-safe hale getirin:
+<!-- CODE_META
+id: ek-d_kod03
+chapter_id: ek-d
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Counter <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> count <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">increment</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        count<span class="op">++;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">getCount</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> count<span class="op">;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Alıştırma 4: Kod Review</strong>
+Aşağıdaki kodu review edin ve hataları bulun:
+<!-- CODE_META
+id: ek-d_kod04
+chapter_id: ek-d
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CustomerService <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">saveCustomer</span><span class="op">(</span><span class="bu">String</span> name<span class="op">,</span> <span class="bu">String</span> email<span class="op">,</span> <span class="bu">String</span> phone<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// </span><span class="al">TODO</span><span class="co">: validasyon ekle</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        Customer customer <span class="op">=</span> <span class="kw">new</span> <span class="fu">Customer</span><span class="op">();</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        customer<span class="op">.</span><span class="fu">setName</span><span class="op">(</span>name<span class="op">);</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        customer<span class="op">.</span><span class="fu">setEmail</span><span class="op">(</span>email<span class="op">);</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        customer<span class="op">.</span><span class="fu">setPhone</span><span class="op">(</span>phone<span class="op">);</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// veritabanına kaydet</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        database<span class="op">.</span><span class="fu">save</span><span class="op">(</span>customer<span class="op">);</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// email gönder</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        emailService<span class="op">.</span><span class="fu">send</span><span class="op">(</span>email<span class="op">,</span> <span class="st">&quot;Hoşgeldiniz!&quot;</span><span class="op">);</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Alıştırma 5: Performans</strong>
+Aşağıdaki kodu performans açısından iyileştirin:
+<!-- CODE_META
+id: ek-d_kod05
+chapter_id: ek-d
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="bu">String</span> <span class="fu">generateReport</span><span class="op">(</span><span class="bu">List</span><span class="op">&lt;</span>Transaction<span class="op">&gt;</span> transactions<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> report <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>Transaction t <span class="op">:</span> transactions<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        report <span class="op">+=</span> t<span class="op">.</span><span class="fu">getId</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; - &quot;</span> <span class="op">+</span> t<span class="op">.</span><span class="fu">getAmount</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> report<span class="op">;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<hr />
+<blockquote>
+<p><strong>Son Not:</strong> Kod kalitesi bir yolculuktur, varış noktası değil. Sürekli öğrenme ve iyileştirme ile kodunuzu her gün biraz daha iyi hale getirebilirsiniz. Unutmayın: “Her zaman kodu, bir sonraki geliştiricinin bir psikopat olacağını ve senin adresini bildiğini düşünerek yaz.”</p>
+</blockquote>
+</section>
+</section>
+</section>
+</body>
+</html>

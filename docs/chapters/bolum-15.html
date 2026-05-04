@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Teknik Kitap Yazarı ve Pedagojik İçerik Uzmanı" />
+  <meta name="dcterms.date" content="2024-01-01" />
+  <title>Collections Framework</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Collections Framework</h1>
+<p class="subtitle">try-catch-finally, Checked/Unchecked Exception, Custom Exception ve İleri Düzey Stratejiler</p>
+<p class="author">Teknik Kitap Yazarı ve Pedagojik İçerik Uzmanı</p>
+<p class="date">2024-01-01</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#bölüm-15-hata-yonetimi-ve-dayanikli-programlama" id="toc-bölüm-15-hata-yonetimi-ve-dayanikli-programlama">Bölüm 15: Hata Yonetimi ve Dayanikli Programlama</a>
+<ul>
+<li><a href="#hata-yönetiminin-temel-kavramları-ve-önemi" id="toc-hata-yönetiminin-temel-kavramları-ve-önemi">15.1 Hata Yönetiminin Temel Kavramları ve Önemi</a></li>
+<li><a href="#try-catch-finally-yapısı-ile-istisna-yakalama" id="toc-try-catch-finally-yapısı-ile-istisna-yakalama">15.2 try-catch-finally Yapısı ile İstisna Yakalama</a></li>
+<li><a href="#checked-ve-unchecked-exception-ayrımı" id="toc-checked-ve-unchecked-exception-ayrımı">15.3 Checked ve Unchecked Exception Ayrımı</a></li>
+<li><a href="#custom-exception-özel-istisna-oluşturma" id="toc-custom-exception-özel-istisna-oluşturma">15.4 Custom Exception (Özel İstisna) Oluşturma</a></li>
+<li><a href="#ileri-düzey-hata-yönetim-stratejileri" id="toc-ileri-düzey-hata-yönetim-stratejileri">15.5 İleri Düzey Hata Yönetim Stratejileri</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="bölüm-15-hata-yonetimi-ve-dayanikli-programlama" class="level1">
+<h1>Bölüm 15: Hata Yonetimi ve Dayanikli Programlama</h1>
+<section id="hata-yönetiminin-temel-kavramları-ve-önemi" class="level2">
+<h2>15.1 Hata Yönetiminin Temel Kavramları ve Önemi</h2>
+<section id="hata-ve-istisna-arasındaki-fark" class="level3">
+<h3>Hata ve İstisna Arasındaki Fark</h3>
+<p>Yazılım geliştirme sürecinde karşılaşılan sorunlar genellikle iki ana kategoriye ayrılır: <strong>Hata (Error)</strong> ve <strong>İstisna (Exception)</strong>. Bu iki kavramı anlamak, etkili bir hata yönetimi stratejisi oluşturmanın temelidir.</p>
+<p><strong>Derleme Zamanı Hataları (Compile-time Errors):</strong> Kod yazarken Java derleyicisi tarafından tespit edilen hatalardır. Sözdizimi hataları, tip uyuşmazlıkları veya eksik import ifadeleri bu kategoriye girer. Bu hatalar program çalıştırılmadan önce düzeltilmelidir.</p>
+<p><strong>Çalışma Zamanı Hataları (Runtime Errors):</strong> Program çalışırken ortaya çıkan beklenmedik durumlardır. Bu hatalar genellikle dış etkenlerden (kullanıcı girdisi, dosya erişimi, ağ sorunları) kaynaklanır. Java’da bu tür hatalar <strong>istisna</strong> olarak adlandırılır.</p>
+<p>Java’nın istisna hiyerarşisi şu şekilde yapılandırılmıştır:</p>
+<p><strong>Error sınıfı:</strong> JVM (Java Virtual Machine) ile ilgili ciddi sorunları temsil eder. Örneğin, <code>OutOfMemoryError</code>, <code>StackOverflowError</code> gibi durumlar. Bu hatalar genellikle program tarafından yakalanamaz ve yönetilemez.</p>
+<p><strong>Exception sınıfı:</strong> Program tarafından yakalanıp yönetilebilen istisnai durumları temsil eder. İki alt kategoriye ayrılır:
+- <strong>Checked Exception:</strong> Derleme zamanında kontrol edilen istisnalar (IOException, SQLException)
+- <strong>Unchecked Exception:</strong> Çalışma zamanında ortaya çıkan istisnalar (RuntimeException alt sınıfları)</p>
+</section>
+<section id="yaygın-istisna-örnekleri" class="level3">
+<h3>Yaygın İstisna Örnekleri</h3>
+<p>Aşağıda en sık karşılaşılan istisna türleri ve neden oluştukları açıklanmıştır:</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 34%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr>
+<th>İstisna Türü</th>
+<th>Oluşma Nedeni</th>
+<th>Örnek Senaryo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ArithmeticException</td>
+<td>Matematiksel işlem hatası</td>
+<td>Sıfıra bölme</td>
+</tr>
+<tr>
+<td>NullPointerException</td>
+<td>Null referans üzerinde işlem</td>
+<td>Metot çağrısı yapılmamış nesne</td>
+</tr>
+<tr>
+<td>ArrayIndexOutOfBoundsException</td>
+<td>Dizi sınırları dışına çıkma</td>
+<td>Dizinin 5. elemanına erişmeye çalışmak (dizi boyutu 5 ise)</td>
+</tr>
+<tr>
+<td>FileNotFoundException</td>
+<td>Dosya bulunamaması</td>
+<td>Var olmayan bir dosyayı açmaya çalışmak</td>
+</tr>
+<tr>
+<td>NumberFormatException</td>
+<td>Sayısal dönüşüm hatası</td>
+<td>“abc” string’ini integer’a çevirmeye çalışmak</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="uygulama-basit-bölme-işlemi" class="level3">
+<h3>Uygulama: Basit Bölme İşlemi</h3>
+<p>Aşağıdaki örnek, hata yönetimi olmadan bir programın nasıl çöktüğünü göstermektedir:</p>
+<!-- CODE_META: HataOrnegi.java - Basit bölme işlemi hatası -->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> HataOrnegi <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> b <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sonuç: &quot;</span> <span class="op">+</span> <span class="op">(</span>a <span class="op">/</span> b<span class="op">));</span> <span class="co">// ArithmeticException: / by zero</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Bu kod çalıştırıldığında, <code>b</code> değişkeni 0 olduğu için <code>ArithmeticException</code> fırlatılır ve program aniden sonlanır. Eğer bu işlem kritik bir uygulamada gerçekleşseydi, kullanıcı veri kaybı yaşayabilir veya sistem kararsız hale gelebilirdi.</p>
+<blockquote>
+<p><strong>Önemli:</strong> Hata yönetimi olmadan programın çökmesi, veri kaybına, güvenlik açıklarına ve kullanıcı deneyiminin bozulmasına neden olabilir. Bu nedenle, dayanıklı programlama için hata yönetimi zorunludur.</p>
+</blockquote>
+</section>
+<section id="değerlendirme" class="level3">
+<h3>Değerlendirme</h3>
+<p>Hata yönetimi olmadan bir programın karşılaşabileceği sonuçlar:
+1. <strong>Veri Kaybı:</strong> Kullanıcı tarafından girilen veya işlenen veriler kaybolabilir.
+2. <strong>Güvenlik Açıkları:</strong> Beklenmeyen durumlar, güvenlik duvarlarını aşmak için kullanılabilir.
+3. <strong>Kullanıcı Deneyimi:</strong> Ani çökmeler, kullanıcıların sisteme olan güvenini azaltır.
+4. <strong>Sistem Kararsızlığı:</strong> Kaynak sızıntıları ve tutarsız durumlar sistemin çökmesine yol açabilir.</p>
+<hr />
+</section>
+</section>
+<section id="try-catch-finally-yapısı-ile-istisna-yakalama" class="level2">
+<h2>15.2 try-catch-finally Yapısı ile İstisna Yakalama</h2>
+<section id="try-catch-finally-bloklarının-işleyişi" class="level3">
+<h3>try-catch-finally Bloklarının İşleyişi</h3>
+<p>Java’da istisna yönetiminin temel yapı taşı <code>try-catch-finally</code> bloklarıdır. Bu yapı sayesinde, potansiyel olarak istisna fırlatabilecek kodlar güvenli bir şekilde çalıştırılabilir.</p>
+<p><strong>try bloğu:</strong> İstisna oluşma ihtimali olan kodların yazıldığı bloktur. Bu blok içinde bir istisna oluşursa, kontrol hemen uygun <code>catch</code> bloğuna geçer.</p>
+<p><strong>catch bloğu:</strong> Belirli bir istisna türünü yakalamak ve işlemek için kullanılır. Birden fazla <code>catch</code> bloğu tanımlanabilir.</p>
+<p><strong>finally bloğu:</strong> İstisna oluşsa da oluşmasa da her durumda çalıştırılması gereken kodlar için kullanılır. Genellikle kaynak temizleme işlemleri için tercih edilir.</p>
+</section>
+<section id="çoklu-catch-blokları-ve-finally-kullanımı" class="level3">
+<h3>Çoklu catch Blokları ve finally Kullanımı</h3>
+<p>Aşağıdaki örnek, bir dosyayı okurken karşılaşılabilecek farklı istisna türlerini nasıl yönetebileceğinizi göstermektedir:</p>
+<!-- CODE_META: TryCatchOrnegi.java - try-catch-finally yapısı -->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.*;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TryCatchOrnegi <span class="op">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">BufferedReader</span> reader <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            reader <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedReader</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileReader</span><span class="op">(</span><span class="st">&quot;dosya.txt&quot;</span><span class="op">));</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> satir <span class="op">=</span> reader<span class="op">.</span><span class="fu">readLine</span><span class="op">();</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>satir<span class="op">);</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">FileNotFoundException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya bulunamadı: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Okuma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">finally</span> <span class="op">{</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>reader <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                    reader<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Kapatma hatası&quot;</span><span class="op">);</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Bu örnekte:
+1. <strong>try bloğu:</strong> Dosyayı açar ve okur.
+2. <strong>catch blokları:</strong>
+- <code>FileNotFoundException</code>: Dosya bulunamazsa yakalanır.
+- <code>IOException</code>: Okuma sırasında başka bir hata oluşursa yakalanır.
+3. <strong>finally bloğu:</strong> Her durumda dosyayı kapatır.</p>
+<blockquote>
+<p><strong>Önemli:</strong> finally bloğu, kaynak yönetimi için kritik öneme sahiptir. Dosya, ağ bağlantısı veya veritabanı bağlantısı gibi kaynakların her durumda serbest bırakılmasını sağlar.</p>
+</blockquote>
+</section>
+<section id="uygulama-kullanıcı-girdisi-ile-bölme-işlemi" class="level3">
+<h3>Uygulama: Kullanıcı Girdisi ile Bölme İşlemi</h3>
+<p>Aşağıdaki uygulama, kullanıcıdan alınan iki sayıyı bölen ve sonucu bir dosyaya yazan programdır:</p>
+<!-- CODE_META: BolmeVeDosyayaYaz.java - Kullanıcı girdisi ile bölme işlemi -->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.*;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> BolmeVeDosyayaYaz <span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> scanner <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">BufferedWriter</span> writer <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Birinci sayıyı girin: &quot;</span><span class="op">);</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> a <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>scanner<span class="op">.</span><span class="fu">nextLine</span><span class="op">());</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;İkinci sayıyı girin: &quot;</span><span class="op">);</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> b <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>scanner<span class="op">.</span><span class="fu">nextLine</span><span class="op">());</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> sonuc <span class="op">=</span> a <span class="op">/</span> b<span class="op">;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            writer <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedWriter</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileWriter</span><span class="op">(</span><span class="st">&quot;sonuc.txt&quot;</span><span class="op">));</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span><span class="st">&quot;Bölme sonucu: &quot;</span> <span class="op">+</span> sonuc<span class="op">);</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sonuç dosyaya yazıldı.&quot;</span><span class="op">);</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Geçersiz sayı formatı: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">ArithmeticException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sıfıra bölme hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya yazma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">finally</span> <span class="op">{</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>writer <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>                    writer<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>                scanner<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Kapatma hatası&quot;</span><span class="op">);</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Bu uygulama şu istisna durumlarını yönetir:
+1. <strong>NumberFormatException:</strong> Kullanıcı sayı yerine harf girerse
+2. <strong>ArithmeticException:</strong> İkinci sayı 0 girilirse
+3. <strong>IOException:</strong> Dosyaya yazma işlemi başarısız olursa</p>
+</section>
+<section id="değerlendirme-1" class="level3">
+<h3>Değerlendirme</h3>
+<p>finally bloğunun kaynak yönetimindeki önemi:
+- <strong>Kaynak Sızıntısını Önler:</strong> Açık kalan dosyalar, ağ bağlantıları veya veritabanı bağlantıları sistem kaynaklarını tüketir.
+- <strong>Her Durumda Çalışır:</strong> İstisna oluşsa da oluşmasa da çalışır.
+- <strong>Temizlik Kodları İçin İdealdir:</strong> Loglama, bildirim gönderme gibi işlemler için kullanılabilir.</p>
+<hr />
+</section>
+</section>
+<section id="checked-ve-unchecked-exception-ayrımı" class="level2">
+<h2>15.3 Checked ve Unchecked Exception Ayrımı</h2>
+<section id="checked-exception" class="level3">
+<h3>Checked Exception</h3>
+<p><strong>Checked Exception</strong>’lar, derleme zamanında Java derleyicisi tarafından kontrol edilen istisnalardır. Bu tür istisnalar, ya <code>try-catch</code> bloğu ile yakalanmalı ya da metot imzasında <code>throws</code> anahtar kelimesi ile bildirilmelidir.</p>
+<p><strong>Özellikler:</strong>
+- <code>Exception</code> sınıfının <code>RuntimeException</code> dışındaki alt sınıflarıdır.
+- Derleme hatasına neden olur.
+- Genellikle dış etkenlerden kaynaklanır (dosya, ağ, veritabanı).
+- Programcı bu istisnaları yönetmek zorundadır.</p>
+</section>
+<section id="unchecked-exception" class="level3">
+<h3>Unchecked Exception</h3>
+<p><strong>Unchecked Exception</strong>’lar, çalışma zamanında ortaya çıkan istisnalardır. Bu tür istisnaların <code>try-catch</code> ile yakalanması veya <code>throws</code> ile bildirilmesi zorunlu değildir.</p>
+<p><strong>Özellikler:</strong>
+- <code>RuntimeException</code> ve alt sınıflarıdır.
+- Derleme hatasına neden olmaz.
+- Genellikle programlama hatalarından kaynaklanır (null kontrolü, dizi sınırları).
+- Programcı isterse yakalayabilir, ancak zorunlu değildir.</p>
+</section>
+<section id="her-iki-türün-karşılaştırılması" class="level3">
+<h3>Her İki Türün Karşılaştırılması</h3>
+<p>Aşağıdaki örnek, checked ve unchecked exception arasındaki farkı göstermektedir:</p>
+<!-- CODE_META: ExceptionTurleri.java - Checked ve Unchecked exception karşılaştırması -->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.*;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ExceptionTurleri <span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Checked exception - bildirim zorunlu</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">dosyaOku</span><span class="op">()</span> <span class="kw">throws</span> <span class="bu">IOException</span> <span class="op">{</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">FileReader</span> file <span class="op">=</span> <span class="kw">new</span> <span class="bu">FileReader</span><span class="op">(</span><span class="st">&quot;test.txt&quot;</span><span class="op">);</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosya okuma işlemleri</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        file<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Unchecked exception - bildirim zorunlu değil</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">bolmeIslemi</span><span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>b <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">ArithmeticException</span><span class="op">(</span><span class="st">&quot;Sıfıra bölme hatası&quot;</span><span class="op">);</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sonuç: &quot;</span> <span class="op">+</span> <span class="op">(</span>a <span class="op">/</span> b<span class="op">));</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Unchecked exception yakalama (isteğe bağlı)</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>            <span class="fu">bolmeIslemi</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">ArithmeticException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Unchecked exception yakalandı: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Checked exception yakalama (zorunlu)</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>            <span class="fu">dosyaOku</span><span class="op">();</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Checked exception yakalandı: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>Önemli:</strong> Checked exception’lar, API kullanıcılarının hata durumlarını yönetmesini sağlar. Unchecked exception’lar ise genellikle programlama hatalarını belirtir ve düzeltilmesi gerekir.</p>
+</blockquote>
+</section>
+<section id="uygulama-hesap-makinesi-programı" class="level3">
+<h3>Uygulama: Hesap Makinesi Programı</h3>
+<p>Aşağıdaki hesap makinesi programı, hem checked hem de unchecked exception’ları yönetmektedir:</p>
+<!-- CODE_META: HesapMakinesi.java - Checked ve Unchecked exception yönetimi -->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.*;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> HesapMakinesi <span class="op">{</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Checked exception - dosyaya yazma işlemi</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">sonucuKaydet</span><span class="op">(</span><span class="dt">int</span> sonuc<span class="op">)</span> <span class="kw">throws</span> <span class="bu">IOException</span> <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="bu">BufferedWriter</span> writer <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedWriter</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileWriter</span><span class="op">(</span><span class="st">&quot;hesap_log.txt&quot;</span><span class="op">,</span> <span class="kw">true</span><span class="op">)))</span> <span class="op">{</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span><span class="st">&quot;İşlem sonucu: &quot;</span> <span class="op">+</span> sonuc<span class="op">);</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">newLine</span><span class="op">();</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Unchecked exception - bölme işlemi</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">bol</span><span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>b <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">ArithmeticException</span><span class="op">(</span><span class="st">&quot;Sıfıra bölme hatası&quot;</span><span class="op">);</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a <span class="op">/</span> b<span class="op">;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> scanner <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Birinci sayı: &quot;</span><span class="op">);</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> sayi1 <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>scanner<span class="op">.</span><span class="fu">nextLine</span><span class="op">());</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;İkinci sayı: &quot;</span><span class="op">);</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> sayi2 <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>scanner<span class="op">.</span><span class="fu">nextLine</span><span class="op">());</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Unchecked exception - bölme</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> sonuc <span class="op">=</span> <span class="fu">bol</span><span class="op">(</span>sayi1<span class="op">,</span> sayi2<span class="op">);</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sonuç: &quot;</span> <span class="op">+</span> sonuc<span class="op">);</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Checked exception - dosyaya kaydet</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>            <span class="fu">sonucuKaydet</span><span class="op">(</span>sonuc<span class="op">);</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sonuç kaydedildi.&quot;</span><span class="op">);</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Geçersiz sayı formatı: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">ArithmeticException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Matematiksel hata: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya yazma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">finally</span> <span class="op">{</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>            scanner<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="değerlendirme-2" class="level3">
+<h3>Değerlendirme</h3>
+<p>Hangi durumda hangi tür istisna kullanılmalı?</p>
+<table>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 61%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr>
+<th>Durum</th>
+<th>Önerilen İstisna Türü</th>
+<th>Neden</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dosya işlemleri</td>
+<td>Checked (IOException)</td>
+<td>Kullanıcı dosyayı silebilir veya taşıyabilir</td>
+</tr>
+<tr>
+<td>Ağ bağlantıları</td>
+<td>Checked (SocketException)</td>
+<td>Ağ kesintileri beklenen durumlardır</td>
+</tr>
+<tr>
+<td>Null kontrolü</td>
+<td>Unchecked (NullPointerException)</td>
+<td>Programlama hatasıdır, düzeltilmelidir</td>
+</tr>
+<tr>
+<td>Dizi sınırları</td>
+<td>Unchecked (ArrayIndexOutOfBoundsException)</td>
+<td>Programlama hatasıdır</td>
+</tr>
+<tr>
+<td>Kullanıcı girdisi</td>
+<td>Unchecked (NumberFormatException)</td>
+<td>Genellikle doğrulama ile önlenebilir</td>
+</tr>
+<tr>
+<td>Veritabanı bağlantısı</td>
+<td>Checked (SQLException)</td>
+<td>Dış etkenlere bağlıdır</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</section>
+</section>
+<section id="custom-exception-özel-istisna-oluşturma" class="level2">
+<h2>15.4 Custom Exception (Özel İstisna) Oluşturma</h2>
+<section id="kendi-istisna-sınıflarını-oluşturma" class="level3">
+<h3>Kendi İstisna Sınıflarını Oluşturma</h3>
+<p>Bazı durumlarda, Java’nın standart istisna sınıfları ihtiyaçlarınızı karşılamayabilir. Bu gibi durumlarda, kendi özel istisna sınıflarınızı oluşturabilirsiniz.</p>
+<p><strong>Özel istisna oluşturma adımları:</strong></p>
+<ol type="1">
+<li><strong>Sınıf seçimi:</strong> <code>Exception</code> (checked) veya <code>RuntimeException</code> (unchecked) sınıfından türetme</li>
+<li><strong>Yapıcı metotlar:</strong> En azından <code>String message</code> parametreli bir yapıcı metot</li>
+<li><strong>Ek bilgi:</strong> İstisna ile ilgili ek bilgiler taşıyabilir (hatalı değer, hata kodu vb.)</li>
+</ol>
+</section>
+<section id="örnek-kullanıcı-doğrulama-için-özel-istisna" class="level3">
+<h3>Örnek: Kullanıcı Doğrulama için Özel İstisna</h3>
+<p>Aşağıdaki örnek, geçersiz yaş değerleri için özel bir istisna sınıfı oluşturmayı göstermektedir:</p>
+<!-- CODE_META: CustomExceptionOrnegi.java - Özel istisna oluşturma -->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Özel istisna sınıfı - Checked exception</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> InvalidAgeException <span class="kw">extends</span> <span class="bu">Exception</span> <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> hataliYas<span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">InvalidAgeException</span><span class="op">(</span><span class="bu">String</span> message<span class="op">,</span> <span class="dt">int</span> hataliYas<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">super</span><span class="op">(</span>message<span class="op">);</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">hataliYas</span> <span class="op">=</span> hataliYas<span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">getHataliYas</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> hataliYas<span class="op">;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CustomExceptionOrnegi <span class="op">{</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">yasKontrol</span><span class="op">(</span><span class="dt">int</span> yas<span class="op">)</span> <span class="kw">throws</span> InvalidAgeException <span class="op">{</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>yas <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">||</span> yas <span class="op">&gt;</span> <span class="dv">150</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="fu">InvalidAgeException</span><span class="op">(</span><span class="st">&quot;Geçersiz yaş değeri&quot;</span><span class="op">,</span> yas<span class="op">);</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yaş geçerli: &quot;</span> <span class="op">+</span> yas<span class="op">);</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>            <span class="fu">yasKontrol</span><span class="op">(-</span><span class="dv">5</span><span class="op">);</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>InvalidAgeException e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hata: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hatalı değer: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getHataliYas</span><span class="op">());</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>            <span class="fu">yasKontrol</span><span class="op">(</span><span class="dv">25</span><span class="op">);</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İkinci kontrol başarılı.&quot;</span><span class="op">);</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>InvalidAgeException e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Buraya gelmez&quot;</span><span class="op">);</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>Önemli:</strong> Özel istisna sınıfları, hata mesajlarını daha anlamlı hale getirir ve hata ayıklama sürecini kolaylaştırır. Ayrıca, API kullanıcılarına hangi hata durumlarıyla karşılaşabileceklerini açıkça belirtir.</p>
+</blockquote>
+</section>
+<section id="uygulama-banka-hesap-işlemleri-için-özel-istisnalar" class="level3">
+<h3>Uygulama: Banka Hesap İşlemleri için Özel İstisnalar</h3>
+<p>Aşağıdaki uygulama, banka hesap işlemleri için çeşitli özel istisna sınıfları tasarlamaktadır:</p>
+<!-- CODE_META: BankaHesapOrnegi.java - Banka işlemleri için özel istisnalar -->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Özel istisna sınıfları</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> YetersizBakiyeException <span class="kw">extends</span> <span class="bu">Exception</span> <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> mevcutBakiye<span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> istenenMiktar<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">YetersizBakiyeException</span><span class="op">(</span><span class="bu">String</span> message<span class="op">,</span> <span class="dt">double</span> mevcutBakiye<span class="op">,</span> <span class="dt">double</span> istenenMiktar<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">super</span><span class="op">(</span>message<span class="op">);</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">mevcutBakiye</span> <span class="op">=</span> mevcutBakiye<span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">istenenMiktar</span> <span class="op">=</span> istenenMiktar<span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> <span class="fu">getMevcutBakiye</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> mevcutBakiye<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> <span class="fu">getIstenenMiktar</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> istenenMiktar<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> GecersizHesapNumarasiException <span class="kw">extends</span> <span class="bu">RuntimeException</span> <span class="op">{</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> hesapNumarasi<span class="op">;</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">GecersizHesapNumarasiException</span><span class="op">(</span><span class="bu">String</span> message<span class="op">,</span> <span class="bu">String</span> hesapNumarasi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        <span class="kw">super</span><span class="op">(</span>message<span class="op">);</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">hesapNumarasi</span> <span class="op">=</span> hesapNumarasi<span class="op">;</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getHesapNumarasi</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> hesapNumarasi<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> NegatifParaMiktariException <span class="kw">extends</span> <span class="bu">IllegalArgumentException</span> <span class="op">{</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> miktar<span class="op">;</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">NegatifParaMiktariException</span><span class="op">(</span><span class="bu">String</span> message<span class="op">,</span> <span class="dt">double</span> miktar<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        <span class="kw">super</span><span class="op">(</span>message<span class="op">);</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">miktar</span> <span class="op">=</span> miktar<span class="op">;</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> <span class="fu">getMiktar</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> miktar<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co">// Banka hesap sınıfı</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BankaHesap <span class="op">{</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> hesapNumarasi<span class="op">;</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> bakiye<span class="op">;</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">BankaHesap</span><span class="op">(</span><span class="bu">String</span> hesapNumarasi<span class="op">,</span> <span class="dt">double</span> baslangicBakiyesi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>hesapNumarasi <span class="op">==</span> <span class="kw">null</span> <span class="op">||</span> hesapNumarasi<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="fu">GecersizHesapNumarasiException</span><span class="op">(</span><span class="st">&quot;Hesap numarası boş olamaz&quot;</span><span class="op">,</span> hesapNumarasi<span class="op">);</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">hesapNumarasi</span> <span class="op">=</span> hesapNumarasi<span class="op">;</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">bakiye</span> <span class="op">=</span> baslangicBakiyesi<span class="op">;</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">paraCek</span><span class="op">(</span><span class="dt">double</span> miktar<span class="op">)</span> <span class="kw">throws</span> YetersizBakiyeException<span class="op">,</span> NegatifParaMiktariException <span class="op">{</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>miktar <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="fu">NegatifParaMiktariException</span><span class="op">(</span><span class="st">&quot;Negatif para miktarı&quot;</span><span class="op">,</span> miktar<span class="op">);</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>miktar <span class="op">&gt;</span> bakiye<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="fu">YetersizBakiyeException</span><span class="op">(</span><span class="st">&quot;Yetersiz bakiye&quot;</span><span class="op">,</span> bakiye<span class="op">,</span> miktar<span class="op">);</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>        bakiye <span class="op">-=</span> miktar<span class="op">;</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Para çekme başarılı. Kalan bakiye: &quot;</span> <span class="op">+</span> bakiye<span class="op">);</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">paraYatir</span><span class="op">(</span><span class="dt">double</span> miktar<span class="op">)</span> <span class="kw">throws</span> NegatifParaMiktariException <span class="op">{</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>miktar <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>            <span class="cf">throw</span> <span class="kw">new</span> <span class="fu">NegatifParaMiktariException</span><span class="op">(</span><span class="st">&quot;Negatif para miktarı&quot;</span><span class="op">,</span> miktar<span class="op">);</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>        bakiye <span class="op">+=</span> miktar<span class="op">;</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Para yatırma başarılı. Yeni bakiye: &quot;</span> <span class="op">+</span> bakiye<span class="op">);</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> <span class="fu">getBakiye</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> bakiye<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getHesapNumarasi</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> hesapNumarasi<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> BankaHesapOrnegi <span class="op">{</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>            BankaHesap hesap <span class="op">=</span> <span class="kw">new</span> <span class="fu">BankaHesap</span><span class="op">(</span><span class="st">&quot;123456&quot;</span><span class="op">,</span> <span class="fl">1000.0</span><span class="op">);</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hesap oluşturuldu: &quot;</span> <span class="op">+</span> hesap<span class="op">.</span><span class="fu">getHesapNumarasi</span><span class="op">());</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>                hesap<span class="op">.</span><span class="fu">paraCek</span><span class="op">(</span><span class="dv">1500</span><span class="op">);</span> <span class="co">// Yetersiz bakiye</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>YetersizBakiyeException e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hata: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Mevcut bakiye: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMevcutBakiye</span><span class="op">());</span></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İstenen miktar: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getIstenenMiktar</span><span class="op">());</span></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a>                hesap<span class="op">.</span><span class="fu">paraYatir</span><span class="op">(-</span><span class="dv">100</span><span class="op">);</span> <span class="co">// Negatif miktar</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>NegatifParaMiktariException e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hata: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Girilen miktar: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMiktar</span><span class="op">());</span></span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>            hesap<span class="op">.</span><span class="fu">paraCek</span><span class="op">(</span><span class="dv">500</span><span class="op">);</span> <span class="co">// Başarılı işlem</span></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Güncel bakiye: &quot;</span> <span class="op">+</span> hesap<span class="op">.</span><span class="fu">getBakiye</span><span class="op">());</span></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>GecersizHesapNumarasiException e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Kritik hata: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hatalı hesap: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getHesapNumarasi</span><span class="op">());</span></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span>YetersizBakiyeException <span class="op">|</span> NegatifParaMiktariException e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İşlem hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="değerlendirme-3" class="level3">
+<h3>Değerlendirme</h3>
+<p>Özel istisna kullanmanın avantajları ve dezavantajları:</p>
+<p><strong>Avantajlar:</strong>
+- <strong>Anlamlı hata mesajları:</strong> Hatanın kaynağı ve detayları hakkında daha fazla bilgi sağlar
+- <strong>Kod okunabilirliği:</strong> Hangi hata durumlarının beklendiğini açıkça belirtir
+- <strong>Hata ayıklama:</strong> Hatalı değerler ve durumlar hakkında ek bilgi taşır
+- <strong>API tasarımı:</strong> Kullanıcılara hangi hata durumlarıyla karşılaşabileceklerini gösterir</p>
+<p><strong>Dezavantajlar:</strong>
+- <strong>Kod karmaşıklığı:</strong> Çok fazla özel istisna sınıfı oluşturmak kodu karmaşık hale getirebilir
+- <strong>Performans:</strong> İstisna oluşturma ve yakalama işlemleri maliyetlidir
+- <strong>Bakım zorluğu:</strong> Her yeni özellik için yeni istisna sınıfları eklemek gerekebilir</p>
+<blockquote>
+<p><strong>Öneri:</strong> Özel istisna sınıflarını yalnızca standart istisnalar yeterli olmadığında kullanın. Aşırı kullanımdan kaçının.</p>
+</blockquote>
+<hr />
+</section>
+</section>
+<section id="ileri-düzey-hata-yönetim-stratejileri" class="level2">
+<h2>15.5 İleri Düzey Hata Yönetim Stratejileri</h2>
+<section id="try-with-resources-java-7" class="level3">
+<h3>try-with-resources (Java 7+)</h3>
+<p>Java 7 ile gelen <code>try-with-resources</code> özelliği, <code>AutoCloseable</code> arayüzünü uygulayan kaynakların otomatik olarak kapatılmasını sağlar. Bu özellik, <code>finally</code> bloğunda kaynak kapatma ihtiyacını ortadan kaldırır.</p>
+<p><strong>Sözdizimi:</strong>
+<!-- CODE_META
+id: bolum-15_kod01
+chapter_id: bolum-15
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">(</span>Kaynak kaynak <span class="op">=</span> <span class="kw">new</span> <span class="fu">Kaynak</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Kaynak kullanımı</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">Exception</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hata yönetimi</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="istisna-zincirleme-exception-chaining" class="level3">
+<h3>İstisna Zincirleme (Exception Chaining)</h3>
+<p>Bir istisna yakalandığında, yeni bir istisna oluşturup orijinal istisnayı neden olarak eklemeye <strong>istisna zincirleme</strong> denir. Bu sayede, hata kaynağına kadar izlenebilir.</p>
+<p><strong>Kullanım:</strong>
+<!-- CODE_META
+id: bolum-15_kod02
+chapter_id: bolum-15
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Alt seviye işlem</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">SQLException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Exception</span><span class="op">(</span><span class="st">&quot;Üst seviye hata&quot;</span><span class="op">,</span> e<span class="op">);</span> <span class="co">// e orijinal istisna</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="çoklu-yakalama-multi-catch-java-7" class="level3">
+<h3>Çoklu Yakalama (Multi-catch, Java 7+)</h3>
+<p>Birden fazla istisna türünü aynı <code>catch</code> bloğunda yakalamak için kullanılır. Kod tekrarını azaltır ve okunabilirliği artırır.</p>
+<p><strong>Kullanım:</strong>
+<!-- CODE_META
+id: bolum-15_kod03
+chapter_id: bolum-15
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// İşlemler</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> <span class="op">|</span> <span class="bu">SQLException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Her iki istisna türü için ortak işlem</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="istisna-yutma-exception-swallowing-tehlikesi" class="level3">
+<h3>İstisna Yutma (Exception Swallowing) Tehlikesi</h3>
+<p><strong>İstisna yutma</strong>, bir istisnayı yakalayıp hiçbir işlem yapmadan geçiştirmektir. Bu, hataların gizlenmesine ve programın beklenmeyen şekilde davranmasına neden olur.</p>
+<p><strong>Kötü örnek:</strong>
+<!-- CODE_META
+id: bolum-15_kod04
+chapter_id: bolum-15
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// İşlem</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">Exception</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hiçbir şey yapma - istisna yutuldu!</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="modern-java-özellikleri-ile-hata-yönetimi" class="level3">
+<h3>Modern Java Özellikleri ile Hata Yönetimi</h3>
+<p>Aşağıdaki örnek, tüm ileri düzey teknikleri bir arada göstermektedir:</p>
+<!-- CODE_META: IleriHataYonetimi.java - İleri düzey hata yönetimi -->
+<p>```java
+import java.io.<em>;
+import java.sql.</em>;</p>
+<p>public class IleriHataYonetimi {</p>
+<pre><code>// try-with-resources ile otomatik kaynak yönetimi
+public static void dosyaOkuModern() {
+    try (BufferedReader reader = new BufferedReader(new FileReader(&quot;dosya.txt&quot;))) {
+        String satir;
+        while ((satir = reader.readLine()) != null) {
+            System.out.println(satir);
+        }
+    } catch (IOException e) {
+        System.err.println(&quot;Dosya okuma hatası: &quot; + e.getMessage());
+        // Hata loglama
+        e.printStackTrace();
+    }
+}
+
+// Multi-catch ile çoklu istisna yakalama
+public static void cokluIstisnaYakalama() {
+    try {
+        // Bazı işlemler
+        int[] dizi = new int[5];
+        dizi[10] = 30 / 0; // Hem ArithmeticException hem ArrayIndexOutOfBoundsException
+    } catch (ArithmeticException | ArrayIndexOutOfBoundsException e) {
+        System.out.println(&quot;Matematiksel veya dizi hatası:</code></pre>
+</section>
+</section>
+</section>
+</body>
+</html>

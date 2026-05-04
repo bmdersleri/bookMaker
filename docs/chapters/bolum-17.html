@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>Cok Guduklu Programlama</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Cok Guduklu Programlama</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#bölüm-17-sinif-nesne-constructor-ve-kapsulleme" id="toc-bölüm-17-sinif-nesne-constructor-ve-kapsulleme">Bölüm 17: Sinif, Nesne, Constructor ve Kapsulleme</a>
+<ul>
+<li><a href="#giriş-nesne-yönelimli-programlamanın-temelleri" id="toc-giriş-nesne-yönelimli-programlamanın-temelleri">17.1 Giriş: Nesne Yönelimli Programlamanın Temelleri</a></li>
+<li><a href="#sınıf-tanımlama" id="toc-sınıf-tanımlama">17.2 Sınıf Tanımlama</a></li>
+<li><a href="#nesne-oluşturma" id="toc-nesne-oluşturma">17.3 Nesne Oluşturma</a></li>
+<li><a href="#constructor-yapıcı-metot" id="toc-constructor-yapıcı-metot">17.4 Constructor (Yapıcı Metot)</a></li>
+<li><a href="#erişim-belirteçleri-access-modifiers-ve-kapsülleme" id="toc-erişim-belirteçleri-access-modifiers-ve-kapsülleme">17.5 Erişim Belirteçleri (Access Modifiers) ve Kapsülleme</a></li>
+<li><a href="#uygulamalı-örnek-bankahesabi-sınıfı" id="toc-uygulamalı-örnek-bankahesabi-sınıfı">17.6 Uygulamalı Örnek: BankaHesabi Sınıfı</a></li>
+<li><a href="#özet" id="toc-özet">17.7 Özet</a></li>
+<li><a href="#terim-sözlüğü" id="toc-terim-sözlüğü">17.8 Terim Sözlüğü</a></li>
+<li><a href="#sorular-ve-alıştırmalar" id="toc-sorular-ve-alıştırmalar">17.9 Sorular ve Alıştırmalar</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="bölüm-17-sinif-nesne-constructor-ve-kapsulleme" class="level1">
+<h1>Bölüm 17: Sinif, Nesne, Constructor ve Kapsulleme</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Sınıf, Nesne, Constructor ve Kapsülleme&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Java&#39;da Nesne Yönelimli Programlamanın Temelleri&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Teknik Kitap Yazarı&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> 2024-01-15</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lang</span><span class="kw">:</span><span class="at"> tr</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">subject</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Java Programlama&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">keywords</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">Java</span><span class="kw">,</span><span class="at"> OOP</span><span class="kw">,</span><span class="at"> sınıf</span><span class="kw">,</span><span class="at"> nesne</span><span class="kw">,</span><span class="at"> constructor</span><span class="kw">,</span><span class="at"> kapsülleme</span><span class="kw">,</span><span class="at"> getter</span><span class="kw">,</span><span class="at"> setter</span><span class="kw">,</span><span class="at"> erişim belirteci</span><span class="kw">]</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">abstract</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  Bu bölümde, Java&#39;da nesne yönelimli programlamanın (OOP) temel yapı taşları olan sınıf ve nesne kavramlarını, constructor (yapıcı metot) çeşitlerini, this anahtar kelimesini, erişim belirteçlerini ve kapsülleme (encapsulation) prensibini öğreneceksiniz. Gerçek hayat örnekleri ve uygulamalı kod parçacıkları ile konuyu pekiştireceksiniz.</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+<section id="giriş-nesne-yönelimli-programlamanın-temelleri" class="level2">
+<h2>17.1 Giriş: Nesne Yönelimli Programlamanın Temelleri</h2>
+<p>Nesne Yönelimli Programlama (OOP), yazılım geliştirmede devrim yaratan bir paradigmadır. Java, OOP prensiplerini tam olarak destekleyen bir dildir. Bu bölümde OOP’nin dört temel prensibinden ikisi olan <strong>kapsülleme</strong> ve <strong>soyutlama</strong> üzerinde duracağız.</p>
+<section id="neden-sınıf-ve-nesne" class="level3">
+<h3>1.1. Neden Sınıf ve Nesne?</h3>
+<p>Bir yazılım projesi düşünün: bir okul kayıt sistemi. Öğrenciler, öğretmenler, dersler, notlar… Bunların her biri birer <strong>nesne</strong> olarak modellenebilir. Bir öğrencinin adı, soyadı, numarası, notları vardır. Bunlar <strong>özellikler</strong> (alanlar/fields). Ayrıca öğrenci ders alabilir, not girebilir, mezun olabilir. Bunlar da <strong>davranışlar</strong> (metotlar).</p>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> Sınıf, bir “kalıp” veya “şablon” gibidir. Nesne ise bu kalıptan üretilen somut bir varlıktır. Örneğin, “İnsan” bir sınıftır; “Ali” ise bir nesnedir.</p>
+</blockquote>
+</section>
+<section id="gerçek-hayattan-benzetmeler" class="level3">
+<h3>1.2. Gerçek Hayattan Benzetmeler</h3>
+<table>
+<thead>
+<tr>
+<th>Gerçek Hayat</th>
+<th>Java’da Karşılığı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Araba tasarım çizimi</td>
+<td>Sınıf (Class)</td>
+</tr>
+<tr>
+<td>Üretilen her bir araba</td>
+<td>Nesne (Object)</td>
+</tr>
+<tr>
+<td>Arabanın rengi, modeli</td>
+<td>Alan (Field)</td>
+</tr>
+<tr>
+<td>Arabanın hızlanması, durması</td>
+<td>Metot (Method)</td>
+</tr>
+</tbody>
+</table>
+<p>Bu bölüm boyunca, bu benzetmeleri kullanarak kavramları somutlaştıracağız.</p>
+</section>
+</section>
+<section id="sınıf-tanımlama" class="level2">
+<h2>17.2 Sınıf Tanımlama</h2>
+<p>Sınıf, bir nesnenin blueprint’idir (plan/tasarım). Java’da bir sınıf tanımlamak için <code>class</code> anahtar kelimesi kullanılır.</p>
+<section id="sınıfın-yapısı" class="level3">
+<h3>2.1. Sınıfın Yapısı</h3>
+<!-- CODE_META
+id: bolum-17_kod01
+chapter_id: bolum-17
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Kodu çalıştırmak için: javac Ogrenci.java &amp;&amp; java Ogrenci</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Ogrenci <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Alanlar (Fields) - Özellikler</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> ad<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> soyad<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> numara<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Metotlar (Methods) - Davranışlar</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">bilgiGoster</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Ad: &quot;</span> <span class="op">+</span> ad <span class="op">+</span> <span class="st">&quot;, Soyad: &quot;</span> <span class="op">+</span> soyad <span class="op">+</span> <span class="st">&quot;, No: &quot;</span> <span class="op">+</span> numara<span class="op">);</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="alanlar-ve-metotlar" class="level3">
+<h3>2.2. Alanlar ve Metotlar</h3>
+<ul>
+<li><strong>Alanlar (Fields):</strong> Sınıfın durumunu (state) tutan değişkenlerdir. Her nesne bu alanların kendi kopyasına sahiptir.</li>
+<li><strong>Metotlar (Methods):</strong> Sınıfın davranışlarını tanımlar.</li>
+</ul>
+</section>
+<section id="ilk-sınıf-örneği-ogrenci" class="level3">
+<h3>2.3. İlk Sınıf Örneği: Ogrenci</h3>
+<p>Yukarıdaki <code>Ogrenci</code> sınıfı, bir öğrencinin temel özelliklerini ve davranışlarını tanımlar. Ancak henüz bu sınıftan bir nesne oluşturmadık.</p>
+<blockquote>
+<p><strong>Önemli:</strong> Sınıf tek başına çalıştırılabilir bir program değildir. <code>main</code> metodu içermez. Nesne oluşturmak için başka bir sınıfta (veya aynı sınıfta) <code>main</code> metodu kullanılır.</p>
+</blockquote>
+</section>
+</section>
+<section id="nesne-oluşturma" class="level2">
+<h2>17.3 Nesne Oluşturma</h2>
+<p>Bir sınıftan nesne (örnek/instance) oluşturmak için <code>new</code> anahtar kelimesi kullanılır.</p>
+<section id="new-anahtar-kelimesi" class="level3">
+<h3>3.1. new Anahtar Kelimesi</h3>
+<p><code>new</code> operatörü, bellekte (heap) yeni bir nesne için yer ayırır ve constructor’ı çağırarak nesneyi başlatır.</p>
+<!-- CODE_META
+id: bolum-17_kod02
+chapter_id: bolum-17
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Ogrenci ogr1 <span class="op">=</span> <span class="kw">new</span> <span class="fu">Ogrenci</span><span class="op">();</span></span></code></pre></div>
+<p>Burada:
+- <code>Ogrenci</code> : Referans tipi (sınıf adı)
+- <code>ogr1</code> : Referans değişkeni (nesneyi işaret eder)
+- <code>new Ogrenci()</code> : Yeni bir Ogrenci nesnesi oluşturur</p>
+</section>
+<section id="referans-değişkenleri" class="level3">
+<h3>3.2. Referans Değişkenleri</h3>
+<p>Referans değişkeni, bellekteki nesnenin adresini tutar. Aslında nesnenin kendisi değil, ona erişim sağlayan bir “uzaktan kumanda” gibidir.</p>
+<!-- CODE_META
+id: bolum-17_kod03
+chapter_id: bolum-17
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Ogrenci ogr1 <span class="op">=</span> <span class="kw">new</span> <span class="fu">Ogrenci</span><span class="op">();</span> <span class="co">// ogr1 bir referans</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Ogrenci ogr2 <span class="op">=</span> ogr1<span class="op">;</span> <span class="co">// ogr2 de aynı nesneyi işaret eder</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>ogr1<span class="op">.</span><span class="fu">ad</span> <span class="op">=</span> <span class="st">&quot;Ahmet&quot;</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>ogr2<span class="op">.</span><span class="fu">ad</span><span class="op">);</span> <span class="co">// &quot;Ahmet&quot; yazdırır (aynı nesne!)</span></span></code></pre></div>
+</section>
+<section id="nesne-üyelerine-erişim-nokta-operatörü" class="level3">
+<h3>3.3. Nesne Üyelerine Erişim (Nokta Operatörü)</h3>
+<p>Nesnenin alanlarına ve metotlarına erişmek için nokta (.) operatörü kullanılır.</p>
+<!-- CODE_META
+id: bolum-17_kod04
+chapter_id: bolum-17
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya adı: TestOgrenci.java</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TestOgrenci <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        Ogrenci ogr1 <span class="op">=</span> <span class="kw">new</span> <span class="fu">Ogrenci</span><span class="op">();</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        ogr1<span class="op">.</span><span class="fu">ad</span> <span class="op">=</span> <span class="st">&quot;Ayşe&quot;</span><span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        ogr1<span class="op">.</span><span class="fu">soyad</span> <span class="op">=</span> <span class="st">&quot;Yılmaz&quot;</span><span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        ogr1<span class="op">.</span><span class="fu">numara</span> <span class="op">=</span> <span class="dv">1234</span><span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        ogr1<span class="op">.</span><span class="fu">bilgiGoster</span><span class="op">();</span> <span class="co">// Çıktı: Ad: Ayşe, Soyad: Yılmaz, No: 1234</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+</section>
+<section id="constructor-yapıcı-metot" class="level2">
+<h2>17.4 Constructor (Yapıcı Metot)</h2>
+<p>Constructor, nesne oluşturulurken otomatik olarak çağrılan özel bir metottur. Adı sınıf adıyla aynı olmalıdır ve geri dönüş tipi <strong>olmaz</strong> (void bile değil!).</p>
+<section id="constructor-nedir" class="level3">
+<h3>4.1. Constructor Nedir?</h3>
+<p>Constructor’ın temel görevi, nesneyi başlatmaktır (initialization). Genellikle alanlara ilk değerleri atamak için kullanılır.</p>
+</section>
+<section id="default-constructor-varsayılan-yapıcı" class="level3">
+<h3>4.2. Default Constructor (Varsayılan Yapıcı)</h3>
+<p>Eğer bir sınıfta hiç constructor tanımlanmazsa, Java derleyicisi otomatik olarak <strong>parametresiz bir default constructor</strong> ekler. Bu constructor hiçbir işlem yapmaz (boş gövde).</p>
+<!-- CODE_META
+id: bolum-17_kod05
+chapter_id: bolum-17
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya adı: Araba.java</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Araba <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> marka<span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> yil<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Default constructor (derleyici tarafından eklenir)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// public Araba() { }</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="parametreli-constructor" class="level3">
+<h3>4.3. Parametreli Constructor</h3>
+<p>Kendi constructor’ınızı tanımlayarak nesneyi oluştururken alanlara değer atayabilirsiniz.</p>
+<!-- CODE_META
+id: bolum-17_kod06
+chapter_id: bolum-17
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya adı: Araba.java</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Araba <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> marka<span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> yil<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Parametreli constructor</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Araba</span><span class="op">(</span><span class="bu">String</span> m<span class="op">,</span> <span class="dt">int</span> y<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        marka <span class="op">=</span> m<span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        yil <span class="op">=</span> y<span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>Pedagojik Uyarı:</strong> Kendi constructor’ınızı tanımladığınızda, default constructor <strong>otomatik olarak eklenmez</strong>. Eğer parametresiz constructor’a da ihtiyacınız varsa, onu da açıkça tanımlamalısınız.</p>
+</blockquote>
+</section>
+<section id="constructor-overloading-aşırı-yükleme" class="level3">
+<h3>4.4. Constructor Overloading (Aşırı Yükleme)</h3>
+<p>Tıpkı metotlar gibi, constructor’lar da aşırı yüklenebilir. Farklı parametre listelerine sahip birden fazla constructor tanımlayabilirsiniz.</p>
+<!-- CODE_META
+id: bolum-17_kod07
+chapter_id: bolum-17
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya adı: Araba.java</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Araba <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> marka<span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> yil<span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> renk<span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Constructor 1: Parametresiz</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Araba</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        marka <span class="op">=</span> <span class="st">&quot;Bilinmiyor&quot;</span><span class="op">;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        yil <span class="op">=</span> <span class="dv">2024</span><span class="op">;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        renk <span class="op">=</span> <span class="st">&quot;Beyaz&quot;</span><span class="op">;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Constructor 2: İki parametreli</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Araba</span><span class="op">(</span><span class="bu">String</span> m<span class="op">,</span> <span class="dt">int</span> y<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        marka <span class="op">=</span> m<span class="op">;</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        yil <span class="op">=</span> y<span class="op">;</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        renk <span class="op">=</span> <span class="st">&quot;Beyaz&quot;</span><span class="op">;</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Constructor 3: Üç parametreli</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Araba</span><span class="op">(</span><span class="bu">String</span> m<span class="op">,</span> <span class="dt">int</span> y<span class="op">,</span> <span class="bu">String</span> r<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        marka <span class="op">=</span> m<span class="op">;</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        yil <span class="op">=</span> y<span class="op">;</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        renk <span class="op">=</span> r<span class="op">;</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="this-anahtar-kelimesi" class="level3">
+<h3>4.5. this Anahtar Kelimesi</h3>
+<p><code>this</code> anahtar kelimesi, <strong>mevcut nesneyi</strong> (current object) referans eder. İki temel kullanımı vardır:</p>
+<section id="alan-gölgeleme-shadowing-sorunu" class="level4">
+<h4>4.5.1. Alan-Gölgeleme (Shadowing) Sorunu</h4>
+<p>Parametre isimleri ile alan isimleri aynı olduğunda, alan isimleri gölgelenir. <code>this</code> kullanarak alanlara erişiriz.</p>
+<!-- CODE_META
+id: bolum-17_kod08
+chapter_id: bolum-17
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya adı: Araba.java</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Araba <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> marka<span class="op">;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> yil<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Araba</span><span class="op">(</span><span class="bu">String</span> marka<span class="op">,</span> <span class="dt">int</span> yil<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// marka = marka; // HATA! Parametre kendine atanır, alan değişmez</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">marka</span> <span class="op">=</span> marka<span class="op">;</span> <span class="co">// this.marka alanı, sağdaki parametreyi işaret eder</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">yil</span> <span class="op">=</span> yil<span class="op">;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="diğer-constructorı-çağırma" class="level4">
+<h4>4.5.2. Diğer Constructor’ı Çağırma</h4>
+<p>Bir constructor içinden, aynı sınıfın başka bir constructor’ını <code>this(...)</code> ile çağırabiliriz. Bu, kod tekrarını önler.</p>
+<!-- CODE_META
+id: bolum-17_kod09
+chapter_id: bolum-17
+kind: example
+title: "Kod 9"
+file: "Ornek08.java"
+mainClass: Ornek08
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb10"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya adı: Araba.java</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Araba <span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> marka<span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> yil<span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> renk<span class="op">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Araba</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">(</span><span class="st">&quot;Bilinmiyor&quot;</span><span class="op">,</span> <span class="dv">2024</span><span class="op">,</span> <span class="st">&quot;Beyaz&quot;</span><span class="op">);</span> <span class="co">// 3 parametreli constructor&#39;ı çağır</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Araba</span><span class="op">(</span><span class="bu">String</span> marka<span class="op">,</span> <span class="dt">int</span> yil<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">(</span>marka<span class="op">,</span> yil<span class="op">,</span> <span class="st">&quot;Beyaz&quot;</span><span class="op">);</span> <span class="co">// 3 parametreli constructor&#39;ı çağır</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Araba</span><span class="op">(</span><span class="bu">String</span> marka<span class="op">,</span> <span class="dt">int</span> yil<span class="op">,</span> <span class="bu">String</span> renk<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">marka</span> <span class="op">=</span> marka<span class="op">;</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">yil</span> <span class="op">=</span> yil<span class="op">;</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">renk</span> <span class="op">=</span> renk<span class="op">;</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>Önemli Kural:</strong> <code>this(...)</code> çağrısı, constructor’ın <strong>ilk satırı</strong> olmalıdır. Aksi takdirde derleme hatası alırsınız.</p>
+</blockquote>
+</section>
+</section>
+</section>
+<section id="erişim-belirteçleri-access-modifiers-ve-kapsülleme" class="level2">
+<h2>17.5 Erişim Belirteçleri (Access Modifiers) ve Kapsülleme</h2>
+<section id="erişim-belirteçleri" class="level3">
+<h3>5.1. Erişim Belirteçleri</h3>
+<p>Java’da dört erişim seviyesi vardır:</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Belirteç</th>
+<th>Aynı Sınıf</th>
+<th>Aynı Paket</th>
+<th>Alt Sınıf (Farklı Paket)</th>
+<th>Herhangi Bir Sınıf</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>private</code></td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td><code>default</code> (belirteç yok)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td><code>protected</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td><code>public</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="kapsülleme-encapsulation-ilkesi" class="level3">
+<h3>5.2. Kapsülleme (Encapsulation) İlkesi</h3>
+<p>Kapsülleme, verileri (alanları) ve bu veriler üzerinde işlem yapan metotları bir arada tutma ve dışarıdan doğrudan erişimi kısıtlama prensibidir.</p>
+<blockquote>
+<p><strong>Temel Kural:</strong> Alanlar <code>private</code> yapılır, bu alanlara erişim için <code>public</code> getter ve setter metotları sağlanır.</p>
+</blockquote>
+</section>
+<section id="getter-ve-setter-metotları" class="level3">
+<h3>5.3. Getter ve Setter Metotları</h3>
+<ul>
+<li><strong>Getter:</strong> Alanın değerini döndürür. Adlandırma: <code>getAlanAdi()</code></li>
+<li><strong>Setter:</strong> Alanın değerini ayarlar. Adlandırma: <code>setAlanAdi(veriTipi deger)</code></li>
+</ul>
+<!-- CODE_META
+id: bolum-17_kod10
+chapter_id: bolum-17
+kind: example
+title: "Kod 10"
+file: "Ornek09.java"
+mainClass: Ornek09
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya adı: Kisi.java</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Kisi <span class="op">{</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> ad<span class="op">;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> yas<span class="op">;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Getter</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getAd</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ad<span class="op">;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Setter</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">setAd</span><span class="op">(</span><span class="bu">String</span> ad<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">ad</span> <span class="op">=</span> ad<span class="op">;</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">getYas</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> yas<span class="op">;</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">setYas</span><span class="op">(</span><span class="dt">int</span> yas<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>yas <span class="op">&gt;=</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> yas <span class="op">&lt;=</span> <span class="dv">150</span><span class="op">)</span> <span class="op">{</span> <span class="co">// Veri doğrulama</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span><span class="op">.</span><span class="fu">yas</span> <span class="op">=</span> yas<span class="op">;</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Geçersiz yaş: &quot;</span> <span class="op">+</span> yas<span class="op">);</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="neden-kapsülleme" class="level3">
+<h3>5.4. Neden Kapsülleme?</h3>
+<ol type="1">
+<li><strong>Veri Bütünlüğü:</strong> Setter içinde doğrulama yaparak geçersiz değerlerin atanmasını engelleyebiliriz.</li>
+<li><strong>Güvenlik:</strong> Hassas verilere doğrudan erişim engellenir.</li>
+<li><strong>Bakım Kolaylığı:</strong> İç yapıyı değiştirdiğimizde dışarıdaki kodu etkilemeden yapabiliriz.</li>
+<li><strong>Soyutlama:</strong> Kullanıcı, iç detayları bilmeden sadece public arayüzü kullanır.</li>
+</ol>
+</section>
+</section>
+<section id="uygulamalı-örnek-bankahesabi-sınıfı" class="level2">
+<h2>17.6 Uygulamalı Örnek: BankaHesabi Sınıfı</h2>
+<p>Şimdi öğrendiklerimizi birleştirerek kapsamlı bir örnek yapalım.</p>
+<!-- CODE_META
+id: bolum-17_kod11
+chapter_id: bolum-17
+kind: example
+title: "Kod 11"
+file: "Ornek10.java"
+mainClass: Ornek10
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb12"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya adı: BankaHesabi.java</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> BankaHesabi <span class="op">{</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Private alanlar - kapsülleme</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> hesapNo<span class="op">;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> musteriAdi<span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> bakiye<span class="op">;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Constructor</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">BankaHesabi</span><span class="op">(</span><span class="bu">String</span> hesapNo<span class="op">,</span> <span class="bu">String</span> musteriAdi<span class="op">,</span> <span class="dt">double</span> ilkBakiye<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">hesapNo</span> <span class="op">=</span> hesapNo<span class="op">;</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">musteriAdi</span> <span class="op">=</span> musteriAdi<span class="op">;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>ilkBakiye <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span><span class="op">.</span><span class="fu">bakiye</span> <span class="op">=</span> ilkBakiye<span class="op">;</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Başlangıç bakiyesi negatif olamaz! Bakiye 0 olarak ayarlandı.&quot;</span><span class="op">);</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span><span class="op">.</span><span class="fu">bakiye</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Getter metotları (sadece okuma)</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getHesapNo</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> hesapNo<span class="op">;</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getMusteriAdi</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> musteriAdi<span class="op">;</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> <span class="fu">getBakiye</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> bakiye<span class="op">;</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Setter (sadece musteriAdi için - hesapNo ve bakiye doğrudan değiştirilmemeli)</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">setMusteriAdi</span><span class="op">(</span><span class="bu">String</span> musteriAdi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">musteriAdi</span> <span class="op">=</span> musteriAdi<span class="op">;</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">// İşlem metotları</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">paraYatir</span><span class="op">(</span><span class="dt">double</span> miktar<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>miktar <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>            bakiye <span class="op">+=</span> miktar<span class="op">;</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>miktar <span class="op">+</span> <span class="st">&quot; TL yatırıldı. Yeni bakiye: &quot;</span> <span class="op">+</span> bakiye<span class="op">);</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yatırılacak miktar pozitif olmalıdır!&quot;</span><span class="op">);</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">paraCek</span><span class="op">(</span><span class="dt">double</span> miktar<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>miktar <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> miktar <span class="op">&lt;=</span> bakiye<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>            bakiye <span class="op">-=</span> miktar<span class="op">;</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>miktar <span class="op">+</span> <span class="st">&quot; TL çekildi. Yeni bakiye: &quot;</span> <span class="op">+</span> bakiye<span class="op">);</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>miktar <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Çekilecek miktar pozitif olmalıdır!&quot;</span><span class="op">);</span></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yetersiz bakiye! Mevcut bakiye: &quot;</span> <span class="op">+</span> bakiye<span class="op">);</span></span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META
+id: bolum-17_kod12
+chapter_id: bolum-17
+kind: example
+title: "Kod 12"
+file: "Ornek11.java"
+mainClass: Ornek11
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb13"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dosya adı: TestBanka.java</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TestBanka <span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Nesne oluşturma</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        BankaHesabi hesap <span class="op">=</span> <span class="kw">new</span> <span class="fu">BankaHesabi</span><span class="op">(</span><span class="st">&quot;TR123456&quot;</span><span class="op">,</span> <span class="st">&quot;Ali Veli&quot;</span><span class="op">,</span> <span class="dv">1000</span><span class="op">);</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Getter ile okuma</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hesap No: &quot;</span> <span class="op">+</span> hesap<span class="op">.</span><span class="fu">getHesapNo</span><span class="op">());</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Müşteri: &quot;</span> <span class="op">+</span> hesap<span class="op">.</span><span class="fu">getMusteriAdi</span><span class="op">());</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Bakiye: &quot;</span> <span class="op">+</span> hesap<span class="op">.</span><span class="fu">getBakiye</span><span class="op">());</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// İşlemler</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        hesap<span class="op">.</span><span class="fu">paraYatir</span><span class="op">(</span><span class="dv">500</span><span class="op">);</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        hesap<span class="op">.</span><span class="fu">paraCek</span><span class="op">(</span><span class="dv">200</span><span class="op">);</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        hesap<span class="op">.</span><span class="fu">paraCek</span><span class="op">(</span><span class="dv">1500</span><span class="op">);</span> <span class="co">// Yetersiz bakiye</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Direkt erişim denemesi (derleme hatası!)</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// hesap.bakiye = 1000000; // HATA: bakiye private!</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="özet" class="level2">
+<h2>17.7 Özet</h2>
+<p>Bu bölümde:
+- <strong>Sınıf</strong> kavramını ve nasıl tanımlandığını,
+- <strong>Nesne</strong> oluşturmayı (<code>new</code> anahtar kelimesi),
+- <strong>Constructor</strong> çeşitlerini (default, parametreli, overloaded),
+- <strong>this</strong> anahtar kelimesinin kullanımını (gölgeleme sorununu çözme ve constructor zincirleme),
+- <strong>Erişim belirteçlerini</strong> (public, private, protected, default),
+- <strong>Kapsülleme (Encapsulation)</strong> prensibini ve <strong>getter/setter</strong> metotlarını öğrendik.</p>
+<p>Kapsülleme, OOP’nin en önemli prensiplerinden biridir ve veri güvenliği, bakım kolaylığı ve esneklik sağlar.</p>
+</section>
+<section id="terim-sözlüğü" class="level2">
+<h2>17.8 Terim Sözlüğü</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Terim</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sınıf (Class)</strong></td>
+<td>Nesnelerin oluşturulması için bir şablon/taslak</td>
+</tr>
+<tr>
+<td><strong>Nesne (Object)</strong></td>
+<td>Sınıfın bir örneği (instance), bellekte yer kaplayan varlık</td>
+</tr>
+<tr>
+<td><strong>Constructor</strong></td>
+<td>Nesne oluşturulurken çağrılan, başlatma işlemi yapan özel metot</td>
+</tr>
+<tr>
+<td><strong>this</strong></td>
+<td>Mevcut nesneyi referans eden anahtar kelime</td>
+</tr>
+<tr>
+<td><strong>Kapsülleme</strong></td>
+<td>Verileri private yapıp, public metotlarla erişim sağlama prensibi</td>
+</tr>
+<tr>
+<td><strong>Getter</strong></td>
+<td>Private alanın değerini döndüren metot</td>
+</tr>
+<tr>
+<td><strong>Setter</strong></td>
+<td>Private alana değer atayan metot (genellikle doğrulama içerir)</td>
+</tr>
+<tr>
+<td><strong>Erişim Belirteci</strong></td>
+<td>Sınıf üyelerine erişim seviyesini belirleyen anahtar kelime</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sorular-ve-alıştırmalar" class="level2">
+<h2>17.9 Sorular ve Alıştırmalar</h2>
+<section id="sorular" class="level3">
+<h3>Sorular</h3>
+<ol type="1">
+<li>Sınıf ile nesne arasındaki fark nedir? Gerçek hayattan bir örnek verin.</li>
+<li>Constructor’ın metotlardan farkı nedir? (En az 2 fark söyleyin)</li>
+<li><code>this</code> anahtar kelimesi hangi durumlarda kullanılır? İki örnek verin.</li>
+<li>Kapsülleme neden önemlidir? Üç neden sıralayın.</li>
+<li><code>private</code> bir alana nasıl erişilir? Neden doğrudan erişime izin verilmez?</li>
+</ol>
+</section>
+<section id="alıştırmalar" class="level3">
+<h3>Alıştırmalar</h3>
+<p><strong>Alıştırma 1:</strong> Aşağıdaki özelliklere sahip bir <code>Kitap</code> sınıfı tasarlayın:
+- Private alanlar: <code>String isbn</code>, <code>String baslik</code>, <code>String yazar</code>, <code>double fiyat</code>
+- Parametreli constructor (tüm alanlar)
+- Getter metotları (tüm alanlar için)
+- Setter metotları (sadece <code>fiyat</code> için, fiyat 0’dan büyük olmalı)
+- <code>bilgiGoster()</code> metodu (kitap bilgilerini yazdırır)
+- Test sınıfında iki kitap nesnesi oluşturun ve metotları test edin.</p>
+<p><strong>Alıştırma 2:</strong> Aşağıdaki kodu inceleyin ve hataları bulun:</p>
+<!-- CODE_META
+id: bolum-17_kod13
+chapter_id: bolum-17
+kind: example
+title: "Kod 13"
+file: "Ornek12.java"
+mainClass: Ornek12
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb14"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Dikdortgen <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> en<span class="op">;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> boy<span class="op">;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Dikdortgen</span><span class="op">(</span><span class="dt">int</span> en<span class="op">,</span> <span class="dt">int</span> boy<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        en <span class="op">=</span> en<span class="op">;</span> <span class="co">// Hata var!</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        boy <span class="op">=</span> boy<span class="op">;</span> <span class="co">// Hata var!</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">getEn</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> en<span class="op">;</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">setEn</span><span class="op">(</span><span class="dt">int</span> en<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">en</span> <span class="op">=</span> en<span class="op">;</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Alıştırma 3:</strong> Aşağıdaki kodu inceleyin. Çıktı ne olur? Neden?</p>
+<!-- CODE_META
+id: bolum-17_kod14
+chapter_id: bolum-17
+kind: example
+title: "Kod 14"
+file: "Ornek13.java"
+mainClass: Ornek13
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb15"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Test <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> deger<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Test</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Test</span><span class="op">(</span><span class="dt">int</span> deger<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">deger</span> <span class="op">=</span> deger<span class="op">;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>        Test t <span class="op">=</span> <span class="kw">new</span> <span class="fu">Test</span><span class="op">();</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>t<span class="op">.</span><span class="fu">deger</span><span class="op">);</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Alıştırma 4 (Zor):</strong> Bir <code>Hasta</code> sınıfı tasarlayın:
+- Private alanlar: <code>int hastaNo</code>, <code>String ad</code>, <code>String soyad</code>, <code>int yas</code>, <code>String teshis</code>
+- Constructor: hastaNo, ad, soyad, yas (teshis başlangıçta “Belirlenmedi”)
+- Getter/Setter (yas için 0-120 arası doğrulama)
+- <code>teshisGuncelle(String yeniTeshis)</code> metodu
+- <code>hastaBilgisi()</code> metodu (tüm bilgileri yazdırır)
+- Test sınıfında 3 hasta oluşturun, bazılarının teşhisini güncelleyin.</p>
+</section>
+<section id="diagram-nesne-oluşturma-süreci" class="level3">
+<h3>Diagram: Nesne Oluşturma Süreci</h3>
+</section>
+<section id="diagram-kapsülleme-mimarisi" class="level3">
+<h3>Diagram: Kapsülleme Mimarisi</h3>
+<hr />
+<p><strong>Bölüm Sonu.</strong> Bir sonraki bölümde <strong>Kalıtım (Inheritance)</strong> ve <strong>Çok Biçimlilik (Polymorphism)</strong> konularını işleyeceğiz.</p>
+</section>
+</section>
+</section>
+</body>
+</html>
