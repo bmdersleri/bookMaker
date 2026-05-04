@@ -1,0 +1,11 @@
+flowchart TD
+    A[try bloğu başlar] --> B{Kod çalıştırılıyor}
+    B -->|İstisna oluştu| C[İstisna fırlatıldı]
+    B -->|İstisna oluşmadı| D[catch blokları atlanır]
+    C --> E{catch bloğu var mı?}
+    E -->|Evet| F[Uygun catch bloğu çalışır]
+    E -->|Hayır| G[İstisna yukarı fırlatılır]
+    F --> H[finally bloğu çalışır]
+    D --> H
+    G --> H
+    H --> I[Program devam eder veya sonlanır]

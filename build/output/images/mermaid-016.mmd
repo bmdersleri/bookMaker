@@ -1,0 +1,41 @@
+classDiagram
+    class Throwable {
+        +getMessage() : String
+        +printStackTrace() : void
+    }
+    class Error {
+        +Error()
+        +Error(String message)
+    }
+    class Exception {
+        +Exception()
+        +Exception(String message)
+    }
+    class RuntimeException {
+        +RuntimeException()
+        +RuntimeException(String message)
+    }
+    class IOException {
+        +IOException()
+        +IOException(String message)
+    }
+    class ArithmeticException {
+        +ArithmeticException()
+        +ArithmeticException(String message)
+    }
+    class NullPointerException {
+        +NullPointerException()
+        +NullPointerException(String message)
+    }
+    class ArrayIndexOutOfBoundsException {
+        +ArrayIndexOutOfBoundsException()
+        +ArrayIndexOutOfBoundsException(String message)
+    }
+    
+    Throwable <|-- Error
+    Throwable <|-- Exception
+    Exception <|-- RuntimeException
+    Exception <|-- IOException
+    RuntimeException <|-- ArithmeticException
+    RuntimeException <|-- NullPointerException
+    RuntimeException <|-- ArrayIndexOutOfBoundsException

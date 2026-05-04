@@ -1,0 +1,12 @@
+graph LR
+    subgraph Dış Dünya
+        A[Kullanıcı Kodu]
+    end
+    subgraph Sınıf
+        B[Public Arayüz<br/>Getter/Setter/Metotlar]
+        C[Private Alanlar<br/>Veri]
+    end
+    A -->|Erişir| B
+    B -->|Kontrol Eder| C
+    C -->|Veri Sağlar| B
+    B -->|Sonuç Döndürür| A

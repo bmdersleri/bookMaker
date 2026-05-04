@@ -1,0 +1,13 @@
+flowchart TD
+    A[Debug Baslat] --> B[Breakpoint'lere Git]
+    B --> C{Kod Calisiyor}
+    C -->|Breakpoint'te Dur| D[Degiskenleri Incele]
+    D --> E{Ne Yapmak Istersin?}
+    E -->|Step Over| F[Sonraki Satira Gec]
+    E -->|Step Into| G[Metot Icine Gir]
+    E -->|Step Out| H[Metottan Cik]
+    E -->|Resume| I[Sonraki Breakpoint'e Git]
+    F --> C
+    G --> C
+    H --> C
+    I --> J[Program Sonu]

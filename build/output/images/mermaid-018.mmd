@@ -1,0 +1,18 @@
+flowchart LR
+    A[İstisna Türleri] --> B[Checked Exception]
+    A --> C[Unchecked Exception]
+    
+    B --> D[IOException]
+    B --> E[SQLException]
+    B --> F[ClassNotFoundException]
+    
+    C --> G[RuntimeException]
+    G --> H[ArithmeticException]
+    G --> I[NullPointerException]
+    G --> J[ArrayIndexOutOfBoundsException]
+    
+    B --> K[Derleme zamanında kontrol edilir]
+    C --> L[Çalışma zamanında kontrol edilir]
+    
+    K --> M[try-catch veya throws zorunlu]
+    L --> N[try-catch veya throws isteğe bağlı]

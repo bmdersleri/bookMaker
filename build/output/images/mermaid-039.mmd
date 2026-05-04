@@ -1,0 +1,10 @@
+flowchart TD
+    A[Form Görüntüle] --> B{Kullanıcı Girdisi}
+    B --> C[Doğrulama]
+    C --> D{Geçerli mi?}
+    D -->|Evet| E[Kaydı İşle]
+    D -->|Hayır| F[Hata Mesajı Göster]
+    F --> B
+    E --> G[Başarılı Mesajı]
+    G --> H[Formu Temizle]
+    H --> B

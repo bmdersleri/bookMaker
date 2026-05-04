@@ -1,0 +1,16 @@
+classDiagram
+    class Flyable {
+        <<interface>>
+        +fly() void
+    }
+    class DefaultMethodInterface {
+        <<interface>>
+        +doSomething() void
+        +doSomethingElse() void
+    }
+    class MultiInterfaceExample {
+        +fly() void
+        +doSomething() void
+    }
+    Flyable <|.. MultiInterfaceExample
+    DefaultMethodInterface <|.. MultiInterfaceExample

@@ -1,0 +1,11 @@
+flowchart TD
+    A[Custom Exception Oluşturma] --> B{Hangi tür?}
+    B -->|Checked| C[Exception sınıfından türet]
+    B -->|Unchecked| D[RuntimeException sınıfından türet]
+    
+    C --> E[Yapıcı metotlar ekle]
+    D --> E
+    
+    E --> F[Ek bilgi alanları ekle]
+    F --> G[Getter metotları ekle]
+    G --> H[Kullanıma hazır]

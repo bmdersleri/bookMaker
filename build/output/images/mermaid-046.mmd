@@ -1,0 +1,8 @@
+graph LR
+    A[Kullanıcı Girdisi] --> B{Statement mi?}
+    B -->|Evet| C[SQL Enjeksiyon Riski]
+    B -->|Hayır| D[PreparedStatement]
+    C --> E[Veritabanı Güvenlik İhlali]
+    D --> F[Güvenli Sorgu]
+    style C fill:#f99,stroke:#333
+    style F fill:#9f9,stroke:#333

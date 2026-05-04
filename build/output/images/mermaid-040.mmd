@@ -1,0 +1,26 @@
+classDiagram
+    class JList {
+        -ListModel model
+        -ListCellRenderer renderer
+        -ListSelectionModel selectionModel
+        +setModel()
+        +setCellRenderer()
+        +addListSelectionListener()
+        +getSelectedValue()
+    }
+    
+    class DefaultListModel {
+        -Vector elements
+        +addElement()
+        +removeElement()
+        +getElementAt()
+        +getSize()
+    }
+    
+    class ListCellRenderer {
+        <<interface>>
+        +getListCellRendererComponent()
+    }
+    
+    JList --> DefaultListModel : kullanir
+    JList --> ListCellRenderer : kullanir

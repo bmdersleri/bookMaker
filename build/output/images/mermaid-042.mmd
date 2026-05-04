@@ -1,0 +1,11 @@
+flowchart TD
+    subgraph Menu Hiyerarsisi
+        MenuBar[JMenuBar] --> Menu1[JMenu: Dosya]
+        MenuBar --> Menu2[JMenu: Duzenle]
+        Menu1 --> Item1[JMenuItem: Yeni]
+        Menu1 --> Item2[JMenuItem: Ac]
+        Menu1 --> Sep[Separator]
+        Menu1 --> Item3[JMenuItem: Cikis]
+        Menu2 --> SubMenu[JMenu: Alt Menu]
+        SubMenu --> SubItem[JMenuItem: Alt Oge]
+    end

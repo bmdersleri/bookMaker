@@ -1,0 +1,14 @@
+flowchart TD
+    subgraph Serileştirme Süreci
+        A[Nesne] --> B[ObjectOutputStream]
+        B --> C[Byte Akışı]
+        C --> D[Dosya]
+    end
+    
+    subgraph Deserileştirme Süreci
+        E[Dosya] --> F[Byte Akışı]
+        F --> G[ObjectInputStream]
+        G --> H[Nesne]
+    end
+    
+    D --> E

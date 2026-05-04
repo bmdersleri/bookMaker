@@ -1,0 +1,26 @@
+flowchart TD
+    A[Proje Kökü] --> B[pom.xml / build.gradle]
+    A --> C[src/]
+    A --> D[lib/]
+    A --> E[target/ build/]
+    
+    C --> F[main/]
+    C --> G[test/]
+    
+    F --> H[java/]
+    F --> I[resources/]
+    
+    H --> J[com/example/]
+    J --> K[model/]
+    J --> L[service/]
+    J --> M[controller/]
+    J --> N[Main.java]
+    
+    I --> O[application.properties]
+    I --> P[messages.properties]
+    
+    G --> Q[java/]
+    G --> R[resources/]
+    
+    Q --> S[com/example/]
+    S --> T[service/Test.java]

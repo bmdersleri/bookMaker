@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant Kullanici
+    participant API
+    participant Veritabani
+    
+    Kullanici->>API: POST /kayit
+    API->>Veritabani: Kullanici ekle
+    Veritabani-->>API: Basarili
+    API-->>Kullanici: JWT Token
+    
+    Kullanici->>API: GET /urunler
+    API->>Veritabani: Urunleri getir
+    Veritabani-->>API: Urun listesi
+    API-->>Kullanici: JSON yanit
+    
+    Kullanici->>API: POST /siparis
+    API->>Veritabani: Siparis olustur
+    Veritabani-->>API: Siparis ID
+    API-->>Kullanici: Siparis detayi

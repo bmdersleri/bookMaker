@@ -1,0 +1,13 @@
+graph TB
+    subgraph NIO.2 Mimarisi
+        A[Path] --> B[Files Sınıfı]
+        B --> C[Okuma İşlemleri]
+        B --> D[Yazma İşlemleri]
+        B --> E[Dizin İşlemleri]
+        C --> F[readString]
+        C --> G[newBufferedReader]
+        D --> H[writeString]
+        D --> I[newBufferedWriter]
+        E --> J[list]
+        E --> K[walk]
+    end

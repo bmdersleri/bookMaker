@@ -1,0 +1,20 @@
+flowchart LR
+    A[Kod Review Başlangıcı] --> B{İsimlendirme Kuralları}
+    B -->|Uygun| C{Metod Boyutu}
+    B -->|Uygun Değil| D[Düzeltme Gerekli]
+    C -->|Küçük| E{Exception Handling}
+    C -->|Büyük| F[Refactor Gerekli]
+    E -->|Doğru| G{Test Edilebilirlik}
+    E -->|Yanlış| H[Düzeltme Gerekli]
+    G -->|Test Edilebilir| I[Dökümantasyon]
+    G -->|Test Edilemez| J[Refactor Gerekli]
+    I -->|Yeterli| K[Review Tamamlandı]
+    I -->|Yetersiz| L[Dökümantasyon Ekle]
+    
+    style A fill:#f96,stroke:#333
+    style K fill:#9f9,stroke:#333
+    style D fill:#f99,stroke:#333
+    style F fill:#f99,stroke:#333
+    style H fill:#f99,stroke:#333
+    style J fill:#f99,stroke:#333
+    style L fill:#f99,stroke:#333

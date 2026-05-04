@@ -1,0 +1,12 @@
+classDiagram
+    class Animal {
+        +String name
+        +Animal(String name)
+        +eat() void
+    }
+    class Dog {
+        +Dog(String name)
+        +bark() void
+    }
+    Animal <|-- Dog
+    Animal : +protected name

@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant Java as Java Uygulaması
+    participant JDBC as JDBC API
+    participant DB as Veritabanı
+
+    Java->>JDBC: getConnection()
+    JDBC->>DB: Bağlantı isteği
+    DB-->>JDBC: Bağlantı onayı
+    JDBC-->>Java: Connection
+
+    Java->>JDBC: createStatement()
+    JDBC-->>Java: Statement
+
+    Java->>JDBC: executeQuery("SELECT ...")
+    JDBC->>DB: SQL sorgusu
+    DB-->>JDBC: ResultSet
+    JDBC-->>Java: ResultSet
+
+    Java->>JDBC: rs.next()
+    JDBC-->>Java: true/false
