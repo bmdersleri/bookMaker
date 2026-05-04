@@ -1,4 +1,6 @@
-"""LLM API yapılandırma yönetimi."""
+"""LLM API yapilandirma yonetimi.
+Tek model: DeepSeek v4 Flash (deepseek-chat).
+"""
 
 from __future__ import annotations
 
@@ -10,16 +12,20 @@ _CONFIG_FILE = "llm_config.json"
 
 
 class LLMConfig:
-    """LLM API anahtarları ve tercihlerini yönetir."""
+    """LLM API anahtarlari ve model tercihlerini yonetir.
+
+    Tek model destegi: tum API cagrilari ayni modeli kullanir.
+    Mevcut model: deepseek-chat (DeepSeek v4 Flash).
+    """
 
     PROVIDERS = {
-        "openai": {
-            "base_url": "https://api.openai.com/v1",
-            "models": ["gpt-4o", "gpt-4o-mini", "gpt-4", "gpt-3.5-turbo"],
-        },
         "deepseek": {
             "base_url": "https://api.deepseek.com/v1",
             "models": ["deepseek-chat", "deepseek-reasoner"],
+        },
+        "openai": {
+            "base_url": "https://api.openai.com/v1",
+            "models": ["gpt-4o", "gpt-4o-mini", "gpt-4", "gpt-3.5-turbo"],
         },
         "anthropic": {
             "base_url": "https://api.anthropic.com/v1",
@@ -38,15 +44,28 @@ class LLMConfig:
         p = self._config_path()
         if p.exists():
             try:
-                return json.loads(p.read_text(encoding="utf-8"))
+                raw = json.loads(p.read_text(encoding="utf-8"))
+                # Eski format destegi: [{"model":"..."}] veya {"model":"..."}
+                if isinstance(raw, list):
+                    raw = raw[0] if raw else {}
+                if isinstance(raw, dict):
+                    # Geriye uyum: eski seed_model/enrich_model varsa model'den oku
+                    if "model" not in raw:
+                        raw["model"] = raw.get("seed_model", "deepseek-chat")
+                    return raw
             except (json.JSONDecodeError, OSError):
                 pass
-        return {"provider": "", "api_key": "", "model": ""}
+        return {"provider": "", "api_key": "", "model": "deepseek-chat"}
 
     def save(self) -> None:
         self._config_path().write_text(
-            json.dumps(self._data, indent=2, ensure_ascii=False), encoding="utf-8"
+            json.dumps(self._data, indent=2, ensure_ascii=False),
+            encoding="utf-8",
         )
+
+    # ----------------------------------------------------------
+    # TEMEL BILGILER
+    # ----------------------------------------------------------
 
     @property
     def provider(self) -> str:
@@ -71,21 +90,35 @@ class LLMConfig:
         self.save()
 
     @property
+    def base_url(self) -> str:
+        p = self.provider
+        return self.PROVIDERS.get(p, {}).get("base_url", "")
+
+    def is_configured(self) -> bool:
+        return bool(self.provider and self.api_key)
+
+    # ----------------------------------------------------------
+    # MODEL ADI (Tek model)
+    # ----------------------------------------------------------
+    #
+    # Ayarlanmazsa varsayilan: deepseek-chat (DeepSeek v4 Flash)
+    # Ornek llm_config.json:
+    #   { "provider": "deepseek", "api_key": "...", "model": "deepseek-chat" }
+    # ----------------------------------------------------------
+
+    @property
     def model(self) -> str:
-        return self._data.get("model", "")
+        """Kullanilacak model adi."""
+        return self._data.get("model", "deepseek-chat")
 
     @model.setter
     def model(self, value: str) -> None:
         self._data["model"] = value
         self.save()
 
-    @property
-    def base_url(self) -> str:
-        p = self.provider
-        return self.PROVIDERS.get(p, {}).get("base_url", "")
-
-    def is_configured(self) -> bool:
-        return bool(self.provider and self.api_key and self.model)
+    # ----------------------------------------------------------
+    # YARDIMCILAR
+    # ----------------------------------------------------------
 
     def available_providers(self) -> list[str]:
         return list(self.PROVIDERS.keys())
@@ -93,3 +126,8 @@ class LLMConfig:
     def available_models(self, provider: str | None = None) -> list[str]:
         p = provider or self.provider
         return self.PROVIDERS.get(p, {}).get("models", [])
+
+    @property
+    def ambos_configured(self) -> bool:
+        """Hem seed hem enrich modeli ayarli mi?"""
+        return bool(self.seed_model and self.enrich_model)

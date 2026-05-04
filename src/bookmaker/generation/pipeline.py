@@ -55,30 +55,26 @@ class ChapterGenerator:
         )
 
     Model stratejisi:
-        seed_model   -> Pro (DeepSeek V4 Pro)    -> ana icerik
-        enrich_model -> Flash (DeepSeek V4 Flash) -> tamamlama
+        model -> DeepSeek v4 Flash (deepseek-chat) -> tum API cagrilari
     """
 
     def __init__(self, project_root: str | Path) -> None:
         self.root = Path(project_root).resolve()
         self.config = load_config(start=self.root)
         self.llm_config = LLMConfig(self.root)
-        self.seed_client: Optional[OpenAICompatibleClient] = None
-        self.enrich_client: Optional[OpenAICompatibleClient] = None
+        self.client: Optional[OpenAICompatibleClient] = None
         self._init_clients()
 
     def _init_clients(self) -> None:
         if not self.llm_config.is_configured():
             return
         base = {"api_key": self.llm_config.api_key,
-                "base_url": self.llm_config.base_url}
-        sm = self.llm_config.seed_model or "deepseek-chat"
-        self.seed_client = OpenAICompatibleClient(**base, model=sm, timeout=300)
-        em = self.llm_config.enrich_model or sm
-        self.enrich_client = OpenAICompatibleClient(**base, model=em, timeout=60)
+                "base_url": self.llm_config.base_url,
+                "model": self.llm_config.model}
+        self.client = OpenAICompatibleClient(**base, timeout=120)
 
     def is_ready(self) -> bool:
-        return bool(self.llm_config.is_configured() and self.seed_client)
+        return bool(self.llm_config.is_configured() and self.client)
 
     # ----------------------------------------------------------
     # ASAMA 1: SEEDING (Pro model)
@@ -88,15 +84,15 @@ class ChapterGenerator:
              outline: Optional[str] = None,
              chapter_no: Optional[int] = None) -> str:
         """LLM Pro ile serbest bolum icerigi uretir."""
-        if not self.seed_client:
+        if not self.client:
             raise RuntimeError("LLM API yapilandirilmamis.")
         user_prompt = build_seed_prompt(
             chapter_title=chapter_title, concepts=concepts,
             outline=outline, chapter_no=chapter_no)
-        model_name = self.llm_config.seed_model or "varsayilan"
+        model = self.llm_config.model
         print(f"  [SEED:{model_name}] {chapter_title}...")
         t0 = time.time()
-        raw = self.seed_client.generate_text(SYSTEM_AUTHOR, user_prompt)
+        raw = self.client.generate_text(SYSTEM_AUTHOR, user_prompt)
         elapsed = time.time() - t0
         print(f"  [SEED] {len(raw.split())} kelime, {elapsed:.1f}s")
         return raw
@@ -121,7 +117,7 @@ class ChapterGenerator:
                enrich_types: Optional[list[str]] = None,
                next_chapter: Optional[str] = None) -> dict[str, str]:
         """Eksik bolumleri LLM Flash ile paralel doldurur."""
-        if not self.enrich_client:
+        if not self.client:
             print("  [WARN] Enrich client yok, fallback kullaniliyor.")
             return self._fallback_all(enrich_types, chapter_title)
 
@@ -155,7 +151,7 @@ class ChapterGenerator:
             print("  [ENRICH] Eksik yok, atlaniyor.")
             return {}
 
-        model_name = self.llm_config.enrich_model or "varsayilan"
+        model = self.llm_config.model
         print(f"  [ENRICH:{model_name}] {len(pending)} eksik, paralel...")
         enriched, start = {}, time.time()
 
@@ -189,7 +185,7 @@ class ChapterGenerator:
 
     def _call_enrich(self, user_prompt: str) -> tuple[str, float]:
         t0 = time.time()
-        c = self.enrich_client.generate_text(SYSTEM_AUTHOR, user_prompt)
+        c = self.client.generate_text(SYSTEM_AUTHOR, user_prompt)
         return c.strip(), time.time() - t0
 
     def _fallback_all(self, enrich_types, chapter_title):
@@ -238,8 +234,7 @@ class ChapterGenerator:
 
         result = {
             "chapter_id": chapter_id, "title": title,
-            "model_seed": self.llm_config.seed_model or "varsayilan",
-            "model_enrich": self.llm_config.enrich_model or "varsayilan",
+            "model": self.llm_config.model,
             "timings": {},
         }
 
@@ -284,7 +279,7 @@ class ChapterGenerator:
         result["total_time"] = round(sum(result["timings"].values()), 1)
         wc = len(final.split())
         print(f"\n  {chapter_id}: {wc} kel, {result['total_time']}s"
-              f"\n  Seed: {result['model_seed']} | Enrich: {result['model_enrich']}"
+              f"\n  Model: {result['model']}"
               f"\n  Eksik: {len(result['missing'])} -> {len(enriched)} dolduruldu")
         return result
 
@@ -314,7 +309,7 @@ class ChapterGenerator:
 
         # --- STEP 0: SPEC ---
         print(f"\n--- ADIM 0: SPEC ---")
-        spec = generate_spec(self.seed_client, title, concepts,
+        spec = generate_spec(self.client, title, concepts,
                              f"Hedef: {self.config.audience}", chapter_no)
         self._save_gen(gen_dir / "step0_spec.md", spec)
         self._save_gen(gen_dir / "prompt0_spec.txt",
@@ -324,7 +319,7 @@ class ChapterGenerator:
 
         # --- STEP 0.5: VALIDATE ---
         print(f"\n--- ADIM 0.5: DOGRULAMA ---")
-        validation = validate_spec(self.enrich_client, spec, title)
+        validation = validate_spec(self.client, spec, title)
         self._save_gen(gen_dir / "step0_validation.md", validation["notes"])
         self._save_gen(gen_dir / "prompt0_validation.txt",
             build_spec_validation_prompt(spec, title))
@@ -335,7 +330,7 @@ class ChapterGenerator:
         seed_prompt = build_seed_from_spec_prompt(spec, title)
         self._save_gen(gen_dir / "prompt1_seed.txt", seed_prompt)
         seed_start = time.time()
-        raw = self.seed_client.generate_text(SYSTEM_AUTHOR, seed_prompt)
+        raw = self.client.generate_text(SYSTEM_AUTHOR, seed_prompt)
         result["seed_time"] = round(time.time() - seed_start, 1)
         self._save_gen(gen_dir / "step1_seed.md", raw)
         print(f"  [SEED] {len(raw.split())} kelime, {result['seed_time']}s")
@@ -422,7 +417,7 @@ def _fallback_content(key: str, chapter_title: str) -> str:
 
         # --- STEP 0: SPEC ---
         print(f"\\n--- ADIM 0: SPEC ---")
-        spec = generate_spec(self.seed_client, title, concepts,
+        spec = generate_spec(self.client, title, concepts,
                              f"Hedef: {self.config.audience}", chapter_no)
         self._save(gen_dir / "step0_spec.md", spec)
         self._save(gen_dir / "prompt0_spec.txt",
@@ -431,7 +426,7 @@ def _fallback_content(key: str, chapter_title: str) -> str:
 
         # --- STEP 0.5: VALIDATE ---
         print(f"\\n--- ADIM 0.5: DOGRULAMA ---")
-        validation = validate_spec(self.enrich_client, spec, title)
+        validation = validate_spec(self.client, spec, title)
         self._save(gen_dir / "step0_validation.md", validation["notes"])
         self._save(gen_dir / "prompt0_validation.txt",
                    build_spec_validation_prompt(spec, title))
@@ -442,7 +437,7 @@ def _fallback_content(key: str, chapter_title: str) -> str:
         seed_prompt = build_seed_from_spec_prompt(spec, title)
         self._save(gen_dir / "prompt1_seed.txt", seed_prompt)
         seed_start = time.time()
-        raw = self.seed_client.generate_text(SYSTEM_AUTHOR, seed_prompt)
+        raw = self.client.generate_text(SYSTEM_AUTHOR, seed_prompt)
         result["seed_time"] = round(time.time() - seed_start, 1)
         self._save(gen_dir / "step1_seed.md", raw)
         print(f"  [SEED] {len(raw.split())} kelime, {result['seed_time']}s")
@@ -477,7 +472,7 @@ def _fallback_content(key: str, chapter_title: str) -> str:
         self._save(gen_dir / "metrics.json",
                    f'{{"chapter":"{chapter_id}","words":{wc},"time":{tt},'
                    f'"seed_time":{result.get("seed_time",0)},'
-                   f'"model":"{self.llm_config.seed_model}"}}')
+                   f'"model":"{self.llm_config.model}"}}')
         print(f"\\n  DONE {chapter_id}: {wc} kelime, {tt}s")
         print(f"  Dosyalar: {gen_dir}")
         return result
