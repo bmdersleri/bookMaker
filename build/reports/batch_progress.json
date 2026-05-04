@@ -1,0 +1,87 @@
+{
+  "3": {
+    "chapters": {
+      "bolum-17": {
+        "title": "Sinif, Nesne, Constructor ve Kapsulleme",
+        "status": "OK",
+        "chars": 19110,
+        "elapsed_s": 79.7,
+        "timestamp": "2026-05-04 07:32:54"
+      },
+      "bolum-18": {
+        "title": "Kalitim ve Interface'e Kisa On Bakis",
+        "status": "OK",
+        "chars": 19222,
+        "elapsed_s": 84.2,
+        "timestamp": "2026-05-04 07:34:18"
+      },
+      "bolum-19": {
+        "title": "GUI Programlamaya Giris ve Swing Arayuz Tasarimi",
+        "status": "OK",
+        "chars": 31789,
+        "elapsed_s": 114.4,
+        "timestamp": "2026-05-04 07:36:13"
+      },
+      "bolum-20": {
+        "title": "Temel Swing Bilesenleri, Olay Yonetimi ve Form Dogrulama",
+        "status": "OK",
+        "chars": 26826,
+        "elapsed_s": 86.4,
+        "timestamp": "2026-05-04 07:38:55"
+      },
+      "bolum-21": {
+        "title": "Liste, Tablo, Menu ve Diyaloglarla GUI Veri Sunumu",
+        "status": "OK",
+        "chars": 47019,
+        "elapsed_s": 142.5,
+        "timestamp": "2026-05-04 07:42:07"
+      }
+    }
+  },
+  "4": {
+    "chapters": {
+      "bolum-22": {
+        "title": "JDBC ile Veritabani Programlamaya Giris",
+        "status": "OK",
+        "chars": 18587,
+        "elapsed_s": 66.8,
+        "timestamp": "2026-05-04 07:43:21"
+      },
+      "bolum-23": {
+        "title": "Butunlesik Uygulama ve Final Proje Rehberi",
+        "status": "OK",
+        "chars": 19195,
+        "elapsed_s": 63.8,
+        "timestamp": "2026-05-04 07:45:22"
+      },
+      "ek-a": {
+        "title": "Sik Yapilan Java Hatalari ve Cozum Rehberi",
+        "status": "OK",
+        "chars": 24570,
+        "elapsed_s": 99.1,
+        "timestamp": "2026-05-04 07:47:01"
+      },
+      "ek-b": {
+        "title": "JavaFX'e Kisa Bakis",
+        "status": "OK",
+        "chars": 21963,
+        "elapsed_s": 84.7,
+        "timestamp": "2026-05-04 07:48:25"
+      },
+      "ek-c": {
+        "title": "Mini Proje Fikirleri ve Rubrikler",
+        "status": "OK",
+        "chars": 15629,
+        "elapsed_s": 63.1,
+        "timestamp": "2026-05-04 07:49:28"
+      },
+      "ek-d": {
+        "title": "Java Programlama Kontrol Rehberi, Sik Hatalar ve Kod Kalitesi",
+        "status": "OK",
+        "chars": 21794,
+        "elapsed_s": 84.9,
+        "timestamp": "2026-05-04 07:50:53"
+      }
+    }
+  }
+}

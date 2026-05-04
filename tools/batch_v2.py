@@ -1,19 +1,24 @@
 """
 batch_v2.py — Optimize Edilmis Kitap Bolum Uretim Scripti
 
-Iyilestirmeler (P1-P7):
-  P1: Tek script, sirali islem — bir bolum bitmeden digerine gecmez
-  P2: requests streaming — kanitlanmis calisiyor
-  P3: Retry mekanizmasi — 3 deneme, ustel backoff (5sn, 15sn, 45sn)
-  P4: Gecici dosya + atomik tasima — once .tmp, sonra rename
-  P5: Progress gostergesi — periyodik status, chunk sayisi, gecen sure
-  P6: Tek prompt modu — outline+chapter tek API cagrisinda (opsiyonel)
-  P7: Detayli hata raporlama — tam context log, devam/duzelt karari
+Iyilestirmeler (P1-P12):
+  P1:  Tek script, sirali islem
+  P2:  requests streaming
+  P3:  Retry mekanizmasi (3 deneme, backoff)
+  P4:  Gecici dosya + atomik tasima
+  P5:  Progress gostergesi (5sn)
+  P6:  Tek prompt modu (varsayilan)
+  P7:  Detayli hata raporlama
+  P8:  Resume destegi (batch_progress.json)
+  P9:  Outline token optimizasyonu (2048)
+  P10: Buyuk bolum uyarisi
+  P11: On API testi (preflight)
+  P12: Combined prompt + BOLUM_METNI ayristirma
 
 Kullanim:
-  python tools/batch_v2.py                    # tum batch'leri calistir
-  python tools/batch_v2.py --batch 2          # sadece 2. batch
-  python tools/batch_v2.py --single-prompt    # outline+chapter tek cagrida
+  python tools/batch_v2.py              # varsayilan: combined prompt
+  python tools/batch_v2.py --two-step   # iki asamali (outline+chapter ayri)
+  python tools/batch_v2.py --batch 3    # sadece 3. batch
 """
 
 from __future__ import annotations
@@ -213,6 +218,7 @@ def atomic_write(filepath, content):
 # P7: Detayli Hata Raporlama
 # ============================================================
 ERROR_LOG = ROOT / "build" / "reports" / "batch_errors.json"
+PROGRESS_FILE = ROOT / "build" / "reports" / "batch_progress.json"
 os.makedirs(ROOT / "build" / "reports", exist_ok=True)
 
 
@@ -245,6 +251,103 @@ def log_error(chapter_id, title, phase, error_msg, elapsed):
 
 
 # ============================================================
+# P11: On API Testi (Pre-flight Check)
+# ============================================================
+def preflight_check():
+    """P11: Batch basinda API baglantisini dogrula."""
+    log(f"[Preflight] API baglantisi test ediliyor...", end="")
+    try:
+        payload = {
+            "model": MODEL,
+            "messages": [{"role": "user", "content": "Reply OK"}],
+            "max_tokens": 5,
+        }
+        headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
+        resp = requests.post(
+            f"{BASE_URL}/chat/completions",
+            headers=headers, json=payload, timeout=30,
+        )
+        elapsed = resp.elapsed.total_seconds()
+        if resp.status_code == 200:
+            log(f" OK ({elapsed:.1f}s)")
+            return True
+        else:
+            log(f" FAIL (HTTP {resp.status_code}: {resp.text[:100]})")
+            return False
+    except Exception as e:
+        log(f" FAIL ({e})")
+        return False
+
+
+# ============================================================
+# P8: Resume Destegi (batch_progress.json)
+# ============================================================
+def save_progress(batch_num, ch_id, title, status, chars=0, elapsed=0):
+    """P8: Ilerleme durumunu kaydet."""
+    progress = {}
+    if PROGRESS_FILE.exists():
+        try:
+            progress = json.loads(PROGRESS_FILE.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            progress = {}
+    if str(batch_num) not in progress:
+        progress[str(batch_num)] = {"chapters": {}}
+    progress[str(batch_num)]["chapters"][ch_id] = {
+        "title": title,
+        "status": status,
+        "chars": chars,
+        "elapsed_s": round(elapsed, 1),
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+    PROGRESS_FILE.write_text(
+        json.dumps(progress, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+
+def load_progress(batch_num):
+    """P8: Kayitli ilerlemeyi yukle. Tamamlanan chapter_id seti doner."""
+    done = set()
+    if PROGRESS_FILE.exists():
+        try:
+            progress = json.loads(PROGRESS_FILE.read_text(encoding="utf-8"))
+            batch_data = progress.get(str(batch_num), {}).get("chapters", {})
+            for ch_id, info in batch_data.items():
+                if info.get("status") == "OK":
+                    done.add(ch_id)
+        except (json.JSONDecodeError, OSError):
+            pass
+    return done
+
+
+# ============================================================
+# P12: Combined Prompt — BOLUM_METNI Ayristirma
+# ============================================================
+def extract_chapter_from_combined(combined_text):
+    """P12: Combined ciktidan sadece bolum metnini cikar.
+    
+    Combined cikti su formatta beklenir:
+      OZET_BOLUM_BASLIGI
+      ... outline ...
+      BOLUM_METNI
+      ... chapter ...
+    
+    Eger ayrac bulunamazsa, tum metni dondur.
+    """
+    marker = "BOLUM_METNI"
+    idx = combined_text.find(marker)
+    if idx != -1:
+        return combined_text[idx + len(marker):].strip()
+    # Alternatif: BOLUM_METNI veya benzeri bir baslik ara
+    import re
+    m = re.search(r"#+\s*BOLUM[_\s]?METNI", combined_text)
+    if m:
+        return combined_text[m.end():].strip()
+    # Ayrac yoksa tum metni dondur
+    return combined_text
+
+
+# ============================================================
 # P6: Tek Prompt Modu
 # ============================================================
 def generate_combined(chapter_id, title, purpose):
@@ -266,13 +369,13 @@ def generate_combined(chapter_id, title, purpose):
 
 
 def generate_outline(chapter_id, title, purpose):
-    """Outline uret."""
+    """Outline uret. P9: max_tokens=2048 (daha hizli)."""
     return stream_with_retry(
         [
             {"role": "system", "content": SYSTEM_OUTLINE},
             {"role": "user", "content": f"Konu: {title}\nAmac: {purpose}\nAyrintili outline hazirla."},
         ],
-        max_tokens=4096,
+        max_tokens=2048,
         label=f"{chapter_id} outline",
     )
 
@@ -298,10 +401,12 @@ def generate_chapter_text(chapter_id, title, purpose, outline):
 # ============================================================
 # Ana Batch Fonksiyonu
 # ============================================================
-def process_chapter(ch_id, title, purpose, use_combined=False):
-    """Tek bolumu isle: seed -> (outline) -> chapter -> postprocess -> kaydet.
+def process_chapter(ch_id, title, purpose, use_combined=True):
+    """Tek bolumu isle: seed -> (combined/outline+chapter) -> postprocess -> kaydet.
     
-    P1: Bu fonksiyon bitmeden bir sonraki chapter'a gecmez.
+    P1:  Bu fonksiyon bitmeden bir sonraki chapter'a gecmez.
+    P10: Outline > 5000 chars ise uyari ver.
+    P12: Varsayilan olarak combined prompt kullan.
     """
     pipe = AuthoringPipeline(ROOT)
     chapter_root = ROOT / "chapters" / ch_id
@@ -312,7 +417,7 @@ def process_chapter(ch_id, title, purpose, use_combined=False):
     t_start = time.time()
 
     try:
-        # --- Seed (P1: sirali, once seed) ---
+        # --- Seed ---
         seed_p = chapter_root / "seed" / "seed_v001.yaml"
         if not seed_p.exists():
             pipe.seed(ch_id, purpose=purpose)
@@ -320,9 +425,7 @@ def process_chapter(ch_id, title, purpose, use_combined=False):
         else:
             log(f"  [Seed] mevcut")
 
-        # --- Outline (P6: tek prompt modunda atla) ---
-        outline_p = chapter_root / "outline_versions" / "v001.md"
-
+        # --- P12: Combined prompt (varsayilan) ---
         if use_combined:
             log(f"  [Combined] outline+chapter tek cagrida...")
             t1 = time.time()
@@ -332,11 +435,14 @@ def process_chapter(ch_id, title, purpose, use_combined=False):
             elapsed = time.time() - t1
             log(f"  [Combined] {len(combined):,} chars, {elapsed:.1f}s")
 
-            # Combined'dan chapter text'ini cikar
-            # (outline otomatik chapter icine gomulu)
-            chapter_text = combined
+            # P12: BOLUM_METNI ayristir
+            chapter_text = extract_chapter_from_combined(combined)
+            log(f"  [Extract] chapter: {len(chapter_text):,} chars (from {len(combined):,} combined)")
 
+        # --- Iki asamali (outline + chapter) ---
         else:
+            outline_p = chapter_root / "outline_versions" / "v001.md"
+
             if not outline_p.exists():
                 log(f"  [Outline] uretiliyor...", end="")
                 t1 = time.time()
@@ -344,7 +450,6 @@ def process_chapter(ch_id, title, purpose, use_combined=False):
                 if outline.startswith("ERROR"):
                     raise RuntimeError(outline)
                 elapsed = time.time() - t1
-                # P4: atomik yaz
                 atomic_write(outline_p, outline)
                 pipe.advance(ch_id, "outline_pasted")
                 log(f" {len(outline):,} chars, {elapsed:.1f}s")
@@ -352,7 +457,10 @@ def process_chapter(ch_id, title, purpose, use_combined=False):
                 outline = outline_p.read_text(encoding="utf-8")
                 log(f"  [Outline] mevcut ({len(outline):,} chars)")
 
-            # --- Chapter ---
+            # P10: Buyuk bolum uyarisi
+            if len(outline) > 5000:
+                log(f"  [Uyari] Genis outline ({len(outline):,} chars) — bolum uzun olabilir")
+
             log(f"  [Chapter] uretiliyor...", end="")
             t2 = time.time()
             chapter_text = generate_chapter_text(ch_id, title, purpose, outline)
@@ -382,8 +490,12 @@ def process_chapter(ch_id, title, purpose, use_combined=False):
         return False, 0, total_elapsed
 
 
-def run_batch(batch_num, use_combined=False):
-    """Bir batch'i calistir."""
+def run_batch(batch_num, use_combined=True):
+    """Bir batch'i calistir.
+    
+    P8:  Resume destegi — once tamamlanan chapter'lari kontrol et.
+    P11: Batch basinda API baglantisi test et.
+    """
     chapters = BATCHES.get(batch_num)
     if not chapters:
         log(f"Batch {batch_num} bulunamadi. Secenekler: {list(BATCHES.keys())}")
@@ -392,6 +504,22 @@ def run_batch(batch_num, use_combined=False):
     log(f"\n{'#'*60}")
     log(f"# BATCH {batch_num} BASLIYOR ({len(chapters)} bolum)")
     log(f"{'#'*60}")
+
+    # P11: Pre-flight check
+    if not preflight_check():
+        log(f"[HATA] API baglantisi basarisiz. Batch iptal.")
+        return
+
+    # P8: Resume — daha once tamamlanan chapter'lari bul
+    done = load_progress(batch_num)
+    if done:
+        log(f"[Resume] {len(done)} bolum daha once tamamlanmis, atlaniyor.")
+        remaining = [(c, t, p) for c, t, p in chapters if c not in done]
+        if len(remaining) == 0:
+            log(f"[Resume] Tum bolumler zaten tamamlanmis.")
+            return
+        log(f"[Resume] {len(remaining)}/{len(chapters)} bolum kaldi.")
+        chapters = remaining
 
     results = []
     ok = 0
@@ -403,8 +531,11 @@ def run_batch(batch_num, use_combined=False):
         results.append((ch_id, title, success, size, duration))
         if success:
             ok += 1
+            # P8: Ilerlemeyi kaydet
+            save_progress(batch_num, ch_id, title, "OK", size, duration)
         else:
             err += 1
+            save_progress(batch_num, ch_id, title, "HATA", 0, duration)
 
     # Batch sonu raporu
     log(f"\n{'#'*60}")
@@ -425,22 +556,29 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Optimize edilmis batch bolum uretimi")
     parser.add_argument("--batch", type=int, default=0, help="Batch numarasi (2, 3, 4). 0 = tumu")
-    parser.add_argument("--single-prompt", action="store_true", help="P6: Tek prompt modu (outline+chapter birlikte)")
+    parser.add_argument("--two-step", action="store_true", help="Iki asamali mod (outline+chapter ayri)")
     args = parser.parse_args()
 
+    use_combined = not args.two_step
+
     log(f"batch_v2.py — Optimize Edilmis Batch Uretim")
-    log(f"  Mod: {'Tek prompt' if args.single_prompt else 'Iki asamali (outline+chapter)'}")
+    log(f"  Mod: {'Iki asamali (outline+chapter)' if args.two_step else 'P12: Combined (varsayilan)'}")
+    log(f"  P8:  Resume aktif")
+    log(f"  P9:  Outline max_tokens=2048")
+    log(f"  P10: Buyuk bolum uyarisi aktif")
+    log(f"  P11: Preflight kontrol aktif")
     log(f"  Retry: {MAX_RETRIES} deneme, backoff: {RETRY_DELAYS}")
     log(f"  Progress interval: {PROGRESS_INTERVAL}s")
     log(f"  Timeout: {TIMEOUT}s")
     log(f"")
 
     if args.batch > 0:
-        run_batch(args.batch, args.single_prompt)
+        run_batch(args.batch, use_combined)
     else:
         for b in sorted(BATCHES.keys()):
-            run_batch(b, args.single_prompt)
+            run_batch(b, use_combined)
             log(f"\nBatch {b} tamam. 5sn ara veriliyor...")
             time.sleep(5)
 
     log(f"\nTum batch'ler tamamlandi. Error log: {ERROR_LOG}")
+    log(f"Progress file: {PROGRESS_FILE}")

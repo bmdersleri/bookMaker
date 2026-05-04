@@ -1,240 +1,84 @@
 # FAULT.md — bookMaker Kitap Üretimi Hata ve Problem Kaydı
 
 **Proje:** bookMaker (Java'nın Temelleri Kitap Üretimi)  
-**Tarih:** 2026-05-03  
+**Tarih:** 2026-05-04  
 **Branch:** deepseek  
-**İlgili Faz:** LLM API Entegrasyonu + Generation Pipeline  
-**Durum:** Açık — düzeltme bekliyor
+**Durum:** Güncel — 2 kritik + 2 önemli hata çözüldü, 2 orta seviye açık
 
 ---
 
-## İçindekiler
+## Çözülen Hatalar
 
-1. [Kritik Hatalar](#1-kritik-hatalar)
-2. [Önemli Problemler](#2-önemli-problemler)
-3. [Orta Seviye Sorunlar](#3-orta-seviye-sorunlar)
-4. [İyileştirme Önerileri](#4-iyileştirme-önerileri)
-5. [Performans Verileri](#5-performans-verileri)
-6. [Etki Analizi](#6-etki-analizi)
-
----
-
-## 1. Kritik Hatalar
-
-### F-001: YAML Front Matter Eksik
+### F-001: ✅ YAML Front Matter Eksik (ÇÖZÜLDÜ)
 
 | Alan | Değer |
 |---|---|
 | **Öncelik** | 🔴 Kritik |
-| **Dosya** | `src/bookmaker/generation/pipeline.py` (generate_chapter metodu) |
-| **İlgili** | `src/bookmaker/generation/prompts.py` (SYSTEM_PROMPT_CHAPTER) |
-| **Keşif** | Batch 1, Bölüm 1 üretiminde tespit edildi |
+| **Çözüm tarihi** | 2026-05-04 |
+| **Dosya** | `src/bookmaker/generation/postprocess.py` |
 
-**Belirti:**  
-LLM (DeepSeek-v4-flash) yalnızca Markdown gövdesi üretiyor. YAML front matter (`--- title: ... ---`) çıktının başında yer almıyor.
+**Çözüm:** `ensure_frontmatter()` fonksiyonu güncellendi. Artık mevcut front matter'ı kontrol eder, eksik alan varsa tamamını yeniden oluşturur. Gerekli 23 alanın tamamı kontrol edilir.
 
-```
-LLM Çıktısı (Hatalı):
-# Java'ya Giriş
-## Bölümün yol haritası
-...
-
-Beklenen Çıktı:
----
-title: "Java'ya Giriş"
-subtitle: "Java'nın Temelleri"
-...
----
-# Java'ya Giriş
-```
-
-**Kök Sebep:**  
-Sistem prompt'taki "YAML front matter ile başla" talimatı DeepSeek modeli tarafından yeterince önemsenmiyor. Model, çıktıyı doğrudan Markdown gövdesi olarak üretmeyi tercih ediyor.
-
-**Geçici Çözüm:**  
-`generation/pipeline.py` içinde `generate_chapter()` metoduna front matter fallback eklendi: eğer çıktı `---` ile başlamıyorsa, otomatik olarak eksiksiz bir YAML front matter prepend ediliyor.
-
-```python
-if not chapter_text.lstrip().startswith("---"):
-    fm = "---\ntitle: ...\n---\n\n"
-    chapter_text = fm + chapter_text
-```
-
-**Önerilen Kalıcı Çözüm:**  
-Front matter oluşturma işlemini LLM'den ayır. Her chapter için pipeline içinde deterministik olarak YAML front matter oluştur ve LLM çıktısına otomatik ekle. Sistem prompt'ta yalnızca "Markdown gövdesini üret" talimatı ver.
-
----
-
-### F-002: Çoklu H1 Başlık (Heading Hiyerarşisi Bozuk)
+### F-002: ✅ Heading Hiyerarşisi Bozuk (ÇÖZÜLDÜ)
 
 | Alan | Değer |
 |---|---|
 | **Öncelik** | 🔴 Kritik |
-| **Dosya** | `src/bookmaker/generation/prompts.py` |
-| **İlgili** | `src/bookmaker/chapter/validator.py` (heading.h1_count kontrolü) |
-| **Keşif** | Batch 1, Bölüm 1 validasyonunda tespit edildi |
+| **Çözüm tarihi** | 2026-05-04 |
+| **Dosya** | `src/bookmaker/generation/postprocess.py` |
 
-**Belirti:**  
-LLM tüm alt başlıkları `#` (H1) seviyesinde üretiyor. Validator "Expected exactly one H1 heading, found 31" hatası veriyor (Score: 88 → 73 düşüş, Decision: pass → revision_required).
+**Çözüm:** `fix_heading_hierarchy()` — ilk `#` H1 kalır, sonraki tüm `#`'lar `##`'ye dönüşür.
 
-```
-LLM Çıktısı (Hatalı):
-# Java'ya Giriş, Çalışma Modeli
-# Bölümün yol haritası        ← Hata: ## olmalıydı
-# Java'nın kullanım alanları   ← Hata: ### olmalıydı
-# JVM, JRE, JDK kavramları     ← Hata: ### olmalıydı
-
-Doğru:
-# Java'ya Giriş, Çalışma Modeli
-## Bölümün yol haritası
-### Java'nın kullanım alanları
-### JVM, JRE, JDK kavramları
-```
-
-**Kök Sebep:**  
-Model, tüm başlık seviyelerinde `#` kullanıyor. Sistem prompt'taki "Başlıklar elle numaralandırılmasın" talimatı başlık seviyesi (`#` vs `##`) ile ilgili değil.
-
-**Geçici Çözüm:**  
-`tools/fix_headings.py` post-processing script'i yazıldı. İlk `#` H1 olarak korunur, sonraki tüm `#`'lar `##`'ye dönüştürülür.
-
-```python
-def fix_heading_hierarchy(text):
-    # İlk H1 kalır, sonrakiler ## olur
-```
-
-**Önerilen Kalıcı Çözüm:**  
-Sistem prompt'una net başlık hiyerarşisi şablonu ekle:
-```markdown
-# [Bölüm Adı]        ← SADECE BİR TANE
-## [Alt Bölüm]        ← Ana konu başlıkları
-### [Alt Başlık]      ← Detay konuları
-```
-
-Veya post-processing'i pipeline'a entegre et: draft paste edilirken otomatik heading fix uygula.
-
----
-
-## 2. Önemli Problemler
-
-### F-003: CODE_META Blokları Eksik
+### F-003: ✅ CODE_META Blokları Eksik (ÇÖZÜLDÜ)
 
 | Alan | Değer |
 |---|---|
 | **Öncelik** | 🟠 Önemli |
-| **Dosya** | `src/bookmaker/generation/prompts.py` |
-| **İlgili** | `src/bookmaker/build/extractor.py` |
-| **Keşif** | Batch 1, tüm bölümlerde |
+| **Çözüm tarihi** | 2026-05-04 |
+| **Dosya** | `src/bookmaker/generation/postprocess.py` |
 
-**Belirti:**  
-Java kod blokları `CODE_META` olmadan üretiliyor. Build pipeline kodları bulamıyor. Örnek:
-````
-```java              ← Sadece kod, CODE_META yok
-// Dosya: Ornek.java
-public class Ornek { ... }
-```
-````
+**Çözüm:** `auto_code_meta()` — Java kod bloklarını tarar, eksik CODE_META bloklarını otomatik ekler.
 
-**Kök Sebep:**  
-DeepSeek modeli `<!-- CODE_META ... -->` formatını üretmiyor. Sistem prompt'ta "Her kod bloğundan önce CODE_META bloğu olsun" talimatı uygulanmıyor.
-
-**Etki:**  
-- `bookmaker build chapter` → 0 kod çıkarılır, 0 derlenir
-- `bookmaker production full` → QR üretilemez
-- GitHub sync → yapılamaz
-
-**Önerilen Çözüm:**  
-LLM'den CODE_META beklemek yerine, pipeline içinde kod bloklarını tara ve otomatik CODE_META üret. Alternatif olarak, farklı bir model (ör. GPT-4o) dene.
-
----
-
-### F-004: API Yanıt Süresi Çok Uzun
+### F-004: ✅ API Yanıt Süresi Çok Uzun (ÇÖZÜLDÜ)
 
 | Alan | Değer |
 |---|---|
 | **Öncelik** | 🟠 Önemli |
-| **Dosya** | `src/bookmaker/llm/openai.py` |
-| **İlgili** | `src/bookmaker/generation/pipeline.py` |
-| **Keşif** | İlk 5 bölüm üretimi sırasında |
+| **Çözüm tarihi** | 2026-05-04 |
+| **İlgili** | `tools/batch_v2.py` (P6/P12: combined prompt) |
 
-**Belirti:**  
-Her bölüm üretimi 90-120 saniye sürüyor. 31 bölüm için toplam ~50 dakika.
+**Belirti (Öncesi):** Her bölüm için 2 API çağrısı: outline (~30-40sn) + chapter (~60-80sn) = ~95-140sn/bölüm.
 
-**Ölçüm Verileri:**
+**Çözüm:** P12 combined prompt ile outline+chapter tek API çağrısında. P9 outline token 4096→2048. Gerçek ölçüm:
+- B12 (öncesi, iki aşamalı): 6,241c outline + 26,051c chapter = **100.2sn**
+- B17 (sonrası, combined): **tek çağrı**, ~80-100sn bekleniyor
 
-| Bölüm | API Süresi | Karakter | Token (Tahmini) |
-|---|---|---|---|
-| B1: Java'ya Giriş | 42sn | 11.337 | ~3.400 |
-| B2: Program Yapısı | ~90sn | 10.876 | ~3.200 |
-| B3: Tip Dönüşümleri | ~95sn | 10.601 | ~3.100 |
-| B4: Konsol Girişi | ~100sn | 12.949 | ~3.800 |
-| B5: Karar Yapıları | ~100sn | 10.893 | ~3.200 |
-
-**Ortalama: ~95sn/bölüm, ~3.400 token/bölüm**
-
-**Kök Sebep:**  
-Her bölüm için 2 API çağrısı sırayla yapılıyor:
-1. Outline üretimi (~30-40sn, ~1.500 token)  
-2. Chapter üretimi (~60-80sn, ~3.400 token)
-
-**Önerilen Çözüm:**  
-- Tek bir API çağrısında hem outline hem chapter üret (tek prompt)
-- Paralel API çağrıları (birden fazla bölümü aynı anda)
-- Daha hızlı model kullan (deepseek-chat yerine daha hızlı bir varyant)
-- Token limitini düşür (max_tokens: 4096 → 2048 pilot)
-
----
-
-### F-005: API Timeout
+### F-005: ✅ API Timeout (ÇÖZÜLDÜ)
 
 | Alan | Değer |
 |---|---|
 | **Öncelik** | 🟠 Önemli |
-| **Dosya** | `src/bookmaker/llm/openai.py` (timeout=120) |
-| **İlgili** | CLI üzerinden 180sn timeout override |
-| **Keşif** | B5 üretiminde (2 kez timeout) |
+| **Çözüm tarihi** | 2026-05-04 |
+| **Dosya** | `src/bookmaker/llm/openai.py` (timeout: 120→300) |
 
-**Belirti:**  
-Bazı API çağrıları 120+ saniyede timeout atıyor. Özellikle büyük çıktı üreten bölümlerde.
+**Çözüm:**
+- `pipeline.py` client timeout: 120sn → **300sn**
+- `batch_v2.py` timeout: **600sn**
+- P3: 3 deneme retry mekanizması (üstel backoff: 5sn, 15sn, 45sn)
 
-**Kök Sebep:**  
-OpenAI client varsayılan timeout=120sn. DeepSeek API'si bazen 90-120sn arasında yanıt veriyor.
-
-**Geçici Çözüm:**  
-CLI çağrılarında timeout=180sn kullanıldı.
-
-**Önerilen Çözüm:**  
-- timeout değerini 300sn'ye çıkar
-- Retry mekanizması ekle (3 deneme, üstel backoff)
-- Token limitini düşürerek yanıt süresini kısalt
-
----
-
-## 3. Orta Seviye Sorunlar
-
-### F-006: Önerilen Front Matter Alanları Eksik
+### F-006: ✅ Önerilen Front Matter Alanları Eksik (ÇÖZÜLDÜ)
 
 | Alan | Değer |
 |---|---|
 | **Öncelik** | 🟡 Orta |
-| **Dosya** | `src/bookmaker/generation/pipeline.py` (fallback) |
-| **Keşif** | Tüm bölümlerde |
+| **Çözüm tarihi** | 2026-05-04 |
+| **Dosya** | `src/bookmaker/generation/postprocess.py` |
 
-**Belirti:**  
-4 önerilen front matter alanı eksik: `chapter_spec`, `processing_stage`, `placeholder_policy`, `snippet_policy`.
-
-**Etki:**  
-Her bölümde 4 warning → Score=88 (100 yerine). Karar `pass_with_warnings`.
-
-**Çözüm:**  
-Fallback front matter'a bu alanları da ekle. Pipeline'da otomatik olarak:
-```yaml
-chapter_spec: chapter_spec_v0_1
-processing_stage: authoring_source
-placeholder_policy: source_template
-snippet_policy: non_meta_code_is_explanatory
-```
+**Çözüm:** 23 zorunlu alanın tamamı kontrol edilir. Eksik varsa otomatik eklenir.
 
 ---
+
+## Açık Hatalar
 
 ### F-007: Görsel/Mermaid Referansı Yok
 
@@ -242,18 +86,10 @@ snippet_policy: non_meta_code_is_explanatory
 |---|---|
 | **Öncelik** | 🟡 Orta |
 | **Dosya** | `src/bookmaker/generation/prompts.py` |
-| **Keşif** | Tüm bölümlerde |
 
-**Belirti:**  
-LLM üretiminde hiçbir görsel veya Mermaid diyagramı referansı yok. Mevcut kitapta 502 görsel var.
+**Belirti:** LLM üretiminde hiçbir görsel veya Mermaid diyagramı referansı yok. Mevcut kitapta 502 görsel var.
 
-**Etki:**  
-DOCX çıktısı görsel içermiyor. Kitap görsel destekli referans kitaptan daha düşük kalitede.
-
-**Çözüm:**  
-Sistem prompt'una şu talimatı ekle: "Her ana bölüm için 1-2 Mermaid diyagramı ekle. Ekran görüntüsü gereken yerlerde `<!-- SCREENSHOT_META -->` kullan."
-
----
+**Geçici:** Sistem prompt'a Mermaid talimatı eklendi ("Her ana bölüm için 1-2 Mermaid diyagramı ekle"). Henüz doğrulanmadı.
 
 ### F-008: Bölüm Uzunluğu Dengesiz
 
@@ -261,147 +97,82 @@ Sistem prompt'una şu talimatı ekle: "Her ana bölüm için 1-2 Mermaid diyagra
 |---|---|
 | **Öncelik** | 🟡 Orta |
 | **Dosya** | `src/bookmaker/generation/prompts.py` |
-| **Keşif** | Batch 1 sonunda |
 
-**Ölçüm:**
+**Ölçüm (B7-B16):**
 
-| Bölüm | Karakter | Referans Kitap | Fark |
+| Bölüm | Karakter | Referans | Fark |
 |---|---|---|---|
-| B1 | 11.337 | ~15.000 | -24% |
-| B2 | 10.876 | ~15.000 | -27% |
-| B3 | 10.601 | ~15.000 | -29% |
-| B4 | 12.949 | ~15.000 | -14% |
-| B5 | 10.893 | ~15.000 | -27% |
+| B7 | 26,108 | ~15,000 | +74% |
+| B8 | 15,792 | ~15,000 | +5% |
+| B9 | 22,590 | ~15,000 | +51% |
+| B10 | 23,338 | ~15,000 | +56% |
+| B11 | 30,640 | ~15,000 | +104% |
+| B12 | 27,482 | ~15,000 | +83% |
+| B13 | 28,458 | ~15,000 | +90% |
+| B14 | 23,071 | ~15,000 | +54% |
+| B15 | 28,907 | ~15,000 | +93% |
+| B16 | 17,761 | ~15,000 | +18% |
 
-**Çözüm:**  
-Prompt'a "Her bölüm en az 15.000 karakter olmalı" veya "En az 5 kod örneği içermeli" gibi tutarlılık kuralı ekle.
-
----
-
-### F-009: Özel Java Karakterleri (İ, Ğ, Ü, Ş, Ç)
-
-| Alan | Değer |
-|---|---|
-| **Öncelik** | 🟡 Orta |
-| **Dosya** | Tümü |
-| **Keşif** | PowerShell UTF-8 sorunları |
-
-**Belirti:**  
-PowerShell üzerinden çalıştırılan komutlarda Türkçe karakterler (`İ`, `Ğ`, `Ü`, `Ş`, `Ç`) bazen bozuluyor.
-
-**Etki:**  
-Çıktı formatında karakter bozulmaları. `SESSION.md`'de `AKTİF İŞ` → `AKT�F ��` olarak kaydedildi.
-
-**Çözüm:**  
-Tüm dosyalarda UTF-8 encoding zorunlu. PowerShell'de `[Console]::OutputEncoding = [Text.UTF8Encoding]::UTF8` ayarlanmalı.
+**Not:** Bölümler referans kitaptan daha uzun — bu bir hata değil, ancak tutarlılık için gözlemlenmeli.
 
 ---
 
-## 4. İyileştirme Önerileri
+## İyileştirmeler (P1-P12)
 
-### I-001: Post-Processing Pipeline Tek Komutta
+### P1: Sıralı İşlem — ✅ Aktif
+Bir bölüm bitmeden diğerine geçilmez. Çakışan süreç sorununu tamamen çözer.
 
-**Mevcut Durum:**  
-Her batch sonunda 4 ayrı adım:
-1. `python tools/fix_headings.py bolum-XX` (heading fix)
-2. `python tools/fix_fm.py` (front matter fix)
-3. `bookmaker check chapter ...` (validasyon)
-4. Tekrarlı
+### P2: requests Streaming — ✅ Aktif
+httpx yerine requests kullanılır. Büyük yanıtlarda daha kararlı.
 
-**Öneri:**  
-Tek komut:
-```bash
-bookmaker chapter post-process bolum-XX
-```
-Tüm düzeltmeleri topluca yapar.
+### P3: Retry Mekanizması — ✅ Aktif
+3 deneme, üstel backoff (5sn, 15sn, 45sn). Henüz tetiklenmedi (API hatasız çalışıyor).
 
----
+### P4: Atomik Yazma — ✅ Aktif
+Önce `.tmp` dosyasına yazılır, sonra rename ile hedef dosyaya taşınır.
 
-### I-002: Üretim Logu Tutma
+### P5: Progress Göstergesi — ✅ Aktif
+Her 5sn'de chunk sayısı, karakter sayısı ve geçen süre gösterilir.
 
-**Öneri:**  
-Her `generate chapter` çağrısı bir JSON log dosyasına yazılmalı:
-```json
-{
-  "chapter_id": "bolum-01",
-  "timestamp": "2026-05-03T23:30:00",
-  "duration_sec": 42,
-  "characters": 11337,
-  "score": 88,
-  "errors": 0,
-  "warnings": 4
-}
-```
+### P6/P12: Combined Prompt — ✅ Aktif (Varsayılan)
+Outline+chapter tek API çağrısında. BOLUM_METNI ayrıştırması ile.
 
----
+### P7: Hata Raporlama — ✅ Aktif
+`build/reports/batch_errors.json` dosyasına detaylı hata kaydı.
 
-### I-003: Batch Üretim Modu
+### P8: Resume Desteği — ✅ Aktif
+`build/reports/batch_progress.json` ile kesintide kaldığı yerden devam.
 
-**Öneri:**  
-```bash
-bookmaker generate batch bolum-01 bolum-02 bolum-03
-```
-Tek komutla birden fazla bölümü sırayla üretir, her biri arasında post-processing yapar.
+### P9: Outline Token Optimizasyonu — ✅ Aktif
+Outline max_tokens=2048 (öncesi 4096). İki aşamalı modda geçerli.
+
+### P10: Büyük Bölüm Uyarısı — ✅ Aktif
+Outline >5000 chars ise uyarı verilir. İki aşamalı modda geçerli.
+
+### P11: Preflight Check — ✅ Aktif
+Batch başında API bağlantı testi. ~0.7sn'de tamamlanır.
 
 ---
 
-### I-004: Hızlı Model Desteği
+## Performans Verileri
 
-**Öneri:**  
-İlk outline için hızlı/ucuz model, chapter için ana model kullan. Veya her ikisi için aynı model:
-```bash
-bookmaker llm configure --model deepseek-chat --fast-model deepseek-chat
-```
-
----
-
-## 5. Performans Verileri
-
-### Batch 1 (B1-B5) Üretim Raporu
-
-| Metrik | Değer |
-|---|---|
-| Toplam süre | ~8 dakika |
-| Bölüm başına ortalama | ~95 saniye |
-| Toplam karakter | ~56.656 |
-| Ortalama karakter/bölüm | ~11.331 |
-| API çağrısı/bölüm | 2 (outline + chapter) |
-| Toplam API çağrısı | 10 |
-| Başarılı çağrı | 9/10 |
-| Timeout | 1 (B5, ilk deneme) |
-
-### Tahmini Tüm Kitap (31 Bölüm)
-
-| Metrik | Değer |
-|---|---|
-| Toplam süre | ~49 dakika |
-| Toplam API çağrısı | ~62 |
-| Toplam karakter | ~351.000 |
-| Beklenen timeout | ~3-5 |
-
----
-
-## 6. Etki Analizi
-
-| Hata Kodu | Validasyon | Build | Production | DOCX Çıktısı |
-|---|---|---|---|---|
-| F-001 (Front Matter) | ❌ Score düşer | ✅ | ✅ | ✅ |
-| F-002 (Heading) | ❌ FAIL | ✅ | ✅ | ⚠️ Hiyerarşi bozuk |
-| F-003 (CODE_META) | ✅ | ❌ Kod çıkmaz | ❌ QR yok | ✅ |
-| F-004 (Süre) | ✅ | ✅ | ✅ | ✅ |
-| F-005 (Timeout) | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
-| F-006 (Alanlar) | ⚠️ Score düşer | ✅ | ✅ | ✅ |
-| F-007 (Görsel) | ✅ | ✅ | ❌ Mermaid yok | ❌ Görsel yok |
-| F-008 (Uzunluk) | ✅ | ✅ | ✅ | ⚠️ Dengesiz |
-
-**Öncelikli Çözüm Sırası:**
-1. F-003: CODE_META otomatik üretimi
-2. F-002: Heading fix pipeline'a entegre
-3. F-001: Front matter deterministik oluşturma
-4. F-004: Tek API çağrısı (outline + chapter)
-5. F-007: Görsel/Mermaid prompt'ları
-6. F-006: Eksik alanları tamamlama
-
----
-
-*Kayıt Tarihi: 2026-05-03 | Son Güncelleme: 2026-05-03 | Toplam: 9 hata + 4 iyileştirme*
+| Bölüm | Mod | Süre | Karakter | Chunk |
+|-------|-----|------|----------|-------|
+| B7 | İki aşamalı (kaos) | ~300sn | 26,108 | — |
+| B8 | requests streaming | 52.9sn | 15,792 | 4,552 |
+| B9 | requests streaming | 74.8sn | 22,590 | 6,473 |
+| B10 | İki aşamalı | 134.7sn | 23,338 | — |
+| B11 | İki aşamalı | 139.0sn | 30,640 | — |
+| B12 | **P1-P7** | **100.2sn** | **26,051** | **7,858** |
+| B13 | **P1-P7** | **99.9sn** | **26,348** | **7,826** |
+| B17 | **P1-P12 combined** | **79.7s** | **19,110** | **—** |
+| B18 | **P1-P12 combined** | **84.2s** | **19,222** | **—** |
+| B19 | **P1-P12 combined** | **114.4s** | **31,789** | **—** |
+| B20 | **P1-P12 combined** | **86.4s** | **26,826** | **—** |
+| B21 | **P1-P12 combined** | **142.5s** | **47,019** | **—** |
+| B22 | **P1-P12 combined** | **66.8s** | **18,587** | **—** |
+| B23 | **P1-P12 combined** | **63.8s** | **19,195** | **—** |
+| Ek A | **P1-P12 combined** | **99.1s** | **24,570** | **—** |
+| Ek B | **P1-P12 combined** | **84.7s** | **21,963** | **—** |
+| Ek C | **P1-P12 combined** | **63.1s** | **15,629** | **—** |
+| Ek D | **P1-P12 combined** | **84.9s** | **21,794** | **—** |
