@@ -93,7 +93,7 @@ def _replace_mermaid(match):
     # eger build/output/images/mermaid-{idx:03d}.png varsa...
     img_path = BUILD_OUT / "images" / f"mermaid-{idx:03d}.png"
     if img_path.exists() or (BUILD_OUT / "images" / f"mermaid-{idx:03d}.mmd").exists():
-        return f"\n![Mermaid Diyagram {idx}](../assets/images/mermaid-{idx:03d}.png)\n"
+        return f"\n![Mermaid Diyagram {idx}](assets/images/mermaid-{idx:03d}.png)\n"
     return ""
 
 def ensure_dirs():
