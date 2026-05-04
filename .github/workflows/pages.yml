@@ -1,7 +1,7 @@
 # =============================================================================
 # bookMaker — GitHub Pages Deploy Workflow
 # Tetik: her push -> deepseek branch
-# Is: pandoc ile HTML build -> GitHub Pages deploy
+# Is: pandoc ile multi-page HTML build -> GitHub Pages deploy
 # =============================================================================
 name: Deploy GitHub Pages
 
@@ -37,8 +37,8 @@ jobs:
       - name: Setup Pandoc
         run: sudo apt-get update && sudo apt-get install -y pandoc
 
-      - name: Build HTML
-        run: python tools/build/pages_build.py
+      - name: Build Multi-Page HTML
+        run: python tools/build/pages_multi.py
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
