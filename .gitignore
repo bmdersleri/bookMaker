@@ -7,3 +7,11 @@ build/.pytest_tmp/
 dist/
 *.egg-info/
 .ruff_cache/
+
+# API anahtarları ve hassas yapılandırma
+api.txt
+llm_config.json
+.env
+*.key
+secrets/
+credentials/
