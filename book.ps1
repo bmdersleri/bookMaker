@@ -159,39 +159,14 @@ switch ($Command.ToLower()) {
     }
 
     "check" {
-        Write-Step "Kitap kontrolu"
-        $total = 0
-        $order = @(
-            "bolum-01","bolum-02","bolum-03","bolum-04","bolum-05","bolum-06",
-            "bolum-07","bolum-08","bolum-09","bolum-10","bolum-11",
-            "bolum-12","bolum-13","bolum-14","bolum-15","bolum-16",
-            "bolum-17","bolum-18","bolum-19","bolum-20","bolum-21",
-            "bolum-22","bolum-23",
-            "ek-a","ek-b","ek-c","ek-d"
-        )
-        
-        $ok = 0; $missing = 0; $empty = 0
-        $min_target = 10000
-        foreach ($ch in $order) {
-            $path = Join-Path $ROOT "chapters" $ch "draft_versions" "v001.md"
-            if (-not (Test-Path $path)) {
-                Write-Host "  [  ] $ch — KAYIP" -ForegroundColor Red
-                $missing++
-                continue
-            }
-            $len = (Get-Item $path).Length
-            $total += $len
-            $ok++
-            $flag = if ($len -lt $min_target) { " AZ ($len bytes < $min_target)" } else { "" }
-            $color = if ($len -ge $min_target) { "Green" } else { "Yellow" }
-            Write-Host "  [OK] $ch — $($len.ToString('N0')) bytes$flag" -ForegroundColor $color
+        if (-not (Test-Path $PY)) {
+            Write-Error "Python venv bulunamadi: $PY"
+            exit 1
         }
-        
-        Write-Host "`n  OZET:" -ForegroundColor Cyan
-        Write-Host "    Mevcut : $ok / $($order.Count)" -ForegroundColor $(if ($ok -eq $order.Count) { "Green" } else { "Yellow" })
-        Write-Host "    Kayip  : $missing" -ForegroundColor $(if ($missing -eq 0) { "Green" } else { "Red" })
-        Write-Host "    Toplam : $($total.ToString('N0')) bytes"
-        Write-Host "    Ortalama: $(($total / [math]::Max(1,$ok)).ToString('N0')) bytes/bolum"
+        $verboseFlag = if ($Args -contains "-v" -or $Args -contains "--verbose") { "--verbose" } else { "" }
+        $jsonFlag = if ($Args -contains "--json") { "--json" } else { "" }
+        Write-Step "Kitap validasyonu (python -m bookmaker check book)"
+        & $PY -m bookmaker check book $verboseFlag $jsonFlag
     }
 
     "log" {
