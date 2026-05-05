@@ -21,6 +21,7 @@ for step in ["TANIM", "NEDEN VAR?", "NASIL KULLANILIR",
              "NE ZAMAN TERCİH", "ALTERNATİFLERİ", "YAYGIN HATALAR"]:
     check(f"SYSTEM_AUTHOR: {step}", step in SYSTEM_AUTHOR)
 check("SYSTEM_AUTHOR: Mermaid 5 dugum", "5 düğüm" in SYSTEM_AUTHOR)
+check("SYSTEM_AUTHOR: Mermaid istege bagli", "isteğe bağlı" in SYSTEM_AUTHOR)
 check("SYSTEM_AUTHOR: Mermaid sequence diagram", "sequence diagram" in SYSTEM_AUTHOR)
 
 # 2. build_seed_prompt
@@ -34,7 +35,7 @@ check("Seed: ALTERNATİFLERİ adimi", "ALTERNATİFLERİ" in p)
 check("Seed: YAYGIN HATALAR adimi", "YAYGIN HATALAR" in p)
 check("Seed: kod ZORUNLU DEGIL", "ZORUNLU DEĞİL" in p)
 check("Seed: yol haritasi exempt", "yol haritası" in p)
-check("Seed: en az 2 mermaid", "2 ```mermaid" in p)
+check("Seed: mermaid istege bagli (zorunlu degil)", "mermaid" in p.lower() and "diyagramsız bölüm eksiktir" not in p.lower())
 check("Seed: degisken isimleri Turkce", "anlamlı Türkçe" in p)
 check("Seed: // Cikti gosterimi", "// Çıktı:" in p)
 

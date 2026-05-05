@@ -35,19 +35,39 @@ def build_spec_prompt(
 {book_context}
 
 ---
-Aşağıdaki başlıklarla detaylı bir spesifikasyon hazırla:
+Aşağıdaki başlıklarla bir PLAN hazırla. SADECE PLAN, kod veya diyagram YAZMA:
 
-1. **KAVRAMLAR** — Her kavram için: açıklama, zorluk seviyesi, kod örneği gerekip gerekmediği
-2. **KOD ÖRNEKLERİ** — Hangi kavramlar için hangi kod örnekleri yazılacak? Her biri neyi gösterecek?
-3. **DİYAGRAMLAR** — EN AZ 2 mermaid diyagramı planla (her biri için: neyi görselleştirecek? hangi düğümler olacak? karar noktaları nerede?)
-4. **SÖZLÜK** — 10-15 terim ve kısa tanımları
-5. **DEĞERLENDİRME** — 3 soru: 1 doğru/yanlış, 1 açık uçlu, 1 kod okuma
-6. **ALIŞTIRMALAR** — 2-3 programlama alıştırması (zorluk seviyeleriyle)
-7. **SIK YAPILAN HATALAR** — 3-5 yaygın hata, nedenleri ve çözümleri
-8. **TABLOLAR** — Gerekliyse veri yapılarını gösteren tablolar
+1. **KAVRAMLAR** — Her kavram için:
+   - Ne olduğu (1 cümle)
+   - Zorluk seviyesi (1-5 yıldız)
+   - Kod örneği gerekiyor mu? (evet/hayır)
+   - Hangi konuyu gösterecek? (1 cümle, kod yazma!)
 
-ÖNEMLİ: Spesifikasyon net ve uygulanabilir olmalı. Kod örneklerinin neyi göstereceğini 
-belirt ama kodun kendisini yazma. Sadece plan hazırla."""
+2. **KOD ÖRNEKLERİ** — Her planlanan örnek için:
+   - Hangi kavramı gösteriyor?
+   - Dosya adı ne olacak?
+   - Kod kaç satır olacak? (tahmini)
+   - Hangi Java özelliklerini kullanacak?
+   KOD BLOĞU YAZMA! Sadece tarif et.
+
+3. **DİYAGRAMLAR** — Uygunsa diyagram planla:
+   - Neyi görselleştirecek?
+   - Hangi tür? (flowchart/sequence/class)
+   - Hangi düğümler olacak? (liste halinde)
+   MERMAID KODU YAZMA! Sadece tarif et.
+
+4. **SÖZLÜK** — 10-15 terim adı listele (tanım yazma, sadece terimleri listele)
+
+5. **DEĞERLENDİRME** — 3 soru tipini belirle: 1 D/Y konusu, 1 açık uçlu konu, 1 kod okuma konusu
+
+6. **ALIŞTIRMALAR** — 2-3 alıştırma konusu ve zorluk seviyesi (konuyu tarif et, kodu sonra yazacağız)
+
+7. **SIK YAPILAN HATALAR** — 3-5 hata konusu başlığı (hatanın ne olduğunu 1 cümleyle söyle)
+
+8. **TABLOLAR** — Gerekliyse hangi verilerin karşılaştırılacağını belirt
+
+KESIN KURAL: Bu bir PLAN'dır. ```java veya ```mermaid BLOĞU YAZMAK YASAKTIR.
+Sadece ne yapılacağını TARIF ET. Kodun ve diyagramın kendisini sonraki aşamada yazacağız."""
 
 
 def build_spec_validation_prompt(spec: str, chapter_title: str) -> str:
@@ -63,9 +83,9 @@ Aşağıdaki spesifikasyonu kontrol et:
 ---
 Kontrol et:
 1. Tüm kavramlar kapsanmış mı?
-2. Kod örnekleri uygun mu (başlangıç seviyesine uygun)?
+2. PLAN formatına uygun mu? (```java veya ```mermaid bloğu OLMAMALI, sadece tarif olmalı)
 3. Eksik bölüm var mı?
-4. Değerlendirme soruları yeterli mi?
+4. Değerlendirme soruları ve alıştırmalar planlanmış mı?
 
 Cevabını şu formatta ver:
 - Geçerliyse: "PASS: [kısa açıklama]"
@@ -74,40 +94,42 @@ Cevabını şu formatta ver:
 
 def build_seed_from_spec_prompt(spec: str, chapter_title: str) -> str:
     """Spesifikasyona dayalı seed generation prompt'u."""
+    # Spec'i kisalt: sadece ilk 5000 karakter yeterli (plan formatinda)
+    spec_short = spec[:5000]
+    if len(spec) > 5000:
+        spec_short += "\n\n... (planin devami var, tum maddeleri isle)"
+
     return f"""## Görev: Spesifikasyona Göre Bölüm Üret
 
 **Bölüm:** {chapter_title}
 
-**SPESİFİKASYON (BUNA GÖRE ÜRET):**
+**SPESİFİKASYON (plan — kodları ve diyagramları SEN yazacaksın):**
 
-{spec}
+{spec_short}
 
 ---
+Spesifikasyon bir PLANDIR, içindeki tariflere göre kodları ve diyagramları SEN üreteceksin.
+
 İÇERİK DERİNLİĞİ KURALLARI:
 Her kavramı şu 6 adımla işle (sırayla):
 1. TANIM — Kavramı 1-2 net cümleyle tanımla
-2. NEDEN VAR? — Hangi problemi çözer? Bu kavram olmasaydı ne eksik kalırdı?
+2. NEDEN VAR? — Hangi problemi çözer?
 3. NASIL KULLANILIR? — Çalışan Java kodu ile göster, sonra kodu satır satır açıkla
-4. NE ZAMAN TERCİH EDİLİR? — Hangi senaryoda bu, hangi senaryoda alternatifi seçilmeli?
+4. NE ZAMAN TERCİH EDİLİR? — Hangi senaryoda bu, hangi senaryoda alternatifi?
 5. ALTERNATİFLERİ — Benzer kavramlarla karşılaştırma tablosu yap
-6. YAYGIN HATALAR — Bu kavramla ilgili en sık yapılan 1-2 hatayı ve çözümünü belirt
+6. YAYGIN HATALAR — Bu kavramla ilgili en sık hatayı ve çözümünü belirt
 
-Her adım için en az 1-2 paragraf yaz. Günlük hayattan en az 1 analoji zorunlu.
+Her adım için 1-2 paragraf yeterli. Günlük hayattan 1 analoji ekle.
+Toplam bölüm uzunluğu 6000-8000 kelime arası olsun.
 
 Yazım kuralları:
 - H1 = bölüm başlığı, H2 = ana bölümler, H3 = alt bölümler
-- Kod yazmaya uygun her H2 ve H3 altında ```java kod örneği ver
-  (Şu başlıklarda kod ZORUNLU DEĞİL: yol haritası, konum/pedagojik rol,
-   öğrenme çıktıları, ön bilgi, özet, sözlük, sorular, rubrik, kaynaklar, köprü)
-- Değişken isimleri anlamlı Türkçe olsun
-- Her kod bloğunda en az 3 satır açıklayıcı yorum olsun
-- Kod çıktısını // Çıktı: ... şeklinde göster
-- Her bölümde EN AZ 2 ```mermaid diyagramı ZORUNLUDUR. Diyagramsız bölüm eksiktir!
-  Diyagramlar: 5+ düğümlü, karar noktalı, açıklamalı. İlk diyagram ilk kavramdan sonra.
-- Spesifikasyonda belirtilen HER kod örneğini ve diyagramı ekle
+- Kod yazmaya uygun H2/H3 altında ```java örneği ver
+  (Kod ZORUNLU DEĞİL: yol haritası, öğrenme çıktıları, ön bilgi, özet, sözlük, sorular, rubrik, kaynaklar, köprü)
+- Değişken isimleri anlamlı Türkçe, her kodda 3+ yorum satırı, // Çıktı: ... gösterimi
 - Bölüm sonunda: Özet, Sözlük, Sorular, Alıştırmalar, Hatalar
 
-ÖNEMLİ: Spesifikasyondaki HER ŞEYİ bölüme ekle. Hiçbir şeyi atlama."""
+ÖNEMLİ: Spesifikasyondaki HER PLANI içeriğe dönüştür. Hiçbir şeyi atlama."""
 
 
 # ============================================================

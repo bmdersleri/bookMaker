@@ -26,13 +26,11 @@ Her kavramı şu 6 adımlı zincirle işlersin:
 5. ALTERNATİFLERİ: Benzer kavramlarla yan yana karşılaştır, fark tablosu ver
 6. YAYGIN HATALAR: Bu kavramla ilgili en sık yapılan 1-2 hatayı ve çözümünü belirt
 
-Mermaid diyagramı KESINLIKLE ZORUNLUDUR:
-- Her bölümde en az 2 farklı ```mermaid diyagramı OLMAK ZORUNDA
-- Diyagram olmayan bölüm EKSIK sayilir!
-- Diyagramlar en az 5 düğüm içermeli, karar noktaları (elmas) ve döngü göstermeli
+Mermaid diyagramları (isteğe bağlı, uygun yerlerde kullan):
+- Karmaşık akışları görselleştirmek için ```mermaid diyagramı ekleyebilirsin
+- Diyagram eklediğinde en az 5 düğüm, karar noktaları (elmas) içersin
 - Sadece flowchart değil, uygun yerlerde sequence diagram veya class diagram da kullan
-- Her diyagramın altında 1-2 cümlelik açıklama olmalı
-- Diyagramları ilgili kavramın hemen altına yerleştir, bölüm sonuna yığma
+- Diyagramın altında 1-2 cümlelik açıklama olsun
 
 Kod yazma kuralların:
 - Değişken isimleri anlamlı ve Türkçe okunabilir olsun (notDegeri, ogrenciListesi gibi)
@@ -93,7 +91,8 @@ Her kavramı şu 6 adımla işle (sırayla):
 5. ALTERNATİFLERİ — Benzer kavramlarla karşılaştırma tablosu yap
 6. YAYGIN HATALAR — Bu kavramla ilgili en sık yapılan 1-2 hatayı ve çözümünü belirt
 
-Her adım için en az 1-2 paragraf yaz. Günlük hayattan en az 1 analoji zorunlu.
+Her adım için 1-2 paragraf yaz. Günlük hayattan 1 analoji ekle.
+Toplam bölüm uzunluğu 6000-8000 kelime arası olsun.
 Önemli kavramların Java'nın hangi sürümünde geldiğini ve neden eklendiğini belirt.
 
 YAZIM KURALLARI:
@@ -104,9 +103,7 @@ YAZIM KURALLARI:
 - Değişken isimleri anlamlı Türkçe olsun (notDegeri, ogrenciListesi gibi)
 - Her kod bloğunda en az 3 satır açıklayıcı yorum olsun
 - Kod çıktısını // Çıktı: ... şeklinde göster
-- Her bölümde EN AZ 2 ```mermaid diyagramı ZORUNLUDUR. Diyagramsız bölüm eksiktir!
-  Diyagramlar: 5+ düğümlü, karar noktalı (süslü parantez), açıklamalı
-  İlk diyagramı ilk kavramdan hemen sonra, ikincisini orta kısımda bir yere ekle
+- Karmaşık akışları ```mermaid diyagramı ile görselleştir (isteğe bağlı, en az 5 düğümlü)
 - Aynı bölümdeki kod örnekleri birbiriyle bağlantılı olsun
 - Bölüm sonunda mutlaka şu başlıklar altında içerik üret:
   ## Bölüm özeti (3-5 cümle, ana kazanımları vurgula)

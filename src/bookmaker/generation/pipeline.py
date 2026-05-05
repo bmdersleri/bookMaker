@@ -129,7 +129,8 @@ class ChapterGenerator:
     def enrich(self, normalized_text: str, chapter_title: str,
                enrich_types: Optional[list[str]] = None,
                next_chapter: Optional[str] = None,
-               concepts: Optional[list[str]] = None) -> dict[str, str]:
+               concepts: Optional[list[str]] = None,
+               save_dir: Optional[Path] = None) -> dict[str, str]:
         """Eksik bolumleri LLM ile paralel doldurur."""
         if not self.client:
             print("  [WARN] Enrich client yok, fallback kullaniliyor.")
@@ -193,6 +194,9 @@ class ChapterGenerator:
                     up = builder(chapter_title=chapter_title,
                                  headings=headings, context=context,
                                  concepts=concepts)
+                # Gercek prompt'u kaydet
+                if save_dir:
+                    self._save(save_dir / f"prompt3_enrich_{key}.txt", up)
                 fut = pool.submit(self._call_enrich, up)
                 fmap[fut] = key
             for fut in concurrent.futures.as_completed(fmap):
@@ -396,10 +400,8 @@ class ChapterGenerator:
         # STEP 3: ENRICH
         missing = self.detect_missing(norm)
         enriched = self.enrich(norm, title, enrich_types, next_chapter,
-                               concepts=concepts) if missing else {}
+                               concepts=concepts, save_dir=gen_dir) if missing else {}
         for k, v in enriched.items():
-            self._save(gen_dir / f"prompt3_enrich_{k}.txt",
-                       f"Enrichment: {k}, Chapter: {title}")
             self._save(gen_dir / f"step3_enrich_{k}.md", v)
         result["enriched"] = enriched
         result["missing"] = [m for m in missing if not m["existing"]]
