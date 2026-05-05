@@ -76,56 +76,30 @@ PowerShell ile dosya yazimi gerekirse UTF-8 acikca korunmalidir. Manuel kod duze
 - PATH kurulumdan sonra guncellense bile mevcut Codex oturumu yeni PATH'i otomatik miras almayabilir.
 - Bu durumda araclar tam executable yolu ile calistirilabilir.
 
-## Ana Runtime ve Gelistirme Araclari
+## Ana Runtime ve Gelistirme Araclari (2026-05-05 guncel)
 
 ```text
-Python: 3.14.0
-Node.js: v24.11.1
-npm: 11.13.0
-Java: 17.0.10
-javac: 17.0.10
-Git: 2.44.0.1
-GitHub CLI: mev
-
-## PS7 Exec Skill
-
-`ps7-exec` skill'i PS7 ile komut calistirma pattern'ini otomatiklestirir.
-
-### Kullanim
-
-```python
-# Her exec cagrisinda PS7 wrapper (otomatik)
-exec('& "C:\\Program Files\\PowerShell\\7\\pwsh.exe" -NoProfile -Command "cd path && command1 && command2"')
-
-# Veya tools/exec.ps1 helper ile
-exec('& "D:\\bookMaker_Deepseek\\tools\\exec.ps1" "cd path && command1 && command2"')
+Python: 3.14.4  (C:\Users\ismai\AppData\Local\Python\pythoncore-3.14-64\python.exe)
+uv:    0.11.9   (C:\Users\ismai\AppData\Local\Microsoft\WinGet\Packages\astral-sh.uv_*\uv.exe)
+Node:  v22.20.0
+npm:   11.13.0
+Java:  17.0.10 (javac: 17.0.10)
+Git:   2.54.0
 ```
 
-### Proje Helper
-
-`tools/exec.ps1` — PS7 komut yonlendirici:
-
-```powershell
-.\tools\exec.ps1 "cd D:\bookMaker_Deepseek && git status"
-.\tools\exec.ps1 "cd D:\bookMaker_Deepseek && git log --oneline -2"
-```
-
-### Skill Konumu
-
-```
-C:\Users\ismai\.deepchat\skills\ps7-exec\SKILL.md
-```cut
-PowerShell: 7.6.1
-SQLite CLI: 3.51.3
-```
-
-## Arama ve Inceleme
-
+### Python venv
 ```text
-rg: mevcut
-rga: ripgrep-all 0.10.9
-fd: 10.4.2
-fzf: mevcut
+Konum: D:\bookMaker_Deepseek\.venv
+Python: 3.14.4
+Paketler: 43 (uv sync ile kurulu)
+Eksik olan: requests (uv add requests ile eklenmisti, pyproject.toml'de olmayabilir)
+```
+
+### Kabuk Erişimi
+```text
+CLI: Bash (Unix sözdizimi, /dev/null, forward slash)
+Windows araclari bash'ten dogrudan calisir (python, uv, node, git, rg, pandoc, mmdc)
+Calismayanlar: fd, just, mkdocs (Windows exe'leri bash'ten erisilemiyor)
 ```
 
 Notlar:
