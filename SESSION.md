@@ -8,12 +8,13 @@ Detaylı bağlam: `resume.md` | PS7 Exec Skill: `ps7-exec` | Hedefler: `todo.md`
 ## SU AN
 
 ```
-Aktif Faz       : CLI Tamamlama → Studio GUI
-Son Oturum      : Yapısal Ayrıştırma + PS7 Skill + CLI Testleri
+Aktif Faz       : Pipeline Gelistirme
+Son Oturum      : Kod Temizligi + tools/ Arsivleme + bolum-06 Uretimi (2026-05-05)
 Branch          : deepseek
-PowerShell      : 7.6.1 (ZORUNLU — pwsh.exe)
-PS7 Yolu        : C:\Program Files\PowerShell\7\pwsh.exe
-PS5.1           : KULLANILMAYACAK - exec'te && patlar
+DeepSeek Model  : deepseek-chat (tek model)
+API Key         : sk-98a85ecced414d499d34caf73a09b80d
+SSH Remote      : git@github.com:bmdersleri/bookMaker.git (port 443)
+SSH Key         : ~/.ssh/id_ed25519_2
 ```
 
 ---
@@ -109,12 +110,32 @@ PS7 profilde `exec` ve `ps7` fonksiyonları tanımlı.
 
 ---
 
+## 2026-05-05 Oturumu (Kod Temizligi + Pipeline Gelistirme)
+
+### Yapilanlar
+- [x] `pipeline.py`: dual-model referanslari temizlendi, `_spec_seed_normalize()` helper cikarildi
+- [x] `openai.py` + `pipeline.py`: Windows charmap uyumlulugu (⚠ → [WARN])
+- [x] tools/: 94 → 30 script (fix/check/verify archive altina)
+- [x] TODO.md: %67 → %77, GUI_ROADMAP.md: Faz 1-6 ✅
+- [x] dummy-kitap bolum-06: 3510 kelime, spec→validate→seed→normalize (enrich atlandi)
+- [x] API key standartlastirildi: sk-98a85ecced414d499d34caf73a09b80d
+- [x] SSH remote: git@github.com:bmdersleri/bookMaker.git (port 443)
+
+### Onemli Bilgiler
+- Windows'ta `PYTHONIOENCODING=utf-8` zorunlu
+- `_gen_bolum06.py`: `python tools/_gen_bolum06.py` ile tekrar uretilebilir
+- Derinleme stratejileri: deepen, two-pass, sectioned (5 strateji secilebilir)
+- book_projects/ .gitignore'da — ayri repo olarak yonetiliyor
+
 ## 🚀 SIRADAKİ ADIMLAR
 
 ```
-1. [ ] Kalan CLI hatalarını düzelt (production full, manifest pipeline, build chapter)
-2. [ ] Studio GUI'yi başlat ve geliştir (FastAPI)
-3. [ ] Kitap pipeline'ını tamamla (scoring → approved → ready_for_export)
+1. [ ] MermaidValidator pipeline entegrasyonu
+2. [ ] Gercek LLM test uretimi (token olcumu)
+3. [ ] Kalan CLI hatalari: production full, manifest pipeline, build chapter
+4. [ ] ChapterTemplate validasyonu
+5. [ ] Paralel chapter generation (27 bolum)
+6. [ ] Studio GUI gelistirme (FastAPI)
 ```
 
 ---
@@ -143,8 +164,10 @@ Bu oturumda:
 
 ```
 Ana Repo (deepseek):
-  d4a4a46 refactor: kitap projeleri book_projects/ altina tasindi, dual-root destegi
-  80a9945 fix: resim yollari ../assets/ -> assets/
+  3f4fb8f fix: encoding duzeltmesi + resume.md + bolum-06 uretim scripti
+  b548d53 chore: kod temizligi - docstring, tools/, TODO, pipeline refactor
+  abb843d feat: deepen theory pipeline + infrastructure revamp
+  746f4a1 feat(studio): Faz 1-6 tamam
 
 Kitap Repo (main):
   50e500b feat: Java'nin Temelleri kitap projesi (23 bolum + 4 ek)
