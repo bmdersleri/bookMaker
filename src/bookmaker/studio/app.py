@@ -13,7 +13,8 @@ try:
 except ImportError:
     FastAPI = None  # type: ignore
 
-from bookmaker.studio.jobs import create_job, list_jobs
+from bookmaker.studio.jobs import (create_job, list_jobs, get_job,
+                                    load_jobs, save_jobs, cancel_job)
 from bookmaker.studio.services import (assemble_service, build_service,
                                        export_service, llm_service,
                                        manifest_service, pipeline_service,
@@ -352,11 +353,14 @@ if FastAPI is not None:
         return {"chapters": plan, "count": len(plan)}
 
     # ================================================================
-    # Pipeline (REST)
+    # Pipeline — Job Queue tabanli (async, polling)
     # ================================================================
     @app.post("/api/generate/{chapter_id}")
     async def api_generate(chapter_id: str,
                            data: dict | None = None) -> dict:
+        """Pipeline isini kuyruga ekler, hemen job_id doner."""
+        from bookmaker.studio.jobs import (create_job, load_jobs,
+                                            save_jobs)
         cfg = llm_service.get_status(get_active_book())
         if not cfg.get("configured"):
             return {"error": "LLM yapılandırılmamış"}
@@ -364,262 +368,63 @@ if FastAPI is not None:
         title = d.get("title") or chapter_id
         ch_info = pipeline_service.get_chapter_info(
             get_active_book(), chapter_id)
-        return pipeline_service.run_generation(
-            get_active_book(), chapter_id, title,
-            d.get("concepts"), d.get("enrich_types"),
-            ch_info.get("order") if ch_info else None)
+        params = {
+            "title": title,
+            "concepts": d.get("concepts"),
+            "enrich_types": d.get("enrich_types"),
+            "chapter_no": ch_info.get("order") if ch_info else None,
+        }
+        root = get_active_book()
+        load_jobs(root)
+        job = create_job("generate", chapter_id, params)
+        save_jobs(root)
+        return {"job_id": job["id"], "chapter_id": chapter_id,
+                "status": "queued", "message": "Is kuyruga eklendi. "
+                "GET /api/jobs/{job_id} ile durumu sorgulayin."}
 
     # ================================================================
     # Jobs
     # ================================================================
     @app.get("/api/jobs")
     async def api_jobs() -> list[dict]:
+        from bookmaker.studio.jobs import list_jobs, load_jobs
+        load_jobs(get_active_book())
         return list_jobs()
+
+    @app.get("/api/jobs/{job_id}")
+    async def api_job_get(job_id: str) -> dict:
+        from bookmaker.studio.jobs import get_job
+        job = get_job(job_id)
+        if not job:
+            return {"error": "Is bulunamadi"}
+        return job
 
     @app.post("/api/jobs")
     async def api_job_create(data: dict) -> dict:
-        return create_job(
+        from bookmaker.studio.jobs import (create_job, load_jobs,
+                                            save_jobs)
+        root = get_active_book()
+        load_jobs(root)
+        job = create_job(
             data.get("step", "generate"),
             data.get("chapter_id", ""), data.get("params"))
+        save_jobs(root)
+        return job
 
-    # ================================================================
-    # WebSocket: Pipeline + Prompt/Response canlı takip
-    # ================================================================
-    @app.websocket("/ws/api/generate/{chapter_id}")
-    async def ws_generate(websocket: WebSocket, chapter_id: str) -> None:
-        import asyncio
-        import concurrent.futures
-        import json as _json
-
-        root = get_active_book()
-        await websocket.accept()
-
-        config_data = {}
-        try:
-            raw = await asyncio.wait_for(
-                websocket.receive_text(), timeout=10)
-            config_data = _json.loads(raw)
-        except (asyncio.TimeoutError, Exception):
-            pass
-
-        cfg = llm_service.get_status(root)
-        if not cfg.get("configured"):
-            await websocket.send_text(_json.dumps(
-                {"type": "error",
-                 "message": "LLM yapılandırılmamış"},
-                ensure_ascii=False))
-            await websocket.close()
-            return
-
-        gen = pipeline_service.get_generator(root)
-        if not gen:
-            await websocket.send_text(_json.dumps(
-                {"type": "error",
-                 "message": "LLM istemcisi başlatılamadı"},
-                ensure_ascii=False))
-            await websocket.close()
-            return
-
-        ch_info = pipeline_service.get_chapter_info(root, chapter_id)
-        title = (config_data.get("title")
-                 or (ch_info.get("title") if ch_info else chapter_id))
-        concepts = config_data.get("concepts") or []
-        enrich_types = config_data.get("enrich_types") or [
-            "ozet", "sozluk", "soru", "alistirma", "hata", "kopru"]
-        GEN_DIR = root / "build" / "generation"
-        GEN_DIR.mkdir(parents=True, exist_ok=True)
-
-        loop = asyncio.get_event_loop()
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
-        t_all = time.time()
-
-        async def send(msg: dict) -> None:
-            try:
-                await websocket.send_text(
-                    _json.dumps(msg, ensure_ascii=False))
-            except Exception:
-                pass
-
-        async def run_step(name: str, label: str, prompt_text: str,
-                           fn, *args) -> str:
-            await send({"type": "prompt", "step": name,
-                        "label": label, "prompt": prompt_text[:2000]})
-            await send({"type": "step", "step": name,
-                        "status": "running", "label": label})
-            t0 = time.time()
-            try:
-                result = await loop.run_in_executor(pool, fn, *args)
-                el = time.time() - t0
-                wc = len(result.split()) if isinstance(result, str) else 0
-                await send({"type": "response", "step": name,
-                            "label": label, "response": result[:2000],
-                            "words": wc})
-                await send({"type": "step", "step": name,
-                            "status": "done", "label": label,
-                            "words": wc, "elapsed_s": round(el, 1)})
-                return result
-            except Exception as e:
-                el = time.time() - t0
-                await send({"type": "step", "step": name,
-                            "status": "error", "label": label,
-                            "error": str(e)[:200],
-                            "elapsed_s": round(el, 1)})
-                raise
-
-        try:
-            from bookmaker.generation.spec import (
-                generate_spec, build_seed_from_spec_prompt,
-                build_spec_prompt, validate_spec,
-                build_spec_validation_prompt)
-            from bookmaker.generation.postprocess import (
-                normalize, extract_sections)
-            from bookmaker.generation.prompts import (
-                SYSTEM_AUTHOR,
-                build_enrich_summary_prompt,
-                build_enrich_glossary_prompt,
-                build_enrich_questions_prompt,
-                build_enrich_exercises_prompt,
-                build_enrich_errors_prompt,
-                build_enrich_bridge_prompt)
-
-            # SPEC
-            sp = build_spec_prompt(
-                title, concepts or [f"{title} ana kavramları"],
-                f"Hedef: {cfg.get('model', 'deepseek-chat')}",
-                ch_info.get("order") if ch_info else None)
-            spec = await run_step(
-                "spec", "Spesifikasyon", sp,
-                generate_spec, gen.client, title,
-                concepts or [f"{title} ana kavramları"],
-                f"Hedef: {cfg.get('model', 'deepseek-chat')}",
-                ch_info.get("order") if ch_info else None)
-
-            # VALIDATE
-            vp = build_spec_validation_prompt(spec, title)
-            validation = await run_step(
-                "validate", "Doğrulama", vp,
-                validate_spec, gen.client, spec, title)
-
-            # SEED
-            sd = build_seed_from_spec_prompt(spec, title)
-            seed_raw = await run_step(
-                "seed", "Seed Üretimi", sd,
-                lambda: gen.client.generate_text(SYSTEM_AUTHOR, sd))
-
-            # NORMALIZE
-            normalized = await run_step(
-                "normalize", "Normalizasyon", "",
-                lambda: normalize(seed_raw, chapter_id, title, gen.config))
-
-            # ENRICH
-            sections = extract_sections(normalized)
-            headings = [s["heading"] for s in sections
-                        if s["heading"] != "__title__"]
-            ctx_lines = [l for l in normalized.splitlines()
-                         if not l.startswith("---")]
-            context = "\n".join(ctx_lines[:20])
-            enrich_parts = {}
-            builders = {
-                "ozet": ("Bölüm Özeti",
-                         build_enrich_summary_prompt, 3),
-                "sozluk": ("Terim Sözlüğü",
-                           build_enrich_glossary_prompt, 3),
-                "soru": ("Kendini Değerlendirme",
-                         build_enrich_questions_prompt, 3),
-                "alistirma": ("Programlama Alıştırmaları",
-                              build_enrich_exercises_prompt, 3),
-                "hata": ("Sık Yapılan Hatalar",
-                         build_enrich_errors_prompt, 3),
-                "kopru": ("Sonraki Bölüme Köprü",
-                          build_enrich_bridge_prompt, 4),
-            }
-            for etype in enrich_types:
-                if etype not in builders:
-                    continue
-                stitle, builder, nargs = builders[etype]
-                up = (builder(chapter_title=title, next_chapter=None,
-                              headings=headings, context=context)
-                      if nargs == 4
-                      else builder(chapter_title=title,
-                                   headings=headings,
-                                   context=context))
-                r = await run_step(
-                    f"enrich_{etype}", stitle, up,
-                    lambda p=up: gen.client.generate_text(
-                        SYSTEM_AUTHOR, p))
-                enrich_parts[etype] = r
-
-            # ASSEMBLE
-            def _assemble():
-                from bookmaker.generation.postprocess import (
-                    insert_section)
-                text = normalized
-                for key, stitle in reversed([
-                    ("alistirma", "Programlama alistirmalari"),
-                    ("soru", "Kendini degerlendirme sorulari"),
-                    ("sozluk", "Terim sozlugu"),
-                    ("ozet", "Bolum ozeti"),
-                    ("hata",
-                     "Sik yapilan hatalar ve yanlis sezgiler"),
-                ]):
-                    if key in enrich_parts and enrich_parts[key]:
-                        text = insert_section(text, stitle,
-                                               enrich_parts[key])
-                if "kopru" in enrich_parts and enrich_parts["kopru"]:
-                    text = insert_section(
-                        text, "Bir sonraki bolume kopru",
-                        enrich_parts["kopru"])
-                return text
-
-            await run_step("assemble", "Birleştirme", "", _assemble)
-
-            final = _assemble()
-            (GEN_DIR / "step4_final.md").write_text(
-                final, encoding="utf-8")
-            (GEN_DIR / "step0_spec.md").write_text(
-                spec, encoding="utf-8")
-            (GEN_DIR / "step1_seed.md").write_text(
-                seed_raw, encoding="utf-8")
-            (GEN_DIR / "step2_normalized.md").write_text(
-                normalized, encoding="utf-8")
-            fmap = {"ozet": "summary", "sozluk": "glossary",
-                    "soru": "questions", "alistirma": "exercises",
-                    "hata": "errors", "kopru": "bridge"}
-            for k, v in enrich_parts.items():
-                if k in fmap:
-                    (GEN_DIR /
-                     f"step3_enrich_{fmap[k]}.md").write_text(
-                        v, encoding="utf-8")
-
-            total_elapsed = time.time() - t_all
-            try:
-                from bookmaker.authoring.pipeline import (
-                    AuthoringPipeline)
-                AuthoringPipeline(root).paste_draft(
-                    chapter_id, final)
-                AuthoringPipeline(root).advance(
-                    chapter_id, "full_text_pasted")
-            except Exception:
-                pass
-
-            await send(
-                {"type": "complete",
-                 "elapsed_s": round(total_elapsed, 1),
-                 "final_words": len(final.split()),
-                 "path": "build/generation/step4_final.md",
-                 "enriched_count": len(enrich_parts)})
-        except Exception as e:
-            await send({"type": "error", "message": str(e)[:300]})
-        finally:
-            pool.shutdown(wait=False)
-            try:
-                await websocket.close()
-            except Exception:
-                pass
-
+    @app.post("/api/jobs/{job_id}/cancel")
+    async def api_job_cancel(job_id: str) -> dict:
+        from bookmaker.studio.jobs import cancel_job, save_jobs
+        job = cancel_job(job_id)
+        if not job:
+            return {"error": "Is bulunamadi"}
+        save_jobs(get_active_book())
+        return {"job_id": job_id, "status": "cancelled"}
 
 def run_studio(host: str = "127.0.0.1", port: int = 8765) -> None:
     if app is None:
         raise ImportError("FastAPI kurulu değil")
+    from bookmaker.studio.jobs import start_worker, load_jobs
+    load_jobs(get_active_book())
+    start_worker(get_active_book())
     import uvicorn
-    uvicorn.run(app, host=host, port=port, ws_ping_interval=300, ws_ping_timeout=600)
+    uvicorn.run(app, host=host, port=port)

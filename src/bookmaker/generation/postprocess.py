@@ -493,6 +493,7 @@ def normalize(
     """
     text = TextCleaner.clean(text)
     text = normalize_headings(text)
+    text = _deduplicate_h2_sections(text)
     text = ensure_front_matter(text, chapter_id, title, config)
     text = _normalize_code_blocks(text)
     text = _cleanup_whitespace(text)
@@ -502,6 +503,48 @@ def normalize(
 # ============================================================
 # H2 BÖLÜM AYIKLAMA — Teorik derinleştirme için
 # ============================================================
+
+def _deduplicate_h2_sections(text: str) -> str:
+    """Mükerrer H2 başlıklarını temizler — aynı başlıktan ikinciyi kaldırır."""
+    lines = text.splitlines()
+    seen_headings: set[str] = set()
+    result: list[str] = []
+    skip_until_next_h2 = False
+    in_code_block = False
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+
+        if stripped.startswith("```"):
+            in_code_block = not in_code_block
+            if skip_until_next_h2 and not in_code_block:
+                skip_until_next_h2 = False
+            result.append(line)
+            continue
+
+        if in_code_block:
+            result.append(line)
+            continue
+
+        h2_match = re.match(r"^##\s+(.+)$", stripped)
+        if h2_match:
+            heading = h2_match.group(1).strip()
+            norm_key = heading.lower().translate(
+                str.maketrans("öüşığçÖÜŞİĞÇ", "ousigcOUSIGC")
+            )
+            if norm_key in seen_headings:
+                skip_until_next_h2 = True
+                continue
+            seen_headings.add(norm_key)
+            skip_until_next_h2 = False
+
+        if skip_until_next_h2:
+            continue
+
+        result.append(line)
+
+    return "\n".join(result)
+
 
 def extract_h2_sections(text: str) -> list[dict[str, str]]:
     """Metni H2 başlıklarına göre bölümlere ayırır.

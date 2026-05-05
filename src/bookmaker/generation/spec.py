@@ -128,6 +128,8 @@ Yazım kuralları:
   (Kod ZORUNLU DEĞİL: yol haritası, öğrenme çıktıları, ön bilgi, özet, sözlük, sorular, rubrik, kaynaklar, köprü)
 - Değişken isimleri anlamlı Türkçe, her kodda 3+ yorum satırı, // Çıktı: ... gösterimi
 - Bölüm sonunda: Özet, Sözlük, Sorular, Alıştırmalar, Hatalar
+- Spesifikasyonda DİYAGRAMLAR bölümü varsa, HER diyagramı ```mermaid kod bloğu olarak üret
+  (en az 5 düğüm, karar noktaları için elmas, altına 1-2 cümle açıklama)
 
 ÖNEMLİ: Spesifikasyondaki HER PLANI içeriğe dönüştür. Hiçbir şeyi atlama."""
 

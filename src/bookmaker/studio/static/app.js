@@ -58,12 +58,16 @@ async function loadProject() {
   try {
     const r = await fetch('/api/project');
     projectData = await r.json();
-    document.getElementById('book-title').textContent = projectData.title || '(isimsiz)';
-    document.getElementById('stat-chapters').textContent = projectData.chapters || 0;
+    var bt = document.getElementById('book-title');
+    if (bt) bt.textContent = projectData.title || '(isimsiz)';
+    var el = document.getElementById('stat-chapters');
+    if (el) el.textContent = projectData.chapters || 0;
     const sc = projectData.stage_counts || {};
-    document.getElementById('stat-approved').textContent = (sc.approved || 0) + '/' + (projectData.chapters || 0);
-    document.getElementById('stat-stage').textContent = projectData.stage || '\u2014';
-  } catch(e) {}
+    el = document.getElementById('stat-approved');
+    if (el) el.textContent = (sc.approved || 0) + '/' + (projectData.chapters || 0);
+    el = document.getElementById('stat-stage');
+    if (el) el.textContent = projectData.stage || '\u2014';
+  } catch(e) { console.error('loadProject:', e); }
 }
 
 // =========== CHAPTERS ===========
@@ -234,13 +238,12 @@ async function runPipeline(id) {
   switchTab('pipeline');
 }
 
-// =========== PIPELINE (WS) ===========
+// =========== PIPELINE (Job Queue + Polling) ===========
 function getEnrichTypes() {
   return Array.from(document.querySelectorAll('.chk-enrich:checked')).map(el=>el.value);
 }
-function getTemperature() {
-  return parseFloat(document.getElementById('gen-temperature').value);
-}
+
+let _pollTimer = null;
 
 async function runGeneration() {
   const id=document.getElementById('gen-chapter-id').value.trim();
@@ -248,65 +251,85 @@ async function runGeneration() {
   const conceptsRaw=document.getElementById('gen-concepts').value.trim();
   const output=document.getElementById('gen-output');
   const step=document.getElementById('gen-step'), bar=document.getElementById('gen-bar');
-  const log=document.getElementById('gen-log'), pp=document.getElementById('gen-prompt-panel');
-  const pt=document.getElementById('gen-prompt-text'), rt=document.getElementById('gen-response-text');
+  const log=document.getElementById('gen-log');
   const cancelBtn=document.getElementById('cancel-pipeline-btn');
 
-  output.classList.remove('hidden'); pp.classList.add('hidden');
-  log.textContent=''; pt.textContent=''; rt.textContent='';
-  wsCancel=false; cancelBtn.classList.remove('hidden');
+  if (!id) { showToast('Bolum ID gerekli', 'error'); return; }
 
-  const ws=new WebSocket((window.location.protocol==='https:'?'wss:':'ws:')+'//'+window.location.host+'/ws/api/generate/'+id);
-  const enrichLabels=['ozet','sozluk','soru','alistirma','hata','kopru'];
-  let stepLog=[], enrichTypes=getEnrichTypes();
+  output.classList.remove('hidden');
+  log.textContent = ''; bar.style.width = '5%';
+  step.textContent = 'Is kuyruga ekleniyor...';
+  cancelBtn.classList.remove('hidden');
+  if (_pollTimer) clearInterval(_pollTimer);
 
-  function updateBar(name) {
-    const total=10+enrichLabels.length;
-    const done=stepLog.filter(s=>s.status==='done').length;
-    bar.style.width=Math.min(95,(done/total)*100)+'%';
-    step.textContent='['+name+'] calisiyor...';
-  }
-
-  ws.onopen=()=>{
-    step.textContent='Pipeline basliyor...'; bar.style.width='5%';
-    ws.send(JSON.stringify({title,concepts:conceptsRaw?conceptsRaw.split(',').map(s=>s.trim()):[],enrich_types:enrichTypes}));
-  };
-  ws.onmessage=(event)=>{
-    const d=JSON.parse(event.data);
-    if(d.type==='step'){
-      if(d.status==='running'){ updateBar(d.label); }
-      else if(d.status==='done'){ stepLog.push({name:d.step,status:'done'});
-        log.textContent+='[OK] '+d.label+': '+d.words+' kel, '+d.elapsed_s+'s\n';
-        step.textContent='['+d.label+'] tamam ('+d.elapsed_s+'s)'; }
-      else if(d.status==='error'){ stepLog.push({name:d.step,status:'error'});
-        log.textContent+='[HATA] '+d.label+': '+d.error+'\n';
-        step.textContent='['+d.label+'] HATA'; }
-    } else if(d.type==='prompt'){
-      pp.classList.remove('hidden'); pt.textContent=d.prompt.slice(0,2000);
-    } else if(d.type==='response'){
-      rt.textContent=d.response.slice(0,2000);
-    } else if(d.type==='complete'){
-      bar.style.width='100%'; step.textContent='Tamamlandi!';
-      log.textContent+='\nTOPLAM: '+d.final_words+' kel, '+d.elapsed_s+'s\n';
+  try {
+    const r = await fetch('/api/generate/' + encodeURIComponent(id), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: title || undefined,
+        concepts: conceptsRaw ? conceptsRaw.split(',').map(s => s.trim()) : undefined,
+        enrich_types: getEnrichTypes()
+      })
+    });
+    const data = await r.json();
+    if (data.error) {
+      step.textContent = 'HATA: ' + data.error;
+      showToast(data.error, 'error');
       cancelBtn.classList.add('hidden');
-      showToast(id+' uretildi: '+d.final_words+' kel','success');
-      loadChapters(); loadPipelineState(); loadJobs();
-    } else if(d.type==='error'){
-      step.textContent='HATA'; log.textContent+='\nHATA: '+d.message+'\n';
-      cancelBtn.classList.add('hidden');
-      showToast(d.message,'error');
+      return;
     }
-  };
-  ws.onerror=()=>{ step.textContent='WS hatasi'; cancelBtn.classList.add('hidden'); };
-  ws.onclose=()=>{ if(bar.style.width!=='100%' && !wsCancel) step.textContent='Baglanti kapatildi'; cancelBtn.classList.add('hidden'); };
-  window._pipeline_ws=ws;
+
+    const jobId = data.job_id;
+    step.textContent = 'Is kuyrukta (# ' + jobId.slice(0,8) + ')...';
+    log.textContent = 'Job ID: ' + jobId + '\n';
+
+    const steps = { spec: 1, validate: 2, seed: 3, normalize: 4, enrich: 5, assemble: 6 };
+    _pollTimer = setInterval(async () => {
+      try {
+        const jr = await fetch('/api/jobs/' + jobId);
+        const job = await jr.json();
+        if (!job || job.error) { clearInterval(_pollTimer); return; }
+
+        const prog = job.progress || {};
+        const done = steps[prog.current] || 0;
+        bar.style.width = Math.min(95, (done / 6) * 100) + '%';
+        step.textContent = '[' + (prog.current || '...') + '] ' + job.status;
+
+        var logs = (prog.log || []);
+        if (logs.length > 0) {
+          log.textContent = 'Job: ' + jobId + '\n' + logs.slice(-8).join('\n');
+        }
+
+        if (job.status === 'done') {
+          clearInterval(_pollTimer); _pollTimer = null;
+          bar.style.width = '100%';
+          var s = job.summary || {};
+          step.textContent = 'Tamamlandi! ' + (s.words || '?') + ' kel, ' + (s.elapsed_s || '?') + 's';
+          log.textContent += '\n\nDONE: ' + (s.words||'?') + ' kelime, ' + (s.elapsed_s||'?') + 's';
+          cancelBtn.classList.add('hidden');
+          showToast(id + ' uretildi: ' + (s.words||'?') + ' kel', 'success');
+          loadChapters(); loadPipelineState(); loadJobs();
+        } else if (job.status === 'error') {
+          clearInterval(_pollTimer); _pollTimer = null;
+          step.textContent = 'HATA';
+          log.textContent += '\n\nHATA: ' + (job.error || 'Bilinmeyen hata');
+          cancelBtn.classList.add('hidden');
+          showToast('Pipeline hatasi: ' + (job.error || '?'), 'error');
+        }
+      } catch(e) { /* polling hatasi — devam */ }
+    }, 2000);
+  } catch(e) {
+    step.textContent = 'HATA: ' + e.message;
+    cancelBtn.classList.add('hidden');
+  }
 }
 
 function cancelPipeline() {
-  wsCancel=true;
-  if(window._pipeline_ws) { window._pipeline_ws.close(); }
+  if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null; }
+  document.getElementById('gen-step').textContent = 'Iptal edildi';
   document.getElementById('cancel-pipeline-btn').classList.add('hidden');
-  showToast('Pipeline iptal edildi','info');
+  showToast('Pipeline iptal edildi', 'info');
 }
 
 // =========== LLM CONFIG ===========
