@@ -81,3 +81,10 @@ git push origin deepseek
 - 4-stage pipeline: Spec → Seed → Normalize → Enrich → Assemble
 - 6-step pedagogical depth chain: TANIM → NEDEN → NASIL → NE ZAMAN → ALTERNATİF → HATA
 - Enrichment: parallel LLM calls for özet/sözlük/soru/alıştırma/hata/köprü
+
+## Project Skills
+See `.claude/skills/` for detailed workflows:
+- `pipeline-dev` — edit → validate → test cycle for generation code
+- `chapter-debug` — analyze pipeline output for quality issues
+- `quick-validate` — pre-commit fast check (<5s, no API)
+- Invoke `quick-validate` skill before every commit that touches Python code
