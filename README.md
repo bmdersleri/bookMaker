@@ -20,6 +20,30 @@ D:\bookMaker_Deepseek\              ← Otomasyon repom (bmdersleri/bookMaker)
 └── docs/                             ← Dokümantasyon
 ```
 
+## Yeni Makine Kurulumu
+
+```bash
+# 1. Repo'yu klonla
+git clone https://github.com/bmdersleri/bookMaker.git
+cd bookMaker
+
+# 2. Sanal ortam ve bagimliliklar
+uv venv --python 3.14
+uv sync
+
+# 3. LLM yapilandirmasi (makine-ozel, git'te yok!)
+cp llm_config.example.json llm_config.json
+# llm_config.json'u duzenle, kendi API anahtarini ekle
+
+# 4. Kitap projesini ayri repodan klonla (submodule yok, manuel)
+git clone https://github.com/bmdersleri/java-temelleri.git book_projects/java-temelleri
+# VEYA var olan kitap projeni book_projects/ altina kopyala
+
+# 5. Calistir
+python -m bookmaker --help
+python tools/validate_prompt_changes.py
+```
+
 ## Kullanım
 
 ```powershell
@@ -33,7 +57,10 @@ bookmaker --path book_projects/java-temelleri check book
 # Production build
 bookmaker --project java-temelleri production full build/output/java-programlamaya-giris.md
 
-# Tools scriptleri (güncellenmiş path'lerle)
+# Tools scriptleri
 python tools/build/book_build.py
 python tools/build/book_pdf_v3.py
+
+# Pipeline test
+python tools/test_pipeline_full.py
 ```

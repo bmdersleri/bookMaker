@@ -13,6 +13,19 @@ api.txt
 *.key
 secrets/
 credentials/
+llm_config.json
+
+# Makine-ozel yapilandirma (senkronize EDILMEZ)
+.claude/settings.local.json
+.remember/
+.vtcode/
+vtcode.toml
+debug.log
+
+# Build ciktilari ve cache
+build/
+!book_projects/*/build/.gitkeep
+*.log
 
 node_modules/
 
