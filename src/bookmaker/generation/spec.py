@@ -108,10 +108,14 @@ def generate_spec(client, chapter_title: str, concepts: list[str],
 
 
 def validate_spec(client, spec: str, chapter_title: str) -> dict:
-    """LLM'e spesifikasyonu doğrulatır."""
+    """LLM'e spesifikasyonu doğrulatır.
+
+    Returns:
+        {"status": "PASS"|"REVISION", "notes": "...", "response": "..."}
+    """
     user = build_spec_validation_prompt(spec, chapter_title)
     print(f"  [VALIDATE] Spesifikasyon kontrol ediliyor...")
     result = client.generate_text(SYSTEM_AUTHOR, user)
-    valid = "PASS" in result.upper()
-    print(f"  [VALIDATE] {'PASS' if valid else 'REVISION'}, {len(result.split())} kelime")
-    return {"valid": valid, "issues": [] if valid else [result[:200]], "notes": result}
+    status = "PASS" if "PASS" in result.upper() else "REVISION"
+    print(f"  [VALIDATE] {status}, {len(result.split())} kelime")
+    return {"status": status, "notes": result, "response": result}

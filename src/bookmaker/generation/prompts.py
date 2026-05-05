@@ -1,98 +1,265 @@
-"""Üretim prompt şablonları."""
+"""Sade ve işlevsel prompt şablonları.
+Strateji: Aşama 1'de LLM serbestçe içerik üretir, Aşama 2'de kod normalleştirir,
+Aşama 3'te LLM eksik kısımları doldurur (hedefli, küçük çağrılar).
+"""
 
 from __future__ import annotations
 
-SYSTEM_PROMPT_OUTLINE = """Sen deneyimli bir teknik kitap editörüsün.
-Verilen konu ve amaç doğrultusunda ayrıntılı bir bölüm outline'ı hazırlayacaksın.
+# ============================================================
+# AŞAMA 0: SISTEM PROMPT — Yazar Personası
+# ============================================================
+# Çok kısa, çok net. LLM'in nasıl bir yazar olduğunu tanımlar.
+# ============================================================
 
-Outline:
-- Tek H1 başlık
-- En az 5 H2 alt bölüm
-- Her H2 altında gerekirse H3 detayları
-- Kod örneklerinin yer alacağı bölümleri işaretle
-- Pedagojik akış: kavram → örnek → uygulama → değerlendirme
-"""
+SYSTEM_AUTHOR = """Sen, Türkçe programlama kitabı yazan kıdemli bir teknik yazarsın.
 
-SYSTEM_PROMPT_CHAPTER = """Sen deneyimli bir teknik kitap yazarı ve pedagojik içerik uzmanısın.
-Verilen outline ve seed bilgisine gore CHAPTER_SPEC.md uyumlu
-eksiksiz bir bolum Markdown metni ureteceksin.
-
-YAML FRONT MATTER (mutlaka dosyanin en basinda olmali):
----
-title: "[Bolum basligi]"
-subtitle: "Java'nin Temelleri"
-author: "Ismail Kirbas"
-date: "2026"
-lang: tr-TR
-documentclass: report
-toc: true
-toc-depth: 3
-numbersections: true
-repo: bmdersleri
-project-alias: javanintemelleri
-chapter-alias: [chapter_id]
-chapter_id: [chapter_id]
-chapter_type: core
-automation_profile: academic_technical_book_v1
-numbering: auto
-github_slug: [chapter_id]
-qr_policy: dual_for_code_examples
-asset_policy: manual_override
----
-
-Kurallar:
-1. YAML front matter ILE BASLA (yukaridaki gibi).
-2. Basliklar elle numaralandirilmasin.
-3. Her kod blogundan once CODE_META blogu olsun.
-4. Kod ornekleri Java olsun, dosya adi public class adiyla uyumlu olsun.
-5. Pedagojik kutular icin blockquote kullan.
-6. Bolum sonunda ozet, terim sozlugu, sorular ve alistirmalar olsun.
-"""
-
-SYSTEM_PROMPT_BOOK = """Sen deneyimli bir teknik kitap yazarısın.
-Verilen konu başlığı için eksiksiz bir kitap outline'ı hazırlayacaksın.
-
-Kitap yapısı:
-- Kısımlara ayrılmış bölümler
-- Her bölüm için amaç, öğrenme çıktıları ve zorunlu kavramlar
-- Bölüm başına 2-3 kod örneği planı
-- Her bölüm için mini uygulama fikri
-"""
+Yazı dilin:
+- Akademik ama sade: Karmaşık kavramları basit örneklerle açıklarsın
+- Uygulama odaklı: Her kavramın hemen ardından çalışan Java kodu verirsin
+- Hedef kitle: Java'ya sıfırdan başlayan, temel programlama mantığını bilen öğrenciler
+- Her bölümde mutlaka en az bir Mermaid akış diyagramı kullanırsın
+- Derinlemesine açıklama: Her kavramı en az 3-5 paragraf ile açıklar, günlük hayattan analojilerle somutlaştırırsın
+- "Neden?" odaklı: Her kavramın önce neden var olduğunu, hangi problemi çözdüğünü anlatır, sonra nasıl kullanıldığını gösterirsin
+- Karşılaştırmalı anlatım: Benzer kavramları yan yana koyar, farklarını ve hangi durumda hangisinin tercih edileceğini açıklarsın
+- Tarihsel bağlam: Önemli kavramların Java ekosistemindeki gelişimini kısaca belirtirsin (hangi sürümde geldi, neden eklendi)"""
 
 
-def outline_prompt(topic: str, purpose: str = "") -> tuple[str, str]:
-    """Outline üretimi için prompt çifti döndürür."""
-    user = (
-        f"Konu: {topic}\nAmaç: {purpose or 'Temel kavramları öğretmek'}\n"
-        "Ayrıntılı bir outline hazırla."
-    )
-    return SYSTEM_PROMPT_OUTLINE, user
+# ============================================================
+# AŞAMA 1: SEED PROMPT — Bölüm Üretimi (tek çağrı)
+# ============================================================
+# LLM sadece içeriğe odaklanır. Format kaygısı yok.
+# ============================================================
 
-
-def chapter_prompt(
+def build_seed_prompt(
     chapter_title: str,
-    outline_text: str,
-    purpose: str = "",
-    concepts: list[str] | None = None,
-) -> tuple[str, str]:
-    """Bölüm üretimi için prompt çifti."""
-    concepts_str = "\n".join(f"- {c}" for c in (concepts or []))
-    user = (
-        f"Bölüm: {chapter_title}\n\n"
-        f"Amaç: {purpose or 'Temel kavramları öğretmek'}\n\n"
-        f"Outline:\n{outline_text}\n\n"
-    )
-    if concepts_str:
-        user += f"Zorunlu kavramlar:\n{concepts_str}\n\n"
-    user += "Yukarıdaki outline'a göre eksiksiz bölüm metnini üret."
-    return SYSTEM_PROMPT_CHAPTER, user
+    concepts: list[str],
+    outline: str | None = None,
+    chapter_no: int | None = None,
+) -> str:
+    """Bölüm üretimi için seed prompt'u oluşturur.
+
+    Args:
+        chapter_title: Bölüm başlığı (örn. "Dosya İşlemleri ve Kalıcı Veri Saklama")
+        concepts: Bölümde işlenecek temel kavramlar
+        outline: Varsa bölüm outline'ı (H2 başlıkları)
+        chapter_no: Varsa bölüm numarası
+
+    Returns:
+        LLM'e gönderilecek kullanıcı prompt'u
+    """
+    # Kavramları madde işaretine çevir
+    concepts_str = "\n".join(f"  - {c}" for c in concepts)
+
+    # Outline varsa ekle
+    outline_str = ""
+    if outline:
+        outline_str = f"\nOutline:\n{outline}\n"
+
+    # Bölüm numarası
+    no_str = f"Bölüm {chapter_no}: " if chapter_no else ""
+
+    return f"""## {no_str}{chapter_title}
+
+**Kapsanan kavramlar:**
+{concepts_str}{outline_str}
+
+---
+İÇERİK DERİNLİĞİ KURALLARI (EN ÖNEMLİ):
+- Her kavramı EN AZ 3-5 PARAGRAF ile detaylı açıkla. Kısa geçme!
+- Her kavram için şu yapıyı kullan: NEDEN var? → NE işe yarar? → NASIL kullanılır? → NE ZAMAN tercih edilir?
+- Günlük hayattan analojilerle kavramları somutlaştır (örnek: "arayüzler, elektrik prizi gibidir — neyin takıldığı değil, nasıl takıldığı önemlidir")
+- Benzer kavramları karşılaştır: farkları, avantajları, hangi durumda hangisi seçilmeli?
+- Önemli kavramların tarihsel gelişimini kısaca belirt (Java'nın hangi sürümünde geldi?)
+
+YAZIM KURALLARI:
+- H1 = bölüm başlığı, H2 = ana bölümler, H3 = alt bölümler
+- Java kodları ```java bloklarında olsun (HER H2 ALTINDA MUTLAKA ÇALIŞAN ```java KOD ÖRNEĞİ OLMALI)
+- Kod örnekleri açıklayıcı yorumlar içersin, çıktıları örnek olarak göster
+- İstersen ```mermaid bloklarında diyagram ekleyebilirsin
+- Bölüm sonunda mutlaka:
+  ## Bölüm özeti
+  ## Terim sözlüğü (en az 10 terim, her biri **Terim** — Açıklama formatında)
+  ## Kendini değerlendirme soruları (3 adet: 1 D/Y, 1 açık uçlu, 1 kod okuma)
+  ## Programlama alıştırmaları (2 adet: 1 kolay, 1 orta)
+
+Yalnızca içeriğe odaklan. Front matter, meta etiketi, CSS, HTML veya format detayı ekleme."""
 
 
-def book_prompt(topic: str, language: str = "tr-TR", audience: str = "") -> tuple[str, str]:
-    """Kitap outline'ı üretimi için prompt çifti."""
-    user = (
-        f"Kitap konusu: {topic}\nDil: {language}\n"
-        f"Hedef kitle: {audience or 'Başlangıç düzeyi programcılar'}\n\n"
-        "Kısımlara ayrılmış, amaç ve öğrenme çıktılarıyla kitap outline'ı hazırla."
-    )
-    return SYSTEM_PROMPT_BOOK, user
+# ============================================================
+# AŞAMA 3: ENRICHMENT PROMPTLARI — Eksik Kısımları Doldurma
+# ============================================================
+# Her biri bağımsız, küçük, hedefli LLM çağrıları.
+# Context olarak bölüm başlığı + H2 başlıkları + ilk 500 karakter yeterli.
+# ============================================================
+
+def build_enrich_glossary_prompt(
+    chapter_title: str,
+    headings: list[str],
+    context: str,
+) -> str:
+    """Terim sözlüğü üretimi için enrichment prompt'u."""
+    headings_str = "\n".join(f"  - {h}" for h in headings)
+    return f"""Bölüm: {chapter_title}
+
+Bölüm başlıkları:
+{headings_str}
+
+Bölümden bir kesit:
+{context[:500]}
+
+Bu bölüm için 10-15 maddelik bir terim sözlüğü yaz.
+Her madde şu formatta:
+**Terim** — Açıklama (tek cümle)
+
+Yalnızca sözlüğü üret, başka bir şey ekleme."""
+
+
+def build_enrich_questions_prompt(
+    chapter_title: str,
+    headings: list[str],
+    context: str,
+) -> str:
+    """Kendini değerlendirme soruları üretimi."""
+    headings_str = "\n".join(f"  - {h}" for h in headings)
+    return f"""Bölüm: {chapter_title}
+
+Bölüm başlıkları:
+{headings_str}
+
+Bölümden bir kesit:
+{context[:500]}
+
+Bu bölüm için 3 kendini değerlendirme sorusu yaz:
+
+1. **Doğru/Yanlış** — Cevabı ve kısa açıklamasıyla
+2. **Açık uçlu** — Kavramsal bir soru, cevabıyla
+3. **Kod okuma** — Kısa bir Java kodu ver, çıktısını sor
+
+Her sorunun cevabını da ekle. Yalnızca soruları üret."""
+
+
+def build_enrich_exercises_prompt(
+    chapter_title: str,
+    headings: list[str],
+    context: str,
+) -> str:
+    """Programlama alıştırmaları üretimi."""
+    headings_str = "\n".join(f"  - {h}" for h in headings)
+    return f"""Bölüm: {chapter_title}
+
+Bölüm başlıkları:
+{headings_str}
+
+Bölümden bir kesit:
+{context[:500]}
+
+Bu bölüm için 2 programlama alıştırması yaz:
+
+1. **Kolay seviye** (10-15 satır Java kodu)
+   - Amaç, görev, ipucu, beklenen çıktı
+
+2. **Orta seviye** (20-30 satır Java kodu)
+   - Amaç, görev, ipucu, beklenen çıktı
+
+Yalnızca alıştırmaları üret, başka bir şey ekleme."""
+
+
+def build_enrich_summary_prompt(
+    chapter_title: str,
+    headings: list[str],
+    context: str,
+) -> str:
+    """Bölüm özeti üretimi."""
+    headings_str = "\n".join(f"  - {h}" for h in headings)
+    return f"""Bölüm: {chapter_title}
+
+Bölüm başlıkları:
+{headings_str}
+
+Bölümden bir kesit:
+{context[:500]}
+
+Bu bölüm için 3-5 cümlelik bir özet yaz.
+Bölümde öğrenilen ana kavramları ve kazanımları vurgula.
+Yalnızca özet metnini üret."""
+
+
+def build_enrich_bridge_prompt(
+    chapter_title: str,
+    next_chapter: str | None,
+    headings: list[str],
+    context: str,
+) -> str:
+    """Sonraki bölüme köprü üretimi."""
+    headings_str = "\n".join(f"  - {h}" for h in headings)
+    next_str = f"Bir sonraki bölüm: {next_chapter}" if next_chapter else ""
+    return f"""Bölüm: {chapter_title}
+
+Bölüm başlıkları:
+{headings_str}
+
+{next_str}
+
+Bölümden bir kesit:
+{context[:500]}
+
+Bu bölümün sonu için 2-3 cümlelik bir köprü yaz.
+Bugünkü bilgilerin bir sonraki bölüme nasıl temel oluşturduğunu anlat.
+Yalnızca köprü metnini üret."""
+
+
+def build_enrich_errors_prompt(
+    chapter_title: str,
+    headings: list[str],
+    context: str,
+) -> str:
+    """Sık yapılan hatalar bölümü üretimi."""
+    headings_str = "\n".join(f"  - {h}" for h in headings)
+    return f"""Bölüm: {chapter_title}
+
+Bölüm başlıkları:
+{headings_str}
+
+Bölümden bir kesit:
+{context[:500]}
+
+Bu bölümün konusuyla ilgili 3-5 tane sık yapılan hata ve yanlış sezgi yaz.
+Her hata için: hatanın ne olduğu, neden yapıldığı ve nasıl düzeltileceği.
+
+Yalnızca hataları üret, başka bir şey ekleme."""
+
+
+def build_enrich_deepen_prompt(
+    chapter_title: str,
+    section_heading: str,
+    section_content: str,
+) -> str:
+    """Teorik derinleştirme için enrichment prompt'u.
+
+    Mevcut bir bölümü alır, teorik açıklamaları genişletir.
+    Kod örneklerine dokunmaz, sadece açıklamaları derinleştirir.
+    """
+    return f"""Bölüm: {chapter_title}
+Alt Bölüm: {section_heading}
+
+MEVCUT İÇERİK:
+{section_content[:2000]}
+
+---
+GÖREV: Bu alt bölümün teorik açıklamalarını YAKLAŞIK 2 KATINA genişlet.
+KESİNLİKLE 3 KATINDAN FAZLA BÜYÜTME — gereksiz tekrarlardan kaçın.
+
+KURALLAR:
+- Mevcut kod örneklerine DOKUNMA, onları aynen koru
+- En önemli 1-2 kavramı şu yapıyla derinleştir: NEDEN var? → Hangi problemi çözer? → Ne zaman kullanılır?
+- Günlük hayattan en fazla 1 kısa analoji ekle (uzun hikaye anlatma)
+- En kritik 1 karşılaştırma yap (hepsini karşılaştırmaya çalışma)
+- Kod örneklerine 1-2 cümlelik açıklama ekle, satır satır uzun açıklama yapma
+- Tarihsel bağlamı yalnızca çok önemliyse 1 cümle ile belirt
+
+ÇIKTI FORMATI:
+- Aynı başlık yapısını koru (H2, H3 aynı kalsın)
+- Mevcut metni genişlet ama aşırıya kaçma — hedef: ~2x uzunluk
+- Kod bloklarını aynen koru
+- Çıktı mevcut içeriğin 3 katından uzunsa başarısız sayılır
+- Yalnızca genişletilmiş alt bölüm içeriğini üret, başka bir şey ekleme"""

@@ -374,3 +374,126 @@ def normalize(
     text = normalize_headings(text)
     text = ensure_front_matter(text, chapter_id, title, config)
     return text.strip() + "\n"
+
+
+# ============================================================
+# H2 BÖLÜM AYIKLAMA — Teorik derinleştirme için
+# ============================================================
+
+def extract_h2_sections(text: str) -> list[dict[str, str]]:
+    """Metni H2 başlıklarına göre bölümlere ayırır.
+
+    Her bölüm: {"heading": "H2 başlığı", "content": "içerik"}
+    H1 başlığından önceki kısım "__preamble__" olarak döner.
+
+    Kod blokları içindeki ## işaretleri heading sayılmaz.
+    """
+    sections = []
+    lines = text.splitlines()
+    current_heading = "__preamble__"
+    current_lines = []
+    in_code_block = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Kod bloğu geçişi
+        if stripped.startswith("```"):
+            in_code_block = not in_code_block
+            current_lines.append(line)
+            continue
+
+        if in_code_block:
+            current_lines.append(line)
+            continue
+
+        # H2 başlık tespiti
+        if re.match(r"^##\s+", stripped) and not re.match(r"^###+\s", stripped):
+            # Önceki bölümü kaydet
+            if current_lines:
+                sections.append({
+                    "heading": current_heading,
+                    "content": "\n".join(current_lines).strip(),
+                })
+            current_heading = re.sub(r"^##\s+", "", stripped).strip()
+            current_lines = [line]
+            continue
+
+        current_lines.append(line)
+
+    # Son bölümü kaydet
+    if current_lines:
+        sections.append({
+            "heading": current_heading,
+            "content": "\n".join(current_lines).strip(),
+        })
+
+    return sections
+
+
+def deepen_theory(
+    sections: list[dict[str, str]],
+    deepen_fn,
+    chapter_title: str,
+    min_chars: int = 500,
+) -> list[dict[str, str]]:
+    """Her H2 bölümünü LLM ile teorik olarak derinleştirir.
+
+    Args:
+        sections: extract_h2_sections() çıktısı
+        deepen_fn: (section_heading, section_content) -> genişletilmiş içerik
+                   dönen çağrılabilir (genellikle LLM çağrısı)
+        chapter_title: Bölüm başlığı
+        min_chars: Bu karakterden kısa bölümler atlanır (ön söz vs.)
+
+    Returns:
+        Derinleştirilmiş bölümler listesi (aynı yapıda)
+    """
+    deepened = []
+    for sec in sections:
+        if sec["heading"] == "__preamble__":
+            deepened.append(sec)
+            continue
+        if len(sec["content"]) < min_chars:
+            deepened.append(sec)
+            continue
+        try:
+            expanded = deepen_fn(
+                chapter_title=chapter_title,
+                section_heading=sec["heading"],
+                section_content=sec["content"],
+            )
+            if expanded and len(expanded) > len(sec["content"]) * 0.5:
+                # Hiçbir zaman içeriği küçültme
+                if len(expanded) < len(sec["content"]):
+                    deepened.append(sec)
+                    print(f"    [deepen] '{sec['heading'][:50]}': "
+                          f"küçülme tespit edildi ({len(sec['content'])} → {len(expanded)}), orijinal korundu")
+                # Aşırı büyümeyi engelle: 3 kattan fazla büyüdüyse orijinali koru
+                elif len(expanded) > len(sec["content"]) * 3:
+                    deepened.append(sec)
+                    print(f"    [deepen] '{sec['heading'][:50]}': "
+                          f"aşırı büyüme ({len(sec['content'])} → {len(expanded)}), orijinal korundu")
+                else:
+                    deepened.append({"heading": sec["heading"], "content": expanded})
+                    print(f"    [deepen] '{sec['heading'][:50]}': "
+                          f"{len(sec['content'])} → {len(expanded)} karakter")
+            else:
+                deepened.append(sec)
+                print(f"    [deepen] '{sec['heading'][:50]}': atlandı (yeterli genişleme yok)")
+        except Exception as e:
+            print(f"    [deepen] '{sec['heading'][:50]}': HATA — {e}")
+            deepened.append(sec)
+    return deepened
+
+
+def reassemble_from_sections(sections: list[dict[str, str]]) -> str:
+    """Derinleştirilmiş bölümleri tekrar birleştirir."""
+    parts = []
+    for sec in sections:
+        if sec["heading"] == "__preamble__":
+            parts.append(sec["content"])
+        else:
+            # Heading zaten content içinde ilk satır olarak var
+            parts.append(sec["content"])
+    return "\n\n".join(parts)

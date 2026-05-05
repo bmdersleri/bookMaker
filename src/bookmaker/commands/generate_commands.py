@@ -38,13 +38,12 @@ def generate_chapter(
     console.print(f"[bold]Bolum uretiliyor:[/bold] {chapter_id}")
 
     try:
-        text = pipe.generate_chapter(
+        result = pipe.generate_chapter_with_spec(
             chapter_id=chapter_id,
-            chapter_title=title or chapter_id,
-            purpose=purpose,
-            concepts=concept_list,
+            title=title or chapter_id,
+            concepts=concept_list or [],
         )
-        console.print(f"[green]Bolum uretildi ({len(text)} karakter).[/green]")
+        console.print(f"[green]Bolum uretildi ({len(result.get('final', ''))} karakter).[/green]")
     except RuntimeError as e:
         console.print(f"[red]Hata: {e}[/red]")
         raise typer.Exit(1)
