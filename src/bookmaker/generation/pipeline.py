@@ -128,7 +128,8 @@ class ChapterGenerator:
 
     def enrich(self, normalized_text: str, chapter_title: str,
                enrich_types: Optional[list[str]] = None,
-               next_chapter: Optional[str] = None) -> dict[str, str]:
+               next_chapter: Optional[str] = None,
+               concepts: Optional[list[str]] = None) -> dict[str, str]:
         """Eksik bolumleri LLM ile paralel doldurur."""
         if not self.client:
             print("  [WARN] Enrich client yok, fallback kullaniliyor.")
@@ -138,9 +139,16 @@ class ChapterGenerator:
         sections = extract_sections(normalized_text)
         headings = [s["heading"] for s in sections
                     if s["heading"] != "__title__"]
-        first_lines = normalized_text.splitlines()
-        ctx_lines = [l for l in first_lines if not l.startswith("---")]
-        context = "\n".join(ctx_lines[:20])
+
+        # Tam baglam: ilk 2000 + son 2000 karakter
+        clean_text = normalized_text
+        if clean_text.startswith("---"):
+            idx = clean_text.find("---", 3)
+            if idx != -1:
+                clean_text = clean_text[idx + 3:]
+        head = clean_text[:2000].strip()
+        tail = clean_text[-2000:].strip() if len(clean_text) > 4000 else ""
+        context = head + ("\n...\n" + tail if tail else "")
 
         type_map = {
             "ozet": ("Bolum ozeti", build_enrich_summary_prompt),
@@ -179,10 +187,12 @@ class ChapterGenerator:
                 if key == "kopru":
                     up = builder(chapter_title=chapter_title,
                                  next_chapter=next_chapter,
-                                 headings=headings, context=context)
+                                 headings=headings, context=context,
+                                 concepts=concepts)
                 else:
                     up = builder(chapter_title=chapter_title,
-                                 headings=headings, context=context)
+                                 headings=headings, context=context,
+                                 concepts=concepts)
                 fut = pool.submit(self._call_enrich, up)
                 fmap[fut] = key
             for fut in concurrent.futures.as_completed(fmap):
@@ -271,7 +281,7 @@ class ChapterGenerator:
         # Asama 3: Enrich
         t0 = time.time()
         enriched = self.enrich(normalized, title, enrich_types,
-                               next_chapter) if result["missing"] else {}
+                               next_chapter, concepts=concepts) if result["missing"] else {}
         result["enriched"] = enriched
         result["timings"]["enrich"] = round(time.time() - t0, 1)
 
@@ -385,7 +395,8 @@ class ChapterGenerator:
 
         # STEP 3: ENRICH
         missing = self.detect_missing(norm)
-        enriched = self.enrich(norm, title, enrich_types, next_chapter) if missing else {}
+        enriched = self.enrich(norm, title, enrich_types, next_chapter,
+                               concepts=concepts) if missing else {}
         for k, v in enriched.items():
             self._save(gen_dir / f"prompt3_enrich_{k}.txt",
                        f"Enrichment: {k}, Chapter: {title}")
@@ -533,7 +544,7 @@ class ChapterGenerator:
         # --- STEP 4: ENRICH ---
         print(f"\n--- ADIM 4: ENRICHMENT ---")
         missing = self.detect_missing(normalized)
-        enriched = self.enrich(normalized, title) if missing else {}
+        enriched = self.enrich(normalized, title, concepts=concepts) if missing else {}
         for k, v in enriched.items():
             self._save(gen_dir / f"enrich_{k}.md", v)
         result["enriched"] = enriched
@@ -681,7 +692,8 @@ class ChapterGenerator:
         missing = self.detect_missing(deepened)
         enriched = {}
         if missing:
-            enriched = self.enrich(deepened, title, enrich_types, next_chapter)
+            enriched = self.enrich(deepened, title, enrich_types, next_chapter,
+                                   concepts=concepts)
             for k, v in enriched.items():
                 self._save(gen_dir / f"enrich_{k}.md", v)
         result["enriched"] = enriched
@@ -736,7 +748,8 @@ class ChapterGenerator:
 
         # STEP 4: ENRICH
         missing = self.detect_missing(deepened)
-        enriched = self.enrich(deepened, title, enrich_types, next_chapter) if missing else {}
+        enriched = self.enrich(deepened, title, enrich_types, next_chapter,
+                               concepts=concepts) if missing else {}
         for k, v in enriched.items():
             self._save(gen_dir / f"step4_enrich_{k}.md", v)
         result["enriched"] = enriched

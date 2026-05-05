@@ -39,7 +39,7 @@ Aşağıdaki başlıklarla detaylı bir spesifikasyon hazırla:
 
 1. **KAVRAMLAR** — Her kavram için: açıklama, zorluk seviyesi, kod örneği gerekip gerekmediği
 2. **KOD ÖRNEKLERİ** — Hangi kavramlar için hangi kod örnekleri yazılacak? Her biri neyi gösterecek?
-3. **DİYAGRAMLAR** — Gerekliyse mermaid diyagramları (ne görselleştirilecek?)
+3. **DİYAGRAMLAR** — EN AZ 2 mermaid diyagramı planla (her biri için: neyi görselleştirecek? hangi düğümler olacak? karar noktaları nerede?)
 4. **SÖZLÜK** — 10-15 terim ve kısa tanımları
 5. **DEĞERLENDİRME** — 3 soru: 1 doğru/yanlış, 1 açık uçlu, 1 kod okuma
 6. **ALIŞTIRMALAR** — 2-3 programlama alıştırması (zorluk seviyeleriyle)
@@ -83,12 +83,29 @@ def build_seed_from_spec_prompt(spec: str, chapter_title: str) -> str:
 {spec}
 
 ---
+İÇERİK DERİNLİĞİ KURALLARI:
+Her kavramı şu 6 adımla işle (sırayla):
+1. TANIM — Kavramı 1-2 net cümleyle tanımla
+2. NEDEN VAR? — Hangi problemi çözer? Bu kavram olmasaydı ne eksik kalırdı?
+3. NASIL KULLANILIR? — Çalışan Java kodu ile göster, sonra kodu satır satır açıkla
+4. NE ZAMAN TERCİH EDİLİR? — Hangi senaryoda bu, hangi senaryoda alternatifi seçilmeli?
+5. ALTERNATİFLERİ — Benzer kavramlarla karşılaştırma tablosu yap
+6. YAYGIN HATALAR — Bu kavramla ilgili en sık yapılan 1-2 hatayı ve çözümünü belirt
+
+Her adım için en az 1-2 paragraf yaz. Günlük hayattan en az 1 analoji zorunlu.
+
 Yazım kuralları:
 - H1 = bölüm başlığı, H2 = ana bölümler, H3 = alt bölümler
-- Spesifikasyonda belirtilen HER kod örneğini ```java bloğunda ver
-- Spesifikasyonda belirtilen HER diyagramı ```mermaid bloğunda ver
+- Kod yazmaya uygun her H2 ve H3 altında ```java kod örneği ver
+  (Şu başlıklarda kod ZORUNLU DEĞİL: yol haritası, konum/pedagojik rol,
+   öğrenme çıktıları, ön bilgi, özet, sözlük, sorular, rubrik, kaynaklar, köprü)
+- Değişken isimleri anlamlı Türkçe olsun
+- Her kod bloğunda en az 3 satır açıklayıcı yorum olsun
+- Kod çıktısını // Çıktı: ... şeklinde göster
+- Her bölümde EN AZ 2 ```mermaid diyagramı ZORUNLUDUR. Diyagramsız bölüm eksiktir!
+  Diyagramlar: 5+ düğümlü, karar noktalı, açıklamalı. İlk diyagram ilk kavramdan sonra.
+- Spesifikasyonda belirtilen HER kod örneğini ve diyagramı ekle
 - Bölüm sonunda: Özet, Sözlük, Sorular, Alıştırmalar, Hatalar
-- Sadece içeriğe odaklan, meta etiketi ekleme
 
 ÖNEMLİ: Spesifikasyondaki HER ŞEYİ bölüme ekle. Hiçbir şeyi atlama."""
 

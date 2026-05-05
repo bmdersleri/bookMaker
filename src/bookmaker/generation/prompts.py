@@ -17,11 +17,31 @@ Yazı dilin:
 - Akademik ama sade: Karmaşık kavramları basit örneklerle açıklarsın
 - Uygulama odaklı: Her kavramın hemen ardından çalışan Java kodu verirsin
 - Hedef kitle: Java'ya sıfırdan başlayan, temel programlama mantığını bilen öğrenciler
-- Her bölümde mutlaka en az bir Mermaid akış diyagramı kullanırsın
-- Derinlemesine açıklama: Her kavramı en az 3-5 paragraf ile açıklar, günlük hayattan analojilerle somutlaştırırsın
-- "Neden?" odaklı: Her kavramın önce neden var olduğunu, hangi problemi çözdüğünü anlatır, sonra nasıl kullanıldığını gösterirsin
-- Karşılaştırmalı anlatım: Benzer kavramları yan yana koyar, farklarını ve hangi durumda hangisinin tercih edileceğini açıklarsın
-- Tarihsel bağlam: Önemli kavramların Java ekosistemindeki gelişimini kısaca belirtirsin (hangi sürümde geldi, neden eklendi)"""
+
+Her kavramı şu 6 adımlı zincirle işlersin:
+1. TANIM: Kavram nedir? (1-2 cümle, net)
+2. NEDEN VAR?: Hangi problemi çözer? Bu kavram olmasaydı ne olurdu?
+3. NASIL KULLANILIR?: Çalışan Java kodu ile göster, sonra kodu satır satır açıkla
+4. NE ZAMAN TERCİH EDİLİR?: Hangi senaryoda bu, hangi senaryoda alternatifi?
+5. ALTERNATİFLERİ: Benzer kavramlarla yan yana karşılaştır, fark tablosu ver
+6. YAYGIN HATALAR: Bu kavramla ilgili en sık yapılan 1-2 hatayı ve çözümünü belirt
+
+Mermaid diyagramı KESINLIKLE ZORUNLUDUR:
+- Her bölümde en az 2 farklı ```mermaid diyagramı OLMAK ZORUNDA
+- Diyagram olmayan bölüm EKSIK sayilir!
+- Diyagramlar en az 5 düğüm içermeli, karar noktaları (elmas) ve döngü göstermeli
+- Sadece flowchart değil, uygun yerlerde sequence diagram veya class diagram da kullan
+- Her diyagramın altında 1-2 cümlelik açıklama olmalı
+- Diyagramları ilgili kavramın hemen altına yerleştir, bölüm sonuna yığma
+
+Kod yazma kuralların:
+- Değişken isimleri anlamlı ve Türkçe okunabilir olsun (notDegeri, ogrenciListesi gibi)
+- Her kod bloğunda en az 3 satır açıklayıcı yorum olsun
+- Kod çıktısını örnek olarak göster (// Çıktı: ... şeklinde)
+- Aynı bölümdeki kod örnekleri birbiriyle bağlantılı olsun, sonraki öncekini temel alsın
+
+Günlük hayattan analoji zorunludur: her ana kavram için en az 1 somut benzetme yap.
+Tarihsel bağlam: Önemli kavramların Java'nın hangi sürümünde geldiğini ve neden eklendiğini belirt."""
 
 
 # ============================================================
@@ -64,23 +84,35 @@ def build_seed_prompt(
 {concepts_str}{outline_str}
 
 ---
-İÇERİK DERİNLİĞİ KURALLARI (EN ÖNEMLİ):
-- Her kavramı EN AZ 3-5 PARAGRAF ile detaylı açıkla. Kısa geçme!
-- Her kavram için şu yapıyı kullan: NEDEN var? → NE işe yarar? → NASIL kullanılır? → NE ZAMAN tercih edilir?
-- Günlük hayattan analojilerle kavramları somutlaştır (örnek: "arayüzler, elektrik prizi gibidir — neyin takıldığı değil, nasıl takıldığı önemlidir")
-- Benzer kavramları karşılaştır: farkları, avantajları, hangi durumda hangisi seçilmeli?
-- Önemli kavramların tarihsel gelişimini kısaca belirt (Java'nın hangi sürümünde geldi?)
+İÇERİK DERİNLİĞİ KURALLARI:
+Her kavramı şu 6 adımla işle (sırayla):
+1. TANIM — Kavramı 1-2 net cümleyle tanımla
+2. NEDEN VAR? — Hangi problemi çözer? Bu kavram olmasaydı ne eksik kalırdı?
+3. NASIL KULLANILIR? — Çalışan Java kodu ile göster, sonra kodu satır satır açıkla
+4. NE ZAMAN TERCİH EDİLİR? — Hangi senaryoda bu, hangi senaryoda alternatifi seçilmeli?
+5. ALTERNATİFLERİ — Benzer kavramlarla karşılaştırma tablosu yap
+6. YAYGIN HATALAR — Bu kavramla ilgili en sık yapılan 1-2 hatayı ve çözümünü belirt
+
+Her adım için en az 1-2 paragraf yaz. Günlük hayattan en az 1 analoji zorunlu.
+Önemli kavramların Java'nın hangi sürümünde geldiğini ve neden eklendiğini belirt.
 
 YAZIM KURALLARI:
 - H1 = bölüm başlığı, H2 = ana bölümler, H3 = alt bölümler
-- Java kodları ```java bloklarında olsun (HER H2 ALTINDA MUTLAKA ÇALIŞAN ```java KOD ÖRNEĞİ OLMALI)
-- Kod örnekleri açıklayıcı yorumlar içersin, çıktıları örnek olarak göster
-- İstersen ```mermaid bloklarında diyagram ekleyebilirsin
-- Bölüm sonunda mutlaka:
-  ## Bölüm özeti
-  ## Terim sözlüğü (en az 10 terim, her biri **Terim** — Açıklama formatında)
-  ## Kendini değerlendirme soruları (3 adet: 1 D/Y, 1 açık uçlu, 1 kod okuma)
-  ## Programlama alıştırmaları (2 adet: 1 kolay, 1 orta)
+- Kod yazmaya uygun her H2 ve H3 altında ```java kod örneği ver
+  (Şu başlıklarda kod ZORUNLU DEĞİL: yol haritası, konum/pedagojik rol,
+   öğrenme çıktıları, ön bilgi, özet, sözlük, sorular, rubrik, kaynaklar, köprü)
+- Değişken isimleri anlamlı Türkçe olsun (notDegeri, ogrenciListesi gibi)
+- Her kod bloğunda en az 3 satır açıklayıcı yorum olsun
+- Kod çıktısını // Çıktı: ... şeklinde göster
+- Her bölümde EN AZ 2 ```mermaid diyagramı ZORUNLUDUR. Diyagramsız bölüm eksiktir!
+  Diyagramlar: 5+ düğümlü, karar noktalı (süslü parantez), açıklamalı
+  İlk diyagramı ilk kavramdan hemen sonra, ikincisini orta kısımda bir yere ekle
+- Aynı bölümdeki kod örnekleri birbiriyle bağlantılı olsun
+- Bölüm sonunda mutlaka şu başlıklar altında içerik üret:
+  ## Bölüm özeti (3-5 cümle, ana kazanımları vurgula)
+  ## Terim sözlüğü (en az 10 terim, **Terim** — açıklama formatında)
+  ## Kendini değerlendirme soruları (1 D/Y, 1 açık uçlu, 1 kod okuma — cevaplarıyla)
+  ## Programlama alıştırmaları (1 kolay 10-15 satır, 1 orta 20-30 satır)
 
 Yalnızca içeriğe odaklan. Front matter, meta etiketi, CSS, HTML veya format detayı ekleme."""
 
@@ -89,25 +121,31 @@ Yalnızca içeriğe odaklan. Front matter, meta etiketi, CSS, HTML veya format d
 # AŞAMA 3: ENRICHMENT PROMPTLARI — Eksik Kısımları Doldurma
 # ============================================================
 # Her biri bağımsız, küçük, hedefli LLM çağrıları.
-# Context olarak bölüm başlığı + H2 başlıkları + ilk 500 karakter yeterli.
+# Context olarak bölümün başı+sonu + kavram listesi + H2 başlıkları.
 # ============================================================
 
 def build_enrich_glossary_prompt(
     chapter_title: str,
     headings: list[str],
     context: str,
+    concepts: list[str] | None = None,
 ) -> str:
     """Terim sözlüğü üretimi için enrichment prompt'u."""
     headings_str = "\n".join(f"  - {h}" for h in headings)
+    concepts_str = "\n".join(f"  - {c}" for c in concepts) if concepts else ""
     return f"""Bölüm: {chapter_title}
 
 Bölüm başlıkları:
 {headings_str}
 
-Bölümden bir kesit:
-{context[:500]}
+İşlenen kavramlar:
+{concepts_str}
+
+Bölüm içeriği (baş ve son):
+{context[:2000]}
 
 Bu bölüm için 10-15 maddelik bir terim sözlüğü yaz.
+Kavram listesindeki her terimi ve bölümde geçen önemli terimleri kapsa.
 Her madde şu formatta:
 **Terim** — Açıklama (tek cümle)
 
@@ -118,18 +156,24 @@ def build_enrich_questions_prompt(
     chapter_title: str,
     headings: list[str],
     context: str,
+    concepts: list[str] | None = None,
 ) -> str:
     """Kendini değerlendirme soruları üretimi."""
     headings_str = "\n".join(f"  - {h}" for h in headings)
+    concepts_str = "\n".join(f"  - {c}" for c in concepts) if concepts else ""
     return f"""Bölüm: {chapter_title}
 
 Bölüm başlıkları:
 {headings_str}
 
-Bölümden bir kesit:
-{context[:500]}
+İşlenen kavramlar:
+{concepts_str}
 
-Bu bölüm için 3 kendini değerlendirme sorusu yaz:
+Bölüm içeriği (baş ve son):
+{context[:2000]}
+
+Bu bölüm için 3 kendini değerlendirme sorusu yaz.
+Sorular kavram listesindeki ana konuları kapsasın.
 
 1. **Doğru/Yanlış** — Cevabı ve kısa açıklamasıyla
 2. **Açık uçlu** — Kavramsal bir soru, cevabıyla
@@ -142,18 +186,24 @@ def build_enrich_exercises_prompt(
     chapter_title: str,
     headings: list[str],
     context: str,
+    concepts: list[str] | None = None,
 ) -> str:
     """Programlama alıştırmaları üretimi."""
     headings_str = "\n".join(f"  - {h}" for h in headings)
+    concepts_str = "\n".join(f"  - {c}" for c in concepts) if concepts else ""
     return f"""Bölüm: {chapter_title}
 
 Bölüm başlıkları:
 {headings_str}
 
-Bölümden bir kesit:
-{context[:500]}
+İşlenen kavramlar:
+{concepts_str}
 
-Bu bölüm için 2 programlama alıştırması yaz:
+Bölüm içeriği (baş ve son):
+{context[:2000]}
+
+Bu bölüm için 2 programlama alıştırması yaz.
+Alıştırmalar kavram listesindeki konuları kapsasın.
 
 1. **Kolay seviye** (10-15 satır Java kodu)
    - Amaç, görev, ipucu, beklenen çıktı
@@ -168,16 +218,21 @@ def build_enrich_summary_prompt(
     chapter_title: str,
     headings: list[str],
     context: str,
+    concepts: list[str] | None = None,
 ) -> str:
     """Bölüm özeti üretimi."""
     headings_str = "\n".join(f"  - {h}" for h in headings)
+    concepts_str = "\n".join(f"  - {c}" for c in concepts) if concepts else ""
     return f"""Bölüm: {chapter_title}
 
 Bölüm başlıkları:
 {headings_str}
 
-Bölümden bir kesit:
-{context[:500]}
+İşlenen kavramlar:
+{concepts_str}
+
+Bölüm içeriği (baş ve son):
+{context[:2000]}
 
 Bu bölüm için 3-5 cümlelik bir özet yaz.
 Bölümde öğrenilen ana kavramları ve kazanımları vurgula.
@@ -189,19 +244,24 @@ def build_enrich_bridge_prompt(
     next_chapter: str | None,
     headings: list[str],
     context: str,
+    concepts: list[str] | None = None,
 ) -> str:
     """Sonraki bölüme köprü üretimi."""
     headings_str = "\n".join(f"  - {h}" for h in headings)
     next_str = f"Bir sonraki bölüm: {next_chapter}" if next_chapter else ""
+    concepts_str = "\n".join(f"  - {c}" for c in concepts) if concepts else ""
     return f"""Bölüm: {chapter_title}
 
 Bölüm başlıkları:
 {headings_str}
 
-{next_str}
+İşlenen kavramlar:
+{concepts_str}
 
-Bölümden bir kesit:
-{context[:500]}
+Bölüm içeriği (baş ve son):
+{context[:2000]}
+
+{next_str}
 
 Bu bölümün sonu için 2-3 cümlelik bir köprü yaz.
 Bugünkü bilgilerin bir sonraki bölüme nasıl temel oluşturduğunu anlat.
@@ -212,16 +272,21 @@ def build_enrich_errors_prompt(
     chapter_title: str,
     headings: list[str],
     context: str,
+    concepts: list[str] | None = None,
 ) -> str:
     """Sık yapılan hatalar bölümü üretimi."""
     headings_str = "\n".join(f"  - {h}" for h in headings)
+    concepts_str = "\n".join(f"  - {c}" for c in concepts) if concepts else ""
     return f"""Bölüm: {chapter_title}
 
 Bölüm başlıkları:
 {headings_str}
 
-Bölümden bir kesit:
-{context[:500]}
+İşlenen kavramlar:
+{concepts_str}
+
+Bölüm içeriği (baş ve son):
+{context[:2000]}
 
 Bu bölümün konusuyla ilgili 3-5 tane sık yapılan hata ve yanlış sezgi yaz.
 Her hata için: hatanın ne olduğu, neden yapıldığı ve nasıl düzeltileceği.

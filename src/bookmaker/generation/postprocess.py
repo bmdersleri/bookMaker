@@ -20,24 +20,35 @@ def normalize_headings(text: str) -> str:
     """Heading seviyelerini düzeltir:
     - İlk # H1 olarak kalır, sonraki tüm #'lar ## olur (H2)
     - H1 başlığından "Bölüm N:", "Chapter N:" öneki temizlenir
+    - H2/H3 başlıklarından manuel numaralandırma temizlenir (örn. "5.1 xxx" → "xxx")
     - H3 ve H4 seviyeleri korunur
     - Front matter (---) atlanır
     - Kod blokları içi atlanır
+    - LLM meta-yorum satırları temizlenir (örn. "Harika bir spesifikasyon!...")
     """
     lines = text.splitlines()
     result = []
     in_front_matter = text.lstrip().startswith("---")
+    fm_dash_count = 0  # front matter icindeki --- sayaci
     in_code_block = False
     found_h1 = False
+    front_matter_ended = False  # front matter kapandi, H1 oncesi meta temizligi aktif
 
     for line in lines:
         stripped = line.rstrip()
 
-        # Front matter geçişi
-        if in_front_matter and stripped == "---":
-            in_front_matter = False
-            result.append(line)
-            continue
+        # Front matter geçişi: ilk --- açar, ikinci --- kapatır
+        if stripped == "---" and not in_code_block and not found_h1:
+            if in_front_matter:
+                fm_dash_count += 1
+                if fm_dash_count >= 2:
+                    in_front_matter = False
+                    front_matter_ended = True
+                result.append(line)
+                continue
+            elif front_matter_ended:
+                # FM sonrasi --- : bunu atla (LLM'in ekledigi gereksiz separator)
+                continue
 
         # Kod blokları
         if stripped.startswith("```"):
@@ -49,15 +60,30 @@ def normalize_headings(text: str) -> str:
             result.append(line)
             continue
 
+        # LLM meta-yorumu temizle: front matter'dan H1'e kadar
+        # "harika", "işte" gibi geçiş cümlelerini ve boş satırları temizle
+        if front_matter_ended and not found_h1:
+            if not stripped:
+                continue  # skip blank lines between FM and H1
+            meta_patterns = [
+                r'^Harika bir', r'^İşte', r'^Şimdi', r'^Harika!',
+                r'^Mükemmel', r'^Tamam,', r'^Peki,', r'^Anlaşıldı',
+                r'^Güzel,', r'^Evet,', r'^Doğru,',
+            ]
+            if any(re.match(p, stripped) for p in meta_patterns):
+                continue  # skip meta-commentary, keep checking for H1
+
         # Heading düzeltme
         match = re.match(r"^(#{1,6})\s+", stripped)
         if match:
             level = len(match.group(1))
+            heading_text = stripped[match.end():]
+
             if level == 1:
                 if not found_h1:
                     found_h1 = True
+                    front_matter_ended = False  # H1 bulundu, meta temizliğini kapat
                     # H1 başlığından "Bölüm N:", "Chapter N:" önekini temizle
-                    heading_text = stripped[match.end():]
                     cleaned = re.sub(
                         r'^(Bölüm|Chapter|Bolum)\s+\d+[:\-.]\s*',
                         '', heading_text, flags=re.IGNORECASE
@@ -67,7 +93,16 @@ def normalize_headings(text: str) -> str:
                 else:
                     # İkinci H1 → H2'ye düşür
                     line = "##" + line[line.index("#") + 1:]
-            elif level > 4:
+            elif level >= 2:
+                # H2/H3 başlıklarından manuel numaralandırmayı temizle
+                # "5.1 String Sınıfı..." → "String Sınıfı..."
+                # "1.7 StringTokenizer..." → "StringTokenizer..."
+                cleaned = re.sub(
+                    r'^\d+\.\d+\.?\s*', '', heading_text
+                ).strip()
+                if cleaned and cleaned != heading_text.strip():
+                    line = "#" * level + " " + cleaned
+            if level > 4:
                 # H5/H6 → H4'e yükselt
                 line = "####" + line[line.index("#") + len(match.group(1)):]
 
@@ -229,37 +264,52 @@ def extract_sections(text: str) -> list[dict]:
 # ============================================================
 # EKSİK BÖLÜM TESPİTİ
 # ============================================================
+# Anahtarlar ASCII'dir (enrichment type_map ile uyumlu).
+# Turkish arama terimleri başlıklarda Türkçe karakter eşleştirmesi için.
 
 _STANDARD_END_SECTIONS = {
-    "özet": "Bölüm özeti",
-    "sözlük": "Terim sözlüğü",
-    "soru": "Kendini değerlendirme soruları",
-    "alıştırma": "Programlama alıştırmaları",
-    "hata": "Sık yapılan hatalar",
-    "köprü": "Bir sonraki bölüme",
-    "laboratuvar": "Laboratuvar",
-    "proje": "Proje görevi",
-    "rubrik": "Değerlendirme rubriği",
-    "kaynak": "İleri okuma",
+    "ozet": "özet",
+    "sozluk": "sözlük",
+    "soru": "soru",
+    "alistirma": "alıştırma",
+    "hata": "hata",
+    "kopru": "köprü",
+    "laboratuvar": "laboratuvar",
+    "proje": "proje",
+    "rubrik": "rubrik",
+    "kaynak": "kaynak",
 }
+
+# Türkçe karakter normalizasyonu için eşleme
+_TURKISH_CHARS = str.maketrans("öüşığçÖÜŞİĞÇ", "ousigcOUSIGC")
+
+
+def _ascii_lower(s: str) -> str:
+    """Türkçe karakterleri ASCII'ye indirgeyip küçük harf yapar."""
+    return s.translate(_TURKISH_CHARS).lower()
 
 
 def detect_missing_sections(text: str) -> list[dict]:
     """Hangi standart bölüm sonu yapılarının eksik olduğunu tespit eder.
 
     Returns:
-        [{'key': 'özet', 'title': 'Bölüm özeti', 'existing': False}, ...]
+        [{'key': 'ozet', 'title': 'Bölüm özeti', 'existing': False}, ...]
     """
-    text_lower = text.lower()
+    text_lower = _ascii_lower(text)
     sections = extract_sections(text)
-    existing_headings = [s["heading"].lower() for s in sections]
+    existing_headings = [_ascii_lower(s["heading"]) for s in sections]
 
     missing = []
-    for key, title in _STANDARD_END_SECTIONS.items():
-        # Başlıkta geçiyor mu kontrol et
-        found = any(key in h for h in existing_headings)
+    for ascii_key, turkish_term in _STANDARD_END_SECTIONS.items():
+        # Hem ASCII anahtarı hem Türkçe terimi başlıklarda ara
+        found = any(
+            ascii_key in h or turkish_term in h
+            for h in existing_headings
+        )
+        # Başlık oluştur: Türkçe terimin ilk harfini büyüt
+        title = turkish_term[0].upper() + turkish_term[1:] if turkish_term else ascii_key
         missing.append({
-            "key": key,
+            "key": ascii_key,
             "title": title,
             "existing": found,
         })
