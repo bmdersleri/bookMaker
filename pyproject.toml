@@ -46,3 +46,6 @@ pythonpath = ["src"]
 markers = ["slow: marks tests as slow (e.g., mmdc Mermaid render, ~20s)"]
 tmp_path_retention_count = 3
 tmp_path_retention_policy = "failed"
+
+[tool.uv]
+link-mode = "copy"

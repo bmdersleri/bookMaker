@@ -46,11 +46,22 @@ src/bookmaker/
 | Book project | `book_projects/java-temelleri/` |
 | Build output | `book_projects/java-temelleri/build/` |
 
+## Environment
+- Python 3.14.4 venv at `.venv/`, managed with uv 0.11.9
+- `[tool.uv] link-mode = "copy"` configured in pyproject.toml (suppresses hardlink warnings)
+- `git config core.autocrlf input` set (LF endings, no CRLF warnings)
+- Bash on Windows: `just`, `fd`, `mkdocs` NOT available from bash
+- `.claude/settings.local.json` has broad permission patterns (not in git)
+
 ## Common Commands
 ```bash
 # Setup
 uv sync
 cp llm_config.example.json llm_config.json  # edit with real key
+
+# Lint & test (just replacements since just isn't in bash PATH)
+uv run ruff check src/           # lint
+uv run pytest tests/ -q --tb=short  # test
 
 # Validation
 python tools/validate_prompt_changes.py
