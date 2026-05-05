@@ -77,6 +77,8 @@ class ChapterState(BaseModel):
     current_step: str = "planned"
     score: int = 0
     decision: str = "blocked"
+    error_count: int = 0
+    warning_count: int = 0
 
 
 class PipelineState(BaseModel):

@@ -247,13 +247,13 @@ POST   /api/restore                 # Yedekten geri yükle
 ```
 
 ### Kontrol Listesi
-- [ ] Kod çıkarma: `build/code/{bolum}/` altına `.java` dosyaları yazılıyor
-- [ ] Kod derleme: `javac` ile kontrol, sonuçlar gösteriliyor
-- [ ] Mermaid→PNG: `build/mermaid_images/` altına PNG'ler yazılıyor, önizleme var
-- [ ] Birleştirme: tüm bölümler tek `.md` olarak birleşiyor
-- [ ] DOCX export: referans şablonlu, mermaid gömülü
-- [ ] PDF/EPUB/HTML export çalışıyor
-- [ ] `.zip` yedekleme ve geri yükleme çalışıyor
+- [x] Kod çıkarma: `build/code/{bolum}/` altına `.java` dosyaları yazılıyor
+- [x] Kod derleme: `javac` ile kontrol, sonuçlar gösteriliyor
+- [x] Mermaid→PNG: `build/mermaid_images/` altına PNG'ler yazılıyor, önizleme var
+- [x] Birleştirme: tüm bölümler tek `.md` olarak birleşiyor
+- [x] DOCX export: referans şablonlu, mermaid gömülü
+- [x] PDF/EPUB/HTML export çalışıyor
+- [x] `.zip` yedekleme ve geri yükleme çalışıyor
 
 ---
 

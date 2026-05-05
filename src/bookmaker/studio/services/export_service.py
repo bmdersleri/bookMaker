@@ -137,6 +137,7 @@ def render_mermaid(project_root: str | Path,
 
     rendered = 0
     errors = []
+    images: list[str] = []
 
     for cid in chapters_to_scan:
         # Bölüm metnini bul
@@ -160,6 +161,7 @@ def render_mermaid(project_root: str | Path,
                             capture_output=True, text=True, timeout=30)
                         if proc.returncode == 0:
                             rendered += 1
+                            images.append(str(png_path.relative_to(root)))
                         else:
                             errors.append(f"{cid}:{i+1} -> {proc.stderr[:100]}")
                     except FileNotFoundError:
@@ -175,6 +177,7 @@ def render_mermaid(project_root: str | Path,
     result = {
         "rendered": rendered,
         "output_dir": str(out_dir.relative_to(root)),
+        "images": images[:20],  # ilk 20 PNG yolu
     }
     if errors:
         result["errors"] = errors[:5]

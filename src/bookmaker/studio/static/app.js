@@ -9,10 +9,49 @@ let selectedIds = new Set();
 let wsCancel = false;  // Flag to cancel pipeline
 
 // INIT
-async function init() { await refreshAll(); await loadPipelineState(); await loadJobs(); }
+async function init() { loadBookSelector(); await refreshAll(); await loadPipelineState(); await loadJobs(); }
 
 // REFRESH
 async function refreshAll() { await loadProject(); await loadChapters(); await loadLlmStatus(); }
+
+// =========== BOOK SELECTOR DROPDOWN ===========
+function loadBookSelector() {
+  var sel = document.getElementById('book-selector');
+  if (!sel) return;
+  fetch('/api/projects').then(function(r){return r.json();}).then(function(projects){
+    fetch('/api/active-book').then(function(r){return r.json();}).then(function(active){
+      var currentPath = active.path || '';
+      sel.innerHTML = projects.map(function(p){
+        var selected = p.path === currentPath ? ' selected' : '';
+        var label = typeof p.title === 'object' ? (p.title.tr || p.title.en || p.name) : (p.title||p.name);
+        return '<option value="'+p.path.replace(/\\/g,'/')+'"'+selected+'>'+escHtml(label)+'</option>';
+      }).join('');
+      if (!projects.length) sel.innerHTML = '<option value="">Proje yok - once +Yeni Kitap ile olusturun</option>';
+      updateBookHeader(active);
+    }).catch(function(){
+      sel.innerHTML = '<option value="">Aktif kitap alinamadi</option>';
+    });
+  }).catch(function(){
+    sel.innerHTML = '<option value="">Projeler alinamadi</option>';
+  });
+}
+
+function switchBook(path) {
+  if (!path) return;
+  var sel = document.getElementById('book-selector');
+  sel.disabled = true;
+  fetch('/api/active-book',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:path})})
+    .then(function(r){return r.json();}).then(function(d){
+      if (d.error) { showToast(d.error, 'error'); sel.disabled = false; loadBookSelector(); return; }
+      showToast('Kitap degisti: ' + d.name, 'success');
+      setTimeout(function(){ location.reload(); }, 400);
+    }).catch(function(e){ showToast('Hata: ' + e.message, 'error'); sel.disabled = false; });
+}
+
+function updateBookHeader(active) {
+  var el = document.getElementById('book-title');
+  if (el && active && active.name) el.textContent = active.name || active.title || '';
+}
 
 // =========== STATS / PROJECT ===========
 async function loadProject() {
@@ -326,6 +365,49 @@ function showModal(title,bodyHtml) {
 function closeModal(e) { if(e&&e.target!==e.currentTarget) return; document.getElementById('modal-overlay').classList.add('hidden'); }
 function escHtml(s) { if(!s) return ''; var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
+// =========== BOOK LOADER ===========
+function showBookLoader() {
+  document.getElementById('book-loader').classList.remove('hidden');
+  var el=document.getElementById('book-list');
+  el.innerHTML='<span class="spinner"></span> Projeler taranıyor...';
+  fetch('/api/projects').then(function(r){return r.json();}).then(function(projects){
+    if(!projects.length){el.innerHTML='<div class="message info">Henuz proje yok</div>';return;}
+    fetch('/api/active-book').then(function(r){return r.json();}).then(function(active){
+      var currentPath=active.path||'';
+      el.innerHTML='<div style="margin-bottom:1rem;font-size:.78rem;color:var(--muted)">Bir kitap projesi secin:</div>'+
+        '<div style="display:flex;flex-direction:column;gap:4px">'+
+        projects.map(function(p){
+          var isActive=p.path===currentPath;
+          var title=p.title||p.name;
+          return '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;'+
+            (isActive?'background:var(--primary);color:#fff':'background:#f9fafb')+
+            '" onclick="setActiveBook(\''+p.path.replace(/\\\\/g,'/')+'\',this)">'+
+            '<span style="font-size:1.1rem">'+(isActive?'📚':'📖')+'</span>'+
+            '<div><strong>'+escHtml(title)+'</strong><br><span style="font-size:.75rem;opacity:.7">'+escHtml(p.name)+'</span></div>'+
+            (isActive?'<span style="margin-left:auto;font-size:.75rem">Aktif</span>':'')+
+            '</div>';
+        }).join('')+
+        '</div>';
+    }).catch(function(){el.innerHTML='<div class="message error">Aktif kitap bilgisi alinamadi</div>';});
+  }).catch(function(){el.innerHTML='<div class="message error">Projeler listelenemedi</div>';});
+}
+
+function closeBookLoader(e) {
+  if(e&&e.target!==e.currentTarget)return;
+  document.getElementById('book-loader').classList.add('hidden');
+}
+
+function setActiveBook(path,el) {
+  fetch('/api/active-book',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:path})})
+    .then(function(r){return r.json();}).then(function(d){
+      if(d.error){showToast(d.error,'error');return;}
+      showToast('Kitap degisti: '+d.name,'success');
+      closeBookLoader();
+      refreshAll();
+      setTimeout(function(){location.reload();},500);
+    }).catch(function(e){showToast('Hata: '+e.message,'error');});
+}
+
 // =========== WIZARD ===========
 var wizStep=1,wizChapters=[];
 function openWizard(){wizStep=1;document.getElementById('wizard-overlay').classList.remove('hidden');updateWizard();document.getElementById('wiz-project').value='java-'+Date.now().toString(36);}
@@ -457,7 +539,7 @@ async function loadQualityReport() {
       var dc=d.decision==='pass'?'success':d.decision==='fail'?'danger':'warning';
       return '<tr><td><code>'+escHtml(d.chapter_id)+'</code></td><td><span class="tag '+scoreBadgeClass(d.score)+'">'+d.score+'</span></td>'+
         '<td><span class="tag '+dc+'">'+d.decision+'</span></td><td>'+(d.errors||0)+'</td><td>'+(d.warnings||0)+'</td>'+
-        '<td><button class="btn btn-sm outline" onclick="viewChapter(''+d.chapter_id+'')">Gor</button></td></tr>';
+        '<td><button class="btn btn-sm outline" onclick="viewChapter(\''+d.chapter_id+'\')">Gor</button></td></tr>';
     }).join('');
     document.getElementById('quality-table')?.classList.remove('hidden');
     document.getElementById('quality-loading')?.classList.add('hidden');
@@ -557,7 +639,7 @@ async function runExtractCode() {
   var el=document.getElementById('extract-result');
   el.innerHTML='<span class="spinner"></span> Kod cikariliyor...';
   try {
-    var r=await fetch('/api/extract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chapter_id:cid||null})});
+    var r=await fetch('/api/extract/code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chapter_id:cid||null})});
     var d=await r.json();
     if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
     el.innerHTML='<div class="message success">'+d.total_extracted+' kod blogu cikarildi -> '+escHtml(d.output_dir)+'</div>';
@@ -572,7 +654,18 @@ async function runRenderMermaid() {
     var r=await fetch('/api/render/mermaid',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chapter_id:cid||null})});
     var d=await r.json();
     if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
-    el.innerHTML='<div class="message success">'+d.rendered+' diyagram render edildi -> '+escHtml(d.output_dir)+'</div>';
+    var html='<div class="message success">'+d.rendered+' diyagram render edildi -> '+escHtml(d.output_dir)+'</div>';
+    if(d.images && d.images.length>0){
+      html+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">';
+      for(var i=0;i<d.images.length;i++){
+        html+='<div style="border:1px solid var(--border);border-radius:6px;padding:4px;background:#fff"><img src="/output/'+escHtml(d.images[i])+'" style="max-width:200px;max-height:150px" alt="diagram" onerror="this.parentElement.style.display=\'none\'"></div>';
+      }
+      html+='</div>';
+    }
+    if(d.errors && d.errors.length>0){
+      html+='<div class="message warning" style="margin-top:4px">'+d.errors.map(escHtml).join('<br>')+'</div>';
+    }
+    el.innerHTML=html;
   } catch(e) { el.innerHTML='<div class="message error">'+e.message+'</div>'; }
 }
 
@@ -580,7 +673,7 @@ async function runAssemble() {
   var el=document.getElementById('export-result');
   el.innerHTML='<span class="spinner"></span> Birlestiriliyor...';
   try {
-    var r=await fetch('/api/assemble',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    var r=await fetch('/api/assemble',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
     var d=await r.json();
     if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
     el.innerHTML='<div class="message success">'+d.chapters+' bolum, '+d.words+' kelime -> '+escHtml(d.path)+'</div>';
@@ -592,7 +685,7 @@ async function runExport() {
   var el=document.getElementById('export-result');
   el.innerHTML='<span class="spinner"></span> Export ediliyor ('+fmt+')...';
   try {
-    var r=await fetch('/api/export/'+fmt,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    var r=await fetch('/api/export/'+fmt,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
     var d=await r.json();
     if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
     el.innerHTML='<div class="message success">'+fmt.toUpperCase()+' export tamam: '+escHtml(d.path)+' ('+d.size_bytes+' bytes)</div>';
@@ -606,7 +699,46 @@ async function runBackup() {
     var r=await fetch('/api/backup',{method:'POST'});
     var d=await r.json();
     if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
+    var rip=document.getElementById('restore-path');
+    if(rip && d.path) rip.value=d.path;
     el.innerHTML='<div class="message success">Yedek: '+escHtml(d.path)+' ('+d.size_mb+' MB, '+d.files+' dosya)</div>';
+  } catch(e) { el.innerHTML='<div class="message error">'+e.message+'</div>'; }
+}
+
+async function runRestore() {
+  var el=document.getElementById('backup-result');
+  var rip=document.getElementById('restore-path');
+  var path=rip?rip.value:'';
+  if(!path){el.innerHTML='<div class="message error">Yedek dosya yolu girin</div>';return;}
+  el.innerHTML='<span class="spinner"></span> Geri yukleniyor...';
+  try {
+    var r=await fetch('/api/restore',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:path})});
+    var d=await r.json();
+    if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
+    el.innerHTML='<div class="message success">Geri yuklendi: '+d.files+' dosya</div>';
+    showToast('Yedek geri yuklendi: '+d.files+' dosya','success');
+  } catch(e) { el.innerHTML='<div class="message error">'+e.message+'</div>'; }
+}
+
+async function runIndex() {
+  var el=document.getElementById('index-result');
+  el.innerHTML='<span class="spinner"></span> Indeks olusturuluyor...';
+  try {
+    var r=await fetch('/api/index',{method:'POST'});
+    var d=await r.json();
+    if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
+    el.innerHTML='<div class="message success">Indeks: '+d.entries+' baslik, '+d.chapters_indexed+' bolum -> '+escHtml(d.path)+'</div>';
+  } catch(e) { el.innerHTML='<div class="message error">'+e.message+'</div>'; }
+}
+
+async function runGlossary() {
+  var el=document.getElementById('index-result');
+  el.innerHTML='<span class="spinner"></span> Glossary olusturuluyor...';
+  try {
+    var r=await fetch('/api/glossary',{method:'POST'});
+    var d=await r.json();
+    if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
+    el.innerHTML='<div class="message success">Glossary: '+d.terms+' terim -> '+escHtml(d.path)+'</div>';
   } catch(e) { el.innerHTML='<div class="message error">'+e.message+'</div>'; }
 }
 
@@ -616,4 +748,9 @@ switchTab = function(name) {
   if (name === 'build') initBuildPanel();
   _origSwitchTab(name);
 };
+
+// =========== PAGE START ===========
+document.addEventListener('DOMContentLoaded', function() {
+  init().catch(function(e) { console.error('Init failed:', e); });
+});
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -10,18 +10,20 @@
 .drag-handle:active{cursor:grabbing}
 .chapter-row td{padding:.45rem .5rem;vertical-align:middle}
 .filter-bar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
-.filter-bar select,.filter-bar input{padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem}
-.filter-bar .result-count{font-size:.8rem;color:var(--muted);margin-left:auto}
-.bulk-bar{display:flex;gap:6px;align-items:center;padding:.5rem 0;font-size:.85rem;color:var(--muted)}
-.bulk-bar .btn{font-size:.78rem}
+.filter-bar select,.filter-bar input{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem}
+.filter-bar .result-count{font-size:1rem;color:var(--muted);margin-left:auto}
+.bulk-bar{display:flex;gap:6px;align-items:center;padding:.5rem 0;font-size:1rem;color:var(--muted)}
+.bulk-bar .btn{font-size:.95rem}
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>bookMaker Studio</h1>
-  <span id="book-title" class="sub">Yukleniyor...</span>
-  <button class="btn success" onclick="openWizard()" style="margin-left:auto;font-size:.8rem">+ Yeni Kitap</button>
+  <select id="book-selector" onchange="switchBook(this.value)">
+    <option value="">Kitap yukleniyor...</option>
+  </select>
+  <button class="btn success" onclick="openWizard()" style="margin-left:auto;font-size:1rem;padding:9px 18px">+ Yeni Kitap</button>
 </div>
 
 <div class="container">
@@ -108,7 +110,7 @@
   <div class="card">
     <div class="card-header"><h2>Pipeline Kontrol</h2></div>
     <div class="card-body">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">SPEC → VALIDATE → SEED → NORMALIZE → ENRICH → ASSEMBLE</p>
+      <p style="font-size:1rem;color:var(--muted);margin-bottom:1rem">SPEC → VALIDATE → SEED → NORMALIZE → ENRICH → ASSEMBLE</p>
       <div class="config-form">
         <div class="form-group"><label>Bölüm ID</label><input type="text" id="gen-chapter-id" placeholder="bolum-XX" value="bolum-04"></div>
         <div class="form-group"><label>Başlık</label><input type="text" id="gen-title" placeholder="Bölüm başlığı"></div>
@@ -120,14 +122,20 @@
           <span id="gen-step">Hazirlaniyor...</span>
           <div class="bar"><div class="bar-fill" id="gen-bar" style="width:0%"></div></div>
         </div>
-        <pre id="gen-result" style="font-size:.8rem;background:#f3f4f6;padding:.8rem;border-radius:6px;max-height:200px;overflow-y:auto"></pre>
+        <pre id="gen-result" style="font-size:1rem;background:#f3f4f6;padding:.8rem;border-radius:6px;max-height:200px;overflow-y:auto"></pre>
+        <pre id="gen-log" style="font-size:1rem;background:#1e293b;color:#e2e8f0;padding:.8rem;border-radius:6px;max-height:200px;overflow-y:auto;margin-top:.5rem"></pre>
+        <div id="gen-prompt-panel" class="hidden" style="margin-top:.5rem;display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+          <div><strong style="font-size:1rem">Prompt:</strong><pre id="gen-prompt-text" style="font-size:.95rem;background:#fef3c7;padding:.6rem;border-radius:4px;max-height:200px;overflow-y:auto"></pre></div>
+          <div><strong style="font-size:1rem">Response:</strong><pre id="gen-response-text" style="font-size:.95rem;background:#d1fae5;padding:.6rem;border-radius:4px;max-height:200px;overflow-y:auto"></pre></div>
+        </div>
+        <button id="cancel-pipeline-btn" class="btn outline hidden" onclick="cancelPipeline()" style="margin-top:.5rem;font-size:.95rem">Iptal</button>
       </div>
     </div>
   </div>
   <div class="card">
     <div class="card-header"><h2>Pipeline State</h2></div>
     <div class="card-body">
-      <pre id="pipeline-state-view" style="font-size:.8rem;background:#f3f4f6;padding:.8rem;border-radius:6px;max-height:300px;overflow-y:auto">Yukleniyor...</pre>
+      <pre id="pipeline-state-view" style="font-size:1rem;background:#f3f4f6;padding:.8rem;border-radius:6px;max-height:300px;overflow-y:auto">Yukleniyor...</pre>
     </div>
   </div>
 </div>
@@ -145,7 +153,7 @@
         <div class="form-group"><label>Model</label><input type="text" id="llm-model" placeholder="deepseek-chat" value="deepseek-chat"></div>
         <button class="btn primary" onclick="saveLlmConfig()">💾 Kaydet</button>
       </div>
-      <div id="llm-current" style="margin-top:1rem;font-size:.85rem;color:var(--muted)">Yukleniyor...</div>
+      <div id="llm-current" style="margin-top:1rem;font-size:1rem;color:var(--muted)">Yukleniyor...</div>
     </div>
   </div>
 </div>
@@ -156,38 +164,38 @@
   <div class="card">
     <div class="card-header"><h2>Kod Cikarma</h2></div>
     <div class="card-body">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Java kod bloklarini .java dosyasi olarak ayiklayip build/code/ altina kaydeder.</p>
+      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Java kod bloklarini .java dosyasi olarak ayiklayip build/code/ altina kaydeder.</p>
       <div style="display:flex;gap:8px;align-items:center">
-        <select id="extract-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem;min-width:120px">
+        <select id="extract-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem;min-width:120px">
           <option value="">Tum Bolumler</option>
         </select>
         <button class="btn primary" onclick="runExtractCode()">Kod Cikar</button>
       </div>
-      <div id="extract-result" style="margin-top:.5rem;font-size:.85rem"></div>
+      <div id="extract-result" style="margin-top:.5rem;font-size:1rem"></div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header"><h2>Diyagram Render (Mermaid -> PNG)</h2></div>
     <div class="card-body">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Mermaid semalarini mmdc ile PNG goruntuye donusturur.</p>
+      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Mermaid semalarini mmdc ile PNG goruntuye donusturur.</p>
       <div style="display:flex;gap:8px;align-items:center">
-        <select id="mermaid-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem;min-width:120px">
+        <select id="mermaid-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem;min-width:120px">
           <option value="">Tum Bolumler</option>
         </select>
         <button class="btn primary" onclick="runRenderMermaid()">PNG Render</button>
       </div>
-      <div id="mermaid-result" style="margin-top:.5rem;font-size:.85rem"></div>
+      <div id="mermaid-result" style="margin-top:.5rem;font-size:1rem"></div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header"><h2>Kitap Birlestirme ve Export</h2></div>
     <div class="card-body">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Tum bolumleri tek .md dosyada birlestir ve DOCX/PDF/EPUB/HTML olarak disa aktar.</p>
+      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Tum bolumleri tek .md dosyada birlestir ve DOCX/PDF/EPUB/HTML olarak disa aktar.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn outline" onclick="runAssemble()">Birlestir (.md)</button>
-        <select id="export-format" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem">
+        <select id="export-format" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem">
           <option value="docx">DOCX</option>
           <option value="pdf">PDF</option>
           <option value="epub">EPUB</option>
@@ -195,18 +203,33 @@
         </select>
         <button class="btn primary" onclick="runExport()">Export Et</button>
       </div>
-      <div id="export-result" style="margin-top:.5rem;font-size:.85rem"></div>
+      <div id="export-result" style="margin-top:.5rem;font-size:1rem"></div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header"><h2>Yedekleme</h2></div>
     <div class="card-body">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Projenin .zip yedegini olusturur veya yedekten geri yukler.</p>
+      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Projenin .zip yedegini olusturur veya yedekten geri yukler.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn primary" onclick="runBackup()">Yedek Olustur</button>
+        <span style="color:var(--muted);margin:0 4px">|</span>
+        <input type="text" id="restore-path" placeholder="backup_...zip yolu" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem;min-width:220px">
+        <button class="btn outline" onclick="runRestore()">Geri Yukle</button>
       </div>
-      <div id="backup-result" style="margin-top:.5rem;font-size:.85rem"></div>
+      <div id="backup-result" style="margin-top:.5rem;font-size:1rem"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>İndeks & Glossary</h2></div>
+    <div class="card-body">
+      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Tum basliklardan indeks ve kod terimlerinden glossary olusturur.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn primary" onclick="runIndex()">Indeks Olustur</button>
+        <button class="btn outline" onclick="runGlossary()">Glossary Olustur</button>
+      </div>
+      <div id="index-result" style="margin-top:.5rem;font-size:1rem"></div>
     </div>
   </div>
 </div>
@@ -254,14 +277,14 @@
     <div class="card-header"><h2>Tam Metin Arama</h2></div>
     <div class="card-body">
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <input type="text" id="search-query" placeholder="Arama kelimesi..." style="min-width:200px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem">
-        <select id="search-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:.85rem">
+        <input type="text" id="search-query" placeholder="Arama kelimesi..." style="min-width:200px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem">
+        <select id="search-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem">
           <option value="">Tum Bolumler</option>
         </select>
-        <label style="font-size:.8rem"><input type="checkbox" id="search-regex"> Regex</label>
+        <label style="font-size:1rem"><input type="checkbox" id="search-regex"> Regex</label>
         <button class="btn primary" onclick="runSearch()">Ara</button>
       </div>
-      <div id="search-results" style="margin-top:.5rem;font-size:.85rem"></div>
+      <div id="search-results" style="margin-top:.5rem;font-size:1rem"></div>
     </div>
   </div>
 </div>
@@ -274,6 +297,70 @@
       <button class="close" onclick="closeModal()">&times;</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- Wizard Overlay -->
+<div class="modal-overlay hidden" id="wizard-overlay" onclick="closeWizard(event)">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:700px">
+    <div class="modal-header">
+      <h3>Yeni Kitap Olustur</h3>
+      <button class="close" onclick="closeWizard()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:8px;margin-bottom:1.5rem">
+        <span class="wiz-step tag neutral" data-step="1" style="font-size:1rem;padding:6px 14px">1. Proje</span>
+        <span class="wiz-step tag neutral" data-step="2" style="font-size:1rem;padding:6px 14px">2. Bolumler</span>
+        <span class="wiz-step tag neutral" data-step="3" style="font-size:1rem;padding:6px 14px">3. Onay</span>
+      </div>
+      <div class="wiz-panel" data-step="1">
+        <div class="config-form">
+          <div class="form-group"><label>Proje Klasoru</label><input type="text" id="wiz-project" placeholder="java-temelleri"></div>
+          <div class="form-group"><label>Kitap Adi</label><input type="text" id="wiz-title" placeholder="Java Programlamaya Giris"></div>
+          <div class="form-group"><label>Hedef Kitle</label><select id="wiz-audience">
+            <option value="universite_1">Universite 1. Sinif</option>
+            <option value="universite_2">Universite 2. Sinif</option>
+            <option value="lise">Lise</option>
+            <option value="baslangic">Yeni Baslayan</option>
+            <option value="profesyonel">Profesyonel</option>
+          </select></div>
+          <div class="form-group"><label>Dil</label><select id="wiz-language">
+            <option value="tr">Turkce</option>
+            <option value="en">English</option>
+          </select></div>
+        </div>
+        <div class="message error hidden" id="wiz-err" style="margin-top:1rem"></div>
+      </div>
+      <div class="wiz-panel hidden" data-step="2">
+        <div class="form-group"><label>Bolum Listesi (her satira bir ID)</label>
+          <textarea id="wiz-chapters" rows="8" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:1rem;font-family:monospace" placeholder="bolum-01: Giris ve Temel Kavramlar&#10;bolum-02: Kontrol Yapilari&#10;bolum-03: Donguler&#10;bolum-04: Metotlar&#10;bolum-05: Diziler"></textarea>
+        </div>
+        <div class="form-group" style="margin-top:.5rem">
+          <button class="btn outline" onclick="initManualPlan()" style="font-size:.95rem">Plan Olustur</button>
+          <textarea id="wiz-plan" rows="3" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:1rem;font-family:monospace;margin-top:.5rem;display:none" placeholder="Detayli plan..."></textarea>
+        </div>
+      </div>
+      <div class="wiz-panel hidden" data-step="3">
+        <div id="wiz-summary" style="font-size:1rem"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem">
+        <button class="btn outline" id="wiz-prev" onclick="wizStep--;updateWizard()">Geri</button>
+        <button class="btn primary" id="wiz-next" onclick="nextWiz()">Ilerle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Book Loader Overlay -->
+<div class="modal-overlay hidden" id="book-loader" onclick="closeBookLoader(event)">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:600px">
+    <div class="modal-header">
+      <h3>Kitap Projesi Sec</h3>
+      <button class="close" onclick="closeBookLoader()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="book-list"></div>
+    </div>
   </div>
 </div>
 

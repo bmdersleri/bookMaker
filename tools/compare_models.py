@@ -1,187 +1,238 @@
-"""Compare Pro vs Flash models for chapter generation quality."""
-import sys, time, json
+"""
+Model / Sıcaklık Karşılaştırması — ANALİZ MODU
+
+Mevcut dosyaları analiz eder, karşılaştırma tablosu üretir.
+Varyantları yeniden ÇALIŞTIRMAZ.
+
+Kullanım: python tools/compare_models.py
+"""
+import sys, time, json, re
 from pathlib import Path
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+sys.stdout.reconfigure(encoding='utf-8')
 
 from bookmaker.core.config import load_config
-from bookmaker.generation.pipeline import ChapterGenerator
-from bookmaker.llm.openai import OpenAICompatibleClient
 from bookmaker.llm.config import LLMConfig
-from bookmaker.generation.prompts import SYSTEM_AUTHOR
 
 CONFIG = load_config(book_name="java-temelleri")
 OUT_DIR = CONFIG.build_dir / "model_comparison"
-OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-MODELS = {
-    "pro": "deepseek-chat",      # deepseek-v4-pro
-    "flash": "deepseek-chat",    # deepseek-v4-flash (same endpoint)
-}
+# Varyantlar: (label, temperature, filename)
+VARIANTS = [
+    ("flash_precise",  0.3, "seed_flash_precise_t3.md"),
+    ("flash_default",  0.7, "seed_flash_default_t7.md"),
+    ("flash_creative", 0.9, "seed_flash_creative_t9.md"),
+    ("pro_creative",   0.9, "seed_pro_creative_t9.md"),
+]
 
-TITLE = "Java Programinin Temel Yapisi, Degiskenler ve Veri Tipleri"
-
-# Use existing SPEC for consistency
-SPEC = (CONFIG.build_dir / "generation" / "step0_spec.md").read_text(encoding="utf-8")
 
 @dataclass
-class ModelResult:
-    model: str
-    elapsed: float
-    word_count: int
-    char_count: int
-    h2_count: int
-    code_blocks: int
-    output: str
+class VariantResult:
+    label: str
+    temperature: float
+    status: str
+    word_count: int = 0
+    char_count: int = 0
+    h2: int = 0
+    h3: int = 0
+    code_blocks: int = 0
+    mermaid: int = 0
+    inline_code: int = 0
+    bold: int = 0
+    lists: int = 0
+    numbered: int = 0
+    tables: int = 0
+    has_main: bool = False
+    has_class: bool = False
+    has_println: bool = False
+    file_size: int = 0
+    error: str = ""
+    # Türetilmiş
+    richness: int = 0
 
-def run_model(label: str, model_name: str, temperature: float = 0.7) -> ModelResult:
-    """Run SEED generation with a specific model and measure."""
-    from bookmaker.llm.openai import OpenAICompatibleClient
-    from bookmaker.llm.config import LLMConfig
-    from bookmaker.generation.spec import build_seed_from_spec_prompt
 
-    client = OpenAICompatibleClient(
-        base_url="https://api.deepseek.com/v1",
-        api_key="sk-98a85ecced414d499d34caf73a09b80d",
-        model=model_name,
+def analyze(text: str) -> dict:
+    return {
+        "words": len(text.split()),
+        "chars": len(text),
+        "h2": len(re.findall(r'^## ', text, re.MULTILINE)),
+        "h3": len(re.findall(r'^### ', text, re.MULTILINE)),
+        "code_blocks": len(re.findall(r'```', text)) // 2,
+        "mermaid": len(re.findall(r'```mermaid', text)),
+        "inline_code": len(re.findall(r'`[^`]+`', text)),
+        "bold": len(re.findall(r'\*\*[^*]+\*\*', text)),
+        "lists": len(re.findall(r'^[\s]*[-*+] ', text, re.MULTILINE)),
+        "numbered": len(re.findall(r'^[\s]*\d+\. ', text, re.MULTILINE)),
+        "tables": len(re.findall(r'^\|.*\|$', text, re.MULTILINE)),
+        "has_main": "public static void main" in text,
+        "has_class": "public class" in text,
+        "has_println": "System.out.println" in text,
+    }
+
+
+def load_variant(label: str, temp: float, fname: str) -> VariantResult:
+    path = OUT_DIR / fname
+    if not path.exists():
+        return VariantResult(label=label, temperature=temp, status="missing",
+                             error=f"Dosya yok: {fname}")
+
+    text = path.read_text(encoding='utf-8')
+    m = analyze(text)
+    richness = m["code_blocks"] * 5 + m["mermaid"] * 3 + m["lists"] + m["numbered"] + m["bold"] // 2
+
+    return VariantResult(
+        label=label,
+        temperature=temp,
+        status="ok",
+        word_count=m["words"],
+        char_count=m["chars"],
+        h2=m["h2"],
+        h3=m["h3"],
+        code_blocks=m["code_blocks"],
+        mermaid=m["mermaid"],
+        inline_code=m["inline_code"],
+        bold=m["bold"],
+        lists=m["lists"],
+        numbered=m["numbered"],
+        tables=m["tables"],
+        has_main=m["has_main"],
+        has_class=m["has_class"],
+        has_println=m["has_println"],
+        file_size=path.stat().st_size,
+        richness=richness,
     )
 
-    prompt = build_seed_from_spec_prompt(SPEC, TITLE)
-    
-    print(f"[{label}] Generating with {model_name} (t={temperature})...", end=" ", flush=True)
-    t0 = time.time()
-    result = client.generate_text(SYSTEM_AUTHOR, prompt, temperature=temperature)
-    elapsed = time.time() - t0
-    
-    import re
-    h2_count = len(re.findall(r'^## ', result, re.MULTILINE))
-    code_blocks = len(re.findall(r'```', result)) // 2
-    
-    mr = ModelResult(
-        model=label,
-        elapsed=elapsed,
-        word_count=len(result.split()),
-        char_count=len(result),
-        h2_count=h2_count,
-        code_blocks=code_blocks,
-        output=result,
-    )
-    
-    print(f"{mr.word_count} words, {mr.h2_count} H2, {mr.code_blocks} code, {elapsed:.1f}s")
-    
-    # Save
-    out_path = OUT_DIR / f"seed_{label}_t{int(temperature*10)}.md"
-    out_path.write_text(result, encoding="utf-8")
-    
-    return mr
 
-def analyze_quality(text: str) -> dict:
-    """Analyze chapter quality metrics."""
-    import re
-    
-    metrics = {}
-    metrics["words"] = len(text.split())
-    metrics["chars"] = len(text)
-    metrics["h2"] = len(re.findall(r'^## ', text, re.MULTILINE))
-    metrics["h3"] = len(re.findall(r'^### ', text, re.MULTILINE))
-    metrics["code_blocks"] = len(re.findall(r'```', text)) // 2
-    metrics["mermaid"] = len(re.findall(r'```mermaid', text))
-    metrics["inline_code"] = len(re.findall(r'`[^`]+`', text))
-    metrics["bold"] = len(re.findall(r'\*\*[^*]+\*\*', text))
-    metrics["lists"] = len(re.findall(r'^[\s]*[-*] ', text, re.MULTILINE))
-    metrics["numbered"] = len(re.findall(r'^[\s]*\d+\. ', text, re.MULTILINE))
-    metrics["tables"] = len(re.findall(r'^\|.*\|$', text, re.MULTILINE))
-    
-    # Java-specific checks
-    metrics["has_main_method"] = "public static void main" in text
-    metrics["has_class"] = "public class" in text
-    metrics["has_println"] = "System.out.println" in text
-    
-    return metrics
+# ──────────────────────────────────────────────────────────
+# ANA
+# ──────────────────────────────────────────────────────────
 
 print("=" * 70)
-print("MODEL KARSILASTIRMASI: Pro vs Flash")
+print("S I C A K L I K   K A R S I L A S T I R M A S I")
 print("=" * 70)
-print(f"Bolum: {TITLE}")
-print(f"SPEC: {len(SPEC.split())} words")
+print(f"Model:    deepseek-chat (v4 Flash)")
+print(f"Dizin:    {OUT_DIR}")
 print()
 
-# Run both models
-results = {}
+results: dict[str, VariantResult] = {}
+for label, temp, fname in VARIANTS:
+    vr = load_variant(label, temp, fname)
+    results[label] = vr
+    status_icon = "✅" if vr.status == "ok" else "❌"
+    print(f"  {label:18s} t={temp} {status_icon} "
+          f"{vr.word_count if vr.status=='ok' else 0:>5d} kel, "
+          f"{vr.code_blocks} kod, "
+          f"{vr.richness} zenginlik"
+          + (f" — {vr.error}" if vr.error else ""))
 
-# PRO model - creative temperature
-results["pro_creative"] = run_model("pro_creative", MODELS["pro"], temperature=0.9)
+# ──────────────────────────────────────────────────────────
+# TABLO
+# ──────────────────────────────────────────────────────────
 
-# PRO model - precise temperature
-results["pro_precise"] = run_model("pro_precise", MODELS["pro"], temperature=0.3)
-
-# FLASH model - creative
-results["flash_creative"] = run_model("flash_creative", MODELS["flash"], temperature=0.9)
-
-# FLASH model - precise
-results["flash_precise"] = run_model("flash_precise", MODELS["flash"], temperature=0.3)
-
-# Analyze all
 print()
 print("=" * 70)
-print("DETAYLI METRIK ANALIZI")
+print("K A R S I L A S T I R M A   T A B L O S U")
 print("=" * 70)
 
-header = f"{'Metrik':<25s}"
-for name in results:
-    header += f" {name:>16s}"
-print(header)
-print("-" * len(header))
+METRIC_LABELS = [
+    ("word_count",  "Kelime",     "{:>6d}"),
+    ("code_blocks", "Kod Blogu",  "{:>6d}"),
+    ("inline_code", "Inline Kod", "{:>6d}"),
+    ("bold",        "Bold",       "{:>6d}"),
+    ("lists",       "Liste",      "{:>6d}"),
+    ("numbered",    "Numarali",   "{:>6d}"),
+    ("tables",      "Tablo",      "{:>6d}"),
+    ("mermaid",     "Mermaid",    "{:>6d}"),
+    ("h2",          "H2",         "{:>6d}"),
+    ("h3",          "H3",         "{:>6d}"),
+    ("richness",    "Zenginlik",  "{:>6d}  "),
+]
 
-all_metrics = {}
-for name, mr in results.items():
-    all_metrics[name] = analyze_quality(mr.output)
+# Header
+hdr = f"{'Metrik':<20s}"
+for label, _, _ in VARIANTS:
+    hdr += f" {label:>20s}"
+print(hdr)
+print("-" * len(hdr))
 
-metric_names = ["words", "chars", "h2", "h3", "code_blocks", "mermaid", 
-                "inline_code", "bold", "lists", "numbered", "tables",
-                "has_main_method", "has_class", "has_println"]
-
-for metric in metric_names:
-    row = f"{metric:<25s}"
-    for name in results:
-        val = all_metrics[name].get(metric, "N/A")
-        if isinstance(val, bool):
-            val = "Evet" if val else "Hayir"
-        elif isinstance(val, (int, float)):
-            val = f"{val:,}"
-        row += f" {str(val):>16s}"
+for key, mlabel, fmt in METRIC_LABELS:
+    row = f"{mlabel:<20s}"
+    for label, _, _ in VARIANTS:
+        vr = results[label]
+        val = fmt.format(getattr(vr, key, 0)) if vr.status == "ok" else "  HATA "
+        row += f" {val:>20s}"
     print(row)
 
-# Timing comparison
-print(f"\n{'Elapsed (s)':<25s}", end="")
-for name, mr in results.items():
-    print(f" {mr.elapsed:>16.1f}", end="")
+# Boolean metrics
 print()
+for bool_key, blabel in [("has_main", "main()"), ("has_class", "class"), ("has_println", "println()")]:
+    row = f"{blabel:<20s}"
+    for label, _, _ in VARIANTS:
+        vr = results[label]
+        val = "✅" if vr.status == "ok" and getattr(vr, bool_key) else "❌"
+        row += f" {val:>20s}"
+    print(row)
 
-# Save comparison JSON
+# File size
+row = f"{'Dosya Boyutu':<20s}"
+for label, _, _ in VARIANTS:
+    vr = results[label]
+    val = f"{vr.file_size:,}b" if vr.status == "ok" else "  HATA "
+    row += f" {val:>20s}"
+print(row)
+
+# ──────────────────────────────────────────────────────────
+# ÖZET
+# ──────────────────────────────────────────────────────────
+
+print()
+print("=" * 70)
+print("Ö Z E T")
+print("=" * 70)
+
+oks = [k for k, v in results.items() if v.status == "ok"]
+errs = [k for k, v in results.items() if v.status != "ok"]
+print(f"\nBaşarılı: {len(oks)}/{len(VARIANTS)}")
+if errs:
+    print(f"Hatalı: {', '.join(errs)}")
+
+# En iyi ve en kötü
+if oks:
+    best = max(oks, key=lambda k: results[k].richness)
+    worst = min(oks, key=lambda k: results[k].richness)
+    print(f"\nEn yüksek zenginlik: {best} ({results[best].richness})")
+    print(f"En düşük zenginlik:  {worst} ({results[worst].richness})")
+
+# En uzun/kısa
+if oks:
+    longest = max(oks, key=lambda k: results[k].word_count)
+    shortest = min(oks, key=lambda k: results[k].word_count)
+    print(f"En uzun:  {longest} ({results[longest].word_count} kelime)")
+    print(f"En kısa:  {shortest} ({results[shortest].word_count} kelime)")
+
+# ──────────────────────────────────────────────────────────
+# JSON KAYDI
+# ──────────────────────────────────────────────────────────
+
 comparison = {
     "config": {
-        "title": TITLE,
-        "spec_words": len(SPEC.split()),
-        "models": MODELS,
+        "model": "deepseek-chat (v4 Flash)",
+        "description": "Sıcaklık karşılaştırması: t=0.3, t=0.7, t=0.9",
     },
-    "results": {
-        name: {
-            "timing": {"elapsed_s": mr.elapsed},
-            "metrics": all_metrics[name],
-        }
-        for name, mr in results.items()
-    }
+    "variants": {k: asdict(v) for k, v in results.items()},
 }
 json_path = OUT_DIR / "comparison.json"
 json_path.write_text(json.dumps(comparison, indent=2, ensure_ascii=False), encoding="utf-8")
+print(f"\nJSON: {json_path}")
 
-print(f"\nKarsilastirma kaydedildi: {json_path}")
-print(f"Ciktilar: {OUT_DIR}")
-for f in sorted(OUT_DIR.glob("*.md")):
-    print(f"  {f.name} ({f.stat().st_size:,} bytes)")
+# Dosya listesi
+print(f"\nDosyalar:")
+for f in sorted(OUT_DIR.glob("*")):
+    print(f"  {f.name:45s} {f.stat().st_size:>8,} bytes")
 
-print("\n" + "=" * 70)
-print("TAMAMLANDI")
+print()
+print("=" * 70)
+print("T A M A M L A N D I")
 print("=" * 70)

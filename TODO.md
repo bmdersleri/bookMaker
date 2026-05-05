@@ -1,73 +1,68 @@
-# bookMaker Gelistirme Yol Haritasi
+# 📋 bookMaker — Yapılacaklar
 
-## Tamamlanan Fazlar
+> **Strateji:** Kartopu stratejisi — küçük başla, katman katman büyüt.
+> **Model:** Seed = Pro, Enrich = Flash, Format = Kod (0 token).
 
-### Faz 0-7: TUM FAZLAR TAMAMLANDI
+---
 
-| Faz | Konu | Durum |
-|-----|------|-------|
-| 0 | Proje Iskeleti | TAMAM |
-| 1 | Veri Modelleri ve Depolama | TAMAM |
-| 2 | Chapter Validator | TAMAM |
-| 3 | Kod Smoke Test Motoru | TAMAM |
-| 4 | Manifest Editoru | TAMAM |
-| 5 | Authoring Pipeline | TAMAM |
-| 6 | Production Pipeline | TAMAM |
-| 7 | GitHub + Studio GUI | TAMAM |
+## ✅ Tamamlananlar
 
-## Bolum Uretimi
+- [x] `book_profile.yaml` — Kapsamlı kitap anayasası (schema, chapters, quality, outputs, pandoc, mermaid, stats)
+- [x] `core/config.py` — BookConfig okuyucu modül (tüm ayarları property'lerle sunar)
+- [x] `production/mermaid.py` — Config entegrasyonu (mmdc cmd, background, timeout)
+- [x] `production/pandoc.py` — Config entegrasyonu (ref docx, lua filter, mermaid paths)
+- [x] `production/pipeline.py` — Config entegrasyonu (build/exports/mermaid dirs)
+- [x] `commands/production.py` — CLI: info, build-book, build-all, docx, mermaid
+- [x] `tools/build_book_docx.py` — BookConfig kullanır (27 bölüm tek DOCX)
+- [x] `pipeline_state.yaml` — Kapsamlı pipeline durumu (meta, milestones, chapters, stats)
+- [x] `generation/prompts.py` — Temiz 3-prompt sistemi (system ~100 tok, seed ~170 tok, enrich ~50 tok)
+- [x] `generation/postprocess.py` — Meta'sız normalizasyon (heading fix, front matter, kod/mermaid regex)
+- [x] `generation/pipeline.py` — 2 aşamalı pipeline: seed(Pro) → normalize(Python) → enrich(Flash, paralel) → assemble(Python)
+- [x] `llm/config.py` — Çift model desteği (seed_model + enrich_model)
+- [x] `llm_config.json` — Yeni format (seed_model + enrich_model)
+- [x] **`generation/clean_text.py`** — TextCleaner (tırnak/boşluk/yazım düzelt, 0 token, <10ms)
+- [x] **`postprocess.py` entegrasyonu** — `normalize()` içinde TextCleaner çağrısı
 
-### Batch 0-4: TUMU TAMAMLANDI
+---
 
-| Batch | Bolumler | Durum |
-|-------|----------|-------|
-| 0 | B1-B6 (6 bolum) | TAMAM |
-| 1 | B7-B11 (5 bolum) | TAMAM |
-| 2 | B12-B16 (5 bolum) | TAMAM |
-| 3 | B17-B21 (5 bolum) | TAMAM |
-| 4 | B22-B23 + Ek A-D (6 bolum) | TAMAM |
+## 🔴 Öncelikli (Hemen)
 
-**Toplam: 23 bolum + 4 ek = 27 dosya, ~585 KB**
+- [x] **`generation/clean_text.py`** — TextCleaner: tırnak, boşluk, başlık, kod blok düzeltme
+- [x] **`postprocess.py` entegrasyonu** — TextCleaner normalize()'e eklendi
+- [ ] **`generation/mermaid_validator.py`** — MermaidValidator (syntax + auto-fix + compile + fallback, 0 token)
+- [ ] **`pipeline.py` entegrasyonu** — MermaidValidator `generate_chapter()`'a eklenecek
+- [ ] **Gerçek LLM ile test üretimi** — `ChapterGenerator.generate_chapter()` çalıştır, token ölç
 
-### Iyilestirmeler (P1-P13)
+---
 
-| # | Iyilestirme | Durum |
-|---|-------------|-------|
-| P1 | Sirali islem | TAMAM |
-| P2 | requests streaming | TAMAM |
-| P3 | Retry (3 deneme, backoff) | TAMAM |
-| P4 | Atomik yazma (.tmp->rename) | TAMAM |
-| P5 | Progress gostergesi (5sn) | TAMAM |
-| P6/P12 | Combined prompt (varsayilan) | TAMAM |
-| P7 | Hata raporlama (JSON) | TAMAM |
-| P8 | Resume destegi | TAMAM |
-| P9 | Outline token 4096->2048 | TAMAM |
-| P10 | Buyuk bolum uyarisi | TAMAM |
-| P11 | Preflight API testi | TAMAM |
-| P13 | Token optimizasyonu (%60 kazanc) | TAMAM |
+## 🟡 Orta Vadeli
 
-## Production Ciktilar
+- [ ] **ChapterTemplate** — Template tabanlı validasyon
+  - Hedef şablon: `sample_chapter.md` yapısı
+  - Her katmandan sonra template uyum kontrolü
+- [ ] **bolum-02 başlık düzeltme** — Front matter'da `title: "bolum-02"` → gerçek başlık
+- [ ] **PDF çıktısını aktifleştirme** — `outputs.pdf: true`, pandoc xelatex
+- [ ] **Paralel chapter generation** — `generate_all_chapters()` ile 27 bölüm
 
-| Cikti | Boyut | Detay |
-|-------|-------|-------|
-| `build/output/java-programlamaya-giris.md` | 585 KB | Birlestirilmis Markdown |
-| `build/output/java-programlamaya-giris.docx` | 1.2 MB | TOC + 54 PNG |
-| `build/output/java-programlamaya-giris.pdf` | 1.8 MB | 339 sayfa, TOC + 54 PNG |
-| `build/output/images/*.png` | ~971 KB | 54 Mermaid diyagrami |
+---
 
-## Siradaki Gorevler
+## 🟢 Düşük Öncelikli / İyileştirme
 
-### Kisa Vade
-- [x] F-007: 4/58 Mermaid parse hatasini duzelt (manuel) ✅
-- [x] F-008: Bolum uzunlugu tutarliligini degerlendir (kabul edildi) ✅
-- [ ] GitHub push (deepseek branch, mevcut commit'ler)
+- [ ] **tools/ temizliği** — Eski araçları archive'e taşı
+- [ ] **README.md güncelleme** — Yeni mimariyi yansıt
+- [ ] **Commit** — Tüm değişiklikleri toparla
+- [ ] **GitHub Actions** — DOCX build adımını güncelle
+- [ ] **Bloke bölümleri çöz** — bolum-14, 18, 21 içerik revizyonu
 
-### Orta Vade
-- [ ] Kitap duzeyinde validasyon (`bookmaker check book`)
-- [ ] GitHub Pages icin web yayini
+---
 
-### Uzun Vade
-- [ ] Faz 8: Kitap duzeyinde validasyon
-- [ ] Studio GUI gelistirmeleri
-- [ ] Paralel API cagrilari
-- [ ] Farkli LLM saglayici destegi
+## 📊 İlerleme
+
+| Alan | Toplam | Bitmiş | % |
+|---|---|---|---|
+| Config & Anayasa | 4 | 4 | 100% |
+| Production Build | 2 | 2 | 100% |
+| LLM Generation | 7 | 6 | 86% |
+| Test & Validasyon | 3 | 0 | 0% |
+| CI/CD | 2 | 0 | 0% |
+| **Toplam** | **18** | **12** | **67%** |
