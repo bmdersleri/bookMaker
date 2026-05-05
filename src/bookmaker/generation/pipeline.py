@@ -228,21 +228,30 @@ class ChapterGenerator:
 
     def assemble(self, normalized_text: str, enriched: dict[str, str],
                  chapter_id: str, chapter_title: str) -> str:
-        """Tum parcalari birlestirir."""
+        """Tum parcalari birlestirir. Mükerrer başlık kontrolü yapar."""
         text = normalized_text
+
+        # Her enrichment tipi için: (başlık, mükerrerlik kontrol terimleri)
         end_order = [
-            ("alistirma", "Programlama alistirmalari"),
-            ("soru", "Kendini degerlendirme sorulari"),
-            ("sozluk", "Terim sozlugu"),
-            ("ozet", "Bolum ozeti"),
-            ("hata", "Sik yapilan hatalar ve yanlis sezgiler"),
+            ("alistirma", "Programlama alistirmalari",
+             ["alıştırma", "alistirma"]),
+            ("soru", "Kendini degerlendirme sorulari",
+             ["soru", "değerlendirme", "degerlendirme"]),
+            ("sozluk", "Terim sozlugu",
+             ["sözlük", "sozluk"]),
+            ("ozet", "Bolum ozeti",
+             ["özet", "ozet"]),
+            ("hata", "Sik yapilan hatalar ve yanlis sezgiler",
+             ["hata", "yanlış", "yanlis", "yanilgi"]),
         ]
-        for key, stitle in reversed(end_order):
+        for key, stitle, terms in reversed(end_order):
             if key in enriched and enriched[key]:
-                text = insert_section(text, stitle, enriched[key])
+                text = insert_section(text, stitle, enriched[key],
+                                     turkish_terms=terms)
         if "kopru" in enriched and enriched["kopru"]:
             text = insert_section(text, "Bir sonraki bolume kopru",
-                                  enriched["kopru"])
+                                  enriched["kopru"],
+                                  turkish_terms=["köprü", "kopru"])
         return text
 
     # ----------------------------------------------------------

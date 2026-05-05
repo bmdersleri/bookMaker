@@ -365,37 +365,108 @@ def extract_mermaid_blocks(text: str) -> list[dict]:
 # ============================================================
 
 def insert_section(text: str, section_title: str, section_content: str,
-                  before_heading: Optional[str] = None) -> str:
-    """Metne yeni bir H2 bölümü ekler.
+                  before_heading: Optional[str] = None,
+                  turkish_terms: Optional[list[str]] = None) -> str:
+    """Metne yeni bir H2 bölümü ekler. Mükerrer başlıkları önler.
 
     Args:
         text: Mevcut metin
         section_title: Eklenecek bölüm başlığı (sadece metin, ## eklenir)
         section_content: Bölüm içeriği (markdown)
         before_heading: Varsa bu başlıktan önce ekle
+        turkish_terms: Bu terimler geçen başlık varsa ekleme (örn: ["özet", "ozet"])
 
     Returns:
         Güncellenmiş metin
     """
+    # Mükerrer kontrolü: benzer başlık zaten var mı?
+    if turkish_terms:
+        existing_h2 = re.findall(r'^##\s+(.+)$', text, re.MULTILINE)
+        for h2 in existing_h2:
+            h2_lower = h2.lower().translate(
+                str.maketrans("öüşığçÖÜŞİĞÇ", "ousigcOUSIGC")
+            )
+            for term in turkish_terms:
+                if term.lower() in h2_lower:
+                    # Benzer başlık zaten var, ekleme
+                    return text
+
     new_section = f"\n\n## {section_title}\n\n{section_content.strip()}\n"
 
     if before_heading:
-        # Belirtilen başlıktan önce ekle
         pattern = rf"(^|\n)(##\s+{re.escape(before_heading)})"
         match = re.search(pattern, text, re.MULTILINE)
         if match:
             pos = match.start(2)
             return text[:pos] + new_section + "\n" + text[pos:]
-        # Başlık bulunamazsa sona ekle
         return text.rstrip() + new_section
 
-    # Sona ekle
     return text.rstrip() + new_section
 
 
 # ============================================================
 # ANA NORMALİZASYON FONKSİYONU
 # ============================================================
+
+def _normalize_code_blocks(text: str) -> str:
+    """Kod bloklarinin ``` işaretlerini 0. sütuna hizalar."""
+    lines = text.splitlines()
+    result = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            # ``` markers should be at column 0
+            result.append(stripped)
+        else:
+            result.append(line)
+    return "\n".join(result)
+
+
+def _cleanup_whitespace(text: str) -> str:
+    """Fazla boş satırları ve gereksiz --- separator'ları temizler."""
+    lines = text.splitlines()
+    result = []
+    blank_count = 0
+    in_front_matter = False
+    fm_ended = False
+
+    for i, line in enumerate(lines):
+        stripped = line.rstrip()
+
+        # Front matter takibi
+        if stripped == "---" and not fm_ended:
+            if not in_front_matter:
+                in_front_matter = True
+            else:
+                in_front_matter = False
+                fm_ended = True
+                # Kapanış ---'ini koru
+                blank_count = 0
+                result.append(line)
+                continue
+
+        # Front matter kapandıktan sonraki yalnız --- satırlarını atla
+        if fm_ended and stripped == "---" and not in_front_matter:
+            continue
+
+        # Boş satır
+        if not stripped:
+            blank_count += 1
+            if blank_count <= 2 and not in_front_matter:
+                result.append("")
+            elif in_front_matter:
+                result.append("")
+            continue
+
+        blank_count = 0
+        result.append(line)
+
+    # Sondaki boş satırları temizle
+    while result and not result[-1]:
+        result.pop()
+
+    return "\n".join(result) + "\n"
+
 
 def normalize(
     text: str,
@@ -409,7 +480,7 @@ def normalize(
     1. TextCleaner ile tırnak/boşluk/yazım düzelt (0 token)
     2. Heading seviyelerini düzelt
     3. Front matter ekle/koru
-    4. Fazla boşlukları temizle
+    4. Fazla boşlukları ve gereksiz separator'ları temizle
 
     Args:
         text: Ham LLM çıktısı
@@ -423,6 +494,8 @@ def normalize(
     text = TextCleaner.clean(text)
     text = normalize_headings(text)
     text = ensure_front_matter(text, chapter_id, title, config)
+    text = _normalize_code_blocks(text)
+    text = _cleanup_whitespace(text)
     return text.strip() + "\n"
 
 

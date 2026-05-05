@@ -58,7 +58,7 @@ Aşağıdaki başlıklarla bir PLAN hazırla. SADECE PLAN, kod veya diyagram YAZ
 
 4. **SÖZLÜK** — 10-15 terim adı listele (tanım yazma, sadece terimleri listele)
 
-5. **DEĞERLENDİRME** — 3 soru tipini belirle: 1 D/Y konusu, 1 açık uçlu konu, 1 kod okuma konusu
+5. **DEĞERLENDİRME** — 5-10 D/Y sorusu konusu + 5-10 Boşluk Doldurma sorusu konusu belirle (çoktan seçmeli YOK, açık uçlu YOK)
 
 6. **ALIŞTIRMALAR** — 2-3 alıştırma konusu ve zorluk seviyesi (konuyu tarif et, kodu sonra yazacağız)
 

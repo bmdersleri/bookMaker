@@ -107,9 +107,17 @@ YAZIM KURALLARI:
 - Aynı bölümdeki kod örnekleri birbiriyle bağlantılı olsun
 - Bölüm sonunda mutlaka şu başlıklar altında içerik üret:
   ## Bölüm özeti (3-5 cümle, ana kazanımları vurgula)
-  ## Terim sözlüğü (en az 10 terim, **Terim** — açıklama formatında)
-  ## Kendini değerlendirme soruları (1 D/Y, 1 açık uçlu, 1 kod okuma — cevaplarıyla)
-  ## Programlama alıştırmaları (1 kolay 10-15 satır, 1 orta 20-30 satır)
+  ## Terim sözlüğü (en az 10 terim, HER BIRI şu formatta: **Terim** — açıklama. Örnek: **Immutable** — Oluşturulduktan sonra değeri değiştirilemeyen nesne.)
+  ## Kendini değerlendirme soruları
+    ### Doğru/Yanlış Soruları (5-10 adet, her biri D/Y cevaplı ve açıklamalı)
+    ### Boşluk Doldurma Soruları (5-10 adet, her biri cevaplı ve açıklamalı)
+    (Çoktan seçmeli soru YOK, açık uçlu soru YOK)
+  ## Programlama alıştırmaları (HER BIRI şu formatta:
+    **Alıştırma Adı**
+    - Amaç: ...
+    - Görev: ...
+    - İpucu: ...
+    - Beklenen Çıktı: ...)
 
 Yalnızca içeriğe odaklan. Front matter, meta etiketi, CSS, HTML veya format detayı ekleme."""
 
@@ -143,9 +151,15 @@ Bölüm içeriği (baş ve son):
 
 Bu bölüm için 10-15 maddelik bir terim sözlüğü yaz.
 Kavram listesindeki her terimi ve bölümde geçen önemli terimleri kapsa.
-Her madde şu formatta:
+
+HER MADDE ŞU FORMATA KESINLIKLE UYMALI:
 **Terim** — Açıklama (tek cümle)
 
+Örnek format:
+**Immutable** — Oluşturulduktan sonra değeri değiştirilemeyen nesne.
+**String Pool** — JVM'in aynı değerli String literal'larını sakladığı özel bellek alanı.
+
+Tablo, numaralı liste veya başka format KULLANMA. Sadece yukarıdaki format.
 Yalnızca sözlüğü üret, başka bir şey ekleme."""
 
 
@@ -169,14 +183,23 @@ Bölüm başlıkları:
 Bölüm içeriği (baş ve son):
 {context[:2000]}
 
-Bu bölüm için 3 kendini değerlendirme sorusu yaz.
+Bu bölüm için kendini değerlendirme soruları yaz.
 Sorular kavram listesindeki ana konuları kapsasın.
 
-1. **Doğru/Yanlış** — Cevabı ve kısa açıklamasıyla
-2. **Açık uçlu** — Kavramsal bir soru, cevabıyla
-3. **Kod okuma** — Kısa bir Java kodu ver, çıktısını sor
+## Doğru/Yanlış Soruları (5-10 adet)
+Her soru şu formatta:
+**Soru N: [soru metni]**
+- Cevap: Doğru / Yanlış
+- Açıklama: [1-2 cümle]
 
-Her sorunun cevabını da ekle. Yalnızca soruları üret."""
+## Boşluk Doldurma Soruları (5-10 adet)
+Her soru şu formatta:
+**Soru N: [içinde boşluk olan cümle]**
+- Cevap: [doğru kelime/ifade]
+- Açıklama: [1 cümle]
+
+Çoktan seçmeli SORU YAZMA. Açık uçlu soru YAZMA. Kod okuma sorusu YAZMA.
+Sadece D/Y ve Boşluk Doldurma. Yalnızca soruları üret."""
 
 
 def build_enrich_exercises_prompt(
@@ -202,12 +225,21 @@ Bölüm içeriği (baş ve son):
 Bu bölüm için 2 programlama alıştırması yaz.
 Alıştırmalar kavram listesindeki konuları kapsasın.
 
-1. **Kolay seviye** (10-15 satır Java kodu)
-   - Amaç, görev, ipucu, beklenen çıktı
+HER ALIŞTIRMA ŞU FORMATA KESINLIKLE UYMALI:
 
-2. **Orta seviye** (20-30 satır Java kodu)
-   - Amaç, görev, ipucu, beklenen çıktı
+**Alıştırma 1: [Ad] (Kolay)**
+- Amaç: Bu alıştırmada ne öğreneceksin?
+- Görev: Tam olarak ne yapman gerekiyor?
+- İpucu: Hangi metodları/sınıfları kullanabilirsin?
+- Beklenen Çıktı: Programın ekrana ne yazdırması gerekiyor?
 
+**Alıştırma 2: [Ad] (Orta)**
+- Amaç: ...
+- Görev: ...
+- İpucu: ...
+- Beklenen Çıktı: ...
+
+Tablo formatı KULLANMA. Sadece yukarıdaki başlık ve liste formatı.
 Yalnızca alıştırmaları üret, başka bir şey ekleme."""
 
 
