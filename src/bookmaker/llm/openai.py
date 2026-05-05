@@ -181,7 +181,7 @@ class OpenAICompatibleClient(LLMClient):
                 # Yanıt kesilmiş mi kontrol et
                 if finish_reason == "length":
                     completion_tokens = usage.get("completion_tokens", 0)
-                    print(f"  ⚠ TRUNCATION UYARISI: API yanıtı max_tokens "
+                    print(f"  [WARN] TRUNCATION: API response max_tokens "
                           f"({payload['max_tokens']}) limitinde kesildi! "
                           f"finish_reason={finish_reason}, "
                           f"completion_tokens={completion_tokens}",
@@ -394,7 +394,7 @@ class OpenAICompatibleClient(LLMClient):
 
                 finish = chunk.get("finish_reason", "")
                 if finish == "length":
-                    print(f"  ⚠ STREAM TRUNCATION: {len(accumulated)} karakterde kesildi",
+                    print(f"  [WARN] STREAM TRUNCATION: {len(accumulated)} karakterde kesildi",
                           flush=True)
         finally:
             if file_handle:
@@ -435,7 +435,7 @@ class OpenAICompatibleClient(LLMClient):
         # Truncation kontrolü
         finish_reason = result.get("finish_reason", "")
         if finish_reason == "length":
-            print(f"  ⚠ GENERATE_TEXT TRUNCATION: Yanıt kesildi! "
+            print(f"  [WARN] GENERATE_TEXT TRUNCATION: Yanıt kesildi! "
                   f"Daha yüksek max_tokens değeri gerekebilir. "
                   f"Mevcut content uzunluğu: {len(result.get('content', ''))} karakter",
                   flush=True)

@@ -21,11 +21,11 @@ tests/unit/test_studio_app.py      (13 test, hepsi geçiyor)
 
 ---
 
-## Faz 1: Servis Mimarisi + Models + Jobs + Frontend Ayrıştırma
+## Faz 1: Servis Mimarisi + Models + Jobs + Frontend Ayristirma
 
-**Hedef:** `app.py` sadece route kalsın (logic servislere), frontend JS/CSS ayrı dosyalara.
+**Hedef:** `app.py` sadece route kalsin (logic servislere), frontend JS/CSS ayri dosyalara.
 
-### Oluşturulacak Dosyalar (9 yeni)
+### Olusturulan Dosyalar (tamam)
 
 ```
 src/bookmaker/studio/
@@ -52,16 +52,16 @@ src/bookmaker/studio/
 | `tests/unit/test_studio_app.py` | Servis delegate testleri eklenecek |
 
 ### Kontrol Listesi
-- [x] `app.py` < 300 satir (temiz route-only, monolitik yapıldı)
-- [x] 6 servis dosyası oluşturuldu, her biri import edilebilir
-- [x] `models.py` 15 Pydantic model içeriyor
-- [x] `jobs.py`: create_job, get_job, list_jobs, cancel_job çalışıyor
-- [ ] `app.js` bağımsız çalışıyor (index.html'den ayrı)
-- [ ] `styles.css` tüm stilleri içeriyor
-- [x] CORS header'ları aktif
-- [ ] `/static/` mount çalışıyor
-- [x] Mevcut 13 test geçiyor
-- [ ] `test_studio_services.py` (8-10 yeni test)
+- [x] `app.py` < 300 satir (temiz route-only)
+- [x] 9 servis dosyasi olusturuldu
+- [x] `models.py` 15 Pydantic model iceriyor
+- [x] `jobs.py`: create_job, get_job, list_jobs, cancel_job calisiyor
+- [x] `app.js` bagimsiz calisiyor (index.html'den ayrı)
+- [x] `styles.css` tum stilleri iceriyor
+- [x] CORS header'lari aktif
+- [x] `/static/` mount calisiyor
+- [x] Mevcut testler geciyor (24 test)
+- [x] `test_studio_services.py` yazildi
 
 ---
 
@@ -279,18 +279,18 @@ POST   /api/notifications/subscribe  # Bildirim aboneliği
 
 ---
 
-## 📊 İlerleme Takip Tablosu
+## 📊 Ilerleme Takip Tablosu
 
-| Faz | Açıklama | Durum | Test (tahmini) | Kritik Çıktı |
-|-----|----------|-------|------|-------------|
-| 0 | Mevcut durum | ✅ | 13/13 | Monolitik app.py |
-| 1 | Servis mimarisi + Models + Jobs | 🟡 ~%70 | ~25 | 6 servis + models.py + jobs.py |
-| 2 | Bölüm yönetim paneli | 🔲 | ~30 | Filter/sort/drag-drop + CRUD |
-| 3 | Pipeline + Prompt takibi | 🔲 | ~35 | Toast/iptal/prompt paneli |
-| 4 | Kalite kontrol paneli | 🔲 | ~40 | 5. sekme + javac + stats |
-| 5 | Kitap sihirbazı | 🔲 | ~45 | 5 adımlı wizard |
-| 6 | Build & Export merkezi | 🔲 | ~50 | Kod çıkarma + PNG + DOCX/PDF/EPUB/HTML |
-| 7 | İleri seviye (v2.0) | 🔲 | ~55 | Çoklu kitap + reader + bildirim + PWA |
+| Faz | Aciklama | Durum | Kritik Cikti |
+|-----|----------|-------|-------------|
+| 0 | Mevcut durum | ✅ | Monolitik app.py |
+| 1 | Servis mimarisi + Models + Jobs | ✅ | 9 servis + models.py + jobs.py + static/ |
+| 2 | Bolum yonetim paneli | ✅ | Filter/sort/drag-drop + CRUD |
+| 3 | Pipeline + Prompt takibi | ✅ | Toast/iptal/prompt paneli |
+| 4 | Kalite kontrol paneli | ✅ | 5. sekme + javac + stats |
+| 5 | Kitap sihirbazi | ✅ | 5 adimli wizard |
+| 6 | Build & Export merkezi | ✅ | Kod cikarma + PNG + DOCX/PDF/EPUB/HTML |
+| 7 | Ileri seviye (v2.0) | 🔲 | Coklu kitap + reader + bildirim + PWA |
 
 ---
 
