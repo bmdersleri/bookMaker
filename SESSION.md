@@ -1,174 +1,92 @@
 # SESSION
 
-Bu dosya her oturum sonunda güncellenir. Yeni oturumda **sadece bu dosyayı** oku.
-Detaylı bağlam: `resume.md` | PS7 Exec Skill: `ps7-exec` | Hedefler: `todo.md`
+Bu dosya her oturum sonunda güncellenir. Yeni oturumda Claude bunu otomatik okur.
+Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md`
 
 ---
 
 ## SU AN
 
 ```
-Aktif Faz       : Pipeline Gelistirme
-Son Oturum      : Kod Temizligi + tools/ Arsivleme + bolum-06 Uretimi (2026-05-05)
+Aktif Faz       : Prompt Muhendisligi (Pipeline Gelistirme)
+Son Oturum      : 2026-05-05 — Prompt iyilestirme + Ortam optimizasyonu
 Branch          : deepseek
 DeepSeek Model  : deepseek-chat (tek model)
-API Key         : sk-98a85ecced414d499d34caf73a09b80d
-SSH Remote      : git@github.com:bmdersleri/bookMaker.git (port 443)
-SSH Key         : ~/.ssh/id_ed25519_2
+API Key         : sk-d36f05... (yeni, eski key gecmisten silindi)
 ```
 
 ---
 
-## 🏗 YENİ MİMARİ (Bu Oturumda Değişti)
+## 2026-05-05 Oturumu — Prompt Iyilestirme + Ortam (Son Durum)
+
+### Prompt Iyilestirmeleri
+- [x] SYSTEM_AUTHOR: 6 adimli pedagojik zincir (TANIM→NEDEN→NASIL→NE ZAMAN→ALTERNATIF→HATA)
+- [x] build_seed_prompt: kod zorunlu olmayan basliklar listesi, 6000-8000 kelime hedefi
+- [x] Enrichment prompt'lari: context 500→2000 chars + concepts listesi
+- [x] build_seed_from_spec_prompt: seed ile ayni derinlik kurallari
+- [x] Spec prompt: plan-only format (```java/```mermaid YASAK)
+- [x] build_spec_prompt: "Kod yazma, sadece tarif et" vurgusu
+- [x] Mermaid: zorunlu → istege bagli
+- [x] Soru formati: 5-10 D/Y + 5-10 Bosluk Doldurma, coktan secmeli YOK
+- [x] Sozluk/Alistirma formati: prompt'ta ornekli zorunlu format
+
+### Pipeline Bugfix'leri
+- [x] Enrichment key mismatch: detect_missing_sections ASCII anahtar donduruyor (ozet, kopru...)
+- [x] insert_section: turkish_terms ile mukerrer baslik kontrolu
+- [x] normalize_headings: LLM meta-yorum temizligi (Harika/Iste/Simdi...)
+- [x] normalize_headings: manuel baslik numaralandirma temizligi (5.1, 1.7...)
+- [x] _cleanup_whitespace: fazla --- separator ve bos satir temizligi
+- [x] _normalize_code_blocks: ``` isaretleri 0. sutuna hizalama
+
+### Ortam Iyilestirmeleri
+- [x] venv yeniden olusturuldu: Python 3.14.4, 43 paket
+- [x] uv 0.11.7 → 0.11.9, link-mode=copy (hardlink uyarisi gitti)
+- [x] requests bagimliligi eklendi
+- [x] git autocrlf=input (CRLF uyarilari gitti)
+- [x] llm_config.json git'ten CIKARILDI, git history temizlendi
+- [x] llm_config.example.json sablon eklendi
+- [x] .claude/settings.local.json: izin pattern'leri temizlendi (22 satir)
+- [x] .gitignore: machine-specific + build + sensitive files
+- [x] CI workflow: ci.yml (ruff + pytest + prompt validation)
+- [x] .editorconfig: UTF-8, LF, indent kurallari
+- [x] LICENSE (MIT) + CHANGELOG.md
+- [x] docs/ reorganizasyonu: 7 planlama dosyasi taskindi
+- [x] CLAUDE.md: agent talimatlari
+- [x] .claude/skills/: pipeline-dev, chapter-debug, quick-validate
+- [x] API key yenilendi: sk-d36f05...
+
+### Test Sonuclari
+- validate_prompt_changes.py: 40/40 PASS
+- Pipeline test (test-ch): 10,597 kelime, 387.8s, 11 API cagrisi
+- Enrichment: 6/6 paralel dolduruluyor
+- Mermaid: 12 diyagram (son test)
+
+### Bilinen Sorunlar
+- [ ] Seed truncation: her bolum 2-3 resume cagrisi gerektiriyor (~48-55K karakter)
+- [ ] Enrichment prompt'lari test sirasinda gercek prompt yerine placeholder kaydediyor
+- [ ] Pipeline test henuz son prompt degisiklikleriyle (plan-only spec, code dedup) test edilmedi
+- [ ] Studio GUI Faz 7 planlandi ama baslanmadi
+
+---
+
+## SIRADAKI ADIMLAR
 
 ```
-D:\bookMaker_Deepseek\              ← OTOMASYON REPO (bmdersleri/bookMaker)
-├── src/bookmaker/                    ← Python kodu (53 dosya)
-├── book_projects/java-temelleri/     ← AYRI REPO (bmdersleri/java-temelleri)
-│   ├── chapters/                     ← 27 bölüm (23+4 ek) ✅
-│   ├── build/output/                 ← DOCX, PDF, MD, 58 PNG
-│   ├── book_profile.yaml             ← Kitap profili
-│   ├── llm_config.json               ← DeepSeek API
-│   ├── pipeline_state.yaml           ← 27 bölüm blocked
-│   └── .git/                         ← AYRI GIT (main, pushlandı)
-├── tools/                             ← Ortak araçlar
-├── tests/                             ← 25 test
-├── docs/                              ← Ortak dokümantasyon
-├── prompts/                           ← Prompt şablonları
-├── master_plan.md, session.md, ...    ← Planlama (otomasyonda)
-└── .git/                              ← ANA GIT (deepseek, pushlandı)
+1. [ ] Yeni prompt degisiklikleriyle tam pipeline test (plan-only spec + dedup + format)
+2. [ ] Test sonuclarina gore prompt ince ayar
+3. [ ] Seed truncation cozumu (sectioned mod mu? prompt kisaltma mi?)
+4. [ ] Enrichment prompt kaydi duzeltme
+5. [ ] Studio GUI Faz 2: Bolum yonetim paneli (GUI_ROADMAP.md)
 ```
 
 ---
 
-## 🎯 PINLENEN SKILL'LER (10 adet)
-
-| Skill | Ne İçin | Pinli mi? |
-|-------|---------|:---------:|
-| 📄 **docx** | DOCX oluşturma/düzenleme | ✅ |
-| 📕 **pdf** | PDF manipülasyonu | ✅ |
-| 📝 **code-review** | Kod kalitesi analizi | ✅ |
-| 🎨 **frontend-design** | Studio GUI tasarımı | ✅ |
-| 💬 **git-commit** | Commit standardizasyonu | ✅ |
-| ✍️ **doc-coauthoring** | Doküman yazım workflow'u | ✅ |
-| 📊 **xlsx** | Rapor/veri çıktıları | ✅ |
-| ⚡ **ps7-exec** | PS7 exec wrapper (YENİ) | ✅ |
-| 🪄 **skill-creator** | Yeni skill oluşturma | ✅ |
-| 🔍 **web-artifacts-builder** | HTML artefaktlar | ❌ (ihtiyaç halinde) |
-
----
-
-## ⚡ PS7 EXEC SKILL
-
-Yeni oluşturuldu: `C:\Users\ismai\.deepchat\skills\ps7-exec\SKILL.md`
-
-```python
-# ✅ DOĞRU — PS7 ile (&& çalışır)
-exec('& "C:\\Program Files\\PowerShell\\7\\pwsh.exe" -NoProfile -Command "cd path && cmd1 && cmd2"')
-
-# Veya tools/exec.ps1 helper:
-exec('& "D:\\bookMaker_Deepseek\\tools\\exec.ps1" "cd path && cmd1 && cmd2"')
-```
-
-PS7 profilde `exec` ve `ps7` fonksiyonları tanımlı.
-
----
-
-## 📋 CLI TEST SONUÇLARI (Bu Oturumda Test Edildi)
-
-| Komut | Doğru Kullanım | Durum |
-|-------|---------------|:-----:|
-| `check chapter` | `check chapter <bolum.md>` | ✅ PASS |
-| `check book` | `check book <proje_dizini>` | ✅ 27 hata (manuel numbering) |
-| `chapter seed` | `chapter seed <id>` | ✅ Tohum oluşturuldu |
-| `chapter outline` | `chapter outline <id> [prompt/paste/review]` | ✅ Prompt üretildi |
-| `chapter draft` | `chapter draft <id> [prompt/paste/review]` | ✅ Prompt üretildi |
-| `chapter approve` | `chapter approve <id>` | ✅ Onaylandı (bolum-01) |
-| `build chapter` | `build chapter <bolum.md>` | ❌ 12/12 compile failed (javac yok) |
-| `manifest view` | `manifest view --path <proje>` | ⚠️ Bolumler (0) — manifest boş |
-| `manifest list-chapters` | `manifest list-chapters --path <proje>` | ⚠️ Bulunamadı |
-| `manifest validate` | `manifest validate --path <proje>` | ⚠️ book_manifest.yaml yok |
-| `manifest pipeline` | `manifest pipeline --path <proje>` | ❌ Pipeline durumu bulunamadı |
-| `llm status` | `llm status --path <proje>` | ✅ DeepSeek hazır |
-| `llm test` | `llm test --path <proje>` | ✅ deepseek-v4-flash OK |
-| `github status` | `github status --path <proje>` | ✅ main, temiz |
-| `production mermaid` | `production mermaid <bolum.md>` | ✅ 58/58 Mermaid |
-| `production docx` | `production docx <bolum.md>` | ✅ DOCX export |
-| `production full` | `production full <bolum.md>` | ❌ run_production None hatası |
-| `init` | `init --path <proje> --preset <preset>` | ✅ Proje oluşturuldu |
-| `generate chapter` | `generate chapter <id> --path <proje>` | ⏳ LLM çağrısı |
-| `generate outline` | `generate outline <id> --topic <konu>` | ⏳ LLM çağrısı |
-| `generate book` | `generate book <konu>` | ⏳ LLM çağrısı |
-
-### Açık Hatalar (Düzeltilecek)
-
-| # | Komut | Hata | Çözüm |
-|---|-------|------|-------|
-| 1 | `production full` | `run_production(path)` None dönüyor | `production/pipeline.py`'daki `run()` build_chapter None dönüyor |
-| 2 | `manifest pipeline` | Pipeline durumu bulunamadı | `book_manifest.yaml` oluşturulmamış |
-| 3 | `build chapter` | 12/12 compile failed | javac PATH'te değil veya CODE_META parsing sorunu |
-
----
-
-## 2026-05-05 Oturumu (Kod Temizligi + Pipeline Gelistirme)
-
-### Yapilanlar
-- [x] `pipeline.py`: dual-model referanslari temizlendi, `_spec_seed_normalize()` helper cikarildi
-- [x] `openai.py` + `pipeline.py`: Windows charmap uyumlulugu (⚠ → [WARN])
-- [x] tools/: 94 → 30 script (fix/check/verify archive altina)
-- [x] TODO.md: %67 → %77, GUI_ROADMAP.md: Faz 1-6 ✅
-- [x] dummy-kitap bolum-06: 3510 kelime, spec→validate→seed→normalize (enrich atlandi)
-- [x] API key standartlastirildi: sk-98a85ecced414d499d34caf73a09b80d
-- [x] SSH remote: git@github.com:bmdersleri/bookMaker.git (port 443)
-
-### Onemli Bilgiler
-- Windows'ta `PYTHONIOENCODING=utf-8` zorunlu
-- `_gen_bolum06.py`: `python tools/_gen_bolum06.py` ile tekrar uretilebilir
-- Derinleme stratejileri: deepen, two-pass, sectioned (5 strateji secilebilir)
-- book_projects/ .gitignore'da — ayri repo olarak yonetiliyor
-
-## 🚀 SIRADAKİ ADIMLAR
+## YENI OTURUM ICIN BASLANGIC
 
 ```
-1. [ ] MermaidValidator pipeline entegrasyonu
-2. [ ] Gercek LLM test uretimi (token olcumu)
-3. [ ] Kalan CLI hatalari: production full, manifest pipeline, build chapter
-4. [ ] ChapterTemplate validasyonu
-5. [ ] Paralel chapter generation (27 bolum)
-6. [ ] Studio GUI gelistirme (FastAPI)
-```
-
----
-
-## 📌 YENİ OTURUM İÇİN DEVAM PROMPTU
-
-```
-Yeni Oturum: bookMaker CLI Tamamlama + Studio GUI
-
-Bu oturumda:
-1. ÖNCE session.md'yi oku
-2. ps7-exec skill'ine bak (C:\Users\ismai\.deepchat\skills\ps7-exec\SKILL.md)
-3. PS7 kullan: exec('& "C:\\Program Files\\PowerShell\\7\\pwsh.exe" -NoProfile -Command "..."')
-4. .venv kullan: .venv\Scripts\python.exe -m bookmaker <komut>
-5. Kitap projesi: book_projects/java-temelleri/
-6. Açık hatalar:
-   - production full → production/pipeline.py run() None dönüyor
-   - manifest pipeline → PipelineManager book_manifest.yaml bulamıyor
-   - build chapter → javac PATH'te değil
-7. Sıradaki: Studio GUI (FastAPI) geliştirmesi
-```
-
----
-
-## SON COMMIT'LER
-
-```
-Ana Repo (deepseek):
-  3f4fb8f fix: encoding duzeltmesi + resume.md + bolum-06 uretim scripti
-  b548d53 chore: kod temizligi - docstring, tools/, TODO, pipeline refactor
-  abb843d feat: deepen theory pipeline + infrastructure revamp
-  746f4a1 feat(studio): Faz 1-6 tamam
-
-Kitap Repo (main):
-  50e500b feat: Java'nin Temelleri kitap projesi (23 bolum + 4 ek)
+Claude, bookMaker projesinde calismaya devam edelim.
+- SESSION.md'yi okudun mu?
+- Branch: deepseek
+- Son is: Prompt iyilestirme + ortam duzenlemesi (2026-05-05)
+- Sıradaki: Yeni prompt'larla pipeline test
 ```
