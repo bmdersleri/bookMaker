@@ -1,10 +1,12 @@
-"""2 asamali bolum uretim pipeline'i.
-Cift model destegi: Seed (Pro) + Enrich (Flash).
+"""Bolum uretim pipeline'i.
+Tek model (DeepSeek Chat).
 
-Asama 1 — SEEDING:    LLM (Pro) serbest bolum icerigi uretir
-Asama 2 — NORMALIZATION: Python kodu (0 token)
-Asama 3 — ENRICHMENT:  LLM (Flash, paralel) eksik bolumleri doldurur
-Asama 4 — ASSEMBLY:    Python kodu (0 token)
+Asama 1 — SEEDING:       LLM serbest bolum icerigi uretir
+Asama 2 — NORMALIZATION:  Python kodu (0 token)
+Asama 3 — ENRICHMENT:     LLM (paralel) eksik bolumleri doldurur
+Asama 4 — ASSEMBLY:       Python kodu (0 token)
+Opsiyonel — SPEC:         LLM oncesi planlama (spec -> validate)
+Opsiyonel — DEEPEN:       H2 bazinda teorik derinlestirme
 """
 
 from __future__ import annotations
@@ -48,7 +50,7 @@ from bookmaker.llm.openai import OpenAICompatibleClient
 
 
 class ChapterGenerator:
-    """2 asamali bolum uretici. Cift model destegi.
+    """Bolum ureticisi. Tek model (DeepSeek Chat) ile calisir.
 
     Kullanim:
         gen = ChapterGenerator("book_projects/java-temelleri")
@@ -58,8 +60,12 @@ class ChapterGenerator:
             concepts=["File", "Path", "BufferedReader"],
         )
 
-    Model stratejisi:
-        model -> DeepSeek v4 Flash (deepseek-chat) -> tum API cagrilari
+    Uretim stratejileri:
+        generate_chapter()              -> Temel 4-asama (seed/norm/enrich/assemble)
+        generate_chapter_with_spec()    -> Spec-gudumlu (+ opsiyonel deepen)
+        generate_chapter_with_spec_deep() -> Spec + deepen her zaman
+        generate_chapter_sectioned()    -> Parca bazli uretim
+        generate_chapter_two_pass()     -> Iki-gecisli (taslak + deepen)
     """
 
     def __init__(self, project_root: str | Path) -> None:
@@ -90,7 +96,7 @@ class ChapterGenerator:
     def seed(self, chapter_title: str, concepts: list[str],
              outline: Optional[str] = None,
              chapter_no: Optional[int] = None) -> str:
-        """LLM Pro ile serbest bolum icerigi uretir."""
+        """LLM ile serbest bolum icerigi uretir."""
         if not self.client:
             raise RuntimeError("LLM API yapilandirilmamis.")
         user_prompt = build_seed_prompt(
@@ -123,7 +129,7 @@ class ChapterGenerator:
     def enrich(self, normalized_text: str, chapter_title: str,
                enrich_types: Optional[list[str]] = None,
                next_chapter: Optional[str] = None) -> dict[str, str]:
-        """Eksik bolumleri LLM Flash ile paralel doldurur."""
+        """Eksik bolumleri LLM ile paralel doldurur."""
         if not self.client:
             print("  [WARN] Enrich client yok, fallback kullaniliyor.")
             return self._fallback_all(enrich_types, chapter_title)
@@ -302,6 +308,54 @@ class ChapterGenerator:
 
 
     # ----------------------------------------------------------
+    # ORTAK YARDIMCI: spec + validate + seed + normalize
+    # ----------------------------------------------------------
+
+    def _spec_seed_normalize(
+        self, chapter_id: str, title: str, concepts: list[str],
+        chapter_no, gen_dir: Path, result: dict,
+    ) -> str:
+        """Spec -> Validate -> Seed -> Normalize ortak akisi.
+
+        Tum ara ciktilari gen_dir altina kaydeder, sonuclari result'a yazar.
+        Normalize edilmis metni dondurur.
+        """
+        # STEP 0: SPEC
+        print(f"\n--- ADIM 0: SPEC ---")
+        spec = generate_spec(self.client, title, concepts,
+                             f"Hedef: {self.config.audience}", chapter_no)
+        self._save(gen_dir / "step0_spec.md", spec)
+        self._save(gen_dir / "prompt0_spec.txt",
+                   build_spec_prompt(title, concepts,
+                       f"Hedef: {self.config.audience}", chapter_no))
+        result["spec"] = spec
+
+        # STEP 0.5: VALIDATE
+        print(f"\n--- ADIM 0.5: DOGRULAMA ---")
+        validation = validate_spec(self.client, spec, title)
+        self._save(gen_dir / "step0_validation.md", validation["notes"])
+        self._save(gen_dir / "prompt0_validation.txt",
+                   build_spec_validation_prompt(spec, title))
+        result["validation"] = validation
+
+        # STEP 1: SEED
+        print(f"\n--- ADIM 1: SEED ---")
+        seed_prompt = build_seed_from_spec_prompt(spec, title)
+        self._save(gen_dir / "prompt1_seed.txt", seed_prompt)
+        seed_start = time.time()
+        raw = self.client.generate_text_with_resume(
+            SYSTEM_AUTHOR, seed_prompt,
+            output_path=str(gen_dir / "step1_seed_stream.md"))
+        result["seed_time"] = round(time.time() - seed_start, 1)
+        self._save(gen_dir / "step1_seed.md", raw)
+        print(f"  [SEED] {len(raw.split())} kelime, {result['seed_time']}s")
+
+        # STEP 2: NORMALIZE
+        norm = self.normalize_chapter(raw, chapter_id, title)
+        self._save(gen_dir / "step2_normalized.md", norm)
+        return norm
+
+    # ----------------------------------------------------------
     # GENERATE WITH SPEC (kapsamli, ara dosya kayitli)
     # ----------------------------------------------------------
 
@@ -313,78 +367,39 @@ class ChapterGenerator:
         """Spec -> Validate -> Seed -> Normalize -> [Deepen] -> Enrich -> Assemble.
 
         Her asamanin ciktisi build/generation/ altina kaydedilir.
-
-        Args:
-            include_deepen: True ise normalize sonrasi her H2 bolumunu
-                           LLM ile teorik olarak derinlestirir (Cozum B).
         """
         gen_dir = self.root / "build" / "generation"
         gen_dir.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
         result = {"chapter_id": chapter_id, "title": title, "steps": {}}
 
-        # --- STEP 0: SPEC ---
-        print(f"\n--- ADIM 0: SPEC ---")
-        spec = generate_spec(self.client, title, concepts,
-                             f"Hedef: {self.config.audience}", chapter_no)
-        self._save(gen_dir / "step0_spec.md", spec)
-        self._save(gen_dir / "prompt0_spec.txt",
-                   build_spec_prompt(title, concepts,
-                       f"Hedef: {self.config.audience}", chapter_no))
-        result["spec"] = spec
+        norm = self._spec_seed_normalize(
+            chapter_id, title, concepts, chapter_no, gen_dir, result)
 
-        # --- STEP 0.5: VALIDATE ---
-        print(f"\n--- ADIM 0.5: DOGRULAMA ---")
-        validation = validate_spec(self.client, spec, title)
-        self._save(gen_dir / "step0_validation.md", validation["notes"])
-        self._save(gen_dir / "prompt0_validation.txt",
-                   build_spec_validation_prompt(spec, title))
-        result["validation"] = validation
-
-        # --- STEP 1: SEED ---
-        print(f"\n--- ADIM 1: SEED ---")
-        seed_prompt = build_seed_from_spec_prompt(spec, title)
-        self._save(gen_dir / "prompt1_seed.txt", seed_prompt)
-        seed_start = time.time()
-        # Streaming + resume: chunk'lar gelir gelmez diske yaz, kopma/kesilme durumunda devam et
-        raw = self.client.generate_text_with_resume(
-            SYSTEM_AUTHOR, seed_prompt,
-            output_path=str(gen_dir / "step1_seed_stream.md"))
-        result["seed_time"] = round(time.time() - seed_start, 1)
-        self._save(gen_dir / "step1_seed.md", raw)
-        print(f"  [SEED] {len(raw.split())} kelime, {result['seed_time']}s")
-
-        # --- STEP 2: NORMALIZE ---
-        norm = self.normalize_chapter(raw, chapter_id, title)
-        self._save(gen_dir / "step2_normalized.md", norm)
-
-        # --- STEP 2.5: DEEPEN (istege bagli, Cozum B) ---
+        # STEP 2.5: DEEPEN (istege bagli)
         if include_deepen:
             deepen_start = time.time()
             norm = self._deepen_sections(norm, title, gen_dir)
             norm = self.normalize_chapter(norm, chapter_id, title)
             result["deepen_time"] = round(time.time() - deepen_start, 1)
 
-        # --- STEP 3: ENRICH ---
+        # STEP 3: ENRICH
         missing = self.detect_missing(norm)
         enriched = self.enrich(norm, title, enrich_types, next_chapter) if missing else {}
         for k, v in enriched.items():
-            # Enrichment prompt'unu kaydet
             self._save(gen_dir / f"prompt3_enrich_{k}.txt",
                        f"Enrichment: {k}, Chapter: {title}")
-            # Enrichment yanitini ayri dosyaya kaydet
             self._save(gen_dir / f"step3_enrich_{k}.md", v)
         result["enriched"] = enriched
         result["missing"] = [m for m in missing if not m["existing"]]
 
-        # --- STEP 4: ASSEMBLE + FINAL NORMALIZE ---
+        # STEP 4: ASSEMBLE + FINAL NORMALIZE
         final = self.assemble(norm, enriched, chapter_id, title)
         final = self.normalize_chapter(final, chapter_id, title)
         self._save(gen_dir / "step4_final.md", final)
 
         if save:
-            path = self._save_chapter(chapter_id, final)
-            result["path"] = str(path)
+            result["path"] = str(self._save_chapter(chapter_id, final))
 
         wc = len(final.split())
         tt = round(time.time() - t0, 1)
@@ -393,8 +408,8 @@ class ChapterGenerator:
                    f'"seed_time":{result.get("seed_time",0)},'
                    f'"deepen_time":{result.get("deepen_time",0)},'
                    f'"model":"{self.llm_config.model}"}}')
-        print(f"\n  DONE {chapter_id}: {wc} kelime, {tt}s")
-        print(f"  Dosyalar: {gen_dir}")
+        print(f"\n  DONE {chapter_id}: {wc} kelime, {tt}s"
+              f"\n  Dosyalar: {gen_dir}")
         return result
 
     def generate_chapter_sectioned(
@@ -565,8 +580,8 @@ class ChapterGenerator:
             section_heading=section_heading,
             section_content=section_content,
         )
-        # Hedef ~2x büyüme: section'ın 1/3'ü kadar token yeterli, maks 4096
-        est_tokens = min(4096, max(2048, len(section_content) // 3))
+        # Bölüm zaten uzunsa daha fazla token iste
+        est_tokens = min(8192, max(4096, len(section_content) // 2))
         return self.client.generate_text_with_resume(
             SYSTEM_AUTHOR, prompt, max_tokens=est_tokens
         )
@@ -579,7 +594,7 @@ class ChapterGenerator:
         Her H2 bölümünü ayrı LLM çağrısıyla genişletir,
         kod bloklarını korur, sadece açıklamaları derinleştirir.
         """
-        print(f"\n--- ADIM 2.5: TEORIK DERINLESTIRME ---")
+        print(f"\n--- ADIM 3.5: TEORIK DERINLESTIRME ---")
         t0 = time.time()
 
         sections = extract_h2_sections(text)
@@ -589,7 +604,7 @@ class ChapterGenerator:
             sections=sections,
             deepen_fn=self._call_deepen,
             chapter_title=chapter_title,
-            min_chars=500,  # Çok kısa bölümleri atla (ön söz vs.)
+            min_chars=300,
         )
 
         result = reassemble_from_sections(deepened)
@@ -599,7 +614,7 @@ class ChapterGenerator:
         growth = round((new_wc - old_wc) / max(1, old_wc) * 100)
         print(f"  [DEEPEN] {old_wc} → {new_wc} kelime (+%{growth}), {elapsed:.1f}s")
 
-        self._save(gen_dir / "step2_5_deepened.md", result)
+        self._save(gen_dir / "step3_5_deepened.md", result)
         return result
 
     # ----------------------------------------------------------
@@ -703,51 +718,23 @@ class ChapterGenerator:
         self, chapter_id: str, title: str, concepts: list[str],
         chapter_no=None, enrich_types=None, next_chapter=None, save=True,
     ) -> dict:
-        """generate_chapter_with_spec + teorik derinleştirme.
+        """Spec -> Validate -> Seed -> Normalize -> Deepen -> Enrich -> Assemble.
 
-        Standart pipeline'a ek olarak:
-        - Normalize'dan sonra deepen pass
-        - Derinleştirilmiş metin üzerine enrichment
+        Standart spec pipeline'ina deepen pass eklenmis hali.
         """
         gen_dir = self.root / "build" / "generation" / f"{chapter_id}_deep"
         gen_dir.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
         result = {"chapter_id": chapter_id, "title": title, "mode": "spec_deep"}
 
-        # --- STEP 0: SPEC ---
-        print(f"\n--- ADIM 0: SPEC ---")
-        spec = generate_spec(self.client, title, concepts,
-                             f"Hedef: {self.config.audience}", chapter_no)
-        self._save(gen_dir / "step0_spec.md", spec)
-        result["spec"] = spec
+        norm = self._spec_seed_normalize(
+            chapter_id, title, concepts, chapter_no, gen_dir, result)
 
-        # --- STEP 0.5: VALIDATE ---
-        print(f"\n--- ADIM 0.5: DOGRULAMA ---")
-        validation = validate_spec(self.client, spec, title)
-        self._save(gen_dir / "step0_validation.md", validation["notes"])
-        result["validation"] = validation
-
-        # --- STEP 1: SEED ---
-        print(f"\n--- ADIM 1: SEED ---")
-        seed_prompt = build_seed_from_spec_prompt(spec, title)
-        self._save(gen_dir / "prompt1_seed.txt", seed_prompt)
-        seed_start = time.time()
-        raw = self.client.generate_text_with_resume(
-            SYSTEM_AUTHOR, seed_prompt,
-            output_path=str(gen_dir / "step1_seed_stream.md"))
-        result["seed_time"] = round(time.time() - seed_start, 1)
-        self._save(gen_dir / "step1_seed.md", raw)
-        print(f"  [SEED] {len(raw.split())} kelime, {result['seed_time']}s")
-
-        # --- STEP 2: NORMALIZE ---
-        norm = self.normalize_chapter(raw, chapter_id, title)
-        self._save(gen_dir / "step2_normalized.md", norm)
-
-        # --- STEP 3: DEEPEN (YENI) ---
+        # STEP 3: DEEPEN
         deepened = self._deepen_sections(norm, title, gen_dir)
         deepened = self.normalize_chapter(deepened, chapter_id, title)
 
-        # --- STEP 4: ENRICH ---
+        # STEP 4: ENRICH
         missing = self.detect_missing(deepened)
         enriched = self.enrich(deepened, title, enrich_types, next_chapter) if missing else {}
         for k, v in enriched.items():
@@ -755,15 +742,14 @@ class ChapterGenerator:
         result["enriched"] = enriched
         result["missing"] = [m for m in missing if not m["existing"]]
 
-        # --- STEP 5: ASSEMBLE ---
+        # STEP 5: ASSEMBLE
         final = self.assemble(deepened, enriched, chapter_id, title)
         final = self.normalize_chapter(final, chapter_id, title)
         self._save(gen_dir / "step5_final.md", final)
         result["final"] = final
 
         if save:
-            path = self._save_chapter(chapter_id, final)
-            result["path"] = str(path)
+            result["path"] = str(self._save_chapter(chapter_id, final))
 
         wc = len(final.split())
         tt = round(time.time() - t0, 1)
@@ -771,7 +757,7 @@ class ChapterGenerator:
                    f'{{"chapter":"{chapter_id}","mode":"spec_deep",'
                    f'"words":{wc},"total_time":{tt},'
                    f'"model":"{self.llm_config.model}"}}')
-        print(f"\n  DONE {chapter_id} (deep): {wc} kelime, {tt}s")
-        print(f"  Dosyalar: {gen_dir}")
+        print(f"\n  DONE {chapter_id} (deep): {wc} kelime, {tt}s"
+              f"\n  Dosyalar: {gen_dir}")
         return result
 

@@ -1,73 +1,67 @@
-# bookMaker Gelistirme Yol Haritasi
+# bookMaker -- Yapilacaklar
 
-## Tamamlanan Fazlar
+> **Strateji:** Kartopu stratejisi -- kucuk basla, katman katman buyut.
+> **Model:** DeepSeek Chat (tek model).
 
-### Faz 0-7: TUM FAZLAR TAMAMLANDI
+---
 
-| Faz | Konu | Durum |
-|-----|------|-------|
-| 0 | Proje Iskeleti | TAMAM |
-| 1 | Veri Modelleri ve Depolama | TAMAM |
-| 2 | Chapter Validator | TAMAM |
-| 3 | Kod Smoke Test Motoru | TAMAM |
-| 4 | Manifest Editoru | TAMAM |
-| 5 | Authoring Pipeline | TAMAM |
-| 6 | Production Pipeline | TAMAM |
-| 7 | GitHub + Studio GUI | TAMAM |
+## Tamamlananlar
 
-## Bolum Uretimi
+- [x] `book_profile.yaml` -- Kapsamli kitap anayasasi
+- [x] `core/config.py` -- BookConfig okuyucu modul
+- [x] `production/mermaid.py` -- mmdc CLI entegrasyonu
+- [x] `production/pandoc.py` -- Pandoc DOCX export
+- [x] `production/pipeline.py` -- Full production pipeline
+- [x] `commands/production.py` -- CLI komutlari
+- [x] `pipeline_state.yaml` -- Pipeline durum takibi
+- [x] `generation/prompts.py` -- Prompt sablonlari
+- [x] `generation/postprocess.py` -- Normalizasyon (heading fix, front matter, kod/mermaid)
+- [x] `generation/pipeline.py` -- 4 asamali pipeline + 5 uretim stratejisi
+- [x] `llm/config.py` -- LLM config yonetimi (tek model)
+- [x] `llm_config.json` -- DeepSeek API yapilandirmasi
+- [x] `generation/clean_text.py` -- TextCleaner (0 token, regex bazli)
+- [x] `generation/mermaid_validator.py` -- MermaidValidator (syntax + auto-fix + compile + fallback, 0 token)
+- [x] `openai.py` -- Retry + streaming + auto-resume mekanizmasi
+- [x] **deepen theory pipeline** -- H2 bazinda teorik derinlestirme (genisletilmis prompt, +%50-100 icerik)
+- [x] **tools/ temizligi** -- 94 -> 30 script, fix/check/verify/migration archive'e tasindi
+- [x] **docstring/kod temizligi** -- Dual model referanslari, guncel olmayan yorumlar
+- [x] **pipeline kod tekrari azaltma** -- `_spec_seed_normalize()` helper metodu cikarildi
 
-### Batch 0-4: TUMU TAMAMLANDI
+---
 
-| Batch | Bolumler | Durum |
-|-------|----------|-------|
-| 0 | B1-B6 (6 bolum) | TAMAM |
-| 1 | B7-B11 (5 bolum) | TAMAM |
-| 2 | B12-B16 (5 bolum) | TAMAM |
-| 3 | B17-B21 (5 bolum) | TAMAM |
-| 4 | B22-B23 + Ek A-D (6 bolum) | TAMAM |
+## Oncelikli (Hemen)
 
-**Toplam: 23 bolum + 4 ek = 27 dosya, ~585 KB**
+- [ ] **`mermaid_validator.py` entegrasyonu** -- MermaidValidator `generate_chapter()`'a eklenecek
+- [ ] **Gercek LLM ile test uretimi** -- `ChapterGenerator.generate_chapter()` calistir, token olc
 
-### Iyilestirmeler (P1-P13)
+---
 
-| # | Iyilestirme | Durum |
-|---|-------------|-------|
-| P1 | Sirali islem | TAMAM |
-| P2 | requests streaming | TAMAM |
-| P3 | Retry (3 deneme, backoff) | TAMAM |
-| P4 | Atomik yazma (.tmp->rename) | TAMAM |
-| P5 | Progress gostergesi (5sn) | TAMAM |
-| P6/P12 | Combined prompt (varsayilan) | TAMAM |
-| P7 | Hata raporlama (JSON) | TAMAM |
-| P8 | Resume destegi | TAMAM |
-| P9 | Outline token 4096->2048 | TAMAM |
-| P10 | Buyuk bolum uyarisi | TAMAM |
-| P11 | Preflight API testi | TAMAM |
-| P13 | Token optimizasyonu (%60 kazanc) | TAMAM |
+## Orta Vadeli
 
-## Production Ciktilar
+- [ ] **ChapterTemplate** -- Template tabanli validasyon (sample_chapter.md yapisi)
+- [ ] **bolum-02 baslik duzeltme** -- Front matter'da `title: "bolum-02"` -> gercek baslik
+- [ ] **PDF ciktisi** -- `outputs.pdf: true`, pandoc xelatex
+- [ ] **Paralel chapter generation** -- `generate_all_chapters()` ile 27 bolum
 
-| Cikti | Boyut | Detay |
-|-------|-------|-------|
-| `build/output/java-programlamaya-giris.md` | 585 KB | Birlestirilmis Markdown |
-| `build/output/java-programlamaya-giris.docx` | 1.2 MB | TOC + 54 PNG |
-| `build/output/java-programlamaya-giris.pdf` | 1.8 MB | 339 sayfa, TOC + 54 PNG |
-| `build/output/images/*.png` | ~971 KB | 54 Mermaid diyagrami |
+---
 
-## Siradaki Gorevler
+## Dusuk Oncelikli / Iyilestirme
 
-### Kisa Vade
-- [x] F-007: 4/58 Mermaid parse hatasini duzelt (manuel) ✅
-- [x] F-008: Bolum uzunlugu tutarliligini degerlendir (kabul edildi) ✅
-- [ ] GitHub push (deepseek branch, mevcut commit'ler)
+- [ ] **README.md guncelleme** -- Yeni mimariyi yansit
+- [ ] **GitHub Actions** -- DOCX build adimini guncelle
+- [ ] **Bloke bolumler** -- bolum-14, 18, 21 icerik revizyonu
+- [ ] **Studio Faz 1 kalanlar** -- app.js/styles.css ayristirma, /static/ mount
 
-### Orta Vade
-- [ ] Kitap duzeyinde validasyon (`bookmaker check book`)
-- [ ] GitHub Pages icin web yayini
+---
 
-### Uzun Vade
-- [ ] Faz 8: Kitap duzeyinde validasyon
-- [ ] Studio GUI gelistirmeleri
-- [ ] Paralel API cagrilari
-- [ ] Farkli LLM saglayici destegi
+## Ilerleme
+
+| Alan | Toplam | Bitmis | % |
+|---|---|---|---|
+| Config & Anayasa | 4 | 4 | 100% |
+| Production Build | 2 | 2 | 100% |
+| LLM Generation | 8 | 7 | 88% |
+| Test & Validasyon | 3 | 1 | 33% |
+| CI/CD & Dokumantasyon | 2 | 0 | 0% |
+| Kod Kalitesi | 3 | 3 | 100% |
+| **Toplam** | **22** | **17** | **77%** |

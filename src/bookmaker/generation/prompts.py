@@ -243,23 +243,21 @@ def build_enrich_deepen_prompt(
 Alt Bölüm: {section_heading}
 
 MEVCUT İÇERİK:
-{section_content[:2000]}
+{section_content[:3000]}
 
 ---
-GÖREV: Bu alt bölümün teorik açıklamalarını YAKLAŞIK 2 KATINA genişlet.
-KESİNLİKLE 3 KATINDAN FAZLA BÜYÜTME — gereksiz tekrarlardan kaçın.
+GÖREV: Bu alt bölümün teorik açıklamalarını EN AZ 2 KATINA çıkar.
 
 KURALLAR:
 - Mevcut kod örneklerine DOKUNMA, onları aynen koru
-- En önemli 1-2 kavramı şu yapıyla derinleştir: NEDEN var? → Hangi problemi çözer? → Ne zaman kullanılır?
-- Günlük hayattan en fazla 1 kısa analoji ekle (uzun hikaye anlatma)
-- En kritik 1 karşılaştırma yap (hepsini karşılaştırmaya çalışma)
-- Kod örneklerine 1-2 cümlelik açıklama ekle, satır satır uzun açıklama yapma
-- Tarihsel bağlamı yalnızca çok önemliyse 1 cümle ile belirt
+- Her kavramı şu yapıyla derinleştir: NEDEN var? → Hangi problemi çözer? → Alternatifleri neler? → Ne zaman kullanılır?
+- Günlük hayattan en az 1 analoji ekle
+- Benzer kavramlarla karşılaştırma yap (farklar, avantaj/dezavantaj)
+- Kod örneklerinden sonra "Bu kod ne yapıyor?" şeklinde satır satır açıklama ekle
+- Önemli kavramların Java'daki tarihsel gelişimini kısaca belirt
 
 ÇIKTI FORMATI:
 - Aynı başlık yapısını koru (H2, H3 aynı kalsın)
-- Mevcut metni genişlet ama aşırıya kaçma — hedef: ~2x uzunluk
+- Mevcut metni genişlet, kısaltma
 - Kod bloklarını aynen koru
-- Çıktı mevcut içeriğin 3 katından uzunsa başarısız sayılır
 - Yalnızca genişletilmiş alt bölüm içeriğini üret, başka bir şey ekleme"""

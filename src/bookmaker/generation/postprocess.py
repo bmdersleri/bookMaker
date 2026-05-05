@@ -464,20 +464,9 @@ def deepen_theory(
                 section_content=sec["content"],
             )
             if expanded and len(expanded) > len(sec["content"]) * 0.5:
-                # Hiçbir zaman içeriği küçültme
-                if len(expanded) < len(sec["content"]):
-                    deepened.append(sec)
-                    print(f"    [deepen] '{sec['heading'][:50]}': "
-                          f"küçülme tespit edildi ({len(sec['content'])} → {len(expanded)}), orijinal korundu")
-                # Aşırı büyümeyi engelle: 3 kattan fazla büyüdüyse orijinali koru
-                elif len(expanded) > len(sec["content"]) * 3:
-                    deepened.append(sec)
-                    print(f"    [deepen] '{sec['heading'][:50]}': "
-                          f"aşırı büyüme ({len(sec['content'])} → {len(expanded)}), orijinal korundu")
-                else:
-                    deepened.append({"heading": sec["heading"], "content": expanded})
-                    print(f"    [deepen] '{sec['heading'][:50]}': "
-                          f"{len(sec['content'])} → {len(expanded)} karakter")
+                deepened.append({"heading": sec["heading"], "content": expanded})
+                print(f"    [deepen] '{sec['heading'][:50]}': "
+                      f"{len(sec['content'])} → {len(expanded)} karakter")
             else:
                 deepened.append(sec)
                 print(f"    [deepen] '{sec['heading'][:50]}': atlandı (yeterli genişleme yok)")
