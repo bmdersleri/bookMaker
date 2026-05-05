@@ -84,13 +84,31 @@ docx, pdf, code-review, frontend-design, git-commit, doc-coauthoring, xlsx, ps7-
 2. Studio GUI'yi baslat ve gelistir (FastAPI)
 3. Kitap pipeline'ini tamamla (scoring -> approved -> ready_for_export)
 
+## 2026-05-05 Oturumu Degisiklikleri
+
+### Kod Temizligi
+- `pipeline.py`: Dual-model referanslari silindi, `_spec_seed_normalize()` helper cikarildi
+- `openai.py` + `pipeline.py`: `⚠` karakterleri `[WARN]` ile degistirildi (Windows charmap uyumlulugu)
+- `TODO.md`: Ilerleme %67 → %77, GUI_ROADMAP.md: Faz 1-6 ✅
+
+### tools/ Temizligi (94 → 30 script)
+- fix/check/verify scriptleri `archive/fix_scripts/` altinda
+- migration scriptleri `archive/migration/` altinda
+- eski test/batch scriptleri `archive/old_tests/` altinda
+
+### dummy-kitap bolum-06 Uretimi
+- `generate_chapter_with_spec()` ile "Nesne Yonelimli Programlama" uretildi
+- 3510 kelime, 245s, spec→validate→seed→normalize→enrich→assemble
+
+### Onemli Notlar
+- API key: `sk-98a85ecced414d499d34caf73a09b80d` (tum projelerde kullan)
+- Windows'ta `PYTHONIOENCODING=utf-8` gerekli
+- SSH remote: `git@github.com:bmdersleri/bookMaker.git` (port 443, id_ed25519_2)
+
 ## Ortam
 
 - OS: Windows
-- Python: 3.14.0 (.venv: 3.14)
+- Python: 3.11.5 (C:\Python311)
 - LLM: DeepSeek API (model: deepseek-chat, base: api.deepseek.com/v1)
-- Pandoc: 3.9 + xelatex (MiKTeX Portable)
 - Git: 2.44.0
 - GitHub CLI: 2.92.0
-- Ripgrep: 14.1.1 (+PCRE2)
-- Node.js: v24.11.1 / npm: 11.13.0

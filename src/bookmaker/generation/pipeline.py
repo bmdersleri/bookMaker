@@ -565,7 +565,7 @@ class ChapterGenerator:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(str(content), encoding="utf-8")
         except Exception as e:
-            print(f"  ⚠ [KAYIT HATASI] {path}: {e}", flush=True)
+            print(f"  [WARN] [SAVE ERROR] {path}: {e}", flush=True)
 
     # ----------------------------------------------------------
     # DERINLESTIRME (DEEPEN) PASS — Cozum B
