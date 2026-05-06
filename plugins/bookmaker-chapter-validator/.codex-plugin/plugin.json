@@ -1,0 +1,38 @@
+{
+  "name": "bookmaker-chapter-validator",
+  "version": "0.1.0",
+  "description": "BookMaker chapter validator and profile-aware test mode workflow for Codex.",
+  "author": {
+    "name": "BookMaker",
+    "email": "dev@example.local",
+    "url": "https://github.com/bmdersleri/bookMaker"
+  },
+  "homepage": "https://github.com/bmdersleri/bookMaker",
+  "repository": "https://github.com/bmdersleri/bookMaker",
+  "license": "MIT",
+  "keywords": [
+    "bookmaker",
+    "validator",
+    "profiles"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "BookMaker Validator",
+    "shortDescription": "Chapter validation and profile modes",
+    "longDescription": "Provides guidance for chapter validator changes, CODE_META rules, validation modes, and manifest-aware profile handling.",
+    "developerName": "BookMaker",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Test"
+    ],
+    "websiteURL": "https://github.com/bmdersleri/bookMaker",
+    "defaultPrompt": [
+      "Use $bookmaker-chapter-validator to update validation rules.",
+      "Use $bookmaker-chapter-validator to change profile modes.",
+      "Use $bookmaker-chapter-validator to add validator tests."
+    ],
+    "brandColor": "#7C3AED"
+  }
+}

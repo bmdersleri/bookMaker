@@ -1,0 +1,4 @@
+interface:
+  display_name: "BookMaker Manifests"
+  short_description: "Project manifest and check workflows"
+  default_prompt: "Use $bookmaker-project-manifests to update a BookMaker project manifest or check workflow."

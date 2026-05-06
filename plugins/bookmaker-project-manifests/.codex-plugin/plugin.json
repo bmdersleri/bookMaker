@@ -1,0 +1,38 @@
+{
+  "name": "bookmaker-project-manifests",
+  "version": "0.1.0",
+  "description": "BookMaker project manifest and project-based validation workflow for Codex.",
+  "author": {
+    "name": "BookMaker",
+    "email": "dev@example.local",
+    "url": "https://github.com/bmdersleri/bookMaker"
+  },
+  "homepage": "https://github.com/bmdersleri/bookMaker",
+  "repository": "https://github.com/bmdersleri/bookMaker",
+  "license": "MIT",
+  "keywords": [
+    "bookmaker",
+    "manifest",
+    "book-projects"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "BookMaker Manifests",
+    "shortDescription": "Project manifest and check workflows",
+    "longDescription": "Provides guidance for book_manifest.yaml, chapter_manifest.yaml, pipeline_state.yaml, and project-based check flows.",
+    "developerName": "BookMaker",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Test"
+    ],
+    "websiteURL": "https://github.com/bmdersleri/bookMaker",
+    "defaultPrompt": [
+      "Use $bookmaker-project-manifests to update a manifest.",
+      "Use $bookmaker-project-manifests to debug check book.",
+      "Use $bookmaker-project-manifests to migrate a book project."
+    ],
+    "brandColor": "#0F766E"
+  }
+}

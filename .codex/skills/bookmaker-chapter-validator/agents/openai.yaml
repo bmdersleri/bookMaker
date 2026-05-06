@@ -1,0 +1,4 @@
+interface:
+  display_name: "BookMaker Validator"
+  short_description: "Chapter validation and profile modes"
+  default_prompt: "Use $bookmaker-chapter-validator to change BookMaker chapter validation behavior."

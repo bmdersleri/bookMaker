@@ -1,0 +1,38 @@
+{
+  "name": "bookmaker-dev",
+  "version": "0.1.0",
+  "description": "BookMaker repository development workflow, checks, and Git hygiene for Codex.",
+  "author": {
+    "name": "BookMaker",
+    "email": "dev@example.local",
+    "url": "https://github.com/bmdersleri/bookMaker"
+  },
+  "homepage": "https://github.com/bmdersleri/bookMaker",
+  "repository": "https://github.com/bmdersleri/bookMaker",
+  "license": "MIT",
+  "keywords": [
+    "bookmaker",
+    "development",
+    "validation"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "BookMaker Dev",
+    "shortDescription": "Repo workflow and validation checks",
+    "longDescription": "Provides project-specific development workflow, validation commands, session handling, and Git hygiene for the BookMaker repository.",
+    "developerName": "BookMaker",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Test"
+    ],
+    "websiteURL": "https://github.com/bmdersleri/bookMaker",
+    "defaultPrompt": [
+      "Use $bookmaker-dev to make a safe repo change.",
+      "Use $bookmaker-dev to run BookMaker acceptance checks.",
+      "Use $bookmaker-dev to update SESSION.md after work."
+    ],
+    "brandColor": "#2563EB"
+  }
+}

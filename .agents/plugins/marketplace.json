@@ -1,0 +1,44 @@
+{
+  "name": "bookmaker-local",
+  "interface": {
+    "displayName": "BookMaker Local Plugins"
+  },
+  "plugins": [
+    {
+      "name": "bookmaker-dev",
+      "source": {
+        "source": "local",
+        "path": "./plugins/bookmaker-dev"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "bookmaker-chapter-validator",
+      "source": {
+        "source": "local",
+        "path": "./plugins/bookmaker-chapter-validator"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "bookmaker-project-manifests",
+      "source": {
+        "source": "local",
+        "path": "./plugins/bookmaker-project-manifests"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

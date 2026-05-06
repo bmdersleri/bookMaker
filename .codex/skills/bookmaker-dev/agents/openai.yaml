@@ -1,0 +1,4 @@
+interface:
+  display_name: "BookMaker Dev"
+  short_description: "BookMaker repo workflow and validation"
+  default_prompt: "Use $bookmaker-dev to make a safe code change in the BookMaker repository."
