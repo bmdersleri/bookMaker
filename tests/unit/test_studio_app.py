@@ -1,6 +1,5 @@
 """Studio testleri — API endpoint'leri."""
 
-from pathlib import Path
 
 from bookmaker.studio.app import app
 
