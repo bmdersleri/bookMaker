@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """Sade ve işlevsel prompt şablonları.
 Strateji: Aşama 1'de LLM serbestçe içerik üretir, Aşama 2'de kod normalleştirir,
 Aşama 3'te LLM eksik kısımları doldurur (hedefli, küçük çağrılar).
@@ -414,3 +415,4 @@ KURALLAR:
 - Mevcut metni genişlet, kısaltma
 - Kod bloklarını aynen koru
 - Yalnızca genişletilmiş alt bölüm içeriğini üret, başka bir şey ekleme"""
+

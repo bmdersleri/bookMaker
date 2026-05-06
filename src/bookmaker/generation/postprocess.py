@@ -5,12 +5,9 @@ Tüm format işlemleri Python kodu ile yapılır."""
 from __future__ import annotations
 
 import re
-from pathlib import Path
-from typing import Optional
 
 from bookmaker.core.config import BookConfig
 from bookmaker.generation.clean_text import TextCleaner
-
 
 # ============================================================
 # HEADING NORMALIZASYONU
@@ -115,7 +112,7 @@ def normalize_headings(text: str) -> str:
 # FRONT MATTER
 # ============================================================
 
-def build_front_matter(chapter_id: str, title: str, config: Optional[BookConfig] = None) -> str:
+def build_front_matter(chapter_id: str, title: str, config: BookConfig | None = None) -> str:
     """book_profile.yaml'daki bilgileri kullanarak YAML front matter olusturur.
 
     Args:
@@ -146,7 +143,6 @@ def build_front_matter(chapter_id: str, title: str, config: Optional[BookConfig]
     author = config.author if config else "Ismail Kirbas"
     year = config.year if config else 2026
     subtitle = f'"{config.title}"' if config else "\"Java'nin Temelleri\""
-    repo = config.github_slug if config else "javanintemelleri"
 
     return f"""---
 title: "{title}"
@@ -238,7 +234,7 @@ def process(text: str, chapter_id: str, title: str) -> str:
 
 
 def ensure_front_matter(text: str, chapter_id: str, title: str,
-                        config: Optional[BookConfig] = None) -> str:
+                        config: BookConfig | None = None) -> str:
     """Metnin başına front matter ekler (H1 başlığı korur)."""
     if text.lstrip().startswith("---"):
         # Mevcut front matter varsa koru
@@ -363,7 +359,6 @@ def detect_missing_sections(text: str) -> list[dict]:
     Returns:
         [{'key': 'ozet', 'title': 'Bölüm özeti', 'existing': False}, ...]
     """
-    text_lower = _ascii_lower(text)
     sections = extract_sections(text)
     existing_headings = [_ascii_lower(s["heading"]) for s in sections]
 
@@ -433,8 +428,8 @@ def extract_mermaid_blocks(text: str) -> list[dict]:
 # ============================================================
 
 def insert_section(text: str, section_title: str, section_content: str,
-                  before_heading: Optional[str] = None,
-                  turkish_terms: Optional[list[str]] = None) -> str:
+                  before_heading: str | None = None,
+                  turkish_terms: list[str] | None = None) -> str:
     """Metne yeni bir H2 bölümü ekler. Mükerrer başlıkları önler.
 
     Args:
@@ -540,7 +535,7 @@ def normalize(
     text: str,
     chapter_id: str,
     title: str,
-    config: Optional[BookConfig] = None,
+    config: BookConfig | None = None,
 ) -> str:
     """LLM çıktısını normalize eder: temizlik + başlıklar + front matter.
 
@@ -720,3 +715,4 @@ def reassemble_from_sections(sections: list[dict[str, str]]) -> str:
             # Heading zaten content içinde ilk satır olarak var
             parts.append(sec["content"])
     return "\n\n".join(parts)
+
