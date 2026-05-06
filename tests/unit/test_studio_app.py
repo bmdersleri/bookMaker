@@ -151,3 +151,56 @@ def test_index_page() -> None:
     assert resp.status_code == 200
     assert "bookMaker" in resp.text
     assert "Bölüm" in resp.text
+
+
+def test_api_projects_uses_book_manifest(tmp_path) -> None:
+    if app is None:
+        return
+    from fastapi.testclient import TestClient
+
+    from bookmaker.studio import app as studio_app
+
+    workspace = tmp_path / "workspace"
+    project = workspace / "book_projects" / "flutter-demo"
+    legacy = workspace / "book_projects" / "legacy-only"
+    project.mkdir(parents=True)
+    legacy.mkdir(parents=True)
+    (project / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: Flutter Demo\n"
+        "  alias: flutter-demo\n"
+        "  author: Test Yazar\n"
+        "chapters: []\n",
+        encoding="utf-8",
+    )
+    (legacy / "book_profile.yaml").write_text(
+        "book:\n  title: Legacy Only\n",
+        encoding="utf-8",
+    )
+
+    previous = studio_app._active_book
+    studio_app._active_book = str(workspace)
+    try:
+        client = TestClient(app)
+        resp = client.get("/api/projects")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data == [
+            {
+                "name": "flutter-demo",
+                "path": str(project),
+                "title": "Flutter Demo",
+            }
+        ]
+
+        resp = client.post("/api/active-book", json={"path": str(project)})
+        assert resp.status_code == 200
+        assert resp.json()["name"] == "flutter-demo"
+
+        resp = client.get("/api/active-book")
+        assert resp.status_code == 200
+        active = resp.json()
+        assert active["name"] == "flutter-demo"
+        assert active["title"] == "Flutter Demo"
+    finally:
+        studio_app._active_book = previous

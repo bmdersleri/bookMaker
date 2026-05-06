@@ -506,7 +506,7 @@ function updateSummary(){
     '<div class="stat-card"><div class="num">'+core+'+'+appx+'</div><div class="lbl">Bolum</div></div>'+
     '<div class="stat-card"><div class="num">'+escHtml(document.getElementById('wiz-title').value)+'</div><div class="lbl">Kitap</div></div>'+
     '<div class="stat-card"><div class="num">'+escHtml(document.getElementById('wiz-author').value)+'</div><div class="lbl">Yazar</div></div></div>'+
-    '<div style="font-size:.82rem;color:var(--muted)">Olusturulacak dosyalar:<br>book_profile.yaml, book_manifest.yaml, book_architecture.yaml, pipeline_state.yaml, llm_config.json</div>';
+    '<div style="font-size:.82rem;color:var(--muted)">Olusturulacak dosyalar:<br>book_manifest.yaml, pipeline_state.yaml, prompts/, chapters/&lt;alias&gt;/chapter_manifest.yaml, content/draft.md, content/final.md</div>';
 }
 async function submitWizard(){
   var btn=document.getElementById('wiz-submit');btn.disabled=true;btn.textContent='Olusturuluyor...';

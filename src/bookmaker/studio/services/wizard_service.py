@@ -7,7 +7,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from ruamel.yaml import YAML
+
+from bookmaker.core.time import now_iso
 from bookmaker.generation.prompts import SYSTEM_AUTHOR
+from bookmaker.manifest.models import BookManifest, PipelineState
+
+_yaml = YAML()
+_yaml.default_flow_style = False
 
 _DEFAULT_CHAPTERS = [
     "bolum-01", "bolum-02", "bolum-03", "bolum-04", "bolum-05",
@@ -43,27 +50,24 @@ def create_book(project_root: str | Path, data: dict) -> dict:
         if not project_name or not project_name.replace("-", "").replace("_", "").isalnum():
             return {"error": "Geçersiz proje adı. Sadece a-z, 0-9, -, _ kullanın."}
 
-        book_dir = root / "book_projects" / project_name
+        workspace = _book_projects_workspace(root)
+        book_dir = workspace / project_name
         if book_dir.exists():
             return {"error": f"Proje zaten var: {project_name}"}
 
-        # Dizin yapısını oluştur
         _create_directory_structure(book_dir, data)
 
-        # Dosyaları oluştur
         chapter_count = data.get("chapter_count", 23)
         appendix_count = data.get("appendix_count", 4)
         chapters = data.get("chapters") or _DEFAULT_CHAPTERS[:chapter_count + appendix_count]
 
-        _create_book_profile(book_dir, data)
         _create_book_manifest(book_dir, data, chapters)
-        _create_book_architecture(book_dir, data)
         _create_pipeline_state(book_dir, chapters)
         _create_llm_config(book_dir, data)
-        _create_chapter_dirs(book_dir, chapters)
+        _create_chapter_workspaces(book_dir, chapters)
 
         return {"project_name": project_name,
-                "path": str(book_dir.relative_to(root)),
+                "path": str(book_dir.relative_to(workspace.parent)),
                 "chapters": len(chapters),
                 "title": data.get("title", "")}
 
@@ -71,107 +75,84 @@ def create_book(project_root: str | Path, data: dict) -> dict:
         return {"error": f"Kitap oluşturulamadı: {str(e)[:300]}"}
 
 
+def _book_projects_workspace(root: Path) -> Path:
+    """Yeni kitap projelerinin yazılacağı book_projects dizinini bulur."""
+    if root.name == "book_projects":
+        return root
+    if (root / "book_projects").exists():
+        return root / "book_projects"
+    if (root / "book_manifest.yaml").exists() and root.parent.name == "book_projects":
+        return root.parent
+    return root / "book_projects"
+
+
 def _create_directory_structure(book_dir: Path, data: dict) -> None:
     """Proje dizin yapısını oluşturur."""
     dirs = [
         book_dir,
+        book_dir / "prompts",
         book_dir / "chapters",
-        book_dir / "build",
-        book_dir / "build" / "exports",
-        book_dir / "build" / "code",
-        book_dir / "build" / "mermaid_images",
-        book_dir / "build" / "generation",
-        book_dir / "kodlar",
-        book_dir / "assets" / "auto",
-        book_dir / "assets" / "manual",
+        book_dir / "exports" / "docx",
+        book_dir / "exports" / "pdf",
+        book_dir / "exports" / "md",
+        book_dir / "logs" / "production",
+        book_dir / "logs" / "errors",
+        book_dir / "logs" / "reviews",
     ]
     for d in dirs:
         d.mkdir(parents=True, exist_ok=True)
 
 
-def _create_book_profile(book_dir: Path, data: dict) -> None:
-    """book_profile.yaml oluşturur."""
-    import yaml as _yaml
-    profile = {
-        "book": {
-            "title": data.get("title", ""),
-            "author": data.get("author", ""),
-            "language": data.get("language", "tr"),
-            "lang": data.get("language", "tr-TR"),
-            "target_audience": data.get("audience", "universite_1"),
-        },
-        "pandoc": {
-            "from_format": "markdown+tex_math_single_backslash",
-            "reference_doc": "build/referenceV17_java_temelleri.docx",
-            "toc": True,
-            "toc_depth": 2,
-        },
-        "outputs": {"docx": True, "pdf": False, "epub": False, "html_site": False},
-        "ci": {"enabled": True, "fail_on_code_error": True},
-    }
-    (book_dir / "book_profile.yaml").write_text(
-        _yaml.dump(profile, allow_unicode=True, default_flow_style=False),
-        encoding="utf-8")
-
-
 def _create_book_manifest(book_dir: Path, data: dict, chapters: list[str]) -> None:
     """book_manifest.yaml oluşturur."""
-    import yaml as _yaml
+    book_type = data.get("book_type", "ders_kitabi")
     manifest = {
         "book": {
             "title": data.get("title", ""),
+            "subtitle": data.get("title_en", ""),
             "author": data.get("author", ""),
-            "lang": data.get("language", "tr-TR"),
+            "alias": book_dir.name,
+            "language": data.get("language", "tr"),
+            "version": "0.1.0",
+            "edition": "1",
+            "year": datetime.now().year,
+            "type": book_type,
         },
-        "paths": {"chapters_dir": "chapters", "build_dir": "build"},
+        "production": {
+            "producer_model": data.get("model", "deepseek-chat"),
+            "observer_model": data.get("observer_model", data.get("model", "deepseek-chat")),
+            "generation_mode": "chapter_based",
+            "approval_required": True,
+        },
+        "style": {
+            "target_audience": data.get("audience", "universite_1"),
+            "tone": "akademik ama sade",
+            "code_language": "java" if "java" in book_dir.name.casefold() else "",
+            "framework": "flutter" if "flutter" in book_dir.name.casefold() else None,
+        },
+        "automation": {
+            "code_meta_required": True,
+            "screenshot_required": "flutter" in book_dir.name.casefold(),
+            "minimum_screenshots_per_chapter": 1 if "flutter" in book_dir.name.casefold() else 0,
+            "qr_policy": "dual",
+            "github_code_export": True,
+        },
         "chapters": [
-            {
-                "order": i + 1,
-                "chapter_id": cid,
-                "title": "",
-                "status": "planned",
-                "source": f"chapters/{cid}/approved/{cid}_v001.md",
-            }
+            {"alias": cid, "order": i + 1, "title": cid, "status": "planned"}
             for i, cid in enumerate(chapters)
         ],
     }
-    (book_dir / "book_manifest.yaml").write_text(
-        _yaml.dump(manifest, allow_unicode=True, default_flow_style=False),
-        encoding="utf-8")
-
-
-def _create_book_architecture(book_dir: Path, data: dict) -> None:
-    """book_architecture.yaml oluşturur."""
-    import yaml as _yaml
-    arch = {
-        "book_id": data.get("project_name", ""),
-        "title": data.get("title", ""),
-        "type": data.get("book_type", "ders_kitabi"),
-        "version": "0.1.0",
-        "created_at": datetime.now().isoformat(timespec="seconds"),
-    }
-    (book_dir / "book_architecture.yaml").write_text(
-        _yaml.dump(arch, allow_unicode=True, default_flow_style=False),
-        encoding="utf-8")
+    with (book_dir / "book_manifest.yaml").open("w", encoding="utf-8") as handle:
+        _yaml.dump(manifest, handle)
 
 
 def _create_pipeline_state(book_dir: Path, chapters: list[str]) -> None:
     """pipeline_state.yaml oluşturur."""
-    import yaml as _yaml
-    state = {
-        "book_id": book_dir.name,
-        "pipeline_id": f"pl_{book_dir.name}_{datetime.now().strftime('%Y%m%d')}_001",
-        "current_stage": "authoring",
-        "chapters": {
-            cid: {"current_step": "planned", "score": 0,
-                  "decision": "revision_required", "error_count": 0,
-                  "warning_count": 0}
-            for cid in chapters
-        },
-    }
-    (book_dir / "pipeline_state.yaml").write_text(
-        _yaml.dump(state, allow_unicode=True, default_flow_style=False),
-        encoding="utf-8")
+    manifest = BookManifest.load(book_dir / "book_manifest.yaml")
+    state = PipelineState.init_from_book_manifest(manifest, created_at=now_iso())
+    state.current_stage = "authoring"
+    state.pipeline.global_state = "authoring"
+    state.save(book_dir / "pipeline_state.yaml")
 
 
 def _create_llm_config(book_dir: Path, data: dict) -> None:
@@ -185,12 +166,35 @@ def _create_llm_config(book_dir: Path, data: dict) -> None:
         json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def _create_chapter_dirs(book_dir: Path, chapters: list[str]) -> None:
-    """Bölüm dizinlerini oluşturur."""
-    for cid in chapters:
-        cdir = book_dir / "chapters" / cid
-        for sub in ["approved", "draft_versions", "seed", "outline_versions"]:
-            (cdir / sub).mkdir(parents=True, exist_ok=True)
+def _create_chapter_workspaces(book_dir: Path, chapters: list[str]) -> None:
+    """Project-based bölüm workspace'lerini oluşturur."""
+    _write_text(book_dir / "prompts" / "default_chapter.md", "# Varsayılan Bölüm Promptu\n\n")
+    _write_text(book_dir / "prompts" / "default_review.md", "# Varsayılan Review Promptu\n\n")
+    for order, cid in enumerate(chapters, start=1):
+        chapter_root = book_dir / "chapters" / cid
+        content_dir = chapter_root / "content"
+        (content_dir / "revisions").mkdir(parents=True, exist_ok=True)
+        _write_text(chapter_root / "prompt.md", f"# {cid}\n\n")
+        _write_text(content_dir / "draft.md", f"# {cid}\n\n> Taslak henüz üretilmedi.\n")
+        _write_text(content_dir / "final.md", f"# {cid}\n\n> Final henüz onaylanmadı.\n")
+        chapter_manifest = {
+            "chapter": {
+                "title": cid,
+                "alias": cid,
+                "order": order,
+                "references": [],
+            },
+            "scope": {"topics": [cid], "objectives": [], "exclusions": []},
+            "structure": {"sections": []},
+            "automation": {"validation_modes": ["review_only"]},
+        }
+        with (chapter_root / "chapter_manifest.yaml").open("w", encoding="utf-8") as handle:
+            _yaml.dump(chapter_manifest, handle)
+
+
+def _write_text(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
 
 
 # ================================================================

@@ -35,6 +35,41 @@ _active_book: str | None = None
 _CONFIG_FILE = "build/studio_config.json"
 
 
+def _manifest_book_info(project_root: Path) -> dict[str, str]:
+    manifest_path = project_root / "book_manifest.yaml"
+    if not manifest_path.exists():
+        return {}
+    try:
+        from bookmaker.manifest.models import BookManifest
+
+        manifest = BookManifest.load(manifest_path)
+    except Exception:
+        return {}
+    return {
+        "name": manifest.book.alias or project_root.name,
+        "title": manifest.book.title or project_root.name,
+        "author": manifest.book.author or "",
+    }
+
+
+def _project_search_roots(root: Path) -> list[Path]:
+    candidates = [
+        root / "book_projects",
+        root.parent if root.parent.name == "book_projects" else None,
+        Path.cwd() / "book_projects",
+    ]
+    result: list[Path] = []
+    seen: set[Path] = set()
+    for candidate in candidates:
+        if candidate is None:
+            continue
+        resolved = candidate.resolve()
+        if resolved not in seen:
+            result.append(resolved)
+            seen.add(resolved)
+    return result
+
+
 def get_active_book() -> Path:
     """Aktif kitap dizinini döndürür, yoksa CWD kullanır."""
     global _active_book
@@ -109,62 +144,30 @@ if FastAPI is not None:
     @app.get("/api/projects")
     async def api_projects() -> list[dict]:
         root = get_active_book()
-        candidates = [
-            root / "book_projects",
-            root.parent if root.parent.name == "book_projects" else None,
-            Path.cwd() / "book_projects",
-        ]
         bp = None
-        for c in candidates:
-            if c and c.exists():
-                bp = c
+        for candidate in _project_search_roots(root):
+            if candidate.exists():
+                bp = candidate
                 break
         if not bp or not bp.exists():
             return []
-        import yaml as _yaml
-
-        def _normalize_title(val):
-            if isinstance(val, dict):
-                return val.get("tr") or val.get("en") or str(val)
-            return str(val) if val else ""
 
         projects = []
         for d in sorted(bp.iterdir()):
-            if d.is_dir():
-                profile = d / "book_profile.yaml"
-                title = d.name
-                if profile.exists():
-                    try:
-                        data = _yaml.safe_load(
-                            profile.read_text(encoding="utf-8"))
-                        if data and "book" in data:
-                            title = _normalize_title(
-                                data["book"].get("title", d.name))
-                    except Exception:
-                        pass
-                projects.append(
-                    {"name": d.name, "path": str(d), "title": title})
+            if not d.is_dir():
+                continue
+            info = _manifest_book_info(d)
+            if not info:
+                continue
+            projects.append({"name": info["name"], "path": str(d), "title": info["title"]})
         return projects
 
     @app.get("/api/active-book")
     async def api_active_book_get() -> dict:
         root = get_active_book()
-        name = root.name
-        profile = root / "book_profile.yaml"
-        title = name
-        if profile.exists():
-            import yaml as _yaml
-            try:
-                data = _yaml.safe_load(
-                    profile.read_text(encoding="utf-8"))
-                if data and "book" in data:
-                    raw = data["book"].get("title", name)
-                    if isinstance(raw, dict):
-                        title = raw.get("tr") or raw.get("en") or str(raw)
-                    else:
-                        title = str(raw) if raw else name
-            except Exception:
-                pass
+        info = _manifest_book_info(root)
+        name = info.get("name") or root.name
+        title = info.get("title") or name
         return {"path": str(root), "name": name, "title": title}
 
     @app.post("/api/active-book")

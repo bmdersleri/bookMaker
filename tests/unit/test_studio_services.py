@@ -234,3 +234,66 @@ def test_build_no_source(tmp_path):
     from bookmaker.studio.services import build_service
     r = build_service.build_docx(root, "olmayan-bolum")
     assert "error" in r
+
+
+def test_wizard_creates_project_based_book(tmp_path):
+    from bookmaker.manifest.models import BookManifest, PipelineState
+    from bookmaker.studio.services import wizard_service
+
+    result = wizard_service.create_book(
+        tmp_path,
+        {
+            "project_name": "flutter-demo",
+            "title": "Flutter Demo",
+            "author": "Test Yazar",
+            "language": "tr",
+            "chapter_count": 1,
+            "appendix_count": 0,
+            "chapters": ["giris"],
+        },
+    )
+
+    assert "error" not in result
+    project = tmp_path / "book_projects" / "flutter-demo"
+    assert (project / "book_manifest.yaml").exists()
+    assert (project / "pipeline_state.yaml").exists()
+    assert (project / "prompts" / "default_chapter.md").exists()
+    assert (project / "prompts" / "default_review.md").exists()
+    assert (project / "chapters" / "giris" / "chapter_manifest.yaml").exists()
+    assert (project / "chapters" / "giris" / "prompt.md").exists()
+    assert (project / "chapters" / "giris" / "content" / "draft.md").exists()
+    assert (project / "chapters" / "giris" / "content" / "final.md").exists()
+    assert not (project / "book_profile.yaml").exists()
+    assert not (project / "book_architecture.yaml").exists()
+    assert not (project / "chapters" / "giris" / "approved").exists()
+
+    manifest = BookManifest.load(project / "book_manifest.yaml")
+    state = PipelineState.load(project / "pipeline_state.yaml")
+    assert manifest.book.alias == "flutter-demo"
+    assert manifest.chapter_aliases() == ["giris"]
+    assert state.pipeline.book_alias == "flutter-demo"
+
+
+def test_wizard_uses_parent_book_projects_when_active_book_is_project(tmp_path):
+    from bookmaker.studio.services import wizard_service
+
+    active_project = tmp_path / "book_projects" / "current-book"
+    active_project.mkdir(parents=True)
+    (active_project / "book_manifest.yaml").write_text(
+        "book:\n  alias: current-book\nchapters: []\n",
+        encoding="utf-8",
+    )
+
+    result = wizard_service.create_book(
+        active_project,
+        {
+            "project_name": "new-book",
+            "title": "New Book",
+            "author": "Test Yazar",
+            "chapters": ["giris"],
+        },
+    )
+
+    assert "error" not in result
+    assert (tmp_path / "book_projects" / "new-book" / "book_manifest.yaml").exists()
+    assert not (active_project / "book_projects" / "new-book").exists()
