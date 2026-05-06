@@ -69,6 +69,10 @@ async function loadProject() {
     if (el) el.textContent = projectData.profile || projectData.framework || '\u2014';
     el = document.getElementById('stat-code-language');
     if (el) el.textContent = projectData.code_language || '\u2014';
+    el = document.getElementById('stat-screenshot');
+    if (el) el.textContent = projectData.screenshot_required ? 'gerekli' : 'yok';
+    el = document.getElementById('stat-qr');
+    if (el) el.textContent = projectData.qr_policy || '\u2014';
     el = document.getElementById('stat-stage');
     if (el) el.textContent = projectData.stage || '\u2014';
   } catch(e) { console.error('loadProject:', e); }
@@ -104,17 +108,22 @@ function renderTable() {
   const start = (currentPage-1)*PER_PAGE;
   const page = filteredChapters.slice(start, start+PER_PAGE);
   document.getElementById('chapter-count').textContent = filteredChapters.length;
-  if (!page.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#999">Bulunamadi</td></tr>'; return; }
+  if (!page.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#999">Bulunamadi</td></tr>'; return; }
   tbody.innerHTML = page.map(ch => {
     const sc = stepBadgeClass(ch.current_step), ss = scoreBadgeClass(ch.score);
+    const dc = decisionBadgeClass(ch.decision);
     const sel = selectedIds.has(ch.chapter_id) ? 'checked' : '';
+    const content = '<span class="tag '+(ch.draft_exists?'info':'neutral')+'">draft</span> '+
+      '<span class="tag '+(ch.final_exists?'success':'neutral')+'">final</span>';
     return '<tr draggable="true" data-id="'+ch.chapter_id+'" class="chapter-row">'+
       '<td><input type="checkbox" class="chk-select" data-id="'+ch.chapter_id+'" '+sel+' onchange="toggleSelect(\''+ch.chapter_id+'\',this.checked)"></td>'+
       '<td class="drag-handle" title="Surukle-birak">&#x22EE;&#x22EE;</td>'+
       '<td><code>'+escHtml(ch.chapter_id)+'</code></td>'+
       '<td>'+escHtml(ch.title)+'</td>'+
       '<td><span class="tag '+sc+'">'+ch.current_step+'</span></td>'+
+      '<td>'+content+'</td>'+
       '<td><span class="tag '+ss+'">'+ch.score+'</span></td>'+
+      '<td><span class="tag '+dc+'">'+(ch.decision||'-')+'</span></td>'+
       '<td><div class="action-group">'+
         '<button class="btn btn-sm outline" onclick="viewChapter(\''+ch.chapter_id+'\')">Gor</button>'+
         '<button class="btn btn-sm outline" onclick="checkChapter(\''+ch.chapter_id+'\')">Kontrol</button>'+
@@ -571,6 +580,7 @@ async function submitWizard(){
 
 function stepBadgeClass(s) { return {'approved':'success','full_text_pasted':'success','enriched':'info','seed':'info','outline':'warning','planned':'neutral'}[s]||'neutral'; }
 function scoreBadgeClass(s) { return s>=80?'score-high':s>=50?'tag-score-mid':'score-low'; }
+function decisionBadgeClass(s) { return {'pass':'success','approved':'success','warn':'warning','fail':'danger','unknown':'neutral'}[s]||'neutral'; }
 function showToast(msg,type) {
   var c=document.getElementById('toast-container'); if(!c) return;
   var el=document.createElement('div'); el.className='toast '+(type||'info');

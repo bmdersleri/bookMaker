@@ -709,6 +709,58 @@ uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme 
 Sonuç: skor 100, karar pass, hata 0, uyarı 0
 ```
 
+### FAZ 5 / Studio GUI Aşama 3 - Flutter Dashboard ve Alias-aware İçerik
+
+Flutter kitap dashboard'ı gerçek project-based sinyalleri daha görünür hale
+getirildi.
+
+Yapılanlar:
+
+```text
+- Dashboard stat kartlarına screenshot policy ve QR policy eklendi.
+- Bölüm tablosuna alias, draft/final içerik flag'leri ve karar alanı eklendi.
+- chapter_service.get_chapter_list() artık draft_exists, final_exists,
+  prompt_exists alanlarını döndürüyor.
+- quality_service alias-only manifest kayıtlarını okuyacak şekilde düzeltildi.
+- Alias-only Flutter bölümleri için varsayılan içerik yolu:
+  chapters/<alias>/content/final.md
+- get_chapter_content(), get_book_stats(), search_content(), compile_code()
+  alias/chapter_id eşleşmesini ortak helper ile kullanıyor.
+```
+
+Tarayıcı doğrulaması:
+
+```text
+URL: http://127.0.0.1:8765
+Browser plugin: mevcut değil; normal Playwright kullanıldı.
+Screenshot: C:\Users\ismai\AppData\Local\Temp\bookmaker-dashboard-step3.png
+
+Playwright sonucu:
+- dashboard: 16 / flutter / dart / gerekli / dual
+- ilk bölüm satırı `giris` alias'ını gösterdi
+- ilk bölüm satırında draft ve final flag'leri göründü
+- console errors/warnings: []
+```
+
+Doğrulama:
+
+```text
+node --check src/bookmaker/studio/static/app.js
+Sonuç: PASS
+
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/unit/test_studio_app.py tests/unit/test_studio_services.py -q --tb=short
+Sonuç: 35 passed, 1 PytestCacheWarning
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 211 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+```
+
 Not: Studio dev server bu oturumda `http://127.0.0.1:8765` üzerinde
 başlatıldı. `build/studio_config.json` runtime config olarak Flutter kitap
 projesine yönlendirildi; commit'e alınmıyor.

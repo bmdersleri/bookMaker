@@ -52,6 +52,15 @@ def _state_values(state) -> tuple[str, float | int, str, int]:
     return ("planned", 0, "unknown", 0)
 
 
+def _content_flags(root: Path, chapter_id: str) -> dict[str, bool]:
+    content_dir = root / "chapters" / chapter_id / "content"
+    return {
+        "draft_exists": (content_dir / "draft.md").exists(),
+        "final_exists": (content_dir / "final.md").exists(),
+        "prompt_exists": (root / "chapters" / chapter_id / "prompt.md").exists(),
+    }
+
+
 def _dump_yaml(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
@@ -101,6 +110,7 @@ def get_chapter_list(project_root: str | Path) -> list[dict]:
         alias = _chapter_alias(ch)
         state = states.get(cid) or states.get(alias)
         current_step, score, decision, errors = _state_values(state)
+        content_flags = _content_flags(root, cid)
         result.append(
             {
                 "chapter_id": cid,
@@ -112,6 +122,7 @@ def get_chapter_list(project_root: str | Path) -> list[dict]:
                 "score": score,
                 "decision": decision,
                 "errors": errors,
+                **content_flags,
             }
         )
     return result

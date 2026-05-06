@@ -11,14 +11,27 @@ from bookmaker.chapter.scoring import make_report
 from bookmaker.chapter.validator import validate
 
 
+def _chapter_alias(chapter) -> str:
+    return chapter.chapter_id or chapter.alias or ""
+
+
+def _chapter_matches(chapter, chapter_id: str) -> bool:
+    return chapter_id in {chapter.chapter_id, chapter.alias}
+
+
+def _chapter_source(chapter) -> str:
+    alias = _chapter_alias(chapter)
+    return chapter.source or f"chapters/{alias}/content/final.md"
+
+
 def validate_chapter(project_root: str | Path, chapter_id: str) -> dict:
     """Bölümü valide eder."""
     root = Path(project_root).resolve()
     from bookmaker.manifest.manager import ManifestManager
     mgr = ManifestManager(root)
     manifest = mgr.load_or_generate()
-    src = next((ch.source for ch in manifest.chapters
-                if ch.chapter_id == chapter_id), None)
+    src = next((_chapter_source(ch) for ch in manifest.chapters
+                if _chapter_matches(ch, chapter_id)), None)
     if not src:
         return {"error": f"Bölüm bulunamadi: {chapter_id}"}
     p = root / src
@@ -44,8 +57,8 @@ def get_chapter_content(project_root: str | Path, chapter_id: str) -> dict:
     from bookmaker.manifest.manager import ManifestManager
     mgr = ManifestManager(root)
     manifest = mgr.load_or_generate()
-    src = next((ch.source for ch in manifest.chapters
-                if ch.chapter_id == chapter_id), None)
+    src = next((_chapter_source(ch) for ch in manifest.chapters
+                if _chapter_matches(ch, chapter_id)), None)
     if not src:
         return {"error": f"Bölüm bulunamadi: {chapter_id}"}
     base = root / "chapters" / chapter_id / "approved"
@@ -74,12 +87,12 @@ def get_quality_report(project_root: str | Path,
     if chapter_id:
         chapters_to_check = [chapter_id]
     else:
-        chapters_to_check = [ch.chapter_id for ch in manifest.chapters]
+        chapters_to_check = [_chapter_alias(ch) for ch in manifest.chapters]
 
     results = []
     for cid in chapters_to_check:
-        src = next((ch.source for ch in manifest.chapters
-                    if ch.chapter_id == cid), None)
+        src = next((_chapter_source(ch) for ch in manifest.chapters
+                    if _chapter_matches(ch, cid)), None)
         if not src:
             results.append({chapter_id: cid, "error": "Bulunamadi"})
             continue
@@ -121,7 +134,7 @@ def get_book_stats(project_root: str | Path) -> dict:
     word_counts = []
 
     for ch in manifest.chapters:
-        src = ch.source
+        src = _chapter_source(ch)
         p = root / src if src else None
         if p and p.exists():
             text = p.read_text(encoding="utf-8")
@@ -131,11 +144,13 @@ def get_book_stats(project_root: str | Path) -> dict:
             total_code += len(re.findall(r'```', text)) // 2
             total_mermaid += len(re.findall(r'```mermaid', text))
             total_tables += len(re.findall(r'^\|.*\|$', text, re.MULTILINE))
-            word_counts.append({"chapter_id": ch.chapter_id,
-                                "words": wc, "title": ch.title or ch.chapter_id})
+            alias = _chapter_alias(ch)
+            word_counts.append({"chapter_id": alias,
+                                "words": wc, "title": ch.title or alias})
         else:
-            word_counts.append({"chapter_id": ch.chapter_id,
-                                "words": 0, "title": ch.title or ch.chapter_id})
+            alias = _chapter_alias(ch)
+            word_counts.append({"chapter_id": alias,
+                                "words": 0, "title": ch.title or alias})
 
     reading_minutes = round(total_words / 200)
     chapter_count = len(manifest.chapters)
@@ -171,9 +186,9 @@ def search_content(project_root: str | Path, query: str,
 
     results = []
     for ch in manifest.chapters:
-        if chapter_id and ch.chapter_id != chapter_id:
+        if chapter_id and not _chapter_matches(ch, chapter_id):
             continue
-        src = ch.source
+        src = _chapter_source(ch)
         p = root / src if src else None
         if not p or not p.exists():
             continue
@@ -193,7 +208,7 @@ def search_content(project_root: str | Path, query: str,
                 end = min(len(lines), i + 2)
                 context = "\n".join(lines[start:end])
                 results.append({
-                    "chapter_id": ch.chapter_id,
+                    "chapter_id": _chapter_alias(ch),
                     "line": i + 1,
                     "context": context[:500],
                     "text": line[:200],
@@ -207,8 +222,8 @@ def compile_code(project_root: str | Path, chapter_id: str) -> dict:
     root = Path(project_root).resolve()
     mgr = ManifestManager(root)
     manifest = mgr.load_or_generate()
-    src = next((ch.source for ch in manifest.chapters
-                if ch.chapter_id == chapter_id), None)
+    src = next((_chapter_source(ch) for ch in manifest.chapters
+                if _chapter_matches(ch, chapter_id)), None)
     if not src:
         return {"error": f"Bölüm bulunamadi: {chapter_id}"}
     p = root / src

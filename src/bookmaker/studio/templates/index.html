@@ -34,6 +34,8 @@
   <div class="stat-card"><div class="num" id="stat-approved">-</div><div class="lbl">Onaylı</div></div>
   <div class="stat-card"><div class="num" id="stat-profile">-</div><div class="lbl">Profil</div></div>
   <div class="stat-card"><div class="num" id="stat-code-language">-</div><div class="lbl">Kod</div></div>
+  <div class="stat-card"><div class="num" id="stat-screenshot">-</div><div class="lbl">Screenshot</div></div>
+  <div class="stat-card"><div class="num" id="stat-qr">-</div><div class="lbl">QR</div></div>
   <div class="stat-card"><div class="num" id="stat-stage">-</div><div class="lbl">Pipeline Aşaması</div></div>
   <div class="stat-card"><div class="num" id="stat-llm">-</div><div class="lbl">LLM</div></div>
 </div>
@@ -95,10 +97,12 @@
             <tr>
               <th style="width:30px"></th>
               <th style="width:30px"></th>
-              <th onclick="setSort('chapter_id')" style="cursor:pointer;width:100px">ID <span id="sort-icon-id"></span></th>
+              <th onclick="setSort('chapter_id')" style="cursor:pointer;width:120px">Alias <span id="sort-icon-id"></span></th>
               <th onclick="setSort('title')" style="cursor:pointer">Baslik <span id="sort-icon-title"></span></th>
               <th onclick="setSort('current_step')" style="cursor:pointer;width:110px">Durum <span id="sort-icon-step"></span></th>
+              <th style="width:120px">Icerik</th>
               <th onclick="setSort('score')" style="cursor:pointer;width:70px">Skor <span id="sort-icon-score"></span></th>
+              <th style="width:80px">Karar</th>
               <th style="width:230px">Islem</th>
             </tr>
           </thead>

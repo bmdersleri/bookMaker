@@ -125,6 +125,42 @@ def test_chapter_service_creates_project_workspace(tmp_path):
     assert (root / "chapters" / "bolum-02" / "content" / "revisions").is_dir()
 
 
+def test_chapter_list_exposes_project_content_flags(tmp_path):
+    root = _create_test_project(tmp_path)
+    from bookmaker.studio.services import chapter_service
+
+    chapter_service.add_chapter(root, "bolum-02", "Yeni Bolum", 1)
+
+    chapters = chapter_service.get_chapter_list(root)
+    chapter = next(item for item in chapters if item["chapter_id"] == "bolum-02")
+    assert chapter["draft_exists"] is True
+    assert chapter["final_exists"] is True
+    assert chapter["prompt_exists"] is True
+
+
+def test_quality_service_reads_alias_only_project_chapter(tmp_path):
+    root = _create_test_project(tmp_path)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: Alias Book\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    title: Giriş\n",
+        encoding="utf-8",
+    )
+    content_dir = root / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True)
+    (content_dir / "final.md").write_text("# Giriş\n\nİçerik.", encoding="utf-8")
+    from bookmaker.studio.services import quality_service
+
+    content = quality_service.get_chapter_content(root, "giris")
+    stats = quality_service.get_book_stats(root)
+
+    assert content["chapter_id"] == "giris"
+    assert content["path"].replace("\\", "/") == "chapters/giris/content/final.md"
+    assert stats["word_distribution"][0]["chapter_id"] == "giris"
+
+
 def test_prompt_service_roundtrip(tmp_path):
     root = _create_test_project(tmp_path)
     from bookmaker.studio.services import chapter_service, prompt_service

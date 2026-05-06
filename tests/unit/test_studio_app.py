@@ -154,6 +154,8 @@ def test_index_page() -> None:
     assert 'data-tab="quality"' in resp.text
     assert 'data-tab="build"' in resp.text
     assert 'data-tab="prompts"' in resp.text
+    assert 'id="stat-screenshot"' in resp.text
+    assert 'id="stat-qr"' in resp.text
     assert 'id="toast-container"' in resp.text
     assert 'id="wiz-author"' in resp.text
     assert 'id="wiz-book-type"' in resp.text
