@@ -17,7 +17,7 @@ Branch          : feat/chapter-validator-profile-modes
 Base            : local main üzerindeki ad348a0 + origin/main üzerindeki 4e9a4e8
 Remote          : origin
 Son Kod Commit  : 1d07f32 Align Studio wizard with project manifests
-Durum           : FAZ 4 tamamlandı; FAZ 5 başladı, Studio wizard/project selector project-based manifest akışına hizalandı
+Durum           : FAZ 4 tamamlandı; FAZ 5 başladı, Studio GUI roadmap hazırlandı ve Playwright GUI test altyapısı kuruldu
 Dikkat          : Repo kökünde geçici *.ps1 dosyası varsa commit'e alınmamalı
 ```
 
@@ -591,6 +591,68 @@ resolve_validation_profile_from_manifest(...)
 Tamamlandı. Studio proje seçici ve wizard artık project-based manifest
 varsayımlarıyla çalışıyor; legacy kitap üretim dosyaları yeni wizard akışında
 üretilmiyor.
+
+### FAZ 5 / Studio GUI Roadmap ve Browser Test Altyapısı
+
+Studio GUI geliştirmesi için detaylı plan repo kökündeki `radmap.md` dosyasına
+yazıldı. Flutter kitap projesi kabul/test projesi olarak kullanılacak:
+
+```text
+book_projects/flutter-ile-mobil-uygulama-gelistirme
+```
+
+GUI doğrulaması için Browser plugin bu oturumda mevcut değildi; Build Web Apps
+`frontend-testing-debugging` skill yönergesine göre normal Playwright yolu
+hazırlandı.
+
+Kurulan dev bağımlılıkları:
+
+```text
+playwright>=1.59.0
+pytest-playwright>=0.7.2
+pytest-xdist>=3.8.0
+```
+
+Doğrulama:
+
+```text
+uv run python -m playwright --version
+Sonuç: Version 1.59.0
+
+uv run python -m playwright install chromium
+Sonuç: Chromium, headless shell, FFmpeg ve winldd indirildi
+
+uv run python -c "from playwright.sync_api import sync_playwright; ..."
+Sonuç: ok
+```
+
+Not: Playwright browser launch sandbox içinde Windows pipe/subprocess iznine
+takılıyor; escalated çalıştırıldığında Chromium headless launch başarılı.
+
+Ek hızlandırma araçları Chocolatey ile kuruldu ve PATH üzerinden doğrulandı:
+
+```text
+rg / ripgrep 14.1.0
+fd 10.4.2
+jq 1.8.1
+just 1.50.0
+```
+
+`pytest-xdist` ile testler gerektiğinde paralel çalıştırılabilir:
+
+```powershell
+$env:UV_CACHE_DIR='.\\.uv-cache'
+New-Item -ItemType Directory -Force .\\.tmp | Out-Null
+$env:TMP=(Resolve-Path .\\.tmp).Path
+$env:TEMP=$env:TMP
+uv run pytest tests/ -q --tb=short -n auto --basetemp .\\.tmp\\pytest-basetemp
+```
+
+Doğrulama sonucu:
+
+```text
+207 passed in 17.15s
+```
 
 ---
 
