@@ -1,66 +1,134 @@
-"""Proje kok ve chapter yol yardimcilari.
-
-bookMaker'da iki ayri kok vardir:
-1. Otomasyon koku (automation_root) - pyproject.toml'in bulundugu yer, src/bookmaker/
-2. Kitap proje koku (project_root)  - book_profile.yaml'in bulundugu yer, book_projects/<book_name>/
-
-CLI komutlari genelde kitap proje koku uzerinde calisir.
-"""
-
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 
-_DEFAULT_BOOK = "java-temelleri"
+
+@dataclass(frozen=True)
+class ChapterPaths:
+    """Convention-based paths for one chapter."""
+
+    root: Path
+
+    @property
+    def alias(self) -> str:
+        return self.root.name
+
+    @property
+    def manifest(self) -> Path:
+        return self.root / "chapter_manifest.yaml"
+
+    @property
+    def prompt(self) -> Path:
+        return self.root / "prompt.md"
+
+    @property
+    def content_dir(self) -> Path:
+        return self.root / "content"
+
+    @property
+    def draft(self) -> Path:
+        return self.content_dir / "draft.md"
+
+    @property
+    def final(self) -> Path:
+        return self.content_dir / "final.md"
+
+    @property
+    def revisions_dir(self) -> Path:
+        return self.content_dir / "revisions"
 
 
-def find_automation_root(start: Path | None = None) -> Path | None:
-    """Otomasyon kkunu bulur (pyproject.toml veya src/bookmaker/ ile)."""
-    current = (Path(start) if start else Path.cwd()).resolve()
-    for parent in [current, *current.parents]:
-        if (parent / "pyproject.toml").exists():
-            return parent
-        if (parent / "src" / "bookmaker").is_dir():
-            return parent
-    return None
+@dataclass(frozen=True)
+class BookPaths:
+    """Convention-based paths for a book project."""
 
+    root: Path
 
-def find_project_root(start: Path | None = None, book_name: str = _DEFAULT_BOOK) -> Path | None:
-    """Kitap proje kokunu bulur.
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "root", self.root.resolve())
 
-    - Once mevcut dizinden yukari dogru book_profile.yaml ara
-    - Bulamazsa automation_root/book_projects/<book_name>/ dene
-    """
-    current = (Path(start) if start else Path.cwd()).resolve()
+    @property
+    def book_manifest(self) -> Path:
+        return self.root / "book_manifest.yaml"
 
-    # 1. Mevcut dizin ve ust dizinlerde book_profile.yaml ara
-    for parent in [current, *current.parents]:
-        if (parent / "book_profile.yaml").exists():
-            return parent
+    @property
+    def pipeline_state(self) -> Path:
+        return self.root / "pipeline_state.yaml"
 
-    # 2. Otomasyon kokunde book_projects/<book_name>/ dene
-    auto_root = find_automation_root(start)
-    if auto_root:
-        book_path = auto_root / "book_projects" / book_name
-        if (book_path / "book_profile.yaml").exists():
-            return book_path
+    @property
+    def prompts_dir(self) -> Path:
+        return self.root / "prompts"
 
-    return None
+    @property
+    def default_chapter_prompt(self) -> Path:
+        return self.prompts_dir / "default_chapter.md"
 
+    @property
+    def default_review_prompt(self) -> Path:
+        return self.prompts_dir / "default_review.md"
 
-def chapter_dir(project_root: Path, chapter_id: str) -> Path:
-    """Bolum dizinini dondurur: <project_root>/chapters/<chapter_id>/"""
-    return project_root / "chapters" / chapter_id
+    @property
+    def chapters_dir(self) -> Path:
+        return self.root / "chapters"
 
+    @property
+    def exports_dir(self) -> Path:
+        return self.root / "exports"
 
-def approved_path(project_root: Path, chapter_id: str) -> Path:
-    """Onayli bolum dosyasi yolu."""
-    return chapter_dir(project_root, chapter_id) / "approved" / f"{chapter_id}.md"
+    @property
+    def exports_docx_dir(self) -> Path:
+        return self.exports_dir / "docx"
 
+    @property
+    def exports_pdf_dir(self) -> Path:
+        return self.exports_dir / "pdf"
 
-def version_log_path(project_root: Path, chapter_id: str) -> Path:
-    return chapter_dir(project_root, chapter_id) / "version_log.jsonl"
+    @property
+    def exports_md_dir(self) -> Path:
+        return self.exports_dir / "md"
 
+    @property
+    def logs_dir(self) -> Path:
+        return self.root / "logs"
 
-def active_version_path(project_root: Path, chapter_id: str) -> Path:
-    return chapter_dir(project_root, chapter_id) / "active_version.yaml"
+    @property
+    def logs_production_dir(self) -> Path:
+        return self.logs_dir / "production"
+
+    @property
+    def logs_errors_dir(self) -> Path:
+        return self.logs_dir / "errors"
+
+    @property
+    def logs_reviews_dir(self) -> Path:
+        return self.logs_dir / "reviews"
+
+    def chapter(self, alias: str) -> ChapterPaths:
+        return ChapterPaths(self.chapters_dir / alias)
+
+    def ensure_base_dirs(self) -> None:
+        for path in [
+            self.prompts_dir,
+            self.chapters_dir,
+            self.exports_docx_dir,
+            self.exports_pdf_dir,
+            self.exports_md_dir,
+            self.logs_production_dir,
+            self.logs_errors_dir,
+            self.logs_reviews_dir,
+        ]:
+            path.mkdir(parents=True, exist_ok=True)
+
+    @classmethod
+    def discover(cls, start: Path | None = None) -> BookPaths:
+        """Find the nearest parent containing book_manifest.yaml."""
+        current = (start or Path.cwd()).resolve()
+        if current.is_file():
+            current = current.parent
+        for candidate in [current, *current.parents]:
+            if (candidate / "book_manifest.yaml").exists():
+                return cls(candidate)
+        raise FileNotFoundError(
+            f"book_manifest.yaml bulunamadı. Başlangıç noktası: {current}"
+        )
