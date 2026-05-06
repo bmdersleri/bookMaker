@@ -37,13 +37,9 @@ def check_chapter_command(
 
     parsed = parse(path)
     issues = validate(parsed, final_mode=final)
-    chapter_id = (
-        parsed.frontmatter.get("chapter_id")
-        or parsed.frontmatter.get("chapter-alias")
-        or path.parent.parent.name
-        if path.parent.name == "content"
-        else path.stem
-    )
+    chapter_id = parsed.frontmatter.get("chapter_id") or parsed.frontmatter.get("chapter-alias")
+    if not chapter_id:
+        chapter_id = path.parent.parent.name if path.parent.name == "content" else path.stem
     report = make_report(str(chapter_id), issues)
 
     table = Table(title=f"Kalite Raporu — {chapter_id}", show_header=True, header_style="bold")

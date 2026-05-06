@@ -785,3 +785,13 @@ class ChapterGenerator:
               f"\n  Dosyalar: {gen_dir}")
         return result
 
+
+class GenerationPipeline(ChapterGenerator):
+    """Legacy class name kept for older tests and integrations."""
+
+    def generate_outline(self, *_args: Any, **_kwargs: Any) -> str:
+        if not self.is_ready():
+            raise RuntimeError("LLM API is not configured.")
+        raise NotImplementedError(
+            "generate_outline legacy API is no longer part of the project pipeline."
+        )

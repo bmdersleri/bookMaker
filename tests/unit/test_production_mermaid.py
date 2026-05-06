@@ -35,6 +35,5 @@ def test_extract_multiple_mermaid(tmp_path: Path) -> None:
 def test_render_mermaid_timeout_returns_error(tmp_path: Path) -> None:
     from bookmaker.production.mermaid import render_mermaid
 
-    # mmdc yoksa error döner
-    result = render_mermaid("flowchart TD\nA", tmp_path / "none" / "test.png")
+    result = render_mermaid("flowchart TD\nA", tmp_path / "none" / "test.png", timeout=0.001)
     assert result["status"] in ("error", "timeout", "failed")

@@ -55,7 +55,7 @@ class LLMConfig:
                     return raw
             except (json.JSONDecodeError, OSError):
                 pass
-        return {"provider": "", "api_key": "", "model": "deepseek-chat"}
+        return {"provider": "", "api_key": "", "model": ""}
 
     def save(self) -> None:
         self._config_path().write_text(

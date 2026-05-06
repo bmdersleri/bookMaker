@@ -4,6 +4,43 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+def find_automation_root(start: str | Path | None = None) -> Path | None:
+    """Legacy helper: find the repository/automation root."""
+    current = Path(start or Path.cwd()).resolve()
+    if current.is_file():
+        current = current.parent
+
+    for candidate in [current, *current.parents]:
+        if (candidate / "book_projects").is_dir():
+            return candidate
+        if (candidate / "pyproject.toml").exists() and (candidate / "src").is_dir():
+            return candidate
+    return None
+
+
+def find_project_root(
+    start: str | Path | None = None,
+    book_name: str | None = None,
+) -> Path | None:
+    """Legacy helper: find a book project containing book_profile.yaml."""
+    current = Path(start or Path.cwd()).resolve()
+    if current.is_file():
+        current = current.parent
+
+    for candidate in [current, *current.parents]:
+        if (candidate / "book_profile.yaml").exists():
+            return candidate
+
+    if book_name:
+        automation_root = find_automation_root(current)
+        if automation_root is not None:
+            project = automation_root / "book_projects" / book_name
+            if (project / "book_profile.yaml").exists():
+                return project
+
+    return None
+
+
 @dataclass(frozen=True)
 class ChapterPaths:
     """Convention-based paths for one chapter."""

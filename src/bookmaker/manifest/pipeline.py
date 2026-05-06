@@ -28,6 +28,14 @@ class PipelineManager:
     def update_chapter(self, chapter_id: str, **kwargs) -> ChapterState:
         """Bölüm durumunu günceller."""
         state = self.load()
+        if not isinstance(state.chapters, dict):
+            state.chapters = {
+                entry.alias: ChapterState(
+                    current_step=entry.status.state,
+                    score=entry.status.quality_score,
+                )
+                for entry in state.chapters
+            }
         if chapter_id not in state.chapters:
             state.chapters[chapter_id] = ChapterState()
         cs = state.chapters[chapter_id]

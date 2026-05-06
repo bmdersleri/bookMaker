@@ -43,6 +43,65 @@ Tarihsel bağlam: Önemli kavramların Java'nın hangi sürümünde geldiğini v
 
 
 # ============================================================
+# LEGACY COMPATIBILITY PROMPTS
+# ============================================================
+# Eski generation testleri ve dis entegrasyonlar bu public fonksiyonlari
+# import ediyor. Yeni pipeline build_* promptlarini kullanmaya devam eder.
+
+def outline_prompt(book_title: str, brief: str) -> tuple[str, str]:
+    """Legacy outline prompt API'si."""
+    system_prompt = (
+        "You are an outline planner for academic technical books. "
+        "Create a structured, teachable chapter outline with clear progression, "
+        "learning goals, and practical implementation checkpoints."
+    )
+    user_prompt = (
+        f"Book title: {book_title}\n"
+        f"Brief: {brief}\n\n"
+        "Produce a concise outline for the book or chapter sequence."
+    )
+    return system_prompt, user_prompt
+
+
+def chapter_prompt(
+    chapter_title: str,
+    outline: str,
+    purpose: str = "",
+    concepts: list[str] | None = None,
+) -> tuple[str, str]:
+    """Legacy chapter prompt API'si."""
+    concept_lines = "\n".join(f"- {concept}" for concept in concepts or [])
+    system_prompt = (
+        "You are a senior Turkish technical author. Generate a complete chapter "
+        "in Markdown. Preserve heading hierarchy and include CODE_META comments "
+        "before extractable code examples when relevant."
+    )
+    user_prompt = (
+        f"Chapter title: {chapter_title}\n"
+        f"Purpose: {purpose}\n\n"
+        f"Outline:\n{outline}\n\n"
+        f"Concepts:\n{concept_lines}\n"
+    )
+    return system_prompt, user_prompt
+
+
+def book_prompt(title: str, language: str, audience: str) -> tuple[str, str]:
+    """Legacy book-level prompt API'si."""
+    system_prompt = (
+        "You are a book architect for long-form academic and technical content. "
+        "Design a coherent book plan with chapters, outcomes, examples, and "
+        "quality criteria for production."
+    )
+    user_prompt = (
+        f"Title: {title}\n"
+        f"Language: {language}\n"
+        f"Audience: {audience}\n\n"
+        "Create a book-level production prompt and structure."
+    )
+    return system_prompt, user_prompt
+
+
+# ============================================================
 # AŞAMA 1: SEED PROMPT — Bölüm Üretimi (tek çağrı)
 # ============================================================
 # LLM sadece içeriğe odaklanır. Format kaygısı yok.

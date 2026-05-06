@@ -33,8 +33,8 @@ class TestCheckChapterCommand:
         try:
             result = runner.invoke(app, ["check", "chapter", str(sample_chapter), "--json"])
             assert result.exit_code == 0
-            # JSON raporu build/reports/ altına yazılır
-            report_files = list(Path("build/reports").glob("*quality_report.json"))
+            # JSON raporu logs/reviews/ altına yazılır
+            report_files = list(Path("logs/reviews").glob("*quality_report.json"))
             assert len(report_files) > 0
             # JSON içeriğini doğrula
             report_data = json.loads(report_files[0].read_text(encoding="utf-8"))

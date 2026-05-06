@@ -99,6 +99,7 @@ class BookChapterRef(BaseModel):
     title: str | None = None
     source: str | None = None
     github_slug: str | None = None
+    status: str = "planned"
 
     def effective_alias(self) -> str:
         return self.alias or self.chapter_id or ""
@@ -300,6 +301,13 @@ class HistoryEntry(BaseModel):
 
 
 class PipelineState(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    # Legacy top-level fields used by older tests and scripts. New project
+    # state keeps the canonical values under pipeline.
+    book_id: str = ""
+    current_stage: str = "initialized"
+
     pipeline: PipelineInfo = Field(default_factory=PipelineInfo)
     production_context: ProductionContext = Field(default_factory=ProductionContext)
     quality_gates: QualityGates = Field(default_factory=QualityGates)
@@ -329,6 +337,8 @@ class PipelineState(BaseModel):
         aliases = manifest.chapter_aliases()
         active = active_chapter or (aliases[0] if aliases else None)
         return cls(
+            book_id=manifest.book.alias,
+            current_stage="initialized",
             pipeline=PipelineInfo(
                 book_alias=manifest.book.alias,
                 current_version=current_version,
@@ -376,6 +386,7 @@ class PipelineState(BaseModel):
 
         self.chapters = synced
         self.pipeline.book_alias = manifest.book.alias
+        self.book_id = manifest.book.alias
 
     def get_chapter(self, alias: str) -> ChapterPipelineEntry | ChapterState | None:
         if isinstance(self.chapters, dict):

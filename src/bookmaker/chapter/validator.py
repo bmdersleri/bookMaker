@@ -97,6 +97,10 @@ def _validate_frontmatter_and_headings(chapter: ParsedChapter, issues: list[Issu
     text = chapter.text
     file = str(chapter.path)
 
+    if not text.strip():
+        _add(issues, "error", "frontmatter.empty_file", "Dosya boş.", file, 1)
+        return
+
     if not chapter.frontmatter:
         _add(
             issues,
@@ -125,6 +129,17 @@ def _validate_frontmatter_and_headings(chapter: ParsedChapter, issues: list[Issu
     previous_level = 0
     for match in re.finditer(r"(?m)^(#{1,6})\s+(.+?)\s*$", text):
         level = len(match.group(1))
+        title = match.group(2).strip()
+        if level >= 2 and re.match(r"^\d+(?:\.\d+)+\.?\s+", title):
+            _add(
+                issues,
+                "error",
+                "heading.manual_numbering",
+                "Başlıkta manuel numaralandırma bulundu.",
+                file,
+                _line_number(text, match.start()),
+                title,
+            )
         if previous_level and level > previous_level + 1:
             _add(
                 issues,
@@ -136,6 +151,32 @@ def _validate_frontmatter_and_headings(chapter: ParsedChapter, issues: list[Issu
                 match.group(2).strip(),
             )
         previous_level = level
+
+
+def _validate_section_meta(blocks: list[MetaBlock], issues: list[Issue], file: str) -> None:
+    orders: dict[str, int] = {}
+    for block in [b for b in blocks if b.kind == "SECTION_META"]:
+        order = block.data.get("order", "").strip()
+        if not order:
+            _add(
+                issues,
+                "error",
+                "section.order_missing",
+                "SECTION_META içinde order alanı eksik.",
+                file,
+                block.line,
+            )
+            continue
+        if order in orders:
+            _add(
+                issues,
+                "error",
+                "section.order_duplicate",
+                f"Tekrar eden SECTION_META order: {order}",
+                file,
+                block.line,
+            )
+        orders[order] = block.line
 
 
 def _validate_forbidden_markers(text: str, issues: list[Issue], file: str) -> None:
@@ -279,6 +320,26 @@ def _validate_code_meta(text: str, blocks: list[MetaBlock], issues: list[Issue],
                 f"{lang} != {language}",
             )
 
+        if (language or "").casefold() == "java":
+            intentional_mismatch = _bool_value(data.get("intentional_mismatch")) is True
+            declared_file = data.get("file", "").strip().strip("\"'")
+            class_match = re.search(r"\bpublic\s+class\s+([A-Za-z_][A-Za-z0-9_]*)", fence[1])
+            if declared_file and class_match and not intentional_mismatch:
+                expected_class = declared_file.rsplit("/", 1)[-1].rsplit("\\", 1)[-1]
+                if expected_class.endswith(".java"):
+                    expected_class = expected_class[:-5]
+                actual_class = class_match.group(1)
+                if expected_class and actual_class != expected_class:
+                    _add(
+                        issues,
+                        "error",
+                        "java.file_class_mismatch",
+                        "Java dosya adı ile public class adı uyuşmuyor.",
+                        file,
+                        _line_number(text, fence_start),
+                        f"{declared_file} != {actual_class}",
+                    )
+
 
 def _validate_mermaid(text: str, blocks: list[MetaBlock], issues: list[Issue], file: str) -> None:
     mermaid_fences = list(re.finditer(r"```mermaid\b", text))
@@ -353,6 +414,7 @@ def validate(chapter: ParsedChapter, final_mode: bool = False) -> list[Issue]:
     _validate_frontmatter_and_headings(chapter, issues)
     _validate_forbidden_markers(text, issues, file_str)
     _validate_placeholders(text, issues, file_str, final_mode)
+    _validate_section_meta(blocks, issues, file_str)
     _validate_code_meta(text, blocks, issues, file_str)
     _validate_mermaid(text, blocks, issues, file_str)
     _validate_screenshots(text, blocks, issues, file_str)

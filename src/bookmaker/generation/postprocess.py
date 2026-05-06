@@ -169,6 +169,74 @@ github_slug: {chapter_id}
 qr_policy: dual_for_code_examples
 asset_policy: manual_override
 ---"""
+
+
+def _build_legacy_frontmatter(chapter_id: str, title: str) -> str:
+    return f"""---
+title: "{title}"
+chapter_id: {chapter_id}
+chapter_spec: chapter_spec_v0_1
+processing_stage: authoring_source
+placeholder_policy: source_template
+snippet_policy: non_meta_code_is_explanatory
+---"""
+
+
+def ensure_frontmatter(text: str, chapter_id: str, title: str) -> str:
+    """Legacy front matter API'si."""
+    if text.lstrip().startswith("---"):
+        end = text.find("---", 3)
+        if end != -1:
+            return text
+    return _build_legacy_frontmatter(chapter_id, title) + "\n" + text.lstrip("\n")
+
+
+def fix_heading_hierarchy(text: str) -> str:
+    """Legacy heading normalizer API'si."""
+    return normalize_headings(text)
+
+
+def _filename_from_code(code: str, index: int) -> str:
+    match = re.search(r"//\s*(?:Dosya|D)\s*:\s*([^\r\n]+)", code)
+    if match:
+        return match.group(1).strip()
+    return f"snippet_{index:02d}.java"
+
+
+def auto_code_meta(text: str, chapter_id: str) -> str:
+    """Legacy CODE_META injector API'si."""
+    if "CODE_META" in text:
+        return text
+
+    pattern = re.compile(r"```(?P<language>[A-Za-z0-9_+\-.]*)\s*\n(?P<code>.*?```)", re.DOTALL)
+    counter = 0
+
+    def add_meta(match: re.Match[str]) -> str:
+        nonlocal counter
+        counter += 1
+        language = match.group("language") or "text"
+        code = match.group("code")
+        filename = _filename_from_code(code, counter)
+        meta = (
+            "<!-- CODE_META\n"
+            f"id: {chapter_id}_kod{counter:02d}\n"
+            f"file: {filename}\n"
+            f"language: {language}\n"
+            "-->\n"
+        )
+        return meta + match.group(0)
+
+    return pattern.sub(add_meta, text)
+
+
+def process(text: str, chapter_id: str, title: str) -> str:
+    """Legacy postprocess pipeline API'si."""
+    text = ensure_frontmatter(text, chapter_id, title)
+    text = fix_heading_hierarchy(text)
+    text = auto_code_meta(text, chapter_id)
+    return text
+
+
 def ensure_front_matter(text: str, chapter_id: str, title: str,
                         config: Optional[BookConfig] = None) -> str:
     """Metnin başına front matter ekler (H1 başlığı korur)."""
