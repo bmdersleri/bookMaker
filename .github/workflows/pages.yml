@@ -1,0 +1,54 @@
+# =============================================================================
+# bookMaker — GitHub Pages Deploy Workflow
+# Tetik: her push -> deepseek branch
+# Is: pandoc ile multi-page HTML build -> GitHub Pages deploy
+# =============================================================================
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [deepseek]
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Setup Pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+
+      - name: Build Multi-Page HTML
+        run: python tools/build/pages_multi.py
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,70 @@
+# =============================================================================
+# bookMaker — CI Workflow
+# Her push ve PR'de: project-based architecture lint + test + prompt validation
+# =============================================================================
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - deepseek
+      - "feat/**"
+      - "fix/**"
+  pull_request:
+    branches:
+      - main
+      - deepseek
+      - "feat/**"
+      - "fix/**"
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.11.9"
+
+      - name: Setup Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Lint project-architecture modules
+        run: |
+          uv run ruff check \
+            src/bookmaker/manifest \
+            src/bookmaker/core/paths.py \
+            src/bookmaker/chapter/book_validator.py \
+            src/bookmaker/chapter/validator.py \
+            src/bookmaker/commands/check.py \
+            src/bookmaker/commands/init.py
+
+      - name: Unit tests
+        run: uv run pytest tests/ -q --tb=short
+
+      - name: Prompt validation
+        run: |
+          if [ -f tools/validate_prompt_changes.py ]; then
+            uv run python tools/validate_prompt_changes.py
+          else
+            echo "tools/validate_prompt_changes.py bulunamadı, atlanıyor."
+          fi
+
+      - name: Validate sample Flutter book project
+        run: |
+          if [ -d book_projects/flutter-ile-mobil-uygulama-gelistirme ]; then
+            uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
+          else
+            echo "Örnek Flutter kitap projesi bulunamadı, atlanıyor."
+          fi

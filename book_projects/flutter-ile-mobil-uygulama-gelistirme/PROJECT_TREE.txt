@@ -1,0 +1,61 @@
+flutter-ile-mobil-uygulama-gelistirme/
+├── book_manifest.yaml
+├── pipeline_state.yaml
+├── prompts/
+│   ├── default_chapter.md
+│   └── default_review.md
+├── chapters/
+│   ├── giris/
+│   │   ├── chapter_manifest.yaml
+│   │   ├── prompt.md
+│   │   └── content/
+│   │       ├── draft.md
+│   │       ├── final.md
+│   │       └── revisions/
+│   │           └── .gitkeep
+│   ├── dart-temelleri/
+│   │   ├── chapter_manifest.yaml
+│   │   ├── prompt.md
+│   │   └── content/
+│   │       ├── draft.md
+│   │       ├── final.md
+│   │       └── revisions/
+│   │           └── .gitkeep
+│   ├── widget-mantigi/
+│   │   ├── chapter_manifest.yaml
+│   │   ├── prompt.md
+│   │   └── content/
+│   │       ├── draft.md
+│   │       ├── final.md
+│   │       └── revisions/
+│   │           └── .gitkeep
+│   ├── layout-sistemi/
+│   ├── etkilesim-formlar/
+│   ├── listeleme-dinamik-arayuzler/
+│   ├── navigation-route/
+│   ├── state-management/
+│   ├── async-api-json/
+│   ├── yerel-veri-saklama/
+│   ├── tema-responsive-erisilebilirlik/
+│   ├── paketler-pluginler/
+│   ├── bulut-tabanli-uygulama/
+│   ├── test-debugging/
+│   ├── performans-yayinlama/
+│   └── final-proje/
+├── exports/
+│   ├── docx/
+│   │   └── .gitkeep
+│   ├── pdf/
+│   │   └── .gitkeep
+│   └── md/
+│       └── .gitkeep
+├── logs/
+│   ├── production/
+│   │   └── .gitkeep
+│   ├── errors/
+│   │   └── .gitkeep
+│   └── reviews/
+│       └── .gitkeep
+├── MIGRATION_NOTES.md
+├── PROJECT_TREE.txt
+└── README.md

@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Teknik Kitap Yazarı" />
+  <meta name="dcterms.date" content="2025-01-21" />
+  <meta name="keywords" content="Swing, JButton, JTextField, JLabel, ActionListener, KeyListener, form doğrulama, Java GUI" />
+  <title>20. Ag Programlama</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">20. Ag Programlama</h1>
+<p class="subtitle">Java ile Grafik Arayüz Geliştirmeye Giriş</p>
+<p class="author">Teknik Kitap Yazarı</p>
+<p class="date">2025-01-21</p>
+<div class="abstract">
+<div class="abstract-title">Özet</div>
+<p>Bu bölümde, Java Swing kütüphanesinin temel bileşenleri olan JButton, JTextField ve JLabel’i öğrenecek, olay yönetimi için ActionListener ve KeyListener arayüzlerini kullanmayı keşfedeceksiniz. Ayrıca, form doğrulama teknikleriyle kullanıcı girdilerini nasıl işleyeceğinizi ve bir kayıt formu uygulaması geliştireceksiniz.</p>
+</div>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#ag-programlama" id="toc-ag-programlama">20. Ag Programlama</a></li>
+<li><a href="#bölüm-20-temel-swing-bilesenleri-olay-yonetimi-ve-form-dogrulama" id="toc-bölüm-20-temel-swing-bilesenleri-olay-yonetimi-ve-form-dogrulama">Bölüm 20: Temel Swing Bilesenleri, Olay Yonetimi ve Form Dogrulama</a>
+<ul>
+<li><a href="#giriş" id="toc-giriş">20.1 Giriş</a></li>
+<li><a href="#temel-swing-bileşenleri" id="toc-temel-swing-bileşenleri">20.2 Temel Swing Bileşenleri</a></li>
+<li><a href="#mermaid-diyagram-37" id="toc-mermaid-diyagram-37"><img src="../assets/images/mermaid-037.png" alt="Mermaid Diyagram 37" /></a></li>
+<li><a href="#olay-yönetimi" id="toc-olay-yönetimi">20.3 Olay Yönetimi</a></li>
+<li><a href="#mermaid-diyagram-38" id="toc-mermaid-diyagram-38"><img src="../assets/images/mermaid-038.png" alt="Mermaid Diyagram 38" /></a></li>
+<li><a href="#form-doğrulama" id="toc-form-doğrulama">20.4 Form Doğrulama</a></li>
+<li><a href="#kullanıcı-girdisi-işleme" id="toc-kullanıcı-girdisi-işleme">20.5 Kullanıcı Girdisi İşleme</a></li>
+<li><a href="#örnek-uygulama-kullanıcı-kayıt-formu" id="toc-örnek-uygulama-kullanıcı-kayıt-formu">20.6 Örnek Uygulama: Kullanıcı Kayıt Formu</a></li>
+<li><a href="#mermaid-diyagram-39" id="toc-mermaid-diyagram-39"><img src="../assets/images/mermaid-039.png" alt="Mermaid Diyagram 39" /></a></li>
+<li><a href="#özet" id="toc-özet">20.7 Özet</a></li>
+<li><a href="#terim-sözlüğü" id="toc-terim-sözlüğü">20.8 Terim Sözlüğü</a></li>
+<li><a href="#sorular" id="toc-sorular">20.9 Sorular</a></li>
+<li><a href="#alıştırmalar" id="toc-alıştırmalar">20.10 Alıştırmalar</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="ag-programlama" class="level1">
+<h1>20. Ag Programlama</h1>
+</section>
+<section id="bölüm-20-temel-swing-bilesenleri-olay-yonetimi-ve-form-dogrulama" class="level1">
+<h1>Bölüm 20: Temel Swing Bilesenleri, Olay Yonetimi ve Form Dogrulama</h1>
+<section id="giriş" class="level2">
+<h2>20.1 Giriş</h2>
+<p>Java Swing, platform bağımsız grafik kullanıcı arayüzü (GUI) uygulamaları geliştirmek için güçlü bir araç setidir. Bu bölümde, Swing’in en yaygın kullanılan bileşenlerini tanıyacak ve olay tabanlı programlama ile form doğrulama tekniklerini öğreneceksiniz. Amaç, kullanıcı etkileşimlerini yönetebilen ve girdileri güvenilir bir şekilde işleyen bir uygulama yapabilmektir.</p>
+<blockquote>
+<p>🎯 <strong>Hedefler:</strong>
+- JButton, JTextField ve JLabel bileşenlerini oluşturma ve özelleştirme
+- ActionListener ve KeyListener ile olay yönetimi
+- Form doğrulama kuralları uygulama
+- Kullanıcı girdisini işleme ve saklama</p>
+</blockquote>
+<p><strong>Ön Koşullar:</strong> Bu bölümü anlamak için temel Java bilgisi (sınıflar, metotlar, arayüzler) ve bir IDE (IntelliJ IDEA veya Eclipse) kullanma deneyimi gereklidir.</p>
+<hr />
+</section>
+<section id="temel-swing-bileşenleri" class="level2">
+<h2>20.2 Temel Swing Bileşenleri</h2>
+<p>Swing bileşenleri, javax.swing paketinde yer alır ve AWT’nin üzerine inşa edilmiştir. Bu bölümde, en temel üç bileşeni inceleyeceğiz.</p>
+<section id="jbutton" class="level3">
+<h3>JButton</h3>
+<p>JButton, kullanıcının tıklayarak eylem başlattığı bir düğmedir. Farklı yapıcılar ile metin, simge veya her ikisini birden içerebilir.</p>
+<!-- CODE_META
+id: bolum-20_kod01
+chapter_id: bolum-20
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// JButtonExample.java</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> JButtonExample <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Buton Örneği&quot;</span><span class="op">);</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">300</span><span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Metin butonu</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JButton</span> button1 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Tıkla&quot;</span><span class="op">);</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Simge butonu</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">ImageIcon</span> icon <span class="op">=</span> <span class="kw">new</span> <span class="bu">ImageIcon</span><span class="op">(</span><span class="st">&quot;icon.png&quot;</span><span class="op">);</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JButton</span> button2 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span>icon<span class="op">);</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Metin ve simge butonu</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JButton</span> button3 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Kaydet&quot;</span><span class="op">,</span> icon<span class="op">);</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setLayout</span><span class="op">(</span><span class="kw">new</span> java<span class="op">.</span><span class="fu">awt</span><span class="op">.</span><span class="fu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button1<span class="op">);</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button2<span class="op">);</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button3<span class="op">);</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java file=JButtonExample.java -->
+<p>Butonlar üzerinde tooltip (araç ipucu) eklemek için <code>setToolTipText()</code> metodu kullanılır:</p>
+<!-- CODE_META
+id: bolum-20_kod02
+chapter_id: bolum-20
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>button1<span class="op">.</span><span class="fu">setToolTipText</span><span class="op">(</span><span class="st">&quot;Bu butona tıklayarak işlemi başlatın.&quot;</span><span class="op">);</span></span></code></pre></div>
+<!-- CODE_META language=java -->
+</section>
+<section id="jtextfield" class="level3">
+<h3>JTextField</h3>
+<p>JTextField, kullanıcının tek satırlık metin girmesini sağlayan bir bileşendir. Metin almak ve ayarlamak için <code>getText()</code> ve <code>setText()</code> metotları kullanılır.</p>
+<!-- CODE_META
+id: bolum-20_kod03
+chapter_id: bolum-20
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// JTextFieldExample.java</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> JTextFieldExample <span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Metin Alanı Örneği&quot;</span><span class="op">);</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JTextField</span> textField <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">20</span><span class="op">);</span> <span class="co">// 20 karakter genişliğinde</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        textField<span class="op">.</span><span class="fu">setToolTipText</span><span class="op">(</span><span class="st">&quot;Adınızı giriniz&quot;</span><span class="op">);</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Varsayılan metin (placeholder benzeri)</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        textField<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Adınızı girin...&quot;</span><span class="op">);</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Metin alanına odaklandığında içeriği temizleme</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        textField<span class="op">.</span><span class="fu">addFocusListener</span><span class="op">(</span><span class="kw">new</span> java<span class="op">.</span><span class="fu">awt</span><span class="op">.</span><span class="fu">event</span><span class="op">.</span><span class="fu">FocusAdapter</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">focusGained</span><span class="op">(</span>java<span class="op">.</span><span class="fu">awt</span><span class="op">.</span><span class="fu">event</span><span class="op">.</span><span class="fu">FocusEvent</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>textField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">equals</span><span class="op">(</span><span class="st">&quot;Adınızı girin...&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                    textField<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setLayout</span><span class="op">(</span><span class="kw">new</span> java<span class="op">.</span><span class="fu">awt</span><span class="op">.</span><span class="fu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Ad:&quot;</span><span class="op">));</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>textField<span class="op">);</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java file=JTextFieldExample.java -->
+</section>
+<section id="jlabel" class="level3">
+<h3>JLabel</h3>
+<p>JLabel, genellikle başka bileşenleri etiketlemek için kullanılan statik metin veya simge gösteren bir bileşendir. HTML desteği sayesinde zengin metin içeriği de gösterebilir.</p>
+<!-- CODE_META
+id: bolum-20_kod04
+chapter_id: bolum-20
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// JLabelExample.java</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> JLabelExample <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Etiket Örneği&quot;</span><span class="op">);</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">300</span><span class="op">);</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Basit metin etiketi</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JLabel</span> label1 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Hoş Geldiniz!&quot;</span><span class="op">);</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Simge etiketi</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">ImageIcon</span> icon <span class="op">=</span> <span class="kw">new</span> <span class="bu">ImageIcon</span><span class="op">(</span><span class="st">&quot;user.png&quot;</span><span class="op">);</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JLabel</span> label2 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span>icon<span class="op">);</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">// HTML destekli etiket</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JLabel</span> label3 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;&lt;html&gt;&lt;b&gt;Kalın&lt;/b&gt; ve &lt;i&gt;italik&lt;/i&gt; metin&lt;/html&gt;&quot;</span><span class="op">);</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Hizalama ayarları</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        label1<span class="op">.</span><span class="fu">setHorizontalAlignment</span><span class="op">(</span><span class="bu">SwingConstants</span><span class="op">.</span><span class="fu">CENTER</span><span class="op">);</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        label1<span class="op">.</span><span class="fu">setVerticalAlignment</span><span class="op">(</span><span class="bu">SwingConstants</span><span class="op">.</span><span class="fu">CENTER</span><span class="op">);</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setLayout</span><span class="op">(</span><span class="kw">new</span> java<span class="op">.</span><span class="fu">awt</span><span class="op">.</span><span class="fu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label1<span class="op">);</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label2<span class="op">);</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label3<span class="op">);</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java file=JLabelExample.java -->
+</section>
+</section>
+<section id="mermaid-diyagram-37" class="level2">
+<h2><img src="../assets/images/mermaid-037.png" alt="Mermaid Diyagram 37" /></h2>
+</section>
+<section id="olay-yönetimi" class="level2">
+<h2>20.3 Olay Yönetimi</h2>
+<p>Olay tabanlı programlama, kullanıcı eylemlerine (tıklama, tuşa basma vb.) yanıt vermek için kullanılır. Swing’de olay dinleyicileri (listeners) arayüzler aracılığıyla uygulanır.</p>
+<section id="actionlistener-ile-buton-olayları" class="level3">
+<h3>ActionListener ile Buton Olayları</h3>
+<p>ActionListener, buton tıklamaları gibi eylemleri yakalamak için kullanılır. <code>actionPerformed</code> metodu, olay gerçekleştiğinde çağrılır.</p>
+<p><strong>Geleneksel Yöntem:</strong></p>
+<!-- CODE_META
+id: bolum-20_kod05
+chapter_id: bolum-20
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ButtonActionExample.java</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionEvent</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionListener</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ButtonActionExample <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;ActionListener Örneği&quot;</span><span class="op">);</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">300</span><span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JButton</span> button <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Tıkla&quot;</span><span class="op">);</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JLabel</span> label <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Butona tıklanmadı&quot;</span><span class="op">);</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        button<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span><span class="kw">new</span> <span class="bu">ActionListener</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">actionPerformed</span><span class="op">(</span><span class="bu">ActionEvent</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>                label<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Butona tıklandı!&quot;</span><span class="op">);</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setLayout</span><span class="op">(</span><span class="kw">new</span> java<span class="op">.</span><span class="fu">awt</span><span class="op">.</span><span class="fu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button<span class="op">);</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label<span class="op">);</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java file=ButtonActionExample.java -->
+<p><strong>Lambda İfadesi ile (Java 8+):</strong></p>
+<!-- CODE_META
+id: bolum-20_kod06
+chapter_id: bolum-20
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>button<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>e <span class="op">-&gt;</span> label<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Lambda ile tıklandı!&quot;</span><span class="op">));</span></span></code></pre></div>
+<!-- CODE_META language=java -->
+</section>
+<section id="keylistener-ile-klavye-olayları" class="level3">
+<h3>KeyListener ile Klavye Olayları</h3>
+<p>KeyListener, klavye tuşlarına basma, bırakma ve yazma olaylarını yakalar. Üç metodu vardır:</p>
+<ul>
+<li><code>keyPressed(KeyEvent e)</code>: Tuşa basıldığında</li>
+<li><code>keyReleased(KeyEvent e)</code>: Tuş bırakıldığında</li>
+<li><code>keyTyped(KeyEvent e)</code>: Bir karakter üretildiğinde (Unicode karakterler)</li>
+</ul>
+<!-- CODE_META
+id: bolum-20_kod07
+chapter_id: bolum-20
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// KeyListenerExample.java</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">KeyEvent</span><span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">KeyListener</span><span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> KeyListenerExample <span class="op">{</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;KeyListener Örneği&quot;</span><span class="op">);</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JTextField</span> textField <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">20</span><span class="op">);</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JLabel</span> label <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Bir tuşa basın&quot;</span><span class="op">);</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        textField<span class="op">.</span><span class="fu">addKeyListener</span><span class="op">(</span><span class="kw">new</span> <span class="bu">KeyListener</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">keyPressed</span><span class="op">(</span><span class="bu">KeyEvent</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> keyCode <span class="op">=</span> e<span class="op">.</span><span class="fu">getKeyCode</span><span class="op">();</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>                label<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Basılan tuş kodu: &quot;</span> <span class="op">+</span> keyCode<span class="op">);</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Enter tuşu kontrolü</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>keyCode <span class="op">==</span> <span class="bu">KeyEvent</span><span class="op">.</span><span class="fu">VK_ENTER</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>                    label<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Enter tuşuna basıldı!&quot;</span><span class="op">);</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">keyReleased</span><span class="op">(</span><span class="bu">KeyEvent</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Tuş bırakıldığında yapılacak işlemler</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">keyTyped</span><span class="op">(</span><span class="bu">KeyEvent</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> keyChar <span class="op">=</span> e<span class="op">.</span><span class="fu">getKeyChar</span><span class="op">();</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Sadece harf girişine izin ver</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(!</span><span class="bu">Character</span><span class="op">.</span><span class="fu">isLetter</span><span class="op">(</span>keyChar<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>                    e<span class="op">.</span><span class="fu">consume</span><span class="op">();</span> <span class="co">// Karakteri iptal et</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setLayout</span><span class="op">(</span><span class="kw">new</span> java<span class="op">.</span><span class="fu">awt</span><span class="op">.</span><span class="fu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>textField<span class="op">);</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label<span class="op">);</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java file=KeyListenerExample.java -->
+<blockquote>
+<p>💡 <strong>İpucu:</strong> Tuş kombinasyonlarını yakalamak için <code>KeyEvent</code> sınıfındaki sabitleri kullanabilirsiniz. Örneğin, <code>e.isControlDown() &amp;&amp; e.getKeyCode() == KeyEvent.VK_S</code> ile Ctrl+S kombinasyonunu yakalayabilirsiniz.</p>
+</blockquote>
+</section>
+</section>
+<section id="mermaid-diyagram-38" class="level2">
+<h2><img src="../assets/images/mermaid-038.png" alt="Mermaid Diyagram 38" /></h2>
+</section>
+<section id="form-doğrulama" class="level2">
+<h2>20.4 Form Doğrulama</h2>
+<p>Form doğrulama, kullanıcı girdilerinin belirli kurallara uygunluğunu kontrol etme işlemidir. Bu, uygulamanın güvenilirliği ve kullanıcı deneyimi için kritiktir.</p>
+<section id="doğrulama-kuralları" class="level3">
+<h3>Doğrulama Kuralları</h3>
+<p><strong>Boş Alan Kontrolü:</strong></p>
+<!-- CODE_META
+id: bolum-20_kod08
+chapter_id: bolum-20
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>textField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">trim</span><span class="op">().</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hata mesajı göster</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">showMessageDialog</span><span class="op">(</span>frame<span class="op">,</span> <span class="st">&quot;Bu alan boş bırakılamaz!&quot;</span><span class="op">,</span> <span class="st">&quot;Hata&quot;</span><span class="op">,</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">ERROR_MESSAGE</span><span class="op">);</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java -->
+<p><strong>Uzunluk Kontrolü:</strong></p>
+<!-- CODE_META
+id: bolum-20_kod09
+chapter_id: bolum-20
+kind: example
+title: "Kod 9"
+file: "Ornek08.java"
+mainClass: Ornek08
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> input <span class="op">=</span> textField<span class="op">.</span><span class="fu">getText</span><span class="op">();</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>input<span class="op">.</span><span class="fu">length</span><span class="op">()</span> <span class="op">&lt;</span> <span class="dv">3</span> <span class="op">||</span> input<span class="op">.</span><span class="fu">length</span><span class="op">()</span> <span class="op">&gt;</span> <span class="dv">20</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Hata mesajı</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java -->
+<p><strong>E-posta Formatı Kontrolü (Basit Regex):</strong></p>
+<!-- CODE_META
+id: bolum-20_kod10
+chapter_id: bolum-20
+kind: example
+title: "Kod 10"
+file: "Ornek09.java"
+mainClass: Ornek09
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb10"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> email <span class="op">=</span> emailField<span class="op">.</span><span class="fu">getText</span><span class="op">();</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> emailRegex <span class="op">=</span> <span class="st">&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="sc">\\</span><span class="st">.[a-zA-Z]{2,6}$&quot;</span><span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(!</span>email<span class="op">.</span><span class="fu">matches</span><span class="op">(</span>emailRegex<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">showMessageDialog</span><span class="op">(</span>frame<span class="op">,</span> <span class="st">&quot;Geçerli bir e-posta adresi giriniz!&quot;</span><span class="op">,</span> <span class="st">&quot;Hata&quot;</span><span class="op">,</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">ERROR_MESSAGE</span><span class="op">);</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java -->
+</section>
+<section id="doğrulama-geri-bildirimi" class="level3">
+<h3>Doğrulama Geri Bildirimi</h3>
+<p>Kullanıcıya hata mesajları göstermek için çeşitli yöntemler vardır:</p>
+<ol type="1">
+<li><strong>JOptionPane ile Dialog Kutusu:</strong>
+<!-- CODE_META
+id: bolum-20_kod11
+chapter_id: bolum-20
+kind: example
+title: "Kod 11"
+file: "Ornek10.java"
+mainClass: Ornek10
+extract: true
+test: compile
+github: true
+qr: dual
+--></li>
+</ol>
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">showMessageDialog</span><span class="op">(</span>frame<span class="op">,</span> <span class="st">&quot;Hata mesajı&quot;</span><span class="op">,</span> <span class="st">&quot;Başlık&quot;</span><span class="op">,</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">ERROR_MESSAGE</span><span class="op">);</span></span></code></pre></div>
+<ol start="2" type="1">
+<li><strong>Renk Değişikliği:</strong>
+<!-- CODE_META
+id: bolum-20_kod12
+chapter_id: bolum-20
+kind: example
+title: "Kod 12"
+file: "Ornek11.java"
+mainClass: Ornek11
+extract: true
+test: compile
+github: true
+qr: dual
+--></li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>textField<span class="op">.</span><span class="fu">setBackground</span><span class="op">(</span><span class="bu">Color</span><span class="op">.</span><span class="fu">RED</span><span class="op">);</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>textField<span class="op">.</span><span class="fu">setForeground</span><span class="op">(</span><span class="bu">Color</span><span class="op">.</span><span class="fu">WHITE</span><span class="op">);</span></span></code></pre></div>
+<ol start="3" type="1">
+<li><strong>Etiket ile Hata Mesajı:</strong>
+<!-- CODE_META
+id: bolum-20_kod13
+chapter_id: bolum-20
+kind: example
+title: "Kod 13"
+file: "Ornek12.java"
+mainClass: Ornek12
+extract: true
+test: compile
+github: true
+qr: dual
+--></li>
+</ol>
+<div class="sourceCode" id="cb13"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>errorLabel<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Geçersiz giriş!&quot;</span><span class="op">);</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>errorLabel<span class="op">.</span><span class="fu">setForeground</span><span class="op">(</span><span class="bu">Color</span><span class="op">.</span><span class="fu">RED</span><span class="op">);</span></span></code></pre></div>
+<!-- CODE_META language=java -->
+<hr />
+</section>
+</section>
+<section id="kullanıcı-girdisi-işleme" class="level2">
+<h2>20.5 Kullanıcı Girdisi İşleme</h2>
+<p>Kullanıcıdan alınan girdileri işlemek, doğrulamak ve saklamak uygulamanın temel işlevlerindendir.</p>
+<section id="sayısal-girdi-doğrulama" class="level3">
+<h3>Sayısal Girdi Doğrulama</h3>
+<!-- CODE_META
+id: bolum-20_kod14
+chapter_id: bolum-20
+kind: example
+title: "Kod 14"
+file: "Ornek13.java"
+mainClass: Ornek13
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb14"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// NumberInputExample.java</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> NumberInputExample <span class="op">{</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Sayısal Girdi&quot;</span><span class="op">);</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">300</span><span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JTextField</span> textField <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JButton</span> button <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Kontrol Et&quot;</span><span class="op">);</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JLabel</span> resultLabel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        button<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>e <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> input <span class="op">=</span> textField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">trim</span><span class="op">();</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> number <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>input<span class="op">);</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>number <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> number <span class="op">&lt;</span> <span class="dv">100</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>                    resultLabel<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Geçerli sayı: &quot;</span> <span class="op">+</span> number<span class="op">);</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>                    resultLabel<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;1-99 arası bir sayı giriniz!&quot;</span><span class="op">);</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>                resultLabel<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Lütfen geçerli bir sayı giriniz!&quot;</span><span class="op">);</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setLayout</span><span class="op">(</span><span class="kw">new</span> java<span class="op">.</span><span class="fu">awt</span><span class="op">.</span><span class="fu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>textField<span class="op">);</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button<span class="op">);</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>resultLabel<span class="op">);</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java file=NumberInputExample.java -->
+</section>
+<section id="metin-girdisini-işleme" class="level3">
+<h3>Metin Girdisini İşleme</h3>
+<!-- CODE_META
+id: bolum-20_kod15
+chapter_id: bolum-20
+kind: example
+title: "Kod 15"
+file: "Ornek14.java"
+mainClass: Ornek14
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb15"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">// TextProcessingExample.java</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TextProcessingExample <span class="op">{</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Metin İşleme&quot;</span><span class="op">);</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">300</span><span class="op">);</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JTextField</span> inputField <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">20</span><span class="op">);</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JButton</span> processButton <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;İşle&quot;</span><span class="op">);</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JTextArea</span> outputArea <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextArea</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">30</span><span class="op">);</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>        outputArea<span class="op">.</span><span class="fu">setEditable</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>        processButton<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>e <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> input <span class="op">=</span> inputField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">trim</span><span class="op">();</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(!</span>input<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Metni büyük harfe çevir ve ters çevir</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>                <span class="bu">String</span> processed <span class="op">=</span> <span class="kw">new</span> <span class="bu">StringBuilder</span><span class="op">(</span>input<span class="op">.</span><span class="fu">toUpperCase</span><span class="op">()).</span><span class="fu">reverse</span><span class="op">().</span><span class="fu">toString</span><span class="op">();</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>                outputArea<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Orijinal: &quot;</span> <span class="op">+</span> input <span class="op">+</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">İşlenmiş: &quot;</span> <span class="op">+</span> processed<span class="op">);</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>                outputArea<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Lütfen bir metin giriniz!&quot;</span><span class="op">);</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setLayout</span><span class="op">(</span><span class="kw">new</span> java<span class="op">.</span><span class="fu">awt</span><span class="op">.</span><span class="fu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>inputField<span class="op">);</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>processButton<span class="op">);</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JScrollPane</span><span class="op">(</span>outputArea<span class="op">));</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>        frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java file=TextProcessingExample.java -->
+<hr />
+</section>
+</section>
+<section id="örnek-uygulama-kullanıcı-kayıt-formu" class="level2">
+<h2>20.6 Örnek Uygulama: Kullanıcı Kayıt Formu</h2>
+<p>Bu örnekte, öğrendiğimiz tüm kavramları birleştirerek eksiksiz bir kayıt formu oluşturacağız.</p>
+<!-- CODE_META
+id: bolum-20_kod16
+chapter_id: bolum-20
+kind: example
+title: "Kod 16"
+file: "Ornek15.java"
+mainClass: Ornek15
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb16"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">// RegistrationForm.java</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.*;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionEvent</span><span class="op">;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionListener</span><span class="op">;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">HashMap</span><span class="op">;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Map</span><span class="op">;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> RegistrationForm <span class="kw">extends</span> <span class="bu">JFrame</span> <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">JTextField</span> nameField<span class="op">,</span> emailField<span class="op">,</span> ageField<span class="op">;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">JPasswordField</span> passwordField<span class="op">;</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">JLabel</span> nameError<span class="op">,</span> emailError<span class="op">,</span> ageError<span class="op">,</span> passwordError<span class="op">;</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">JTextArea</span> outputArea<span class="op">;</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">Map</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">String</span><span class="op">&gt;</span> users <span class="op">=</span> <span class="kw">new</span> <span class="bu">HashMap</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">RegistrationForm</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setTitle</span><span class="op">(</span><span class="st">&quot;Kullanıcı Kayıt Formu&quot;</span><span class="op">);</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setSize</span><span class="op">(</span><span class="dv">500</span><span class="op">,</span> <span class="dv">400</span><span class="op">);</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setLayout</span><span class="op">(</span><span class="kw">new</span> <span class="bu">BorderLayout</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">10</span><span class="op">));</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Form paneli</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JPanel</span> formPanel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">GridBagLayout</span><span class="op">());</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">GridBagConstraints</span> gbc <span class="op">=</span> <span class="kw">new</span> <span class="bu">GridBagConstraints</span><span class="op">();</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">insets</span> <span class="op">=</span> <span class="kw">new</span> <span class="bu">Insets</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">5</span><span class="op">);</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">fill</span> <span class="op">=</span> <span class="bu">GridBagConstraints</span><span class="op">.</span><span class="fu">HORIZONTAL</span><span class="op">;</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Ad alanı</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> gbc<span class="op">.</span><span class="fu">gridy</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Ad:&quot;</span><span class="op">),</span> gbc<span class="op">);</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>        nameField <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">15</span><span class="op">);</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>nameField<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>        nameError <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>        nameError<span class="op">.</span><span class="fu">setForeground</span><span class="op">(</span><span class="bu">Color</span><span class="op">.</span><span class="fu">RED</span><span class="op">);</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>nameError<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>        <span class="co">// E-posta alanı</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> gbc<span class="op">.</span><span class="fu">gridy</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;E-posta:&quot;</span><span class="op">),</span> gbc<span class="op">);</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>        emailField <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">15</span><span class="op">);</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>emailField<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>        emailError <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>        emailError<span class="op">.</span><span class="fu">setForeground</span><span class="op">(</span><span class="bu">Color</span><span class="op">.</span><span class="fu">RED</span><span class="op">);</span></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>emailError<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Yaş alanı</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> gbc<span class="op">.</span><span class="fu">gridy</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Yaş:&quot;</span><span class="op">),</span> gbc<span class="op">);</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>        ageField <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">15</span><span class="op">);</span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>ageField<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>        ageError <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>        ageError<span class="op">.</span><span class="fu">setForeground</span><span class="op">(</span><span class="bu">Color</span><span class="op">.</span><span class="fu">RED</span><span class="op">);</span></span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>ageError<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Şifre alanı</span></span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> gbc<span class="op">.</span><span class="fu">gridy</span> <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Şifre:&quot;</span><span class="op">),</span> gbc<span class="op">);</span></span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>        passwordField <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPasswordField</span><span class="op">(</span><span class="dv">15</span><span class="op">);</span></span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>passwordField<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a>        gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>        passwordError <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>        passwordError<span class="op">.</span><span class="fu">setForeground</span><span class="op">(</span><span class="bu">Color</span><span class="op">.</span><span class="fu">RED</span><span class="op">);</span></span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>        formPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>passwordError<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Butonlar</span></span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JPanel</span> buttonPanel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JButton</span> registerButton <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Kaydol&quot;</span><span class="op">);</span></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JButton</span> clearButton <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Temizle&quot;</span><span class="op">);</span></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a>        registerButton<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span><span class="kw">new</span> <span class="bu">ActionListener</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">actionPerformed</span><span class="op">(</span><span class="bu">ActionEvent</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span><span class="fu">validateForm</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">registerUser</span><span class="op">();</span></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>        clearButton<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>e <span class="op">-&gt;</span> <span class="fu">clearForm</span><span class="op">());</span></span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>        buttonPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>registerButton<span class="op">);</span></span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>        buttonPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>clearButton<span class="op">);</span></span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Çıktı alanı</span></span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a>        outputArea <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextArea</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">40</span><span class="op">);</span></span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>        outputArea<span class="op">.</span><span class="fu">setEditable</span><span class="op">(</span><span class="kw">false</span><span class="op">);</span></span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JScrollPane</span> scrollPane <span class="op">=</span> <span class="kw">new</span> <span class="bu">JScrollPane</span><span class="op">(</span>outputArea<span class="op">);</span></span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add</span><span class="op">(</span>formPanel<span class="op">,</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">CENTER</span><span class="op">);</span></span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add</span><span class="op">(</span>buttonPanel<span class="op">,</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">SOUTH</span><span class="op">);</span></span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add</span><span class="op">(</span>scrollPane<span class="op">,</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">EAST</span><span class="op">);</span></span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">boolean</span> <span class="fu">validateForm</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a>        <span class="dt">boolean</span> isValid <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Ad doğrulama</span></span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> name <span class="op">=</span> nameField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">trim</span><span class="op">();</span></span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>name<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a>            nameError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Ad boş olamaz!&quot;</span><span class="op">);</span></span>
+<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>            isValid <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>name<span class="op">.</span><span class="fu">length</span><span class="op">()</span> <span class="op">&lt;</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>            nameError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;En az 2 karakter!&quot;</span><span class="op">);</span></span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a>            isValid <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a>            nameError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a>        <span class="co">// E-posta doğrulama</span></span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> email <span class="op">=</span> emailField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">trim</span><span class="op">();</span></span>
+<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> emailRegex <span class="op">=</span> <span class="st">&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="sc">\\</span><span class="st">.[a-zA-Z]{2,6}$&quot;</span><span class="op">;</span></span>
+<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>email<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a>            emailError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;E-posta boş olamaz!&quot;</span><span class="op">);</span></span>
+<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a>            isValid <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(!</span>email<span class="op">.</span><span class="fu">matches</span><span class="op">(</span>emailRegex<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>            emailError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Geçersiz e-posta!&quot;</span><span class="op">);</span></span>
+<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a>            isValid <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a>            emailError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Yaş doğrulama</span></span>
+<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> ageText <span class="op">=</span> ageField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">trim</span><span class="op">();</span></span>
+<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>ageText<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a>            ageError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Yaş boş olamaz!&quot;</span><span class="op">);</span></span>
+<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a>            isValid <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> age <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>ageText<span class="op">);</span></span>
+<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>age <span class="op">&lt;</span> <span class="dv">18</span> <span class="op">||</span> age <span class="op">&gt;</span> <span class="dv">120</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a>                    ageError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;18-120 arası olmalı!&quot;</span><span class="op">);</span></span>
+<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a>                    isValid <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>                    ageError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a>                ageError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Sayı giriniz!&quot;</span><span class="op">);</span></span>
+<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a>                isValid <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Şifre doğrulama</span></span>
+<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> password <span class="op">=</span> <span class="kw">new</span> <span class="bu">String</span><span class="op">(</span>passwordField<span class="op">.</span><span class="fu">getPassword</span><span class="op">());</span></span>
+<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>password<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a>            passwordError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Şifre boş olamaz!&quot;</span><span class="op">);</span></span>
+<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a>            isValid <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-156"><a href="#cb16-156" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>password<span class="op">.</span><span class="fu">length</span><span class="op">()</span> <span class="op">&lt;</span> <span class="dv">6</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a>            passwordError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;En az 6 karakter!&quot;</span><span class="op">);</span></span>
+<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a>            isValid <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a>            passwordError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-161"><a href="#cb16-161" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-162"><a href="#cb16-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> isValid<span class="op">;</span></span>
+<span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">void</span> <span class="fu">registerUser</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> name <span class="op">=</span> nameField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">trim</span><span class="op">();</span></span>
+<span id="cb16-168"><a href="#cb16-168" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> email <span class="op">=</span> emailField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">trim</span><span class="op">();</span></span>
+<span id="cb16-169"><a href="#cb16-169" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> age <span class="op">=</span> ageField<span class="op">.</span><span class="fu">getText</span><span class="op">().</span><span class="fu">trim</span><span class="op">();</span></span>
+<span id="cb16-170"><a href="#cb16-170" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> password <span class="op">=</span> <span class="kw">new</span> <span class="bu">String</span><span class="op">(</span>passwordField<span class="op">.</span><span class="fu">getPassword</span><span class="op">());</span></span>
+<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Kullanıcıyı sakla</span></span>
+<span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a>        users<span class="op">.</span><span class="fu">put</span><span class="op">(</span>email<span class="op">,</span> name <span class="op">+</span> <span class="st">&quot; - &quot;</span> <span class="op">+</span> age <span class="op">+</span> <span class="st">&quot; - &quot;</span> <span class="op">+</span> password<span class="op">);</span></span>
+<span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-175"><a href="#cb16-175" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Çıktıyı güncelle</span></span>
+<span id="cb16-176"><a href="#cb16-176" aria-hidden="true" tabindex="-1"></a>        <span class="bu">StringBuilder</span> output <span class="op">=</span> <span class="kw">new</span> <span class="bu">StringBuilder</span><span class="op">(</span><span class="st">&quot;Kayıtlı Kullanıcılar:</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb16-177"><a href="#cb16-177" aria-hidden="true" tabindex="-1"></a>        output<span class="op">.</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot;=&quot;</span><span class="op">.</span><span class="fu">repeat</span><span class="op">(</span><span class="dv">30</span><span class="op">)).</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb16-178"><a href="#cb16-178" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">Map</span><span class="op">.</span><span class="fu">Entry</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">,</span> <span class="bu">String</span><span class="op">&gt;</span> entry <span class="op">:</span> users<span class="op">.</span><span class="fu">entrySet</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb16-179"><a href="#cb16-179" aria-hidden="true" tabindex="-1"></a>            output<span class="op">.</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot;E-posta: &quot;</span><span class="op">).</span><span class="fu">append</span><span class="op">(</span>entry<span class="op">.</span><span class="fu">getKey</span><span class="op">()).</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb16-180"><a href="#cb16-180" aria-hidden="true" tabindex="-1"></a>            output<span class="op">.</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot;Bilgiler: &quot;</span><span class="op">).</span><span class="fu">append</span><span class="op">(</span>entry<span class="op">.</span><span class="fu">getValue</span><span class="op">()).</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb16-181"><a href="#cb16-181" aria-hidden="true" tabindex="-1"></a>            output<span class="op">.</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot;-&quot;</span><span class="op">.</span><span class="fu">repeat</span><span class="op">(</span><span class="dv">30</span><span class="op">)).</span><span class="fu">append</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb16-182"><a href="#cb16-182" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-183"><a href="#cb16-183" aria-hidden="true" tabindex="-1"></a>        outputArea<span class="op">.</span><span class="fu">setText</span><span class="op">(</span>output<span class="op">.</span><span class="fu">toString</span><span class="op">());</span></span>
+<span id="cb16-184"><a href="#cb16-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-185"><a href="#cb16-185" aria-hidden="true" tabindex="-1"></a>        <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">showMessageDialog</span><span class="op">(</span><span class="kw">this</span><span class="op">,</span> <span class="st">&quot;Kayıt başarıyla tamamlandı!&quot;</span><span class="op">,</span> <span class="st">&quot;Başarılı&quot;</span><span class="op">,</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">INFORMATION_MESSAGE</span><span class="op">);</span></span>
+<span id="cb16-186"><a href="#cb16-186" aria-hidden="true" tabindex="-1"></a>        <span class="fu">clearForm</span><span class="op">();</span></span>
+<span id="cb16-187"><a href="#cb16-187" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-188"><a href="#cb16-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-189"><a href="#cb16-189" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">void</span> <span class="fu">clearForm</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-190"><a href="#cb16-190" aria-hidden="true" tabindex="-1"></a>        nameField<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-191"><a href="#cb16-191" aria-hidden="true" tabindex="-1"></a>        emailField<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-192"><a href="#cb16-192" aria-hidden="true" tabindex="-1"></a>        ageField<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-193"><a href="#cb16-193" aria-hidden="true" tabindex="-1"></a>        passwordField<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a>        nameError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a>        emailError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a>        ageError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-197"><a href="#cb16-197" aria-hidden="true" tabindex="-1"></a>        passwordError<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb16-198"><a href="#cb16-198" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-199"><a href="#cb16-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-200"><a href="#cb16-200" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-201"><a href="#cb16-201" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SwingUtilities</span><span class="op">.</span><span class="fu">invokeLater</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="kw">new</span> <span class="fu">RegistrationForm</span><span class="op">());</span></span>
+<span id="cb16-202"><a href="#cb16-202" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- CODE_META language=java file=RegistrationForm.java -->
+</section>
+<section id="mermaid-diyagram-39" class="level2">
+<h2><img src="../assets/images/mermaid-039.png" alt="Mermaid Diyagram 39" /></h2>
+</section>
+<section id="özet" class="level2">
+<h2>20.7 Özet</h2>
+<p>Bu bölümde şunları öğrendiniz:</p>
+<ul>
+<li><strong>JButton</strong>: Buton oluşturma, metin/simge ekleme ve tooltip kullanımı</li>
+<li><strong>JTextField</strong>: Metin giriş alanı oluşturma, metin alma ve ayarlama</li>
+<li><strong>JLabel</strong>: Etiket oluşturma, HTML desteği ve hizalama</li>
+<li><strong>ActionListener</strong>: Buton tıklama olaylarını yakalama</li>
+<li><strong>KeyListener</strong>: Klavye olaylarını yakalama ve kontrol etme</li>
+<li><strong>Form Doğrulama</strong>: Boş alan, uzunluk, format ve sayısal doğrulama</li>
+<li><strong>Kullanıcı Girdisi İşleme</strong>: Girdiyi okuma, dönüştürme ve saklama</li>
+</ul>
+<hr />
+</section>
+<section id="terim-sözlüğü" class="level2">
+<h2>20.8 Terim Sözlüğü</h2>
+<table>
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 58%" />
+</colgroup>
+<thead>
+<tr>
+<th>Terim</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Swing</strong></td>
+<td>Java’nın GUI kütüphanesi</td>
+</tr>
+<tr>
+<td><strong>JButton</strong></td>
+<td>Tıklanabilir düğme bileşeni</td>
+</tr>
+<tr>
+<td><strong>JTextField</strong></td>
+<td>Tek satırlık metin giriş alanı</td>
+</tr>
+<tr>
+<td><strong>JLabel</strong></td>
+<td>Statik metin veya simge gösteren etiket</td>
+</tr>
+<tr>
+<td><strong>ActionListener</strong></td>
+<td>Eylem olaylarını dinleyen arayüz</td>
+</tr>
+<tr>
+<td><strong>KeyListener</strong></td>
+<td>Klavye olaylarını dinleyen arayüz</td>
+</tr>
+<tr>
+<td><strong>Event</strong></td>
+<td>Kullanıcı eylemi sonucu oluşan olay</td>
+</tr>
+<tr>
+<td><strong>Listener</strong></td>
+<td>Olayları dinleyen ve işleyen nesne</td>
+</tr>
+<tr>
+<td><strong>Form Doğrulama</strong></td>
+<td>Kullanıcı girdilerinin kurallara uygunluğunu kontrol etme</td>
+</tr>
+<tr>
+<td><strong>Regex</strong></td>
+<td>Düzenli ifade (Regular Expression)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</section>
+<section id="sorular" class="level2">
+<h2>20.9 Sorular</h2>
+<ol type="1">
+<li>JButton’a tıklama olayını yakalamak için hangi arayüz kullanılır?</li>
+<li>JTextField’ten metin almak için hangi metot kullanılır?</li>
+<li>KeyListener arayüzünün üç metodu nedir?</li>
+<li>Bir metin alanının boş olup olmadığını nasıl kontrol edersiniz?</li>
+<li>E-posta doğrulaması için hangi Java sınıfı kullanılabilir?</li>
+<li>Lambda ifadesi ile ActionListener nasıl yazılır?</li>
+<li>JLabel’de HTML kullanmanın avantajı nedir?</li>
+<li>Form doğrulamada hata mesajı göstermenin üç farklı yöntemi nedir?</li>
+</ol>
+<hr />
+</section>
+<section id="alıştırmalar" class="level2">
+<h2>20.10 Alıştırmalar</h2>
+<ol type="1">
+<li><p><strong>Basit Hesap Makinesi</strong>: İki JTextField ve dört JButton (+, -, *, /) içeren bir hesap makinesi yapın. ActionListener ile işlemleri gerçekleştirin.</p></li>
+<li><p><strong>Şifre Gücü Kontrolü</strong>: Bir JPasswordField ve JButton ekleyin. Butona tıklandığında şifrenin gücünü (zayıf, orta, güçlü) JLabel’de gösterin. (En az 8 karakter, büyük/küçük harf, rakam ve özel karakter kontrolü)</p></li>
+<li><p><strong>Alışveriş Listesi</strong>: JTextField, JButton ve JList kullanarak bir alışveriş listesi uygulaması yapın. Kullanıcı metin girer ve “Ekle” butonuna basar; öğeler listeye eklenir.</p></li>
+<li><p><strong>Telefon Numarası Formatı</strong>: JTextField’a sadece rakam girişine izin veren bir KeyListener ekleyin. Girdi otomatik olarak (XXX) XXX-XXXX formatına dönüştürülsün.</p></li>
+<li><p><strong>Gelişmiş Kayıt Formu</strong>: Örnek uygulamayı genişletin. Şifre tekrar alanı, cinsiyet seçimi (JRadioButton) ve ülke seçimi (JComboBox) ekleyin. Tüm alanları doğrulayın.</p></li>
+</ol>
+</section>
+</section>
+</body>
+</html>

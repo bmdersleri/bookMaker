@@ -1,0 +1,56 @@
+chapter:
+  title: Flutter Ekosistemine Giriş ve İlk Uygulama
+  alias: giris
+  order: 1
+  references:
+  - alias: dart-temelleri
+    relation: next
+scope:
+  topics:
+  - Flutter ve Dart ekosistemi
+  - Flutter SDK kurulumu
+  - IDE, emulator ve cihaz hazırlığı
+  - İlk Flutter projesi
+  - Hot reload ve hot restart
+  - Temel proje klasör yapısı
+  objectives:
+  - Okuyucu Flutter’ın çapraz platform geliştirmedeki rolünü açıklayabilmeli.
+  - Flutter geliştirme ortamını kurup ilk uygulamayı çalıştırabilmeli.
+  - Hot reload ve hot restart farkını örnek üzerinden açıklayabilmeli.
+  exclusions:
+  - State management ayrıntıları
+  - API kullanımı
+  - Yayınlama süreçleri
+  mini_project: Kişisel karşılama kartı uygulaması
+structure:
+  sections:
+  - title: Bölümün Yol Haritası
+    type: text
+  - title: Kavramsal Açıklama
+    type: text
+  - title: Temel Örnek
+    type: text+code
+  - title: Çalışan Mini Uygulama
+    type: text+code+screenshot
+  - title: Sık Yapılan Hatalar
+    type: text
+  - title: Bölüm Sonu Laboratuvarı
+    type: exercise
+  - title: Özet
+    type: text
+  estimated_pages: 18
+  code_examples_count: 4
+  screenshot_examples_count: 1
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  default_code_language: dart
+  default_framework: flutter
+  validation_modes:
+  - flutter_analyze
+  - flutter_test
+  - widget_test
+  - screenshot_only
+  - review_only
+  github_export: true
+  qr_policy: dual

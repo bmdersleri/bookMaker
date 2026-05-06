@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>2. Degiskenler ve Veri Tipleri</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">2. Degiskenler ve Veri Tipleri</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#degiskenler-ve-veri-tipleri" id="toc-degiskenler-ve-veri-tipleri">2. Degiskenler ve Veri Tipleri</a>
+<ul>
+<li><a href="#yorum-satırları-ve-kod-dokümantasyonu" id="toc-yorum-satırları-ve-kod-dokümantasyonu">2.2 Yorum Satırları ve Kod Dokümantasyonu</a></li>
+<li><a href="#çıktı-komutları-ve-konsol-işlemleri" id="toc-çıktı-komutları-ve-konsol-işlemleri">2.3 Çıktı Komutları ve Konsol İşlemleri</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="degiskenler-ve-veri-tipleri" class="level1">
+<h1>2. Degiskenler ve Veri Tipleri</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Java Programının Temel Yapısı, Değişkenler ve Veri Tipleri&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bölüm</span><span class="kw">:</span><span class="at"> Java Programının Temel Yapısı, Değişkenler ve Veri Tipleri</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">bölüm_numarası</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">amaç</span><span class="kw">:</span><span class="at"> Java programının temel yapı taşlarını (class, main metodu, bloklar, yorum satırları ve çıktı komutları) kavramak ve değişkenler ile veri tiplerini tanımak.</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">öğrenme_hedefleri</span><span class="kw">:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> Java&#39;da bir class yapısını tanımlayabilme ve main metodunu kullanabilme.</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> Kod bloklarının kapsamını (scope) anlayabilme.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> Tek satırlı, çok satırlı ve Javadoc yorumlarını kullanabilme.</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> System.out.println(), print() ve printf() metotlarıyla konsola çıktı verebilme.</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> İlkel (primitive) ve referans (reference) veri tiplerini tanımlayabilme ve kullanabilme.</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> Basit bir Java programını hatasız yazıp çalıştırabilme.</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">önceki_bilgi</span><span class="kw">:</span><span class="at"> Temel bilgisayar kullanımı ve algoritma mantığı.</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">sonraki_bölüm</span><span class="kw">:</span><span class="at"> Operatörler ve İfadeler</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Bölüm 2:  Java Programının Temel Yapısı, Değişkenler ve Veri Tipleri</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">Java&#39;ya hoş geldiniz! Bu bölümde, bir Java programının omurgasını oluşturan temel yapı taşlarını keşfedeceğiz. İlk programınızı yazmaktan, değişkenlerle veri depolamaya ve bu verileri konsola yazdırmaya kadar birçok temel kavramı adım adım öğreneceksiniz. Bu bölüm, sonraki tüm konuların temelini oluşturacağı için kavramları iyice anlamanız büyük önem taşır.</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">## 2.1 Java Programının Temel Bileşenleri</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="at">Her Java programı, belirli bir yapıya sahiptir. Bu yapıyı oluşturan temel bileşenler; class (sınıf) bildirimi, `main` metodu ve kod bloklarıdır. Bu yapıyı anlamak, Java ile yazılmış herhangi bir kodu okumak ve yazmak için ilk adımdır.</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">### Class Yapısı ve Tanımı</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="at">Java&#39;da her şey sınıflar (class) etrafında döner. Bir sınıf, nesnelerin (object) oluşturulması için bir şablondur. Ancak şimdilik, bir Java programının temel kapsayıcısı olduğunu düşünebiliriz. Tüm kodunuz, bir sınıfın içinde yer alır.</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">Bir sınıfı tanımlamak için `class` anahtar kelimesi kullanılır. Sınıf isimleri, **PascalCase** olarak adlandırılan bir kurala göre yazılır</span><span class="kw">:</span><span class="at"> Her kelimenin ilk harfi büyük, kelimeler bitişik yazılır (örneğin, `MerhabaDunya`, `OgrenciBilgiSistemi`).</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="at">Sınıfın içeriği, açma (`{`) ve kapama (`}`) süslü parantezleri arasında tanımlanır. Bu parantezler, sınıfın &quot;kapsamını&quot; (scope) belirler.</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">Aşağıda, `Ornek` adında basit bir sınıf tanımı görmektesiniz</span><span class="kw">:</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="at">&lt;!-- CODE_META</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">id</span><span class="kw">:</span><span class="at"> bolum-02_kod01</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="fu">chapter_id</span><span class="kw">:</span><span class="at"> bolum-02</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> example</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Kod 1&quot;</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="fu">file</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Ornek00.java&quot;</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">mainClass</span><span class="kw">:</span><span class="at"> Ornek00</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="fu">extract</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">test</span><span class="kw">:</span><span class="at"> compile</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">github</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">qr</span><span class="kw">:</span><span class="at"> dual</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="at">--&gt;</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="at">```java</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">// - Amaç</span><span class="kw">:</span><span class="at"> Java&#39;da bir sınıfın (class) nasıl tanımlandığını göstermek.</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="fu">// - Çıktı</span><span class="kw">:</span><span class="at"> Bu kod tek başına çalıştırıldığında herhangi bir çıktı vermez, çünkü bir main metodu içermemektedir.</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="fu">// - Anahtar Kavramlar</span><span class="kw">:</span><span class="at"> class, süslü parantezler, PascalCase</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="at">public class Ornek {</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="at">    // Sınıfın içeriği buraya yazılır.</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="at">    // Örneğin, değişkenler, metotlar...</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="at">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> <code>public</code> anahtar kelimesi, bu sınıfa diğer sınıflardan da erişilebileceğini belirtir. Java’daki erişim belirleyicileri (access modifiers) ilerleyen bölümlerde detaylıca işlenecektir. Şimdilik, ana sınıfınızı <code>public</code> olarak tanımlamanın standart bir uygulama olduğunu bilmeniz yeterlidir.</p>
+</blockquote>
+<section id="main-metodu-ve-programın-başlangıç-noktası" class="level3">
+<h3>main Metodu ve Programın Başlangıç Noktası</h3>
+<p>Java Sanal Makinesi (JVM), bir programı çalıştırmaya başlamak için özel bir metot arar: <code>main</code> metodu. Bu metot, programınızın giriş noktasıdır (entry point). JVM, programı başlatmak için tam olarak aşağıdaki imzaya sahip bir metot arar:</p>
+<!-- CODE_META
+id: bolum-02_kod02
+chapter_id: bolum-02
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span></span></code></pre></div>
+<p>Bu imzanın her bir parçasının anlamı şudur:
+- <strong><code>public</code>:</strong> Bu metoda her yerden erişilebilir. JVM’in metoda erişmesi için gereklidir.
+- <strong><code>static</code>:</strong> Bu metot, sınıfa ait bir nesne oluşturmadan doğrudan çağrılabilir. JVM, programı başlatırken henüz hiçbir nesne oluşturmadığı için bu gereklidir.
+- <strong><code>void</code>:</strong> Bu metot herhangi bir değer döndürmez (geriye değer göndermez).
+- <strong><code>main</code>:</strong> Metodun adıdır. JVM tam olarak bu ismi arar.
+- <strong><code>String[] args</code>:</strong> Bu, <code>main</code> metoduna komut satırından argümanlar (parametreler) geçirmek için kullanılan bir dizi (array) parametredir. <code>args</code> parametresinin adı değiştirilebilir, ancak <code>String[]</code> tipi zorunludur.</p>
+<p>İşte bir <code>main</code> metodu içeren tam bir program:</p>
+<!-- CODE_META
+id: bolum-02_kod03
+chapter_id: bolum-02
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// - Amaç: Java programının başlangıç noktası olan main metodunu göstermek.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">// - Çıktı: Program çalıştırıldığında konsola &quot;Merhaba, Java!&quot; yazdırır.</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">// - Anahtar Kavramlar: main metodu, JVM, String[] args</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> IlkProgram <span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Programın çalıştıracağı kodlar buraya yazılır.</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Merhaba, Java!&quot;</span><span class="op">);</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> <code>String[] args</code> kısmı, programınıza dışarıdan veri aktarmak için kullanılır. Örneğin, bir kullanıcı adı veya bir dosya yolu program başlatılırken bu dizi aracılığıyla programa iletilebilir. Şimdilik bu parametrenin varlığını bilmeniz yeterlidir; detaylarına ilerleyen bölümlerde değineceğiz.</p>
+</blockquote>
+</section>
+<section id="kod-blokları-ve-kapsam-scope" class="level3">
+<h3>Kod Blokları ve Kapsam (Scope)</h3>
+<p>Süslü parantezler <code>{ }</code>, kod bloklarını tanımlamak için kullanılır. Bir blok, mantıksal olarak birbirine ait kod parçalarını gruplandırır. Bir sınıfın gövdesi, bir metodun gövdesi, bir <code>if</code> koşulunun gövdesi gibi birçok yapı bloklardan oluşur.</p>
+<p>Blokların en önemli özelliklerinden biri, <strong>kapsam (scope)</strong> kavramını oluşturmasıdır. Bir blok içinde tanımlanan bir değişkene, yalnızca o blok ve onun içindeki alt bloklardan erişilebilir. Blok dışından bu değişkene erişmek mümkün değildir.</p>
+<p>Aşağıdaki örnekte, bloklar ve kapsam kavramını inceleyelim:</p>
+<!-- CODE_META
+id: bolum-02_kod04
+chapter_id: bolum-02
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// - Amaç: Kod bloklarının ve değişken kapsamının (scope) nasıl çalıştığını göstermek.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">// - Çıktı: Program çalıştırıldığında konsola &quot;x = 5&quot; ve &quot;y = 10&quot; yazdırır. &#39;x&#39; değişkenine iç bloktan erişilebilirken, &#39;y&#39; değişkenine dış bloktan erişilemez.</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">// - Anahtar Kavramlar: süslü parantezler, blok, scope (kapsam)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> BlokOrnegi <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> x <span class="op">=</span> <span class="dv">5</span><span class="op">;</span> <span class="co">// Dış blokta tanımlanan değişken</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span> <span class="co">// İç blok başlangıcı</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> y <span class="op">=</span> <span class="dv">10</span><span class="op">;</span> <span class="co">// İç blokta tanımlanan değişken</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;x = &quot;</span> <span class="op">+</span> x<span class="op">);</span> <span class="co">// Dış bloktaki x&#39;e erişilebilir.</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;y = &quot;</span> <span class="op">+</span> y<span class="op">);</span> <span class="co">// Kendi bloğundaki y&#39;ye erişilebilir.</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="co">// İç blok sonu. y değişkeni buradan sonra yok olur.</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// System.out.println(&quot;y = &quot; + y); // HATA! y&#39;ye buradan erişilemez. (Derleme hatası)</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;x = &quot;</span> <span class="op">+</span> x<span class="op">);</span> <span class="co">// x&#39;e hala erişilebilir.</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="yorum-satırları-ve-kod-dokümantasyonu" class="level2">
+<h2>2.2 Yorum Satırları ve Kod Dokümantasyonu</h2>
+<p>Yorum satırları, Java derleyicisi tarafından tamamen yok sayılan, kodu açıklamak, not almak veya geçici olarak devre dışı bırakmak için kullanılan metinlerdir. İyi yazılmış yorumlar, kodun okunabilirliğini ve bakımını büyük ölçüde kolaylaştırır.</p>
+<section id="tek-satırlık-yorumlar" class="level3">
+<h3>Tek Satırlık Yorumlar</h3>
+<p>Tek satırlık yorumlar, <code>//</code> karakterleri ile başlar ve satırın sonuna kadar devam eder. Genellikle kısa açıklamalar veya notlar için kullanılır. Ayrıca, bir kod satırını geçici olarak devre dışı bırakmak (debugging) için de sıkça kullanılır.</p>
+<!-- CODE_META
+id: bolum-02_kod05
+chapter_id: bolum-02
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// - Amaç: Tek satırlık yorumların nasıl kullanıldığını göstermek.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">// - Çıktı: Sadece &quot;Program başlatılıyor...&quot; yazdırır.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">// - Anahtar Kavramlar: //, tek satırlı yorum, debugging</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> YorumOrnegi <span class="op">{</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Bu bir tek satırlık yorumdur. Derleyici bunu yok sayar.</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Program başlatılıyor...&quot;</span><span class="op">);</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Aşağıdaki satır geçici olarak devre dışı bırakılmıştır.</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// System.out.println(&quot;Bu satır çalıştırılmayacak.&quot;);</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="çok-satırlı-yorumlar" class="level3">
+<h3>Çok Satırlı Yorumlar</h3>
+<p>Çok satırlı yorumlar, <code>/*</code> ile başlar ve <code>*/</code> ile biter. Bu iki işaretçi arasındaki tüm metinler (birden fazla satır olsa bile) yorum olarak kabul edilir. Genellikle daha uzun açıklamalar veya kodun geniş bir bölümünü geçici olarak devre dışı bırakmak için kullanılır.</p>
+<!-- CODE_META
+id: bolum-02_kod06
+chapter_id: bolum-02
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// - Amaç: Çok satırlı yorumların nasıl kullanıldığını göstermek.</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">// - Çıktı: Sadece &quot;İşlem tamam.&quot; yazdırır.</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">// - Anahtar Kavramlar: /* */, çok satırlı yorum</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CokSatirliYorum <span class="op">{</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">/*</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">         * Bu bir çok satırlı yorumdur.</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">         * Birden fazla satıra yayılabilir.</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">         * Derleyici bu bloktaki her şeyi yok sayar.</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">         */</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İşlem tamam.&quot;</span><span class="op">);</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* Kodun bir bölümünü devre dışı bırakmak için de kullanılabilir.</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">        System.out.println(&quot;Bu satır çalışmaz.&quot;);</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">        System.out.println(&quot;Bu da çalışmaz.&quot;);</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">        */</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="javadoc-yorumları" class="level3">
+<h3>Javadoc Yorumları</h3>
+<p>Javadoc yorumları, <code>/**</code> ile başlar ve <code>*/</code> ile biter. Bu özel yorum türü, Java kodunuz için HTML tabanlı dokümantasyon (API dokümantasyonu) oluşturmak amacıyla kullanılır. Javadoc, sınıfların, metotların ve alanların ne işe yaradığını açıklamak için standart bir yol sağlar.</p>
+<p>Javadoc içinde <code>@param</code>, <code>@return</code>, <code>@author</code>, <code>@version</code> gibi özel etiketler (tag) kullanarak dokümantasyonu daha yapılandırılmış hale getirebilirsiniz.</p>
+<!-- CODE_META
+id: bolum-02_kod07
+chapter_id: bolum-02
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// - Amaç: Javadoc yorumlarının ve etiketlerinin kullanımını göstermek.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">// - Çıktı: Program çalıştırıldığında konsola &quot;16&quot; yazdırır.</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">// - Anahtar Kavramlar: /** */, @param, @return, @author</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> JavadocOrnegi <span class="op">{</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">/**</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> Verilen bir say<span class="co">ı</span>n<span class="co">ı</span>n karesini hesaplar<span class="co">.</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@param</span><span class="co"> </span><span class="an">sayi</span><span class="co"> </span>Karesi al<span class="co">ı</span>nacak tam say<span class="co">ı</span> de<span class="co">ğ</span>eri<span class="co">.</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@return</span> sayi parametresinin karesi <span class="co">(</span>int<span class="co">).</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>     <span class="co">*</span> <span class="an">@author</span> Ali Veli</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>     <span class="co">*/</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">kareAl</span><span class="op">(</span><span class="dt">int</span> sayi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sayi <span class="op">*</span> sayi<span class="op">;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sonuc <span class="op">=</span> <span class="fu">kareAl</span><span class="op">(</span><span class="dv">4</span><span class="op">);</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>sonuc<span class="op">);</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> Javadoc yorumları, profesyonel Java projelerinde kodun anlaşılabilirliği ve ekip çalışması için hayati öneme sahiptir. İlerleyen dönemlerde kendi kütüphanelerinizi yazarken Javadoc kullanmayı alışkanlık haline getirmeniz, sizi ve ekibinizi büyük bir zaman kaybından kurtaracaktır.</p>
+</blockquote>
+</section>
+</section>
+<section id="çıktı-komutları-ve-konsol-işlemleri" class="level2">
+<h2>2.3 Çıktı Komutları ve Konsol İşlemleri</h2>
+<p>Programlar genellikle kullanıcıya bilgi vermek veya işlem sonuçlarını göstermek için konsola çıktı yazdırırlar. Java’da bu işlem için en sık kullanılan araç <code>System.out</code> nesnesidir.</p>
+<section id="system.out.println-metodu" class="level3">
+<h3>System.out.println() Metodu</h3>
+<p><code>System.out.println()</code> metodu, kendisine verilen değeri (metin, sayı, vb.) konsola yazdırır ve <strong>satırı atlar</strong> (yeni bir satıra geçer). Bu, en yaygın kullanılan çıktı metodudur.</p>
+<p>Metin (String) ifadeleri <code>" "</code> (çift tırnak) içine yazılır. Farklı değerleri birleştirmek için <code>+</code> operatörü kullanılır. Bu operatör, metinlerle sayıları birleştirdiğinde, sayıyı otomatik olarak metne dönüştürür.</p>
+<!-- CODE_META
+id: bolum-02_kod08
+chapter_id: bolum-02
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// - Amaç: System.out.println() metodunun kullanımını göstermek.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">// - Çıktı:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">//   Merhaba Dünya!</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">//   Yaş: 30</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">// - Anahtar Kavramlar: System.out.println(), String birleştirme (+)</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> PrintlnOrnegi <span class="op">{</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Merhaba Dünya!&quot;</span><span class="op">);</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> yas <span class="op">=</span> <span class="dv">30</span><span class="op">;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yaş: &quot;</span> <span class="op">+</span> yas<span class="op">);</span> <span class="co">// String ile int birleştirme</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="system.out.print-metodu" class="level3">
+<h3>System.out.print() Metodu</h3>
+<p><code>System.out.print()</code> metodu, <code>println()</code>’dan farklı olarak, çıktı verdikten sonra <strong>satırı atlamaz</strong>. Bir</p>
+</section>
+</section>
+</section>
+</body>
+</html>

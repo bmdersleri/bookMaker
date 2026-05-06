@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="İsmail Kırbaş" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>3. Operatorler</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">3. Operatorler</h1>
+<p class="subtitle">Java’nın Temelleri</p>
+<p class="author">İsmail Kırbaş</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#operatorler" id="toc-operatorler">3. Operatorler</a></li>
+<li><a href="#bölüm-3-tip-dönüşümleri-sayısal-işlemler-ve-operatörler" id="toc-bölüm-3-tip-dönüşümleri-sayısal-işlemler-ve-operatörler">Bölüm 3: Tip Dönüşümleri, Sayısal İşlemler ve Operatörler</a>
+<ul>
+<li><a href="#veri-tipleri-ve-temel-dönüşüm-kavramları" id="toc-veri-tipleri-ve-temel-dönüşüm-kavramları">3.1 Veri Tipleri ve Temel Dönüşüm Kavramları</a></li>
+<li><a href="#sayısal-ve-metinsel-veri-tipleri" id="toc-sayısal-ve-metinsel-veri-tipleri">3.2 Sayısal ve Metinsel Veri Tipleri</a></li>
+<li><a href="#tip-dönüşümünün-temel-ilkeleri" id="toc-tip-dönüşümünün-temel-ilkeleri">3.3 Tip Dönüşümünün Temel İlkeleri</a></li>
+<li><a href="#dönüşüm-fonksiyonları" id="toc-dönüşüm-fonksiyonları">3.4 Dönüşüm Fonksiyonları</a></li>
+<li><a href="#sayısal-tipler-arası-dönüşümler" id="toc-sayısal-tipler-arası-dönüşümler">3.5 Sayısal Tipler Arası Dönüşümler</a></li>
+<li><a href="#tam-sayı-ve-ondalıklı-sayı-dönüşümleri" id="toc-tam-sayı-ve-ondalıklı-sayı-dönüşümleri">3.6 Tam Sayı ve Ondalıklı Sayı Dönüşümleri</a></li>
+<li><a href="#metin-ve-sayı-dönüşümleri" id="toc-metin-ve-sayı-dönüşümleri">3.7 Metin ve Sayı Dönüşümleri</a></li>
+<li><a href="#mantıksal-değerlerin-sayısal-dönüşümü" id="toc-mantıksal-değerlerin-sayısal-dönüşümü">3.8 Mantıksal Değerlerin Sayısal Dönüşümü</a></li>
+<li><a href="#matematiksel-operatörler" id="toc-matematiksel-operatörler">3.9 Matematiksel Operatörler</a></li>
+<li><a href="#temel-aritmetik-operatörler" id="toc-temel-aritmetik-operatörler">3.10 Temel Aritmetik Operatörler</a></li>
+<li><a href="#ileri-düzey-matematiksel-işlemler" id="toc-ileri-düzey-matematiksel-işlemler">3.11 İleri Düzey Matematiksel İşlemler</a></li>
+<li><a href="#farklı-veri-tiplerinde-operatör-davranışları" id="toc-farklı-veri-tiplerinde-operatör-davranışları">3.12 Farklı Veri Tiplerinde Operatör Davranışları</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="operatorler" class="level1">
+<h1>3. Operatorler</h1>
+</section>
+<section id="bölüm-3-tip-dönüşümleri-sayısal-işlemler-ve-operatörler" class="level1">
+<h1>Bölüm 3: Tip Dönüşümleri, Sayısal İşlemler ve Operatörler</h1>
+<p>Programlama dünyasında veriler farklı türlerde karşımıza çıkar: tam sayılar, ondalıklı sayılar, metinler, mantıksal değerler… Çoğu zaman bu farklı türler arasında geçiş yapmamız gerekir. Örneğin, bir kullanıcıdan alınan metni sayıya çevirmek veya bir hesaplama sonucunu metin olarak göstermek. İşte bu noktada <strong>tip dönüşümü</strong> (type conversion) devreye girer.</p>
+<p>Bu bölümde, Java’da veri tipleri arasındaki dönüşümleri, matematiksel operatörleri ve işlem önceliği kurallarını detaylı bir şekilde inceleyeceğiz. Amacımız, farklı veri türleriyle güvenli ve doğru bir şekilde çalışabilmenizi sağlamaktır.</p>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> Bu bölümdeki örneklerin çoğu, Python ve Java arasındaki farkları vurgulayacak şekilde tasarlanmıştır. Java, statik tipli bir dil olduğu için tip dönüşümleri Python’a göre daha katı kurallara tabidir.</p>
+</blockquote>
+<section id="veri-tipleri-ve-temel-dönüşüm-kavramları" class="level2">
+<h2>3.1 Veri Tipleri ve Temel Dönüşüm Kavramları</h2>
+</section>
+<section id="sayısal-ve-metinsel-veri-tipleri" class="level2">
+<h2>3.2 Sayısal ve Metinsel Veri Tipleri</h2>
+<p>Java’da temel (primitive) veri tipleri şunlardır:</p>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 24%" />
+<col style="width: 34%" />
+<col style="width: 24%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tip</th>
+<th>Boyut</th>
+<th>Açıklama</th>
+<th>Örnek</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>byte</code></td>
+<td>8 bit</td>
+<td>Küçük tam sayılar</td>
+<td>-128 ile 127</td>
+</tr>
+<tr>
+<td><code>short</code></td>
+<td>16 bit</td>
+<td>Orta boy tam sayılar</td>
+<td>-32,768 ile 32,767</td>
+</tr>
+<tr>
+<td><code>int</code></td>
+<td>32 bit</td>
+<td>Standart tam sayı</td>
+<td>-2³¹ ile 2³¹-1</td>
+</tr>
+<tr>
+<td><code>long</code></td>
+<td>64 bit</td>
+<td>Büyük tam sayılar</td>
+<td>-2⁶³ ile 2⁶³-1</td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td>32 bit</td>
+<td>Tek duyarlıklı ondalık</td>
+<td>±3.4E-38 ile ±3.4E+38</td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td>64 bit</td>
+<td>Çift duyarlıklı ondalık</td>
+<td>±1.7E-308 ile ±1.7E+308</td>
+</tr>
+<tr>
+<td><code>char</code></td>
+<td>16 bit</td>
+<td>Tek karakter</td>
+<td>‘A’, ‘5’, ‘’</td>
+</tr>
+<tr>
+<td><code>boolean</code></td>
+<td>1 bit</td>
+<td>Mantıksal değer</td>
+<td>true, false</td>
+</tr>
+</tbody>
+</table>
+<p>Metinsel veriler için <code>String</code> sınıfı kullanılır (primitive tip değildir).</p>
+</section>
+<section id="tip-dönüşümünün-temel-ilkeleri" class="level2">
+<h2>3.3 Tip Dönüşümünün Temel İlkeleri</h2>
+<p>Java’da tip dönüşümü iki şekilde gerçekleşir:</p>
+<section id="otomatik-örtük-dönüşüm-widening-casting" class="level3">
+<h3>Otomatik (Örtük) Dönüşüm (Widening Casting)</h3>
+<p>Küçük kapasiteli bir tip, daha büyük kapasiteli bir tipe otomatik olarak dönüştürülür. Bu işlemde veri kaybı olmaz.</p>
+<p><strong>Dönüşüm zinciri:</strong> <code>byte</code> → <code>short</code> → <code>int</code> → <code>long</code> → <code>float</code> → <code>double</code></p>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod01
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sayi <span class="op">=</span> <span class="dv">100</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">long</span> buyukSayi <span class="op">=</span> sayi<span class="op">;</span>  <span class="co">// Otomatik dönüşüm</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> ondalik <span class="op">=</span> sayi<span class="op">;</span>  <span class="co">// Otomatik dönüşüm</span></span></code></pre></div>
+</section>
+<section id="açık-explicit-dönüşüm-narrowing-casting" class="level3">
+<h3>Açık (Explicit) Dönüşüm (Narrowing Casting)</h3>
+<p>Büyük kapasiteli bir tip, daha küçük kapasiteli bir tipe dönüştürülürken veri kaybı riski olduğu için açık dönüşüm (cast) operatörü kullanılmalıdır.</p>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod02
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> ondalik <span class="op">=</span> <span class="fl">9.78</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tamSayi <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)</span> ondalik<span class="op">;</span>  <span class="co">// Açık dönüşüm, sonuç: 9</span></span></code></pre></div>
+<blockquote>
+<p><strong>Uyarı:</strong> Açık dönüşümlerde veri kaybı yaşanabilir. Ondalıklı kısım atılır (truncation), büyük sayılar taşabilir (overflow).</p>
+</blockquote>
+</section>
+</section>
+<section id="dönüşüm-fonksiyonları" class="level2">
+<h2>3.4 Dönüşüm Fonksiyonları</h2>
+<p>Java’da tip dönüşümleri için çeşitli sınıf metotları bulunur:</p>
+<ul>
+<li><code>Integer.parseInt(String)</code> - Metni int’e çevirir</li>
+<li><code>Double.parseDouble(String)</code> - Metni double’a çevirir</li>
+<li><code>String.valueOf(sayi)</code> - Sayıyı metne çevirir</li>
+<li><code>Integer.valueOf(String)</code> - Metni Integer nesnesine çevirir</li>
+</ul>
+<!-- CODE_META
+{
+  "file": "TipDonusumOrnekleri.java",
+  "language": "java",
+  "execution": "compile_and_run",
+  "dependencies": [],
+  "description": "Temel tip dönüşüm fonksiyonları örnekleri"
+}
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TipDonusumOrnekleri <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Metinden sayıya dönüşüm</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> metinSayi <span class="op">=</span> <span class="st">&quot;123&quot;</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayi <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>metinSayi<span class="op">);</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Metinden sayıya: &quot;</span> <span class="op">+</span> sayi<span class="op">);</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Sayıdan metne dönüşüm</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> pi <span class="op">=</span> <span class="fl">3.14159</span><span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> piMetin <span class="op">=</span> <span class="bu">String</span><span class="op">.</span><span class="fu">valueOf</span><span class="op">(</span>pi<span class="op">);</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sayıdan metne: &quot;</span> <span class="op">+</span> piMetin<span class="op">);</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Farklı tabanlardan dönüşüm</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> binary <span class="op">=</span> <span class="st">&quot;1010&quot;</span><span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> binaryDeger <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>binary<span class="op">,</span> <span class="dv">2</span><span class="op">);</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;İkili taban: &quot;</span> <span class="op">+</span> binary <span class="op">+</span> <span class="st">&quot; -&gt; &quot;</span> <span class="op">+</span> binaryDeger<span class="op">);</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> hex <span class="op">=</span> <span class="st">&quot;FF&quot;</span><span class="op">;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> hexDeger <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>hex<span class="op">,</span> <span class="dv">16</span><span class="op">);</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Onaltılı taban: &quot;</span> <span class="op">+</span> hex <span class="op">+</span> <span class="st">&quot; -&gt; &quot;</span> <span class="op">+</span> hexDeger<span class="op">);</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Metinden sayıya: 123
+Sayıdan metne: 3.14159
+İkili taban: 1010 -&gt; 10
+Onaltılı taban: FF -&gt; 255</code></pre>
+</section>
+<section id="sayısal-tipler-arası-dönüşümler" class="level2">
+<h2>3.5 Sayısal Tipler Arası Dönüşümler</h2>
+</section>
+<section id="tam-sayı-ve-ondalıklı-sayı-dönüşümleri" class="level2">
+<h2>3.6 Tam Sayı ve Ondalıklı Sayı Dönüşümleri</h2>
+<section id="int-floatdouble-otomatik-genişleme" class="level3">
+<h3>int → float/double (Otomatik Genişleme)</h3>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod03
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tamSayi <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> ondalik <span class="op">=</span> tamSayi<span class="op">;</span>  <span class="co">// Otomatik, veri kaybı yok</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>ondalik<span class="op">);</span>  <span class="co">// 42.0</span></span></code></pre></div>
+</section>
+<section id="floatdouble-int-veri-kaybı-riski" class="level3">
+<h3>float/double → int (Veri Kaybı Riski)</h3>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod04
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> ondalik <span class="op">=</span> <span class="fl">3.14159</span><span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tamSayi <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)</span> ondalik<span class="op">;</span>  <span class="co">// Açık dönüşüm</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>tamSayi<span class="op">);</span>  <span class="co">// 3 (ondalık kısım atılır)</span></span></code></pre></div>
+</section>
+<section id="yuvarlama-işlemleri" class="level3">
+<h3>Yuvarlama İşlemleri</h3>
+<p>Java’da yuvarlama için <code>Math</code> sınıfı kullanılır:</p>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod05
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> sayi <span class="op">=</span> <span class="fl">3.7</span><span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="dt">long</span> asagiYuvarla <span class="op">=</span> <span class="op">(</span><span class="dt">long</span><span class="op">)</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span><span class="op">(</span>sayi<span class="op">);</span>  <span class="co">// 3</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="dt">long</span> yukariYuvarla <span class="op">=</span> <span class="op">(</span><span class="dt">long</span><span class="op">)</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span><span class="op">(</span>sayi<span class="op">);</span>  <span class="co">// 4</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="dt">long</span> enYakin <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(</span>sayi<span class="op">);</span>              <span class="co">// 4</span></span></code></pre></div>
+<blockquote>
+<p><strong>İpucu:</strong> <code>Math.round()</code> metodu, .5 ve üzerini yukarı yuvarlar. Bu, bankacılık uygulamaları için uygun olmayabilir.</p>
+</blockquote>
+</section>
+</section>
+<section id="metin-ve-sayı-dönüşümleri" class="level2">
+<h2>3.7 Metin ve Sayı Dönüşümleri</h2>
+<section id="sayısal-içerikli-metinlerin-dönüşümü" class="level3">
+<h3>Sayısal İçerikli Metinlerin Dönüşümü</h3>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod06
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> dogruMetin <span class="op">=</span> <span class="st">&quot;123&quot;</span><span class="op">;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> dogruSayi <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>dogruMetin<span class="op">);</span>  <span class="co">// Başarılı</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> hataliMetin <span class="op">=</span> <span class="st">&quot;abc&quot;</span><span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">// int hataliSayi = Integer.parseInt(hataliMetin);  // NumberFormatException!</span></span></code></pre></div>
+</section>
+<section id="hata-yönetimi-try-catch" class="level3">
+<h3>Hata Yönetimi (Try-Catch)</h3>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod07
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">guvenliDonusum</span><span class="op">(</span><span class="bu">String</span> metin<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>metin<span class="op">);</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hata: Geçersiz sayı formatı!&quot;</span><span class="op">);</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span>  <span class="co">// Varsayılan değer</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+</section>
+<section id="mantıksal-değerlerin-sayısal-dönüşümü" class="level2">
+<h2>3.8 Mantıksal Değerlerin Sayısal Dönüşümü</h2>
+<p>Java’da <code>boolean</code> tipleri doğrudan sayısal tiplere dönüştürülemez. Ancak mantıksal işlemlerde kullanılabilir:</p>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod08
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb10"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> dogru <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="dt">boolean</span> yanlis <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Java&#39;da boolean -&gt; int otomatik dönüşümü yoktur!</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">// int sayi = dogru;  // HATA!</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Mantıksal değerleri sayısal olarak kullanma</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sonuc <span class="op">=</span> dogru <span class="op">?</span> <span class="dv">1</span> <span class="op">:</span> <span class="dv">0</span><span class="op">;</span>  <span class="co">// Ternary operatörü ile</span></span></code></pre></div>
+<blockquote>
+<p><strong>Önemli Not:</strong> Python’dan farklı olarak, Java’da <code>true</code> değeri <code>1</code>’e, <code>false</code> değeri <code>0</code>’a otomatik olarak dönüşmez. Bu, tip güvenliği için bilinçli bir tasarım tercihidir.</p>
+</blockquote>
+<!-- CODE_META
+{
+  "file": "SayisalDonusumUygulamalari.java",
+  "language": "java",
+  "execution": "compile_and_run",
+  "dependencies": [],
+  "description": "Sayısal dönüşüm uygulamaları ve yuvarlama işlemleri"
+}
+-->
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SayisalDonusumUygulamalari <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 1. Ondalıklı sayıdan tam sayıya (veri kaybı)</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> maas <span class="op">=</span> <span class="fl">5750.75</span><span class="op">;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> maasTam <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)</span> maas<span class="op">;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Maaş (double): &quot;</span> <span class="op">+</span> maas<span class="op">);</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Maaş (int): &quot;</span> <span class="op">+</span> maasTam <span class="op">+</span> <span class="st">&quot; (kayıp: &quot;</span> <span class="op">+</span> <span class="op">(</span>maas <span class="op">-</span> maasTam<span class="op">)</span> <span class="op">+</span> <span class="st">&quot;)&quot;</span><span class="op">);</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 2. Yuvarlama örnekleri</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span><span class="op">[]</span> degerler <span class="op">=</span> <span class="op">{</span><span class="fl">2.3</span><span class="op">,</span> <span class="fl">2.7</span><span class="op">,</span> <span class="fl">3.5</span><span class="op">,</span> <span class="fl">4.5</span><span class="op">};</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">double</span> d <span class="op">:</span> degerler<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%.1f</span><span class="st"> -&gt; floor: </span><span class="sc">%.0f</span><span class="st">, ceil: </span><span class="sc">%.0f</span><span class="st">, round: </span><span class="sc">%d%n</span><span class="st">&quot;</span><span class="op">,</span> </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                d<span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span><span class="op">(</span>d<span class="op">),</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span><span class="op">(</span>d<span class="op">),</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span><span class="op">(</span>d<span class="op">));</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 3. Metin dönüşümü ve hata yönetimi</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span><span class="op">[]</span> testMetinler <span class="op">=</span> <span class="op">{</span><span class="st">&quot;123&quot;</span><span class="op">,</span> <span class="st">&quot;45.67&quot;</span><span class="op">,</span> <span class="st">&quot;abc&quot;</span><span class="op">,</span> <span class="st">&quot;0xFF&quot;</span><span class="op">};</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="bu">String</span> m <span class="op">:</span> testMetinler<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>m<span class="op">.</span><span class="fu">contains</span><span class="op">(</span><span class="st">&quot;.&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">double</span> d <span class="op">=</span> <span class="bu">Double</span><span class="op">.</span><span class="fu">parseDouble</span><span class="op">(</span>m<span class="op">);</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>m <span class="op">+</span> <span class="st">&quot; -&gt; &quot;</span> <span class="op">+</span> d<span class="op">);</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">int</span> i <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>m<span class="op">);</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>m <span class="op">+</span> <span class="st">&quot; -&gt; &quot;</span> <span class="op">+</span> i<span class="op">);</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>m <span class="op">+</span> <span class="st">&quot; -&gt; HATA: Geçersiz format!&quot;</span><span class="op">);</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Maaş (double): 5750.75
+Maaş (int): 5750 (kayıp: 0.75)
+2.3 -&gt; floor: 2, ceil: 3, round: 2
+2.7 -&gt; floor: 2, ceil: 3, round: 3
+3.5 -&gt; floor: 3, ceil: 4, round: 4
+4.5 -&gt; floor: 4, ceil: 5, round: 5
+123 -&gt; 123
+45.67 -&gt; 45.67
+abc -&gt; HATA: Geçersiz format!
+0xFF -&gt; HATA: Geçersiz format!</code></pre>
+</section>
+<section id="matematiksel-operatörler" class="level2">
+<h2>3.9 Matematiksel Operatörler</h2>
+</section>
+<section id="temel-aritmetik-operatörler" class="level2">
+<h2>3.10 Temel Aritmetik Operatörler</h2>
+<p>Java’da temel aritmetik operatörler şunlardır:</p>
+<table>
+<thead>
+<tr>
+<th>Operatör</th>
+<th>İşlem</th>
+<th>Örnek</th>
+<th>Sonuç</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+</code></td>
+<td>Toplama</td>
+<td><code>5 + 3</code></td>
+<td><code>8</code></td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td>Çıkarma</td>
+<td><code>5 - 3</code></td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>Çarpma</td>
+<td><code>5 * 3</code></td>
+<td><code>15</code></td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>Bölme</td>
+<td><code>5 / 3</code></td>
+<td><code>1</code> (int) / <code>1.666...</code> (double)</td>
+</tr>
+<tr>
+<td><code>%</code></td>
+<td>Mod (Kalan)</td>
+<td><code>5 % 3</code></td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td><code>++</code></td>
+<td>Artırma</td>
+<td><code>++x</code> veya <code>x++</code></td>
+<td><code>x+1</code></td>
+</tr>
+<tr>
+<td><code>--</code></td>
+<td>Azaltma</td>
+<td><code>--x</code> veya <code>x--</code></td>
+<td><code>x-1</code></td>
+</tr>
+</tbody>
+</table>
+<section id="tam-bölme-ve-ondalıklı-bölme" class="level3">
+<h3>Tam Bölme ve Ondalıklı Bölme</h3>
+<p>Java’da bölme işlemi, operandların tiplerine göre farklı sonuç verir:</p>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod09
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 9"
+file: "Ornek08.java"
+mainClass: Ornek08
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb13"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> b <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tamBolme <span class="op">=</span> a <span class="op">/</span> b<span class="op">;</span>        <span class="co">// 3 (int / int = int)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> ondalikBolme <span class="op">=</span> <span class="op">(</span><span class="dt">double</span><span class="op">)</span> a <span class="op">/</span> b<span class="op">;</span>  <span class="co">// 3.333... (double / int = double)</span></span></code></pre></div>
+<blockquote>
+<p><strong>Dikkat:</strong> İki tam sayının bölümü her zaman tam sayıdır! Ondalıklı sonuç istiyorsanız en az bir operandı double’a dönüştürmelisiniz.</p>
+</blockquote>
+</section>
+<section id="mod-alma-işlemi" class="level3">
+<h3>Mod Alma İşlemi</h3>
+<p>Mod operatörü, bölme işleminden kalanı verir:</p>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod10
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 10"
+file: "Ornek09.java"
+mainClass: Ornek09
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb14"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="dv">10</span> <span class="op">%</span> <span class="dv">3</span><span class="op">);</span>   <span class="co">// 1</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="dv">15</span> <span class="op">%</span> <span class="dv">5</span><span class="op">);</span>   <span class="co">// 0 (tam bölünür)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="dv">7</span> <span class="op">%</span> <span class="dv">10</span><span class="op">);</span>   <span class="co">// 7 (bölünemez)</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(-</span><span class="dv">7</span> <span class="op">%</span> <span class="dv">3</span><span class="op">);</span>   <span class="co">// -1 (negatif sayılarda dikkat!)</span></span></code></pre></div>
+<blockquote>
+<p><strong>Pratik Kullanım:</strong> Mod operatörü, bir sayının çift/tek olduğunu kontrol etmek için idealdir: <code>sayi % 2 == 0</code> → çift, <code>sayi % 2 == 1</code> → tek.</p>
+</blockquote>
+</section>
+</section>
+<section id="ileri-düzey-matematiksel-işlemler" class="level2">
+<h2>3.11 İleri Düzey Matematiksel İşlemler</h2>
+<section id="atama-operatörleri" class="level3">
+<h3>Atama Operatörleri</h3>
+<p>Kısa yazım şekilleri:</p>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod11
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 11"
+file: "Ornek10.java"
+mainClass: Ornek10
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb15"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> x <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">+=</span> <span class="dv">5</span><span class="op">;</span>   <span class="co">// x = x + 5 → 15</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">-=</span> <span class="dv">3</span><span class="op">;</span>   <span class="co">// x = x - 3 → 12</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">*=</span> <span class="dv">2</span><span class="op">;</span>   <span class="co">// x = x * 2 → 24</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">/=</span> <span class="dv">4</span><span class="op">;</span>   <span class="co">// x = x / 4 → 6</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">%=</span> <span class="dv">4</span><span class="op">;</span>   <span class="co">// x = x % 4 → 2</span></span></code></pre></div>
+</section>
+<section id="math-sınıfı-metotları" class="level3">
+<h3>Math Sınıfı Metotları</h3>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod12
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 12"
+file: "Ornek11.java"
+mainClass: Ornek11
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb16"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span><span class="op">(</span><span class="dv">16</span><span class="op">);</span>     <span class="co">// 4.0 (karekök)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span>    <span class="co">// 8.0 (üs alma)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">Math</span><span class="op">.</span><span class="fu">abs</span><span class="op">(-</span><span class="dv">5</span><span class="op">);</span>      <span class="co">// 5 (mutlak değer)</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">Math</span><span class="op">.</span><span class="fu">max</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">);</span>  <span class="co">// 20 (büyük olan)</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">Math</span><span class="op">.</span><span class="fu">min</span><span class="op">(</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">);</span>  <span class="co">// 10 (küçük olan)</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">Math</span><span class="op">.</span><span class="fu">random</span><span class="op">();</span>     <span class="co">// 0.0 ile 1.0 arasında rastgele sayı</span></span></code></pre></div>
+</section>
+<section id="üs-alma-ve-karekök" class="level3">
+<h3>Üs Alma ve Karekök</h3>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod13
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 13"
+file: "Ornek12.java"
+mainClass: Ornek12
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb17"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Math.pow ile üs alma</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> kare <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> <span class="dv">2</span><span class="op">);</span>     <span class="co">// 25.0</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> kup <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span>      <span class="co">// 125.0</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> kok <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">pow</span><span class="op">(</span><span class="dv">16</span><span class="op">,</span> <span class="fl">0.5</span><span class="op">);</span>   <span class="co">// 4.0</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Math.sqrt ile karekök</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> kareKok <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">sqrt</span><span class="op">(</span><span class="dv">25</span><span class="op">);</span>   <span class="co">// 5.0</span></span></code></pre></div>
+</section>
+</section>
+<section id="farklı-veri-tiplerinde-operatör-davranışları" class="level2">
+<h2>3.12 Farklı Veri Tiplerinde Operatör Davranışları</h2>
+<section id="string-birleştirme" class="level3">
+<h3>String Birleştirme</h3>
+<!-- CODE_META
+id: tip_donusumleri_operatorler_kod14
+chapter_id: tip_donusumleri_operatorler
+kind: example
+title: "Kod 14"
+file: "Ornek13.java"
+mainClass: Ornek13
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb18"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> selam <span class="op">=</span> <span class="st">&quot;Merhaba, &quot;</span><span class="op">;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> isim <span class="op">=</span> <span class="st">&quot;Ahmet&quot;</span><span class="op">;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> mesaj <span class="op">=</span> selam <span class="op">+</span> isim<span class="op">;</span>  <span class="co">// &quot;Merhaba, Ahmet&quot;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Sayı + String = String</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> yasMetin <span class="op">=</span> <span class="st">&quot;Yaş: &quot;</span> <span class="op">+</span> <span class="dv">25</span><span class="op">;</span>  <span class="co">// &quot;Yaş: 25&quot;</span></span></code></pre></div>
+</section>
+<section id="string-tekrarlama" class="level3">
+<h3>String Tekrarlama</h3>
+<p>Java’da String’ler için <code>*</code> operatörü yoktur. Bunun</p>
+</section>
+</section>
+</section>
+</body>
+</html>

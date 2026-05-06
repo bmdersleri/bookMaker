@@ -1,0 +1,60 @@
+chapter:
+  title: Flutter İçin Dart Temelleri
+  alias: dart-temelleri
+  order: 2
+  references:
+  - alias: giris
+    relation: prerequisite
+  - alias: widget-mantigi
+    relation: next
+scope:
+  topics:
+  - Dart değişkenleri
+  - final ve const
+  - Null-safety
+  - List ve Map
+  - Fonksiyonlar
+  - Class ve constructor
+  - Future, async ve await
+  - Model sınıfı tasarımı
+  objectives:
+  - Okuyucu Flutter kodlarını anlayacak düzeyde Dart sözdizimini kullanabilmeli.
+  - Null-safety mantığını örneklerle uygulayabilmeli.
+  - Basit model sınıfları ve async veri akışı oluşturabilmeli.
+  exclusions:
+  - Dart isolate ve ileri eşzamanlılık
+  - Metaprogramlama
+  - Dart package geliştirme
+  mini_project: Dart model sınıfından beslenen basit liste ekranı
+structure:
+  sections:
+  - title: Bölümün Yol Haritası
+    type: text
+  - title: Kavramsal Açıklama
+    type: text
+  - title: Temel Örnek
+    type: text+code
+  - title: Çalışan Mini Uygulama
+    type: text+code+screenshot
+  - title: Sık Yapılan Hatalar
+    type: text
+  - title: Bölüm Sonu Laboratuvarı
+    type: exercise
+  - title: Özet
+    type: text
+  estimated_pages: 22
+  code_examples_count: 8
+  screenshot_examples_count: 1
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  default_code_language: dart
+  default_framework: flutter
+  validation_modes:
+  - flutter_analyze
+  - flutter_test
+  - widget_test
+  - screenshot_only
+  - review_only
+  github_export: true
+  qr_policy: dual

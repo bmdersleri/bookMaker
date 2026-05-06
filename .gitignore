@@ -1,0 +1,55 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+dist/
+*.egg-info/
+.ruff_cache/
+
+# API anahtarlari ve hassas yapilandirma
+api.txt
+.env
+*.key
+secrets/
+credentials/
+llm_config.json
+
+# Makine-ozel yapilandirma (senkronize EDILMEZ)
+.claude/settings.local.json
+.remember/
+.vtcode/
+vtcode.toml
+debug.log
+
+# Build ciktilari ve cache
+build/
+!book_projects/*/build/.gitkeep
+*.log
+*.stackdump
+
+# Oturum / ajan girdileri
+CODEX_TASK_PROMPT.md
+
+# Kitap proje runtime raporlari
+book_projects/*/logs/**/*.json
+
+# Ornek/render ciktilari
+sample/mermaid_images/
+
+node_modules/
+
+# Kitap projeleri
+# book_projects/ artık bu repoda yönetiliyor
+
+# Yerel/legacy deneme kitap projeleri
+book_projects/dummy-kitap/
+book_projects/java-temelleri/
+book_projects/test-wizard/
+
+# Yerel Studio başlatıcıları
+run_studio.ps1
+
+# Kök tools/ altındaki tek seferlik çalışma scriptleri.
+# Kalıcı araçlar package koduna, tools/utils/ veya tools/archive/ altına alınmalı.
+tools/*.py

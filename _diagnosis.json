@@ -1,0 +1,383 @@
+{
+  "bolum-01": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "revision_required",
+    "errors": 0,
+    "warnings": 36,
+    "error_categories": {},
+    "warning_categories": {
+      "code.recommended_missing": 24,
+      "code.lang_extension_mismatch": 12
+    }
+  },
+  "bolum-02": {
+    "status": "reviewed",
+    "score": 28,
+    "decision": "revision_required",
+    "errors": 0,
+    "warnings": 24,
+    "error_categories": {},
+    "warning_categories": {
+      "code.recommended_missing": 16,
+      "code.lang_extension_mismatch": 8
+    }
+  },
+  "bolum-03": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "revision_required",
+    "errors": 0,
+    "warnings": 56,
+    "error_categories": {},
+    "warning_categories": {
+      "code.recommended_missing": 40,
+      "code.lang_extension_mismatch": 16
+    }
+  },
+  "bolum-04": {
+    "status": "reviewed",
+    "score": 1,
+    "decision": "revision_required",
+    "errors": 0,
+    "warnings": 33,
+    "error_categories": {},
+    "warning_categories": {
+      "code.recommended_missing": 22,
+      "code.lang_extension_mismatch": 11
+    }
+  },
+  "bolum-05": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "revision_required",
+    "errors": 0,
+    "warnings": 36,
+    "error_categories": {},
+    "warning_categories": {
+      "code.recommended_missing": 24,
+      "code.lang_extension_mismatch": 12
+    }
+  },
+  "bolum-06": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "revision_required",
+    "errors": 0,
+    "warnings": 39,
+    "error_categories": {},
+    "warning_categories": {
+      "code.recommended_missing": 26,
+      "code.lang_extension_mismatch": 13
+    }
+  },
+  "bolum-07": {
+    "status": "reviewed",
+    "score": 19,
+    "decision": "revision_required",
+    "errors": 0,
+    "warnings": 27,
+    "error_categories": {},
+    "warning_categories": {
+      "code.recommended_missing": 18,
+      "code.lang_extension_mismatch": 9
+    }
+  },
+  "bolum-08": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "revision_required",
+    "errors": 0,
+    "warnings": 76,
+    "error_categories": {},
+    "warning_categories": {
+      "code.recommended_missing": 64,
+      "code.lang_extension_mismatch": 12
+    }
+  },
+  "bolum-09": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 110,
+    "error_categories": {
+      "code.id_duplicate": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 88,
+      "code.lang_extension_mismatch": 22
+    }
+  },
+  "bolum-10": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 111,
+    "error_categories": {
+      "code.fence_missing": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 96,
+      "code.lang_extension_mismatch": 15
+    }
+  },
+  "bolum-11": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 2,
+    "warnings": 79,
+    "error_categories": {
+      "code.id_duplicate": 2
+    },
+    "warning_categories": {
+      "code.recommended_missing": 58,
+      "code.lang_extension_mismatch": 21
+    }
+  },
+  "bolum-12": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 2,
+    "warnings": 69,
+    "error_categories": {
+      "code.fence_missing": 1,
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 60,
+      "code.lang_extension_mismatch": 9
+    }
+  },
+  "bolum-13": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 3,
+    "warnings": 101,
+    "error_categories": {
+      "code.id_duplicate": 1,
+      "code.fence_missing": 1,
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 84,
+      "code.lang_extension_mismatch": 17
+    }
+  },
+  "bolum-14": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 42,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 28,
+      "code.lang_extension_mismatch": 14
+    }
+  },
+  "bolum-15": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 2,
+    "warnings": 67,
+    "error_categories": {
+      "code.fence_missing": 1,
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 56,
+      "code.lang_extension_mismatch": 11
+    }
+  },
+  "bolum-16": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 35,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 30,
+      "code.lang_extension_mismatch": 5
+    }
+  },
+  "bolum-17": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 42,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 28,
+      "code.lang_extension_mismatch": 14
+    }
+  },
+  "bolum-18": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 133,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 114,
+      "code.lang_extension_mismatch": 19
+    }
+  },
+  "bolum-19": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 3,
+    "warnings": 83,
+    "error_categories": {
+      "code.id_duplicate": 2,
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 66,
+      "code.lang_extension_mismatch": 17
+    }
+  },
+  "bolum-20": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 12,
+    "warnings": 146,
+    "error_categories": {
+      "code.heading_before_fence": 7,
+      "code.id_duplicate": 4,
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 116,
+      "code.lang_extension_mismatch": 30
+    }
+  },
+  "bolum-21": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 60,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 40,
+      "code.lang_extension_mismatch": 20
+    }
+  },
+  "bolum-22": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 79,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 66,
+      "code.lang_extension_mismatch": 13
+    }
+  },
+  "bolum-23": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 70,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 60,
+      "code.lang_extension_mismatch": 10
+    }
+  },
+  "bolum_01": {
+    "status": "no_draft",
+    "errors": 0,
+    "warnings": 0,
+    "score": 0
+  },
+  "ek-a": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 125,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 106,
+      "code.lang_extension_mismatch": 19
+    }
+  },
+  "ek-b": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 84,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 72,
+      "code.lang_extension_mismatch": 12
+    }
+  },
+  "ek-c": {
+    "status": "reviewed",
+    "score": 40,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 15,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 10,
+      "code.lang_extension_mismatch": 5
+    }
+  },
+  "ek-d": {
+    "status": "reviewed",
+    "score": 0,
+    "decision": "blocked",
+    "errors": 1,
+    "warnings": 71,
+    "error_categories": {
+      "mermaid.meta_count": 1
+    },
+    "warning_categories": {
+      "code.recommended_missing": 58,
+      "code.lang_extension_mismatch": 13
+    }
+  },
+  "test-ch": {
+    "status": "no_draft",
+    "errors": 0,
+    "warnings": 0,
+    "score": 0
+  }
+}

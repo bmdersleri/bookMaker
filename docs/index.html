@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Java Programlamaya Giris</title><link rel="stylesheet" href="assets/style.css"><style>
+:root{--sb:#1e293b;--st:#e2e8f0;--sh:#334155;--sa:#2563eb;--sw:280px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{display:flex;min-height:100vh;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text)}
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--sb);color:var(--st);overflow-y:auto;z-index:1000;transition:transform .3s}
+.sidebar-header{padding:1.2rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-header h2{font-size:1rem;margin:0 0 .3rem;color:#fff}
+.sidebar-header p{font-size:.75rem;opacity:.6;margin:0}
+.sidebar-search{padding:.8rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar-search input{width:100%;padding:.5rem .7rem;border:1px solid rgba(255,255,255,.15);border-radius:6px;background:rgba(255,255,255,.08);color:#fff;font-size:.8rem;outline:none}
+.sidebar-search input::placeholder{color:rgba(255,255,255,.35)}
+.chapter-list{padding:.5rem 0}
+.chapter-item{display:flex;align-items:center;padding:.55rem 1.2rem;cursor:pointer;transition:all .15s;border-left:3px solid transparent;font-size:.85rem;text-decoration:none;color:var(--st)}
+.chapter-item:hover{background:var(--sh)}
+.chapter-item.active{background:rgba(37,99,235,.15);border-left-color:var(--sa);color:#fff}
+.chapter-item .num{min-width:1.8rem;font-size:.75rem;opacity:.5;margin-right:.5rem;text-align:right}
+.chapter-item .title{flex:1}
+.content{margin-left:var(--sw);flex:1;padding:2rem 2.5rem;min-height:100vh;max-width:900px}
+.mobile-toggle{display:none;position:fixed;top:1rem;left:1rem;z-index:1001;background:var(--sb);color:#fff;border:none;border-radius:8px;padding:.5rem .8rem;cursor:pointer;font-size:1.2rem}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.content{margin-left:0;padding:1rem}.mobile-toggle{display:block}}
+</style></head><body>
+<button class="mobile-toggle" id="menuToggle">☰</button>
+<nav class="sidebar" id="sidebar">
+<div class="sidebar-header"><h2>Java Programlamaya Giris</h2><p>Ismail Kirbas</p></div>
+<div class="sidebar-search"><input type="text" id="searchInput" placeholder="Bolum ara..."></div>
+<div class="chapter-list" id="chapterList"><a href="#" class="chapter-item" data-slug="bolum-01"><span class="title">1. Java'ya Giris</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-02"><span class="title">2. Degiskenler ve Veri Tipleri</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-03"><span class="title">3. Operatorler</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-04"><span class="title">4. Kontrol Ifadeleri</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-05"><span class="title">5. Donguler</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-06"><span class="title">6. Diziler</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-07"><span class="title">7. Metotlar</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-08"><span class="title">8. Nesne Yonelimli Programlama Giris</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-09"><span class="title">9. Sinif ve Nesne Yapisi</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-10"><span class="title">10. Kalitim ve Cok Bicimlilik</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-11"><span class="title">11. Arayuzler ve Soyut Siniflar</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-12"><span class="title">12. Icerdelenmis Siniflar</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-13"><span class="title">13. Hata Yonetimi</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-14"><span class="title">14. Generics</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-15"><span class="title">15. Collections Framework</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-16"><span class="title">16. Dosya ve Akis Islems</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-17"><span class="title">17. Cok Guduklu Programlama</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-18"><span class="title">18. Lambda Ifadeleri ve Stream API</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-19"><span class="title">19. Java Swing ile GUI Programlama</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-20"><span class="title">20. Ag Programlama</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-21"><span class="title">21. Veritabani Programlama</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-22"><span class="title">22. Java Modul Sistemi</span></a>
+<a href="#" class="chapter-item" data-slug="bolum-23"><span class="title">23. Java'nin Gelecegi ve Yeni Ozellikler</span></a>
+<div style="border-top:1px solid rgba(255,255,255,.1);margin:.5rem 1rem;padding-top:.5rem;font-size:.7rem;opacity:.4;text-transform:uppercase;letter-spacing:1px">EKLER</div>
+<a href="#" class="chapter-item" data-slug="ek-a"><span class="title">Ek A: Java Gelistirme Ortaminin Kurulumu</span></a>
+<a href="#" class="chapter-item" data-slug="ek-b"><span class="title">Ek B: Temel Linux Komutlari</span></a>
+<a href="#" class="chapter-item" data-slug="ek-c"><span class="title">Ek C: Kod Standartlari ve Stil Kilavuzu</span></a>
+<a href="#" class="chapter-item" data-slug="ek-d"><span class="title">Ek D: Kaynakca ve Ileri Okumalar</span></a></div></nav>
+<main class="content" id="mainContent">
+<div id="welcome"><h1>Java Programlamaya Giris</h1><p style="margin:1rem 0;opacity:.7">Ismail Kirbas</p><p>Kitaba baslamak icin soldaki bolumlerden birini secin.</p></div>
+<div id="chapter-content" style="display:none"></div></main>
+<script>
+const s=document.getElementById('sidebar');
+document.getElementById('menuToggle').onclick=()=>s.classList.toggle('open');
+document.getElementById('searchInput').oninput=function(){const q=this.value.toLowerCase();document.querySelectorAll('.chapter-item').forEach(e=>{e.style.display=e.textContent.toLowerCase().includes(q)?'flex':'none'})};
+document.querySelectorAll('.chapter-item').forEach(e=>{e.onclick=async function(ev){ev.preventDefault();document.querySelectorAll('.chapter-item').forEach(i=>i.classList.remove('active'));this.classList.add('active');const slug=this.dataset.slug;document.getElementById('welcome').style.display='none';const c=document.getElementById('chapter-content');c.style.display='block';c.innerHTML='<div class="loading" style="text-align:center;padding:2rem;opacity:.5">Yukleniyor...</div>';if(window.innerWidth<=768)s.classList.remove('open');try{const r=await fetch('chapters/'+slug+'.html');if(!r.ok)throw new Error('HTTP '+r.status);c.innerHTML=await r.text();history.pushState({slug},'',slug);document.title=this.querySelector('.title').textContent+' - Java Programlamaya Giris'}catch(err){c.innerHTML='<div class="error" style="padding:2rem;text-align:center;color:red">Hata: '+err.message+'</div>'}}});
+window.onpopstate=function(e){if(e.state&&e.state.slug)document.querySelector('.chapter-item[data-slug="'+e.state.slug+'"]')?.click()};
+</script></body></html>

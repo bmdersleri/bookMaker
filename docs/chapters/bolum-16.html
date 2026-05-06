@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Teknik İçerik Uzmanı" />
+  <meta name="dcterms.date" content="2025-01-18" />
+  <title>16. Dosya ve Akis Islems</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">16. Dosya ve Akis Islems</h1>
+<p class="subtitle">File, FileReader/Writer, BufferedReader/BufferedWriter, NIO.2 ve Serileştirme</p>
+<p class="author">Teknik İçerik Uzmanı</p>
+<p class="date">2025-01-18</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#dosya-ve-akis-islems" id="toc-dosya-ve-akis-islems">16. Dosya ve Akis Islems</a></li>
+<li><a href="#bölüm-16-dosya-islemleri-ve-kalici-veri-saklama" id="toc-bölüm-16-dosya-islemleri-ve-kalici-veri-saklama">Bölüm 16: Dosya Islemleri ve Kalici Veri Saklama</a>
+<ul>
+<li><a href="#temel-dosya-işlemleri-file-sınıfı-ve-dosya-sistemi-ile-etkileşim" id="toc-temel-dosya-işlemleri-file-sınıfı-ve-dosya-sistemi-ile-etkileşim">16.1 Temel Dosya İşlemleri: <code>File</code> Sınıfı ve Dosya Sistemi ile Etkileşim</a></li>
+<li><a href="#terim-sözlüğü" id="toc-terim-sözlüğü">16.7 Terim Sözlüğü</a></li>
+<li><a href="#sorular" id="toc-sorular">16.8 Sorular</a></li>
+<li><a href="#alıştırmalar" id="toc-alıştırmalar">16.9 Alıştırmalar</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="dosya-ve-akis-islems" class="level1">
+<h1>16. Dosya ve Akis Islems</h1>
+</section>
+<section id="bölüm-16-dosya-islemleri-ve-kalici-veri-saklama" class="level1">
+<h1>Bölüm 16: Dosya Islemleri ve Kalici Veri Saklama</h1>
+<p>Bu bölümde, Java programlama dilinde dosya işlemlerini ve kalıcı veri saklama yöntemlerini adım adım öğreneceksiniz. Geleneksel <code>java.io</code> paketinden modern NIO.2 yaklaşımına kadar geniş bir yelpazede konuları ele alacağız. Ayrıca, nesnelerinizi dosyalara kaydetmek ve geri yüklemek için serileştirme (serialization) kavramını keşfedeceksiniz.</p>
+<blockquote>
+<p>[!NOTE]
+Bu bölümdeki tüm kod örnekleri Java 11 veya üzeri sürümlerle uyumludur. NIO.2 örneklerinde <code>Files.readString()</code> ve <code>Files.writeString()</code> gibi Java 11 ile gelen kolaylıklar kullanılmıştır.</p>
+</blockquote>
+<section id="temel-dosya-işlemleri-file-sınıfı-ve-dosya-sistemi-ile-etkileşim" class="level2">
+<h2>16.1 Temel Dosya İşlemleri: <code>File</code> Sınıfı ve Dosya Sistemi ile Etkileşim</h2>
+<p>Java’da dosya sistemiyle etkileşim kurmanın en temel yolu <code>java.io.File</code> sınıfıdır. Bu sınıf, dosya ve dizin yollarını temsil eder; ancak dosya içeriğini okuma veya yazma işlemleri için doğrudan kullanılmaz. <code>File</code> sınıfı daha çok dosya metaverisine erişim, dosya oluşturma/silme ve dizin işlemleri için kullanılır.</p>
+<section id="temel-kavramlar" class="level3">
+<h3>Temel Kavramlar</h3>
+<ul>
+<li><strong>Dosya Yolu (Path)</strong>: Dosyanın dosya sistemindeki konumunu belirtir. Mutlak (absolute) veya bağıl (relative) olabilir.</li>
+<li><strong>Metaveri (Metadata)</strong>: Dosya boyutu, son değiştirilme tarihi, gizlilik durumu gibi dosya hakkındaki bilgiler.</li>
+<li><strong>Dizin (Directory)</strong>: Dosyaları organize etmek için kullanılan özel bir dosya türü.</li>
+</ul>
+</section>
+<section id="örnek-dosya-varlığını-kontrol-etme-ve-dizin-oluşturma" class="level3">
+<h3>Örnek: Dosya Varlığını Kontrol Etme ve Dizin Oluşturma</h3>
+<p>Aşağıdaki örnekte, <code>File</code> sınıfını kullanarak bir dosyanın var olup olmadığını kontrol edecek, yoksa yeni bir dosya oluşturacak ve ardından bir dizin oluşturacağız.</p>
+<!-- CODE_META: FileExample.java -->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">File</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">IOException</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> FileExample <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosya yolu tanımlama</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">File</span> file <span class="op">=</span> <span class="kw">new</span> <span class="bu">File</span><span class="op">(</span><span class="st">&quot;ornek.txt&quot;</span><span class="op">);</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosya varlığını kontrol etme</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>file<span class="op">.</span><span class="fu">exists</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Dosya oluşturma</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>file<span class="op">.</span><span class="fu">createNewFile</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya oluşturuldu: &quot;</span> <span class="op">+</span> file<span class="op">.</span><span class="fu">getAbsolutePath</span><span class="op">());</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya oluşturulurken hata: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya zaten mevcut: &quot;</span> <span class="op">+</span> file<span class="op">.</span><span class="fu">getAbsolutePath</span><span class="op">());</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosya metaverisine erişim</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya boyutu: &quot;</span> <span class="op">+</span> file<span class="op">.</span><span class="fu">length</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; bayt&quot;</span><span class="op">);</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Son değiştirilme: &quot;</span> <span class="op">+</span> file<span class="op">.</span><span class="fu">lastModified</span><span class="op">());</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dizin oluşturma</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        <span class="bu">File</span> dizin <span class="op">=</span> <span class="kw">new</span> <span class="bu">File</span><span class="op">(</span><span class="st">&quot;yeni_dizin&quot;</span><span class="op">);</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>dizin<span class="op">.</span><span class="fu">mkdir</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dizin oluşturuldu: &quot;</span> <span class="op">+</span> dizin<span class="op">.</span><span class="fu">getAbsolutePath</span><span class="op">());</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dizin oluşturulamadı veya zaten mevcut.&quot;</span><span class="op">);</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dizini silme (opsiyonel)</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>dizin<span class="op">.</span><span class="fu">delete</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dizin silindi: &quot;</span> <span class="op">+</span> dizin<span class="op">.</span><span class="fu">getAbsolutePath</span><span class="op">());</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="değerlendirme" class="level3">
+<h3>Değerlendirme</h3>
+<p><code>File</code> sınıfı, dosya sistemiyle temel etkileşimler için yeterlidir. Ancak aşağıdaki sınırlamaları nedeniyle daha gelişmiş sınıflara ihtiyaç duyulur:</p>
+<ul>
+<li><strong>İçerik okuma/yazma yok</strong>: <code>File</code> sınıfı yalnızca metaveri işlemleri için tasarlanmıştır.</li>
+<li><strong>Performans sorunları</strong>: Doğrudan dosya içeriği okumak için kullanılamaz.</li>
+<li><strong>Hata yönetimi sınırlı</strong>: <code>createNewFile()</code> gibi metotlar <code>IOException</code> fırlatır ancak bazı işlemler için yeterli değildir.</li>
+</ul>
+<blockquote>
+<p>[!TIP]
+<code>File</code> sınıfı yerine, daha modern ve esnek olan <code>java.nio.file.Path</code> ve <code>java.nio.file.Files</code> sınıflarını kullanmayı tercih edin. Bu konuyu Bölüm 4’te detaylı olarak ele alacağız.</p>
+</blockquote>
+<p><img src="../assets/images/mermaid-021.png" alt="Mermaid Diyagram 21" />
+## 16.2 Karakter Tabanlı Okuma/Yazma: <code>FileReader</code> ve <code>FileWriter</code></p>
+<p>Metin dosyalarıyla çalışırken karakter akışları (character streams) kullanılır. <code>java.io</code> paketindeki <code>FileReader</code> ve <code>FileWriter</code> sınıfları, metin dosyalarına okuma ve yazma işlemleri için temel karakter akışı sınıflarıdır.</p>
+</section>
+<section id="temel-kavramlar-1" class="level3">
+<h3>Temel Kavramlar</h3>
+<ul>
+<li><strong>Karakter Akışı (Character Stream)</strong>: Verileri karakter karakter işleyen akış türüdür. Unicode karakterleri destekler.</li>
+<li><strong>FileReader</strong>: Bir dosyadan karakter okumak için kullanılır.</li>
+<li><strong>FileWriter</strong>: Bir dosyaya karakter yazmak için kullanılır.</li>
+</ul>
+</section>
+<section id="örnek-metin-dosyasına-yazma-ve-okuma" class="level3">
+<h3>Örnek: Metin Dosyasına Yazma ve Okuma</h3>
+<p>Aşağıdaki örnekte, <code>FileWriter</code> ile bir metin dosyasına yazacak ve <code>FileReader</code> ile okuyacağız.</p>
+<!-- CODE_META: FileReaderWriterExample.java -->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">FileReader</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">FileWriter</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">IOException</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> FileReaderWriterExample <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> dosyaAdi <span class="op">=</span> <span class="st">&quot;metin.txt&quot;</span><span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosyaya yazma</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="bu">FileWriter</span> writer <span class="op">=</span> <span class="kw">new</span> <span class="bu">FileWriter</span><span class="op">(</span>dosyaAdi<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span><span class="st">&quot;Merhaba, Java dosya işlemleri!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span><span class="st">&quot;Bu bir test satırıdır.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosyaya yazma başarılı.&quot;</span><span class="op">);</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yazma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosyadan okuma</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="bu">FileReader</span> reader <span class="op">=</span> <span class="kw">new</span> <span class="bu">FileReader</span><span class="op">(</span>dosyaAdi<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> karakter<span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya içeriği:&quot;</span><span class="op">);</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="op">((</span>karakter <span class="op">=</span> reader<span class="op">.</span><span class="fu">read</span><span class="op">())</span> <span class="op">!=</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">((</span><span class="dt">char</span><span class="op">)</span> karakter<span class="op">);</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Okuma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="değerlendirme-1" class="level3">
+<h3>Değerlendirme</h3>
+<p><code>FileReader</code> ve <code>FileWriter</code> sınıfları basit metin işlemleri için kullanışlıdır. Ancak aşağıdaki dezavantajları vardır:</p>
+<ul>
+<li><strong>Performans sorunları</strong>: Her karakter için bir sistem çağrısı yapılır, bu da büyük dosyalarda performans düşüklüğüne neden olur.</li>
+<li><strong>Tamponlama yok</strong>: Tamponlama mekanizması bulunmadığından, her okuma/yazma işlemi doğrudan diske erişir.</li>
+<li><strong>Karakter kodlaması</strong>: Varsayılan karakter kodlamasını kullanır (<code>Charset.defaultCharset()</code>), bu farklı platformlarda sorun çıkarabilir.</li>
+</ul>
+<blockquote>
+<p>[!WARNING]
+<code>FileReader</code> ve <code>FileWriter</code> sınıflarını doğrudan kullanmak yerine, bir sonraki bölümde göreceğiniz <code>BufferedReader</code> ve <code>BufferedWriter</code> ile sarmalayarak kullanmanız önerilir.</p>
+</blockquote>
+<p><img src="../assets/images/mermaid-022.png" alt="Mermaid Diyagram 22" />
+## 16.3 Tamponlu Okuma/Yazma: <code>BufferedReader</code> ve <code>BufferedWriter</code></p>
+<p>Tamponlama (buffering), performansı artırmak için kullanılan bir tekniktir. <code>BufferedReader</code> ve <code>BufferedWriter</code> sınıfları, karakter akışlarını tamponlayarak daha verimli okuma/yazma işlemleri sağlar.</p>
+</section>
+<section id="temel-kavramlar-2" class="level3">
+<h3>Temel Kavramlar</h3>
+<ul>
+<li><strong>Tampon (Buffer)</strong>: Geçici veri depolama alanı. Veriler önce tampona yazılır, ardından toplu olarak diske aktarılır.</li>
+<li><strong>BufferedReader</strong>: <code>FileReader</code> gibi bir karakter akışını sarmalayarak tamponlu okuma sağlar.</li>
+<li><strong>BufferedWriter</strong>: <code>FileWriter</code> gibi bir karakter akışını sarmalayarak tamponlu yazma sağlar.</li>
+</ul>
+</section>
+<section id="örnek-büyük-bir-metin-dosyasını-satır-satır-okuma-ve-yazma" class="level3">
+<h3>Örnek: Büyük Bir Metin Dosyasını Satır Satır Okuma ve Yazma</h3>
+<p>Aşağıdaki örnekte, <code>BufferedWriter</code> ile bir dosyaya yazacak ve <code>BufferedReader</code> ile satır satır okuyacağız.</p>
+<!-- CODE_META: BufferedReaderWriterExample.java -->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">BufferedReader</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">BufferedWriter</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">FileReader</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">FileWriter</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">IOException</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> BufferedReaderWriterExample <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> dosyaAdi <span class="op">=</span> <span class="st">&quot;buyuk_metin.txt&quot;</span><span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosyaya yazma</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="bu">BufferedWriter</span> writer <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedWriter</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileWriter</span><span class="op">(</span>dosyaAdi<span class="op">)))</span> <span class="op">{</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span><span class="st">&quot;Birinci satır&quot;</span><span class="op">);</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">newLine</span><span class="op">();</span>  <span class="co">// Platform bağımsız satır sonu</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span><span class="st">&quot;İkinci satır&quot;</span><span class="op">);</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">newLine</span><span class="op">();</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span><span class="st">&quot;Üçüncü satır&quot;</span><span class="op">);</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosyaya yazma başarılı.&quot;</span><span class="op">);</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yazma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosyadan okuma</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="bu">BufferedReader</span> reader <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedReader</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileReader</span><span class="op">(</span>dosyaAdi<span class="op">)))</span> <span class="op">{</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> satir<span class="op">;</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya içeriği (satır satır):&quot;</span><span class="op">);</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="op">((</span>satir <span class="op">=</span> reader<span class="op">.</span><span class="fu">readLine</span><span class="op">())</span> <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>satir<span class="op">);</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Okuma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="değerlendirme-2" class="level3">
+<h3>Değerlendirme</h3>
+<p>Tamponlu sınıfların sağladığı avantajlar:</p>
+<ul>
+<li><strong>Performans artışı</strong>: Tamponlama sayesinde disk erişim sayısı azalır, bu da büyük dosyalarda önemli performans kazancı sağlar.</li>
+<li><strong>Kolaylık</strong>: <code>readLine()</code> metodu ile satır satır okuma yapılabilir.</li>
+<li><strong>Platform bağımsızlığı</strong>: <code>newLine()</code> metodu, işletim sistemine uygun satır sonu karakterini ekler.</li>
+</ul>
+<blockquote>
+<p>[!TIP]
+<code>BufferedReader</code> ve <code>BufferedWriter</code> sınıflarını kullanırken, varsayılan tampon boyutu (8192 karakter) genellikle yeterlidir. Ancak özel durumlar için farklı boyutlar belirleyebilirsiniz: <code>new BufferedReader(reader, 16384)</code></p>
+</blockquote>
+<p><img src="../assets/images/mermaid-023.png" alt="Mermaid Diyagram 23" />
+## 16.4 Modern Dosya İşlemleri: NIO.2 (<code>Path</code>, <code>Files</code>, <code>BufferedReader/BufferedWriter</code>)</p>
+<p>Java 7 ile birlikte gelen NIO.2 (New I/O 2) paketi, dosya işlemleri için daha modern, esnek ve güvenilir bir yaklaşım sunar. <code>java.nio.file</code> paketindeki <code>Path</code> ve <code>Files</code> sınıfları, geleneksel IO’ya göre birçok avantaj sağlar.</p>
+</section>
+<section id="temel-kavramlar-3" class="level3">
+<h3>Temel Kavramlar</h3>
+<ul>
+<li><strong>Path</strong>: Dosya veya dizin yolunu temsil eden interface. <code>Paths.get()</code> metodu ile oluşturulur.</li>
+<li><strong>Files</strong>: Dosya işlemleri için statik metotlar içeren yardımcı sınıf.</li>
+<li><strong>StandardOpenOption</strong>: Dosya açma seçeneklerini belirten enum (CREATE, APPEND, TRUNCATE_EXISTING vb.).</li>
+</ul>
+</section>
+<section id="örnek-nio.2-ile-temel-dosya-işlemleri" class="level3">
+<h3>Örnek: NIO.2 ile Temel Dosya İşlemleri</h3>
+<p>Aşağıdaki örnekte, NIO.2 kullanarak dosya yazma, okuma ve dizin listeleme işlemlerini gerçekleştireceğiz.</p>
+<!-- CODE_META: NIO2Example.java -->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">IOException</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">nio</span><span class="op">.</span><span class="im">file</span><span class="op">.</span><span class="im">Files</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">nio</span><span class="op">.</span><span class="im">file</span><span class="op">.</span><span class="im">Path</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">nio</span><span class="op">.</span><span class="im">file</span><span class="op">.</span><span class="im">Paths</span><span class="op">;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">nio</span><span class="op">.</span><span class="im">file</span><span class="op">.</span><span class="im">StandardOpenOption</span><span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">stream</span><span class="op">.</span><span class="im">Stream</span><span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> NIO2Example <span class="op">{</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        Path dosyaYolu <span class="op">=</span> Paths<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="st">&quot;nio_ornek.txt&quot;</span><span class="op">);</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosyaya yazma</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            Files<span class="op">.</span><span class="fu">writeString</span><span class="op">(</span>dosyaYolu<span class="op">,</span> <span class="st">&quot;NIO.2 ile yazma işlemi</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> StandardOpenOption<span class="op">.</span><span class="fu">CREATE</span><span class="op">);</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            Files<span class="op">.</span><span class="fu">writeString</span><span class="op">(</span>dosyaYolu<span class="op">,</span> <span class="st">&quot;İkinci satır</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> StandardOpenOption<span class="op">.</span><span class="fu">APPEND</span><span class="op">);</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosyaya yazma başarılı.&quot;</span><span class="op">);</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yazma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dosyadan okuma</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> icerik <span class="op">=</span> Files<span class="op">.</span><span class="fu">readString</span><span class="op">(</span>dosyaYolu<span class="op">);</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosya içeriği:&quot;</span><span class="op">);</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>icerik<span class="op">);</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Okuma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Dizin listeleme</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Mevcut dizin içeriği:&quot;</span><span class="op">);</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span>Stream<span class="op">&lt;</span>Path<span class="op">&gt;</span> stream <span class="op">=</span> Files<span class="op">.</span><span class="fu">list</span><span class="op">(</span>Paths<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="st">&quot;.&quot;</span><span class="op">)))</span> <span class="op">{</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>            stream<span class="op">.</span><span class="fu">forEach</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">::</span>println<span class="op">);</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dizin listeleme hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Alternatif: BufferedReader/BufferedWriter ile NIO.2</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        Path alternatifDosya <span class="op">=</span> Paths<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="st">&quot;alternatif.txt&quot;</span><span class="op">);</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> writer <span class="op">=</span> Files<span class="op">.</span><span class="fu">newBufferedWriter</span><span class="op">(</span>alternatifDosya<span class="op">,</span> StandardOpenOption<span class="op">.</span><span class="fu">CREATE</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span><span class="st">&quot;BufferedWriter ile NIO.2</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>            writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span><span class="st">&quot;Çok satırlı yazma işlemi</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yazma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="dt">var</span> reader <span class="op">=</span> Files<span class="op">.</span><span class="fu">newBufferedReader</span><span class="op">(</span>alternatifDosya<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span> satir<span class="op">;</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Alternatif dosya içeriği:&quot;</span><span class="op">);</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="op">((</span>satir <span class="op">=</span> reader<span class="op">.</span><span class="fu">readLine</span><span class="op">())</span> <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>satir<span class="op">);</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Okuma hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="değerlendirme-3" class="level3">
+<h3>Değerlendirme</h3>
+<p>NIO.2’nin geleneksel IO’ya göre avantajları:</p>
+<ul>
+<li><strong>Daha kısa kod</strong>: <code>Files.writeString()</code> ve <code>Files.readString()</code> gibi metotlar sayesinde daha az kod yazılır.</li>
+<li><strong>Gelişmiş hata yönetimi</strong>: Daha anlamlı hata mesajları ve istisna türleri.</li>
+<li><strong>Sembolik link desteği</strong>: <code>Files.isSymbolicLink()</code> gibi metotlarla sembolik linklerle çalışma imkanı.</li>
+<li><strong>try-with-resources uyumluluğu</strong>: <code>Files.list()</code> gibi metotlar <code>AutoCloseable</code> arayüzünü uygular.</li>
+<li><strong>Performans</strong>: NIO.2, kanal (channel) ve tampon (buffer) kullanarak daha verimli I/O işlemleri sağlar.</li>
+</ul>
+<blockquote>
+<p>[!IMPORTANT]
+NIO.2 kullanırken <code>Files.list()</code> veya <code>Files.walk()</code> gibi metotlarla açılan stream’leri mutlaka kapatın. Aksi takdirde kaynak sızıntısı (resource leak) oluşabilir.</p>
+</blockquote>
+<p><img src="../assets/images/mermaid-024.png" alt="Mermaid Diyagram 24" />
+## 16.5 Nesne Kalıcılığı: Serileştirme (Serialization)</p>
+<p>Serileştirme, Java nesnelerini byte akışına dönüştürme (serialization) ve byte akışından nesne oluşturma (deserialization) işlemidir. Bu sayede nesnelerinizi dosyalara kaydedebilir, ağ üzerinden gönderebilir veya veritabanında saklayabilirsiniz.</p>
+</section>
+<section id="temel-kavramlar-4" class="level3">
+<h3>Temel Kavramlar</h3>
+<ul>
+<li><strong>Serializable</strong>: Bir sınıfın serileştirilebilir olduğunu belirten işaretleyici (marker) arayüz.</li>
+<li><strong>ObjectOutputStream</strong>: Nesneleri byte akışına dönüştüren sınıf.</li>
+<li><strong>ObjectInputStream</strong>: Byte akışından nesne oluşturan sınıf.</li>
+<li><strong>serialVersionUID</strong>: Serileştirilmiş nesnenin sürümünü belirten benzersiz kimlik.</li>
+<li><strong>transient</strong>: Serileştirme sırasında atlanacak alanları belirten anahtar kelime.</li>
+</ul>
+</section>
+<section id="örnek-person-sınıfını-serileştirme-ve-deserileştirme" class="level3">
+<h3>Örnek: Person Sınıfını Serileştirme ve Deserileştirme</h3>
+<p>Aşağıdaki örnekte, <code>Person</code> sınıfını serileştirip dosyaya yazacak ve ardından dosyadan okuyup nesneye dönüştüreceğiz.</p>
+<!-- CODE_META: SerializationExample.java -->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">FileInputStream</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">FileOutputStream</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">IOException</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">ObjectInputStream</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">ObjectOutputStream</span><span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">io</span><span class="op">.</span><span class="im">Serializable</span><span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Person sınıfı - Serializable arayüzünü uygular</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Person <span class="kw">implements</span> <span class="bu">Serializable</span> <span class="op">{</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> <span class="dt">long</span> serialVersionUID <span class="op">=</span> <span class="dv">1L</span><span class="op">;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> ad<span class="op">;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> yas<span class="op">;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">transient</span> <span class="bu">String</span> geciciBilgi<span class="op">;</span>  <span class="co">// Serileştirilmeyecek</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Person</span><span class="op">(</span><span class="bu">String</span> ad<span class="op">,</span> <span class="dt">int</span> yas<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">ad</span> <span class="op">=</span> ad<span class="op">;</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">yas</span> <span class="op">=</span> yas<span class="op">;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">geciciBilgi</span> <span class="op">=</span> <span class="st">&quot;Bu bilgi serileştirilmeyecek&quot;</span><span class="op">;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">toString</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">&quot;Person{ad=&#39;&quot;</span> <span class="op">+</span> ad <span class="op">+</span> <span class="st">&quot;&#39;, yas=&quot;</span> <span class="op">+</span> yas <span class="op">+</span> <span class="st">&quot;, geciciBilgi=&#39;&quot;</span> <span class="op">+</span> geciciBilgi <span class="op">+</span> <span class="st">&quot;&#39;}&quot;</span><span class="op">;</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SerializationExample <span class="op">{</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> dosyaAdi <span class="op">=</span> <span class="st">&quot;kisi.dat&quot;</span><span class="op">;</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Serileştirme (Nesneyi dosyaya yazma)</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="bu">ObjectOutputStream</span> oos <span class="op">=</span> <span class="kw">new</span> <span class="bu">ObjectOutputStream</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileOutputStream</span><span class="op">(</span>dosyaAdi<span class="op">)))</span> <span class="op">{</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>            Person kisi <span class="op">=</span> <span class="kw">new</span> <span class="fu">Person</span><span class="op">(</span><span class="st">&quot;Ali&quot;</span><span class="op">,</span> <span class="dv">30</span><span class="op">);</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>            oos<span class="op">.</span><span class="fu">writeObject</span><span class="op">(</span>kisi<span class="op">);</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Nesne dosyaya yazıldı: &quot;</span> <span class="op">+</span> kisi<span class="op">);</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Serileştirme hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Deserileştirme (Dosyadan nesne okuma)</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span> <span class="op">(</span><span class="bu">ObjectInputStream</span> ois <span class="op">=</span> <span class="kw">new</span> <span class="bu">ObjectInputStream</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileInputStream</span><span class="op">(</span>dosyaAdi<span class="op">)))</span> <span class="op">{</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>            Person okunanKisi <span class="op">=</span> <span class="op">(</span>Person<span class="op">)</span> ois<span class="op">.</span><span class="fu">readObject</span><span class="op">();</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Dosyadan okunan nesne: &quot;</span> <span class="op">+</span> okunanKisi<span class="op">);</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Ad: &quot;</span> <span class="op">+</span> okunanKisi<span class="op">.</span><span class="fu">ad</span> <span class="op">+</span> <span class="st">&quot;, Yaş: &quot;</span> <span class="op">+</span> okunanKisi<span class="op">.</span><span class="fu">yas</span><span class="op">);</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Geçici bilgi (null olmalı): &quot;</span> <span class="op">+</span> okunanKisi<span class="op">.</span><span class="fu">geciciBilgi</span><span class="op">);</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> <span class="op">|</span> <span class="bu">ClassNotFoundException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Deserileştirme hatası: &quot;</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="değerlendirme-4" class="level3">
+<h3>Değerlendirme</h3>
+<p>Serileştirmenin avantajları ve dikkat edilmesi gereken noktalar:</p>
+<ul>
+<li><strong>Kolay kullanım</strong>: <code>Serializable</code> arayüzünü uygulamak yeterlidir.</li>
+<li><strong>Nesne grafiği desteği</strong>: Bir nesne serileştirilirken, ona referans veren diğer nesneler de otomatik olarak serileştirilir.</li>
+<li><strong>Güvenlik riskleri</strong>: Deserileştirme sırasında geçersiz veya kötü niyetli veriler yüklenebilir. Bu nedenle güvenilmeyen kaynaklardan gelen verileri deserileştirmeyin.</li>
+<li><strong>serialVersionUID önemi</strong>: Sınıf yapısı değiştiğinde, eski serileştirilmiş nesneler uyumsuz hale gelebilir. <code>serialVersionUID</code> bu sorunu çözmek için kullanılır.</li>
+<li><strong>transient alanlar</strong>: Serileştirilmesini istemediğiniz alanları <code>transient</code> olarak işaretleyin.</li>
+</ul>
+<blockquote>
+<p>[!CAUTION]
+Serileştirme, Java’ya özgü bir formattır. Farklı platformlar veya diller arasında veri alışverişi yapacaksanız JSON, XML veya Protocol Buffers gibi standart formatları tercih edin.</p>
+</blockquote>
+<p><img src="../assets/images/mermaid-025.png" alt="Mermaid Diyagram 25" />
+## 16.6 Bölüm Özeti</p>
+<p>Bu bölümde, Java’da dosya işlemleri ve kalıcı veri saklama konularını kapsamlı bir şekilde ele aldık:</p>
+<ol type="1">
+<li><strong>File Sınıfı</strong>: Dosya ve dizin yollarını temsil eder, metaveri erişimi ve temel dosya işlemleri için kullanılır.</li>
+<li><strong>FileReader/FileWriter</strong>: Karakter tabanlı okuma/yazma için temel sınıflardır, ancak performans sorunları nedeniyle tamponlu sınıflarla kullanılmalıdır.</li>
+<li><strong>BufferedReader/BufferedWriter</strong>: Tamponlama sayesinde performansı artırır ve <code>readLine()</code> gibi kolaylıklar sağlar.</li>
+<li><strong>NIO.2</strong>: Modern, esnek ve güvenilir dosya işlemleri için <code>Path</code> ve <code>Files</code> sınıflarını kullanır.</li>
+<li><strong>Serileştirme</strong>: Java nesnelerini byte akışına dönüştürerek kalıcı hale getirme yöntemidir.</li>
+</ol>
+</section>
+</section>
+<section id="terim-sözlüğü" class="level2">
+<h2>16.7 Terim Sözlüğü</h2>
+<table>
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 58%" />
+</colgroup>
+<thead>
+<tr>
+<th>Terim</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tampon (Buffer)</strong></td>
+<td>Geçici veri depolama alanı, I/O performansını artırır</td>
+</tr>
+<tr>
+<td><strong>Karakter Akışı (Character Stream)</strong></td>
+<td>Verileri karakter karakter işleyen akış türü</td>
+</tr>
+<tr>
+<td><strong>Metaveri (Metadata)</strong></td>
+<td>Dosya hakkındaki bilgiler (boyut, tarih, izinler vb.)</td>
+</tr>
+<tr>
+<td><strong>Serileştirme (Serialization)</strong></td>
+<td>Nesneleri byte akışına dönüştürme işlemi</td>
+</tr>
+<tr>
+<td><strong>Deserileştirme (Deserialization)</strong></td>
+<td>Byte akışından nesne oluşturma işlemi</td>
+</tr>
+<tr>
+<td><strong>transient</strong></td>
+<td>Serileştirme sırasında atlanacak alanları belirten anahtar kelime</td>
+</tr>
+<tr>
+<td><strong>serialVersionUID</strong></td>
+<td>Serileştirilmiş nesnenin sürümünü belirten kimlik</td>
+</tr>
+<tr>
+<td><strong>NIO.2</strong></td>
+<td>Java 7 ile gelen yeni I/O API’si</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sorular" class="level2">
+<h2>16.8 Sorular</h2>
+<ol type="1">
+<li><code>File</code> sınıfı ile <code>Path</code> arayüzü arasındaki temel farklar nelerdir?</li>
+<li><code>FileReader</code> ve <code>FileWriter</code> sınıflarının performans sorunlarını nasıl çözebiliriz?</li>
+<li>NIO.2’nin geleneksel IO’ya göre avantajları nelerdir?</li>
+<li>Serileştirme sırasında <code>transient</code> anahtar kelimesinin rolü nedir?</li>
+<li><code>serialVersionUID</code> neden önemlidir ve ne zaman kullanılmalıdır?</li>
+<li>NIO.2’de <code>Files.list()</code> metodu neden try-with-resources ile kullanılmalıdır?</li>
+</ol>
+</section>
+<section id="alıştırmalar" class="level2">
+<h2>16.9 Alıştırmalar</h2>
+<ol type="1">
+<li><p><strong>Dosya Kopyalama</strong>: <code>BufferedInputStream</code> ve <code>BufferedOutputStream</code> kullanarak bir dosyayı başka bir konuma kopyalayan bir program yazın.</p></li>
+<li><p><strong>Metin Analizi</strong>: Bir metin dosyasını okuyarak içindeki kelime sayısını, satır sayısını ve karakter sayısını hesaplayan bir program yazın (NIO.2 kullanarak).</p></li>
+<li><p><strong>Öğrenci Kayıt Sistemi</strong>: Bir <code>Ogrenci</code> sınıfı oluşturun (ad, soyad, numara, not ortalaması). Bu sınıfı serileştirilebilir yapın ve bir dosyaya kaydedip geri okuyan bir program yazın.</p></li>
+<li><p><strong>Dizin Gezgini</strong>: Kullanıcıdan bir dizin yolu alan ve bu dizindeki tüm dosyaları (alt dizinler dahil) listeleyen bir program yazın (<code>Files.walk()</code> kullanarak).</p></li>
+<li><p><strong>JSON Alternatifi</strong>: Jackson kütüphanesini kullanarak bir <code>Person</code> nesnesini JSON formatında dosyaya yazıp geri okuyan bir program yazın (opsiyonel, ileri seviye).</p></li>
+</ol>
+</section>
+</section>
+</body>
+</html>

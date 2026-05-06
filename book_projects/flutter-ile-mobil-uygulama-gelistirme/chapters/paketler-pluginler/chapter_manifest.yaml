@@ -1,0 +1,58 @@
+chapter:
+  title: Paketler, Plugin Kullanımı ve Cihaz Özellikleri
+  alias: paketler-pluginler
+  order: 12
+  references:
+  - alias: tema-responsive-erisilebilirlik
+    relation: prerequisite
+  - alias: bulut-tabanli-uygulama
+    relation: next
+scope:
+  topics:
+  - pub.dev
+  - pubspec.yaml
+  - dependencies
+  - assets
+  - permissions
+  - camera/location/file picker opsiyonel
+  - Paket bakım riski
+  objectives:
+  - Okuyucu pub.dev üzerinden güvenilir paket seçebilmelidir.
+  - pubspec.yaml dosyasına dependency ve asset ekleyebilmelidir.
+  - İzin gerektiren cihaz özelliklerini temel düzeyde kullanabilmelidir.
+  exclusions:
+  - Native plugin yazımı
+  - Platform channel ileri ayrıntıları
+  mini_project: Konum/kamera/dosya seçici tabanlı küçük uygulama
+structure:
+  sections:
+  - title: Bölümün Yol Haritası
+    type: text
+  - title: Kavramsal Açıklama
+    type: text
+  - title: Temel Örnek
+    type: text+code
+  - title: Çalışan Mini Uygulama
+    type: text+code+screenshot
+  - title: Sık Yapılan Hatalar
+    type: text
+  - title: Bölüm Sonu Laboratuvarı
+    type: exercise
+  - title: Özet
+    type: text
+  estimated_pages: 22
+  code_examples_count: 6
+  screenshot_examples_count: 1
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  default_code_language: dart
+  default_framework: flutter
+  validation_modes:
+  - flutter_analyze
+  - flutter_test
+  - widget_test
+  - screenshot_only
+  - review_only
+  github_export: true
+  qr_policy: dual

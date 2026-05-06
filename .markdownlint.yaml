@@ -1,0 +1,5 @@
+default: true
+MD013: false   # satır uzunluğu — dokümanlar için kısıtlama yok
+MD033: false   # inline HTML — META blokları için gerekli
+MD041: false   # ilk satır H1 zorunluluğu — YAML front matter olan dosyalar için
+MD024: false   # aynı başlık tekrarı

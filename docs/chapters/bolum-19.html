@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>19. Java Swing ile GUI Programlama</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">19. Java Swing ile GUI Programlama</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#java-swing-ile-gui-programlama" id="toc-java-swing-ile-gui-programlama">19. Java Swing ile GUI Programlama</a></li>
+<li><a href="#bölüm-19-gui-programlamaya-giris-ve-swing-arayuz-tasarimi" id="toc-bölüm-19-gui-programlamaya-giris-ve-swing-arayuz-tasarimi">Bölüm 19: GUI Programlamaya Giris ve Swing Arayuz Tasarimi</a>
+<ul>
+<li><a href="#giris" id="toc-giris">19.1 Giris</a></li>
+<li><a href="#swing-mimarisi" id="toc-swing-mimarisi">19.2 Swing Mimarisi</a></li>
+<li><a href="#jpanel-ve-icerik-bilesenleri" id="toc-jpanel-ve-icerik-bilesenleri">19.4 JPanel ve Icerik Bilesenleri</a></li>
+<li><a href="#layout-yoneticileri" id="toc-layout-yoneticileri">19.5 Layout Yoneticileri</a></li>
+<li><a href="#olay-isleme-event-handling" id="toc-olay-isleme-event-handling">19.6 Olay Isleme (Event Handling)</a></li>
+<li><a href="#basit-gui-uygulamasi-gelistirme-hesap-makinesi" id="toc-basit-gui-uygulamasi-gelistirme-hesap-makinesi">19.7 Basit GUI Uygulamasi Gelistirme: Hesap Makinesi</a></li>
+<li><a href="#ileri-seviye-konulara-giris" id="toc-ileri-seviye-konulara-giris">19.8 Ileri Seviye Konulara Giris</a></li>
+<li><a href="#ozet-ve-degerlendirme" id="toc-ozet-ve-degerlendirme">19.9 Ozet ve Degerlendirme</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="java-swing-ile-gui-programlama" class="level1">
+<h1>19. Java Swing ile GUI Programlama</h1>
+</section>
+<section id="bölüm-19-gui-programlamaya-giris-ve-swing-arayuz-tasarimi" class="level1">
+<h1>Bölüm 19: GUI Programlamaya Giris ve Swing Arayuz Tasarimi</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;GUI Programlamaya Giris ve Swing Arayuz Tasarimi&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Java ile Masaustu Uygulama Gelistirme&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Teknik Kitap Yazarı&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> 2025-01-27</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lang</span><span class="kw">:</span><span class="at"> tr</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">abstract</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  Bu bolumde, Java dilinde grafiksel kullanici arayuzu (GUI) gelistirmenin temellerini ogreneceksiniz. </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  Swing kutuphanesi ile JFrame, JPanel, layout yoneticileri ve olay isleme mekanizmalarini kullanarak </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  basit bir GUI uygulamasi gelistireceksiniz. Bolum sonunda, kendi masaustu uygulamalarinizi </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  tasarlayabilecek ve kodlayabilecek seviyeye geleceksiniz.</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+<section id="giris" class="level2">
+<h2>19.1 Giris</h2>
+<p>GUI (Graphical User Interface), kullanicilarin bir yazilimla etkilesime gecmesini saglayan gorsel bilesenler butunudur. Dugmeler, metin kutulari, listeler, menuler gibi bilesenler, kullanicilarin komutlari fare tiklamalari veya klavye girisi ile iletmesine olanak tanir. GUI olmayan bir program (komut satiri arayuzu) yalnizca metin tabanli girdi ve cikti kullanirken, GUI ile kullanici deneyimi cok daha sezgisel ve kullanici dostu hale gelir.</p>
+<p>Java’da GUI gelistirmek icin uc ana kutuphane bulunur:</p>
+<ol type="1">
+<li><p><strong>AWT (Abstract Window Toolkit)</strong>: Java’nin ilk GUI kutuphanesidir. Platforma bagimli bilesenler icerir ve hafiftir, ancak sinirli bilesen seti ve platforma ozgu davranislari nedeniyle modern uygulamalar icin yeterli degildir.</p></li>
+<li><p><strong>Swing</strong>: AWT uzerine insa edilmis, daha zengin ve esnek bir kutuphanedir. Tamamen Java’da yazilmistir, bu nedenle platformdan bagimsizdir. Swing, JButton, JTextField, JTable gibi bilesenlerle karmasik arayuzler olusturmayi saglar.</p></li>
+<li><p><strong>JavaFX</strong>: Swing’in halefi olarak gelistirilmistir. Modern, zengin internet uygulamalari (RIA) icin tasarlanmistir. CSS benzeri stil dosyalari ve FXML ile deklaratif arayuz tanimlama destegi sunar. Ancak, Swing hala genis bir kullanim alanina sahiptir ve bircok kurumsal uygulamada tercih edilmektedir.</p></li>
+</ol>
+<p>Bu bolumde, Swing kutuphanesini kullanarak GUI programlamanin temellerini ogreneceksiniz. Swing, ogrenmesi kolay, dokumantasyonu genis ve bir cok IDE tarafindan desteklenen bir kutuphanedir.</p>
+</section>
+<section id="swing-mimarisi" class="level2">
+<h2>19.2 Swing Mimarisi</h2>
+<p>Swing, bilesen tabanli bir mimari kullanir. Her bir GUI bileseni, <code>javax.swing</code> paketindeki bir siniftan turer. Temel sinif hiyerarsisi su sekildedir:</p>
+<ul>
+<li><code>java.awt.Component</code>: Tum GUI bilesenlerinin temel sinifi.</li>
+<li><code>java.awt.Container</code>: Bilesenleri icerebilen ozel bir Component. JFrame, JPanel gibi siniflar Container’dan turer.</li>
+<li><code>javax.swing.JComponent</code>: Swing bilesenlerinin temel sinifi. JButton, JLabel, JTextField gibi bilesenler JComponent’den turer.</li>
+</ul>
+<section id="mvc-deseni-ve-swing" class="level3">
+<h3>MVC Deseni ve Swing</h3>
+<p>Swing, Model-View-Controller (MVC) mimarisini benimser. Her bilesen icin:</p>
+<ul>
+<li><strong>Model</strong>: Veriyi ve durumu temsil eder. Ornegin, bir JButton’un modeli, dugmenin basilip basilmadigini, etkin olup olmadigini saklar.</li>
+<li><strong>View</strong>: Gorsel goruntuyu olusturur. JButton icin, dugmenin goruntusu (metin, renk, kenarlik) view tarafindan cizilir.</li>
+<li><strong>Controller</strong>: Kullanici etkilesimlerini (tiklamalar, tus basimlari) yonetir ve model ile view arasindaki iletisimi saglar.</li>
+</ul>
+<p>Swing’de bu uc bilesen genellikle tek bir sinifta birlestirilir (ornegin JButton), ancak modeli ayri olarak da kullanmak mumkundur.</p>
+</section>
+<section id="olay-tabanli-programlama" class="level3">
+<h3>Olay Tabanli Programlama</h3>
+<p>GUI uygulamalari, olay tabanli (event-driven) bir programlama modeli kullanir. Kullanici bir dugmeye tikladiginda, bir metin kutusuna yazi yazdiginda veya fareyi hareket ettirdiginde, bir “olay” (event) olusturulur. Bu olay, ilgili “dinleyici” (listener) tarafindan yakalanir ve islenir.</p>
+<p><img src="../assets/images/mermaid-033.png" alt="Mermaid Diyagram 33" />
+## 19.3 JFrame - Uygulama Penceresi</p>
+<p>JFrame, Swing uygulamalarinin ana penceresini temsil eder. Bir JFrame olusturmak icin:</p>
+<ul>
+<li><code>javax.swing.JFrame</code> sinifindan bir nesne olusturulur.</li>
+<li>Pencere basligi, boyutu ve konumu ayarlanir.</li>
+<li>Pencere kapatma davranisi belirtilir.</li>
+<li>Bilesenler eklenir ve gorunur hale getirilir.</li>
+</ul>
+<!-- CODE_META: Basit bir JFrame ornegi -->
+<p><strong>Dosya adi:</strong> <code>OrnekJFrame.java</code></p>
+<!-- CODE_META
+id: bolum-19_kod01
+chapter_id: bolum-19
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.</span><span class="im">JFrame</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.</span><span class="im">SwingUtilities</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> OrnekJFrame <span class="op">{</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Swing bilesenlerinin guvenli bir sekilde olusturulmasi icin Event Dispatch Thread kullanilir</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SwingUtilities</span><span class="op">.</span><span class="fu">invokeLater</span><span class="op">(</span><span class="kw">new</span> <span class="bu">Runnable</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Ilk Swing Uygulamam&quot;</span><span class="op">);</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span> <span class="co">// Uygulama kapatildiginda program sonlansin</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">300</span><span class="op">);</span> <span class="co">// Pencere boyutu (genislik, yukseklik)</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setLocationRelativeTo</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span> <span class="co">// Pencereyi ekranin ortasina konumlandir</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span> <span class="co">// Pencereyi gorunur yap</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Aciklama:</strong>
+- <code>SwingUtilities.invokeLater()</code>: Swing bilesenlerinin olusturulmasi ve guncellenmesi, Event Dispatch Thread (EDT) uzerinde yapilmalidir. Bu metod, bir Runnable nesnesini EDT’ye gonderir.
+- <code>setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)</code>: Pencere kapatildiginda JVM’in sonlanmasini saglar. Diger secenekler: <code>DO_NOTHING_ON_CLOSE</code>, <code>HIDE_ON_CLOSE</code>, <code>DISPOSE_ON_CLOSE</code>.
+- <code>setSize(400, 300)</code>: Pencere genisligini 400 piksel, yuksekligini 300 piksel yapar.
+- <code>setLocationRelativeTo(null)</code>: Pencereyi ekranin ortasina yerlestirir.
+- <code>setVisible(true)</code>: Pencereyi gorunur hale getirir. Varsayilan olarak JFrame gorunmezdir.</p>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> JFrame olustururken <code>setSize</code> ve <code>setLocationRelativeTo</code> metodlarini kullanmak, uygulamanizin farkli ekran cozunurluklerinde duzgun goruntulenmesini saglar. Ayrica, <code>setDefaultCloseOperation</code> ile uygulamanin dogru bir sekilde sonlandirilmasini garantileyin.</p>
+</blockquote>
+</section>
+</section>
+<section id="jpanel-ve-icerik-bilesenleri" class="level2">
+<h2>19.4 JPanel ve Icerik Bilesenleri</h2>
+<p>JPanel, diger bilesenleri gruplamak ve duzenlemek icin kullanilan bir kaptir (container). JFrame’in icerik bolmesine (content pane) dogrudan bilesen eklemek yerine, genellikle bir JPanel eklenir ve bilesenler bu panele eklenir. Bu, daha duzenli ve yonetilebilir bir kod yapisina olanak tanir.</p>
+<section id="temel-bilesenler" class="level3">
+<h3>Temel Bilesenler</h3>
+<ul>
+<li><strong>JButton</strong>: Tiklanabilir bir dugme. Metin veya simge icerebilir.</li>
+<li><strong>JLabel</strong>: Metin veya simge gostermek icin kullanilan etiket.</li>
+<li><strong>JTextField</strong>: Tek satirli metin girisi icin kullanilan alan.</li>
+<li><strong>JTextArea</strong>: Cok satirli metin girisi icin kullanilan alan.</li>
+</ul>
+<!-- CODE_META: JPanel ve bilesen ekleme ornegi -->
+<p><strong>Dosya adi:</strong> <code>PanelOrnegi.java</code></p>
+<!-- CODE_META
+id: bolum-19_kod02
+chapter_id: bolum-19
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.*;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> PanelOrnegi <span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SwingUtilities</span><span class="op">.</span><span class="fu">invokeLater</span><span class="op">(</span><span class="kw">new</span> <span class="bu">Runnable</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Panel Ornegi&quot;</span><span class="op">);</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">500</span><span class="op">,</span> <span class="dv">400</span><span class="op">);</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setLocationRelativeTo</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                <span class="co">// JPanel olustur</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JPanel</span> panel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">();</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                panel<span class="op">.</span><span class="fu">setBackground</span><span class="op">(</span><span class="bu">Color</span><span class="op">.</span><span class="fu">LIGHT_GRAY</span><span class="op">);</span> <span class="co">// Arka plan rengi</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>                panel<span class="op">.</span><span class="fu">setLayout</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FlowLayout</span><span class="op">());</span> <span class="co">// Layout yoneticisi</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Bilesenler olustur</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JLabel</span> label <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Adiniz:&quot;</span><span class="op">);</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JTextField</span> textField <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">20</span><span class="op">);</span> <span class="co">// 20 karakter genisliginde</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JButton</span> button <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Gonder&quot;</span><span class="op">);</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Bilesenleri panele ekle</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label<span class="op">);</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>textField<span class="op">);</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>                panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button<span class="op">);</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Paneli JFrame&#39;e ekle</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>panel<span class="op">);</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Aciklama:</strong>
+- <code>JPanel panel = new JPanel();</code>: Yeni bir panel olusturur.
+- <code>panel.setBackground(Color.LIGHT_GRAY)</code>: Panelin arka plan rengini acik gri yapar.
+- <code>panel.setLayout(new FlowLayout())</code>: Panelin layout yoneticisini FlowLayout olarak ayarlar. FlowLayout, bilesenleri soldan saga, ustten alta dogru siralar.
+- <code>JLabel</code>, <code>JTextField</code>, <code>JButton</code>: Temel bilesenler olusturulur.
+- <code>panel.add(label)</code>: Bilesenler panele eklenir.
+- <code>frame.add(panel)</code>: Panel, JFrame’in icerik bolmesine eklenir.</p>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> Bilesenleri dogrudan JFrame’e eklemek yerine JPanel kullanmak, daha esnek bir duzen olusturmanizi saglar. Ilerleyen bolumlerde, farkli layout yoneticilerini bir arada kullanarak karmasik arayuzler tasarlayacaksiniz.</p>
+</blockquote>
+</section>
+</section>
+<section id="layout-yoneticileri" class="level2">
+<h2>19.5 Layout Yoneticileri</h2>
+<p>Layout yoneticileri, bilesenlerin bir container icinde nasil konumlandirilacagini ve boyutlandirilacagini belirler. Swing’de bircok layout yoneticisi bulunur. Bu bolumde en yaygin kullanilanlari inceleyecegiz.</p>
+<section id="flowlayout" class="level3">
+<h3>FlowLayout</h3>
+<p>Bilesenleri soldan saga, ustten alta dogru siralar. Satir doldugunda bir sonraki satira gecer. Varsayilan olarak bilesenlerin tercih edilen boyutlarini kullanir.</p>
+<p><img src="../assets/images/mermaid-034.png" alt="Mermaid Diyagram 34" />
+### BorderLayout</p>
+<p>Container’i bes bolgeye ayirir: NORTH, SOUTH, EAST, WEST, CENTER. Her bolgeye yalnizca bir bilesen eklenebilir. CENTER bolgesi, diger bolgelerdeki bilesenlerin boyutlarina gore kalan alani kaplar.</p>
+<p><img src="../assets/images/mermaid-035.png" alt="Mermaid Diyagram 35" />
+### GridLayout</p>
+<p>Bilesenleri esit boyutlu bir tablo (satir ve sutun) seklinde duzenler. Satir ve sutun sayisi belirtilir. Bilesenler, satir oncelikli olarak (once satirlar, sonra sutunlar) yerlestirilir.</p>
+<p><img src="../assets/images/mermaid-036.png" alt="Mermaid Diyagram 36" />
+### GridBagLayout (Temel Seviye)</p>
+<p>En guclu ve esnek layout yoneticisidir. Bilesenlerin konumunu, boyutunu ve hizalama sekillerini ince ayar yaparak belirlemeyi saglar. Ancak, kullanimi digerlerine gore daha karmasiktir. Bu bolumde temel kullanimini gorecegiz.</p>
+<!-- CODE_META: Layout yoneticileri karsilastirmasi -->
+<p><strong>Dosya adi:</strong> <code>LayoutKarsilastirma.java</code></p>
+<!-- CODE_META
+id: bolum-19_kod03
+chapter_id: bolum-19
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.*;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> LayoutKarsilastirma <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SwingUtilities</span><span class="op">.</span><span class="fu">invokeLater</span><span class="op">(</span><span class="kw">new</span> <span class="bu">Runnable</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Layout Karsilastirma&quot;</span><span class="op">);</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">600</span><span class="op">,</span> <span class="dv">400</span><span class="op">);</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setLocationRelativeTo</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Ana panel: BorderLayout</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JPanel</span> mainPanel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">BorderLayout</span><span class="op">());</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                <span class="co">// FlowLayout ornegi</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JPanel</span> flowPanel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                flowPanel<span class="op">.</span><span class="fu">setBorder</span><span class="op">(</span><span class="bu">BorderFactory</span><span class="op">.</span><span class="fu">createTitledBorder</span><span class="op">(</span><span class="st">&quot;FlowLayout&quot;</span><span class="op">));</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                flowPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;1&quot;</span><span class="op">));</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>                flowPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;2&quot;</span><span class="op">));</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                flowPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;3&quot;</span><span class="op">));</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>                <span class="co">// GridLayout ornegi (2 satir, 3 sutun)</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JPanel</span> gridPanel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">GridLayout</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">));</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                gridPanel<span class="op">.</span><span class="fu">setBorder</span><span class="op">(</span><span class="bu">BorderFactory</span><span class="op">.</span><span class="fu">createTitledBorder</span><span class="op">(</span><span class="st">&quot;GridLayout 2x3&quot;</span><span class="op">));</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="dv">6</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>                    gridPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Dugme &quot;</span> <span class="op">+</span> i<span class="op">));</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>                <span class="co">// BorderLayout ornegi (zaten ana panel BorderLayout)</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JPanel</span> borderPanel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">BorderLayout</span><span class="op">());</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>                borderPanel<span class="op">.</span><span class="fu">setBorder</span><span class="op">(</span><span class="bu">BorderFactory</span><span class="op">.</span><span class="fu">createTitledBorder</span><span class="op">(</span><span class="st">&quot;BorderLayout&quot;</span><span class="op">));</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>                borderPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;NORTH&quot;</span><span class="op">),</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">NORTH</span><span class="op">);</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>                borderPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;SOUTH&quot;</span><span class="op">),</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">SOUTH</span><span class="op">);</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>                borderPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;EAST&quot;</span><span class="op">),</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">EAST</span><span class="op">);</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                borderPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;WEST&quot;</span><span class="op">),</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">WEST</span><span class="op">);</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>                borderPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;CENTER&quot;</span><span class="op">),</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">CENTER</span><span class="op">);</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Ana panele ekle</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>                mainPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>flowPanel<span class="op">,</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">NORTH</span><span class="op">);</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>                mainPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>gridPanel<span class="op">,</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">CENTER</span><span class="op">);</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>                mainPanel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>borderPanel<span class="op">,</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">SOUTH</span><span class="op">);</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>mainPanel<span class="op">);</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Aciklama:</strong>
+- <code>BorderFactory.createTitledBorder("...")</code>: Panelin etrafina baslikli bir kenarlik ekler. Bu, goruntu acisindan hangi layout’un kullanildigini ayirt etmeyi kolaylastirir.
+- Her bir layout ornegi, kendi JPanel’i icinde olusturulmus ve ana panele eklenmistir.</p>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> Layout yoneticisi secimi, uygulamanizin goruntusu ve kullanici deneyimi uzerinde buyuk etkiye sahiptir. Basit arayuzler icin FlowLayout veya GridLayout yeterli olabilirken, karmasik arayuzler icin BorderLayout ve GridBagLayout kombinasyonu kullanilir. Ilerleyen bolumlerde, uygulama ihtiyaclarina gore dogru layout’u secme stratejilerini ogreneceksiniz.</p>
+</blockquote>
+</section>
+</section>
+<section id="olay-isleme-event-handling" class="level2">
+<h2>19.6 Olay Isleme (Event Handling)</h2>
+<p>Olay isleme, GUI programlamanin en onemli kavramlarindan biridir. Kullanici etkilesimlerine (ornegin, dugmeye tiklamak, metin yazmak) yanit vermek icin olay dinleyicileri kullanilir.</p>
+<section id="actionlistener-ve-actionevent" class="level3">
+<h3>ActionListener ve ActionEvent</h3>
+<p>Bir dugmeye tiklandiginda, bir <code>ActionEvent</code> olayi olusur. Bu olayi yakalamak icin <code>ActionListener</code> arayuzunu uygulayan bir sinif olusturulur ve dugmeye kaydedilir.</p>
+<!-- CODE_META: ActionListener ornegi (anonymous inner class) -->
+<p><strong>Dosya adi:</strong> <code>ActionListenerOrnegi.java</code></p>
+<!-- CODE_META
+id: bolum-19_kod04
+chapter_id: bolum-19
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.*;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionEvent</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionListener</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ActionListenerOrnegi <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SwingUtilities</span><span class="op">.</span><span class="fu">invokeLater</span><span class="op">(</span><span class="kw">new</span> <span class="bu">Runnable</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">@Override</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">run</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;ActionListener Ornegi&quot;</span><span class="op">);</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setLocationRelativeTo</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JPanel</span> panel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JLabel</span> label <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Henuz tiklanmadi.&quot;</span><span class="op">);</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>                <span class="bu">JButton</span> button <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Tikla&quot;</span><span class="op">);</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Anonymous inner class ile ActionListener</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>                button<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span><span class="kw">new</span> <span class="bu">ActionListener</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">@Override</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">actionPerformed</span><span class="op">(</span><span class="bu">ActionEvent</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>                        label<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Dugmeye tiklandi!&quot;</span><span class="op">);</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>                <span class="op">});</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>                panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button<span class="op">);</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>                panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label<span class="op">);</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>panel<span class="op">);</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>                frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="lambda-ifadeleri-ile-olay-isleme" class="level3">
+<h3>Lambda Ifadeleri ile Olay Isleme</h3>
+<p>Java 8 ile gelen lambda ifadeleri, olay isleme kodunu daha kisa ve okunabilir hale getirir.</p>
+<!-- CODE_META: Lambda ifadesi ile ActionListener -->
+<p><strong>Dosya adi:</strong> <code>LambdaOrnegi.java</code></p>
+<!-- CODE_META
+id: bolum-19_kod05
+chapter_id: bolum-19
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.*;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> LambdaOrnegi <span class="op">{</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SwingUtilities</span><span class="op">.</span><span class="fu">invokeLater</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Lambda Ornegi&quot;</span><span class="op">);</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setLocationRelativeTo</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JPanel</span> panel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JLabel</span> label <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Henuz tiklanmadi.&quot;</span><span class="op">);</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JButton</span> button <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Tikla&quot;</span><span class="op">);</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Lambda ifadesi</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>            button<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>e <span class="op">-&gt;</span> label<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Lambda ile tiklandi!&quot;</span><span class="op">));</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button<span class="op">);</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label<span class="op">);</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>panel<span class="op">);</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Aciklama:</strong>
+- Lambda ifadesi <code>e -&gt; label.setText("Lambda ile tiklandi!")</code>, <code>actionPerformed</code> metodunun govdesini temsil eder. <code>e</code> parametresi, <code>ActionEvent</code> nesnesidir.
+- Bu yontem, kodun daha az ve daha anlasilir olmasini saglar.</p>
+</section>
+<section id="birden-fazla-bilesen-icin-olay-isleme" class="level3">
+<h3>Birden Fazla Bilesen Icin Olay Isleme</h3>
+<p>Bazen ayni dinleyiciyi birden fazla bilesene kaydetmek isteyebilirsiniz. Bunun icin, <code>ActionEvent</code> nesnesinin <code>getSource()</code> metodu kullanilarak hangi bilesenin olayi olusturdugu tespit edilebilir.</p>
+<!-- CODE_META: Birden fazla dugme icin tek dinleyici -->
+<p><strong>Dosya adi:</strong> <code>CokluDugmeOrnegi.java</code></p>
+<!-- CODE_META
+id: bolum-19_kod06
+chapter_id: bolum-19
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.*;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionEvent</span><span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionListener</span><span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CokluDugmeOrnegi <span class="op">{</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SwingUtilities</span><span class="op">.</span><span class="fu">invokeLater</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Coklu Dugme Ornegi&quot;</span><span class="op">);</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setLocationRelativeTo</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JPanel</span> panel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FlowLayout</span><span class="op">());</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JLabel</span> label <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Hicbir dugmeye tiklanmadi.&quot;</span><span class="op">);</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JButton</span> button1 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Bir&quot;</span><span class="op">);</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JButton</span> button2 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Iki&quot;</span><span class="op">);</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JButton</span> button3 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Uc&quot;</span><span class="op">);</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Ortak ActionListener</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>            <span class="bu">ActionListener</span> commonListener <span class="op">=</span> <span class="kw">new</span> <span class="bu">ActionListener</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">@Override</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                <span class="kw">public</span> <span class="dt">void</span> <span class="fu">actionPerformed</span><span class="op">(</span><span class="bu">ActionEvent</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">JButton</span> source <span class="op">=</span> <span class="op">(</span><span class="bu">JButton</span><span class="op">)</span> e<span class="op">.</span><span class="fu">getSource</span><span class="op">();</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>                    label<span class="op">.</span><span class="fu">setText</span><span class="op">(</span>source<span class="op">.</span><span class="fu">getText</span><span class="op">()</span> <span class="op">+</span> <span class="st">&quot; dugmesine tiklandi!&quot;</span><span class="op">);</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>            <span class="op">};</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Tum dugmelere ayni dinleyiciyi ekle</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>            button1<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>commonListener<span class="op">);</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>            button2<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>commonListener<span class="op">);</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>            button3<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>commonListener<span class="op">);</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button1<span class="op">);</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button2<span class="op">);</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>button3<span class="op">);</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label<span class="op">);</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>panel<span class="op">);</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> Lambda ifadeleri, ozellikle basit olay isleme durumlarinda kodu daha temiz hale getirir. Ancak, karmasik islemler icin ayri bir sinif veya anonymous inner class kullanmak daha uygun olabilir. <code>getSource()</code> metodu, ayni dinleyicinin birden fazla bilesen icin kullanilmasi gerektiginde cok kullanislidir.</p>
+</blockquote>
+</section>
+</section>
+<section id="basit-gui-uygulamasi-gelistirme-hesap-makinesi" class="level2">
+<h2>19.7 Basit GUI Uygulamasi Gelistirme: Hesap Makinesi</h2>
+<p>Simdiye kadar ogrendiklerimizi kullanarak basit bir hesap makinesi uygulamasi gelistirelim. Bu uygulama, iki sayi girisi, toplama, cikarma, carpma ve bolme islemlerini gerceklestirecektir.</p>
+<section id="tasarim" class="level3">
+<h3>Tasarim</h3>
+<p>Uygulama su bilesenlerden olusacaktir:
+- Iki adet <code>JTextField</code> (sayi girisi icin)
+- Bir adet <code>JComboBox</code> (islem secimi icin: +, -, *, /)
+- Bir adet <code>JButton</code> (hesapla)
+- Bir adet <code>JLabel</code> (sonuc gostermek icin)</p>
+<p>Layout olarak <code>GridBagLayout</code> kullanarak bilesenleri duzenleyecegiz.</p>
+</section>
+<section id="kodlama" class="level3">
+<h3>Kodlama</h3>
+<!-- CODE_META: Basit Hesap Makinesi Uygulamasi -->
+<p><strong>Dosya adi:</strong> <code>HesapMakinesi.java</code></p>
+<!-- CODE_META
+id: bolum-19_kod07
+chapter_id: bolum-19
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.*;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionEvent</span><span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.</span><span class="im">event</span><span class="op">.</span><span class="im">ActionListener</span><span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> HesapMakinesi <span class="op">{</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SwingUtilities</span><span class="op">.</span><span class="fu">invokeLater</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Basit Hesap Makinesi&quot;</span><span class="op">);</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">200</span><span class="op">);</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setLocationRelativeTo</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            <span class="co">// GridBagLayout ile duzen</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JPanel</span> panel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JPanel</span><span class="op">(</span><span class="kw">new</span> <span class="bu">GridBagLayout</span><span class="op">());</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">GridBagConstraints</span> gbc <span class="op">=</span> <span class="kw">new</span> <span class="bu">GridBagConstraints</span><span class="op">();</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">insets</span> <span class="op">=</span> <span class="kw">new</span> <span class="bu">Insets</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">5</span><span class="op">);</span> <span class="co">// Kenar bosluklari</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Bilesenler</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JLabel</span> label1 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Sayi 1:&quot;</span><span class="op">);</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JTextField</span> textField1 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JLabel</span> label2 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Sayi 2:&quot;</span><span class="op">);</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JTextField</span> textField2 <span class="op">=</span> <span class="kw">new</span> <span class="bu">JTextField</span><span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JLabel</span> labelIslem <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Islem:&quot;</span><span class="op">);</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>            <span class="bu">String</span><span class="op">[]</span> islemler <span class="op">=</span> <span class="op">{</span><span class="st">&quot;+&quot;</span><span class="op">,</span> <span class="st">&quot;-&quot;</span><span class="op">,</span> <span class="st">&quot;*&quot;</span><span class="op">,</span> <span class="st">&quot;/&quot;</span><span class="op">};</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JComboBox</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span> comboBox <span class="op">=</span> <span class="kw">new</span> <span class="bu">JComboBox</span><span class="op">&lt;&gt;(</span>islemler<span class="op">);</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JButton</span> hesaplaButton <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Hesapla&quot;</span><span class="op">);</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JLabel</span> sonucLabel <span class="op">=</span> <span class="kw">new</span> <span class="bu">JLabel</span><span class="op">(</span><span class="st">&quot;Sonuc: &quot;</span><span class="op">);</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Bilesenleri panele ekle</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Satir 0: Sayi 1</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> gbc<span class="op">.</span><span class="fu">gridy</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label1<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>textField1<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Satir 1: Sayi 2</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> gbc<span class="op">.</span><span class="fu">gridy</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>label2<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>textField2<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Satir 2: Islem</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> gbc<span class="op">.</span><span class="fu">gridy</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>labelIslem<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>comboBox<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Satir 3: Hesapla butonu</span></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> gbc<span class="op">.</span><span class="fu">gridy</span> <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridwidth</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> <span class="co">// Iki sutunu kapla</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">fill</span> <span class="op">=</span> <span class="bu">GridBagConstraints</span><span class="op">.</span><span class="fu">HORIZONTAL</span><span class="op">;</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>hesaplaButton<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Satir 4: Sonuc</span></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridx</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> gbc<span class="op">.</span><span class="fu">gridy</span> <span class="op">=</span> <span class="dv">4</span><span class="op">;</span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>            gbc<span class="op">.</span><span class="fu">gridwidth</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>            panel<span class="op">.</span><span class="fu">add</span><span class="op">(</span>sonucLabel<span class="op">,</span> gbc<span class="op">);</span></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Olay isleme</span></span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>            hesaplaButton<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span><span class="kw">new</span> <span class="bu">ActionListener</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>                <span class="at">@Override</span></span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>                <span class="kw">public</span> <span class="dt">void</span> <span class="fu">actionPerformed</span><span class="op">(</span><span class="bu">ActionEvent</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">try</span> <span class="op">{</span></span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">double</span> sayi1 <span class="op">=</span> <span class="bu">Double</span><span class="op">.</span><span class="fu">parseDouble</span><span class="op">(</span>textField1<span class="op">.</span><span class="fu">getText</span><span class="op">());</span></span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">double</span> sayi2 <span class="op">=</span> <span class="bu">Double</span><span class="op">.</span><span class="fu">parseDouble</span><span class="op">(</span>textField2<span class="op">.</span><span class="fu">getText</span><span class="op">());</span></span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">String</span> islem <span class="op">=</span> <span class="op">(</span><span class="bu">String</span><span class="op">)</span> comboBox<span class="op">.</span><span class="fu">getSelectedItem</span><span class="op">();</span></span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">double</span> sonuc <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">switch</span> <span class="op">(</span>islem<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">case</span> <span class="st">&quot;+&quot;</span><span class="op">:</span> sonuc <span class="op">=</span> sayi1 <span class="op">+</span> sayi2<span class="op">;</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">case</span> <span class="st">&quot;-&quot;</span><span class="op">:</span> sonuc <span class="op">=</span> sayi1 <span class="op">-</span> sayi2<span class="op">;</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">case</span> <span class="st">&quot;*&quot;</span><span class="op">:</span> sonuc <span class="op">=</span> sayi1 <span class="op">*</span> sayi2<span class="op">;</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">case</span> <span class="st">&quot;/&quot;</span><span class="op">:</span></span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>                                <span class="cf">if</span> <span class="op">(</span>sayi2 <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>                                    <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">showMessageDialog</span><span class="op">(</span>frame<span class="op">,</span> <span class="st">&quot;Bir sayi sifira bolunemez!&quot;</span><span class="op">,</span> <span class="st">&quot;Hata&quot;</span><span class="op">,</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">ERROR_MESSAGE</span><span class="op">);</span></span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a>                                    <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a>                                <span class="op">}</span></span>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a>                                sonuc <span class="op">=</span> sayi1 <span class="op">/</span> sayi2<span class="op">;</span></span>
+<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a>                                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>                        sonucLabel<span class="op">.</span><span class="fu">setText</span><span class="op">(</span><span class="st">&quot;Sonuc: &quot;</span> <span class="op">+</span> sonuc<span class="op">);</span></span>
+<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">NumberFormatException</span> ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">showMessageDialog</span><span class="op">(</span>frame<span class="op">,</span> <span class="st">&quot;Gecerli bir sayi giriniz!&quot;</span><span class="op">,</span> <span class="st">&quot;Hata&quot;</span><span class="op">,</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">ERROR_MESSAGE</span><span class="op">);</span></span>
+<span id="cb8-86"><a href="#cb8-86" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
+<span id="cb8-87"><a href="#cb8-87" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a>            <span class="op">});</span></span>
+<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>panel<span class="op">);</span></span>
+<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Aciklama:</strong>
+- <code>GridBagConstraints</code> ile her bilesenin konumu (gridx, gridy), kapsadigi sutun sayisi (gridwidth) ve dolgu (fill) ayarlanir.
+- <code>insets</code> ile bilesenler arasindaki bosluk ayarlanir.
+- <code>JOptionPane.showMessageDialog()</code> ile hata mesaji gosterilir.
+- <code>try-catch</code> blogu ile gecersiz sayi girisi kontrol edilir.</p>
+</section>
+<section id="uygulamanin-calistirilmasi-ve-test-edilmesi" class="level3">
+<h3>Uygulamanin Calistirilmasi ve Test Edilmesi</h3>
+<p>Uygulamayi calistirdiginizda, karsiniza asagidaki gibi bir pencere cikacaktir:</p>
+<pre><code>Sayi 1: [10]
+Sayi 2: [5]
+Islem: [*]
+[ Hesapla ]
+Sonuc: 50.0</code></pre>
+<p>Test senaryolari:
+1. Gecerli sayilar ve islem secimi ile dogru sonuc alinmali.
+2. Sifira bolme durumunda hata mesaji gosterilmeli.
+3. Gecersiz giris (ornegin harf) durumunda hata mesaji gosterilmeli.</p>
+<blockquote>
+<p><strong>Pedagojik Not:</strong> Bu ornek, temel GUI bilesenlerinin, layout yoneticisinin ve olay isleme mekanizmasinin birlikte nasil kullanilacagini gostermektedir. Uygulamayi daha da gelistirebilirsiniz: ornegin, klavye kisa yollari ekleyebilir, daha fazla islem (us alma, karekok) ekleyebilir veya gecmis islemleri gosterebilirsiniz.</p>
+</blockquote>
+</section>
+</section>
+<section id="ileri-seviye-konulara-giris" class="level2">
+<h2>19.8 Ileri Seviye Konulara Giris</h2>
+<p>Bu bolumde, Swing ile ilgili daha ileri seviye konulara kisaca deginecegiz. Bu konular, daha profesyonel ve karmasik uygulamalar gelistirmek icin onemlidir.</p>
+<section id="menuler-ve-toolbar" class="level3">
+<h3>Menuler ve Toolbar</h3>
+<ul>
+<li><strong>JMenuBar</strong>, <strong>JMenu</strong>, <strong>JMenuItem</strong>: Ust menuler olusturmak icin kullanilir.</li>
+<li><strong>JToolBar</strong>: Araclik cubugu olusturmak icin kullanilir.</li>
+</ul>
+<!-- CODE_META: Menu ve Toolbar ornegi -->
+<p><strong>Dosya adi:</strong> <code>MenuOrnegi.java</code></p>
+<!-- CODE_META
+id: bolum-19_kod08
+chapter_id: bolum-19
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb10"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">javax</span><span class="op">.</span><span class="im">swing</span><span class="op">.*;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">awt</span><span class="op">.*;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MenuOrnegi <span class="op">{</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">SwingUtilities</span><span class="op">.</span><span class="fu">invokeLater</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="op">{</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JFrame</span> frame <span class="op">=</span> <span class="kw">new</span> <span class="bu">JFrame</span><span class="op">(</span><span class="st">&quot;Menu Ornegi&quot;</span><span class="op">);</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setDefaultCloseOperation</span><span class="op">(</span><span class="bu">JFrame</span><span class="op">.</span><span class="fu">EXIT_ON_CLOSE</span><span class="op">);</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setSize</span><span class="op">(</span><span class="dv">400</span><span class="op">,</span> <span class="dv">300</span><span class="op">);</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setLocationRelativeTo</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Menu bar</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JMenuBar</span> menuBar <span class="op">=</span> <span class="kw">new</span> <span class="bu">JMenuBar</span><span class="op">();</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Dosya menusu</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JMenu</span> dosyaMenu <span class="op">=</span> <span class="kw">new</span> <span class="bu">JMenu</span><span class="op">(</span><span class="st">&quot;Dosya&quot;</span><span class="op">);</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JMenuItem</span> yeniItem <span class="op">=</span> <span class="kw">new</span> <span class="bu">JMenuItem</span><span class="op">(</span><span class="st">&quot;Yeni&quot;</span><span class="op">);</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JMenuItem</span> acItem <span class="op">=</span> <span class="kw">new</span> <span class="bu">JMenuItem</span><span class="op">(</span><span class="st">&quot;Ac&quot;</span><span class="op">);</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JMenuItem</span> cikisItem <span class="op">=</span> <span class="kw">new</span> <span class="bu">JMenuItem</span><span class="op">(</span><span class="st">&quot;Cikis&quot;</span><span class="op">);</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>            cikisItem<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>e <span class="op">-&gt;</span> <span class="bu">System</span><span class="op">.</span><span class="fu">exit</span><span class="op">(</span><span class="dv">0</span><span class="op">));</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>            dosyaMenu<span class="op">.</span><span class="fu">add</span><span class="op">(</span>yeniItem<span class="op">);</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>            dosyaMenu<span class="op">.</span><span class="fu">add</span><span class="op">(</span>acItem<span class="op">);</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>            dosyaMenu<span class="op">.</span><span class="fu">addSeparator</span><span class="op">();</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>            dosyaMenu<span class="op">.</span><span class="fu">add</span><span class="op">(</span>cikisItem<span class="op">);</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Yardim menusu</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JMenu</span> yardimMenu <span class="op">=</span> <span class="kw">new</span> <span class="bu">JMenu</span><span class="op">(</span><span class="st">&quot;Yardim&quot;</span><span class="op">);</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JMenuItem</span> hakkimizdaItem <span class="op">=</span> <span class="kw">new</span> <span class="bu">JMenuItem</span><span class="op">(</span><span class="st">&quot;Hakkimizda&quot;</span><span class="op">);</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>            yardimMenu<span class="op">.</span><span class="fu">add</span><span class="op">(</span>hakkimizdaItem<span class="op">);</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>            menuBar<span class="op">.</span><span class="fu">add</span><span class="op">(</span>dosyaMenu<span class="op">);</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>            menuBar<span class="op">.</span><span class="fu">add</span><span class="op">(</span>yardimMenu<span class="op">);</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setJMenuBar</span><span class="op">(</span>menuBar<span class="op">);</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Toolbar</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JToolBar</span> toolBar <span class="op">=</span> <span class="kw">new</span> <span class="bu">JToolBar</span><span class="op">();</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JButton</span> yeniButton <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Yeni&quot;</span><span class="op">);</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JButton</span> acButton <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Ac&quot;</span><span class="op">);</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>            toolBar<span class="op">.</span><span class="fu">add</span><span class="op">(</span>yeniButton<span class="op">);</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>            toolBar<span class="op">.</span><span class="fu">add</span><span class="op">(</span>acButton<span class="op">);</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>            toolBar<span class="op">.</span><span class="fu">addSeparator</span><span class="op">();</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>            <span class="bu">JButton</span> cikisButton <span class="op">=</span> <span class="kw">new</span> <span class="bu">JButton</span><span class="op">(</span><span class="st">&quot;Cikis&quot;</span><span class="op">);</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>            cikisButton<span class="op">.</span><span class="fu">addActionListener</span><span class="op">(</span>e <span class="op">-&gt;</span> <span class="bu">System</span><span class="op">.</span><span class="fu">exit</span><span class="op">(</span><span class="dv">0</span><span class="op">));</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>            toolBar<span class="op">.</span><span class="fu">add</span><span class="op">(</span>cikisButton<span class="op">);</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">add</span><span class="op">(</span>toolBar<span class="op">,</span> <span class="bu">BorderLayout</span><span class="op">.</span><span class="fu">NORTH</span><span class="op">);</span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>            frame<span class="op">.</span><span class="fu">setVisible</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>        <span class="op">});</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="diyalog-kutulari-joptionpane" class="level3">
+<h3>Diyalog Kutulari (JOptionPane)</h3>
+<p><code>JOptionPane</code> sinifi, basit diyalog kutulari olusturmak icin kullanilir. Ornegin, bilgi mesaji, uyari, hata, onay veya giris diyaloglari.</p>
+<!-- CODE_META
+id: bolum-19_kod09
+chapter_id: bolum-19
+kind: example
+title: "Kod 9"
+file: "Ornek08.java"
+mainClass: Ornek08
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Bilgi mesaji</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">showMessageDialog</span><span class="op">(</span>frame<span class="op">,</span> <span class="st">&quot;Islem basarili!&quot;</span><span class="op">,</span> <span class="st">&quot;Bilgi&quot;</span><span class="op">,</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">INFORMATION_MESSAGE</span><span class="op">);</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Onay diyalogu</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> secim <span class="op">=</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">showConfirmDialog</span><span class="op">(</span>frame<span class="op">,</span> <span class="st">&quot;Emin misiniz?&quot;</span><span class="op">,</span> <span class="st">&quot;Onay&quot;</span><span class="op">,</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">YES_NO_OPTION</span><span class="op">);</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>secim <span class="op">==</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">YES_OPTION</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Islem yap</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">// Giris diyalogu</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> girilenDeger <span class="op">=</span> <span class="bu">JOptionPane</span><span class="op">.</span><span class="fu">showInputDialog</span><span class="op">(</span>frame<span class="op">,</span> <span class="st">&quot;Adinizi giriniz:&quot;</span><span class="op">);</span></span></code></pre></div>
+</section>
+<section id="gorsel-tasarim-araclari-windowbuilder" class="level3">
+<h3>Gorsel Tasarim Araclari (WindowBuilder)</h3>
+<p>IDE’ler, Swing uygulamalari icin gorsel tasarim araclari sunar. Ornegin, Eclipse’de WindowBuilder eklentisi veya NetBeans’de GUI Builder. Bu araclar, surukle-birak yontemiyle arayuz tasarlamanizi ve otomatik kod olusturmanizi saglar. Ancak, otomatik olusturulan kodun okunabilirligi ve bakimi zor olabilir. Bu nedenle, temel kavramlari ogrendikten sonra bu araclari kullanmaniz daha faydali olacaktir.</p>
+</section>
+</section>
+<section id="ozet-ve-degerlendirme" class="level2">
+<h2>19.9 Ozet ve Degerlendirme</h2>
+<p>Bu bolumde, Java Swing kutuphanesi ile GUI programlamanin temellerini ogrendiniz. JFrame, JPanel, layout yoneticileri ve olay isleme mekanizmalarini kullanarak basit bir hesap makinesi uygulamasi gelistirdiniz.</p>
+<section id="anahtar-kavramlar" class="level3">
+<h3>Anahtar Kavramlar</h3>
+<ul>
+<li><strong>GUI</strong>: Grafiksel Kullanici Arayuzu</li>
+<li><strong>Swing</strong>: Java’nin platformdan bagimsiz GUI kutuphanesi</li>
+<li><strong>JFrame</strong>: Ana uygulama penceresi</li>
+<li><strong>JPanel</strong>: Bilesenleri gruplamak icin kullanilan kap</li>
+<li><strong>Layout Yoneticisi</strong>: Bilesenlerin konum ve boyutlarini belirleyen mekanizma</li>
+<li><strong>Olay Isleme</strong>: Kullanici etkilesimlerine yanit verme mekanizmasi</li>
+<li><strong>Event Dispatch Thread (EDT)</strong>: Swing bilesenlerinin olusturuldugu ve guncellendigi ozel thread</li>
+</ul>
+</section>
+<section id="terim-sozlugu" class="level3">
+<h3>Terim Sozlugu</h3>
+<table>
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 58%" />
+</colgroup>
+<thead>
+<tr>
+<th>Terim</th>
+<th>Aciklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Component</strong></td>
+<td>Gorsel bir GUI bileseni (ornegin, dugme, etiket)</td>
+</tr>
+<tr>
+<td><strong>Container</strong></td>
+<td>Bilesenleri icerebilen ozel bir component (ornegin, JPanel)</td>
+</tr>
+<tr>
+<td><strong>Layout</strong></td>
+<td>Bilesenlerin duzenlenme sekli</td>
+</tr>
+<tr>
+<td><strong>Event</strong></td>
+<td>Kullanici eylemi sonucu olusan sinyal</td>
+</tr>
+<tr>
+<td><strong>Listener</strong></td>
+<td>Bir olayi dinleyen ve isleyen arayuz</td>
+</tr>
+<tr>
+<td><strong>Anonymous Inner Class</strong></td>
+<td>Isimsiz, tek kullanimlik ic sinif</td>
+</tr>
+<tr>
+<td><strong>Lambda Expression</strong></td>
+<td>Java 8 ile gelen, fonksiyonel programlama destegi</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sorular" class="level3">
+<h3>Sorular</h3>
+<ol type="1">
+<li><strong>Swing ile AWT arasindaki temel farklar nelerdir?</strong></li>
+<li><strong>JFrame’in <code>setDefaultCloseOperation()</code> metodu hangi degerleri alabilir? Her birinin anlami nedir?</strong></li>
+<li><strong>FlowLayout, BorderLayout ve GridLayout arasindaki temel farklari aciklayin.</strong></li>
+<li><strong>ActionListener arayuzu hangi metodu icerir? Lambda ifadesi ile nasil kullanilir?</strong></li>
+<li><strong>Hesap makinesi uygulamasinda sifira bolme hatasi nasil ele alinmistir? Kendi uygulamanizda farkli bir hata yonetimi nasil yapardiniz?</strong></li>
+</ol>
+</section>
+<section id="alistirmalar" class="level3">
+<h3>Alistirmalar</h3>
+<ol type="1">
+<li><p><strong>Kisisel Bilgi Formu Uygulamasi:</strong> Ad, soyad, yas, e-posta gibi bilgileri girmek icin bir GUI uygulamasi gelistirin. Formda JLabel, JTextField, JButton ve JTextArea kullanin. Bilgileri bir JTextArea’da gosterin.</p></li>
+<li><p><strong>Renk Secici Uygulamasi:</strong> Uc adet JSlider (kirmizi, yesil, mavi) kullanarak bir renk karistirici uygulamasi gelistirin. Slider degerlerine gore bir JPanel’in arka plan rengini degistirin.</p></li>
+<li><p><strong>Basit Alisveris Listesi:</strong> Kullanicinin urun adi ve fiyatini girebilecegi, ekleme ve silme islemleri yapabilecegi bir alisveris listesi uygulamasi gelistirin. Toplam fiyati gosteren bir JLabel ekleyin.</p></li>
+<li><p><strong>Hesap Makinesini Gelistirin:</strong> Hesap makinesine klavye kisa yollari (Enter tusu ile hesaplama, Esc tusu ile temizleme) ve us alma islemi ekleyin.</p></li>
+<li><p><strong>Menu ve Toolbar ile Zenginlestirilmis Uygulama:</strong> Hesap makinesine Dosya menusu (Cikis), Duzen menusu (Temizle) ve Yardim menusu (Hakkimizda) ekleyin. Ayrica, bir toolbar ekleyerek sik kullanilan islemleri (toplama, cikarma) hizli erisime acin.</p></li>
+</ol>
+</section>
+</section>
+</section>
+</body>
+</html>

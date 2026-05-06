@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>6. Diziler</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">6. Diziler</h1>
+<p class="subtitle">Java’nın Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#diziler" id="toc-diziler">6. Diziler</a></li>
+<li><a href="#bölüm-6-döngüler-ve-tekrarlı-işlem-mantığı" id="toc-bölüm-6-döngüler-ve-tekrarlı-işlem-mantığı">Bölüm 6: Döngüler ve Tekrarlı İşlem Mantığı</a>
+<ul>
+<li><a href="#for-döngüsü-sayılabilir-tekrarlar-için" id="toc-for-döngüsü-sayılabilir-tekrarlar-için">6.1 for Döngüsü: Sayılabilir Tekrarlar İçin</a></li>
+<li><a href="#for-döngüsünün-yapısı-ve-çalışma-mantığı" id="toc-for-döngüsünün-yapısı-ve-çalışma-mantığı">6.2 for Döngüsünün Yapısı ve Çalışma Mantığı</a></li>
+<li><a href="#for-döngüsü-ile-temel-örnekler" id="toc-for-döngüsü-ile-temel-örnekler">6.3 for Döngüsü ile Temel Örnekler</a></li>
+<li><a href="#for-döngüsünde-farklı-kullanım-şekilleri" id="toc-for-döngüsünde-farklı-kullanım-şekilleri">6.4 for Döngüsünde Farklı Kullanım Şekilleri</a></li>
+<li><a href="#while-döngüsü-ile-pratik-uygulamalar" id="toc-while-döngüsü-ile-pratik-uygulamalar">6.7 while Döngüsü ile Pratik Uygulamalar</a></li>
+<li><a href="#while-döngüsünde-dikkat-edilmesi-gerekenler" id="toc-while-döngüsünde-dikkat-edilmesi-gerekenler">6.8 while Döngüsünde Dikkat Edilmesi Gerekenler</a></li>
+<li><a href="#do-while-döngüsü-en-az-bir-kez-çalışması-gereken-durumlar" id="toc-do-while-döngüsü-en-az-bir-kez-çalışması-gereken-durumlar">6.9 do-while Döngüsü: En Az Bir Kez Çalışması Gereken Durumlar</a></li>
+<li><a href="#do-while-döngüsünün-yapısı-ve-özellikleri" id="toc-do-while-döngüsünün-yapısı-ve-özellikleri">6.10 do-while Döngüsünün Yapısı ve Özellikleri</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="diziler" class="level1">
+<h1>6. Diziler</h1>
+</section>
+<section id="bölüm-6-döngüler-ve-tekrarlı-işlem-mantığı" class="level1">
+<h1>Bölüm 6: Döngüler ve Tekrarlı İşlem Mantığı</h1>
+<p>Bilgisayarların en güçlü yönlerinden biri, aynı işlemi binlerce, hatta milyonlarca kez hatasız bir şekilde tekrarlayabilme yeteneğidir. Bu yeteneği kullanmamızı sağlayan temel yapı ise <strong>döngülerdir (loops)</strong>.</p>
+<p>Döngü, belirli bir koşul sağlandığı sürece bir kod bloğunun tekrar tekrar çalıştırılmasını sağlayan bir kontrol yapısıdır. Döngüler olmasaydı, bir dizideki tüm elemanları işlemek veya bir kullanıcıdan doğru giriş yapana kadar veri almak gibi işlemler için aynı kod satırlarını defalarca yazmak zorunda kalırdık.</p>
+<p><strong>Gerçek Hayattan Döngü Örnekleri:</strong>
+- <strong>Günlük Rutin:</strong> Her sabah uyanmak, kahvaltı yapmak, işe gitmek… Bu bir döngüdür.
+- <strong>Üretim Bandı:</strong> Her bir ürünün aynı işlemlerden geçirilmesi.
+- <strong>Spor:</strong> Belirli bir hareketi 10 kez tekrarlamak.</p>
+<p><strong>Programlamada Döngü Kullanımının Avantajları:</strong>
+- <strong>Kod Tekrarını Azaltma:</strong> Aynı kodu defalarca yazmak yerine, bir döngü içinde bir kez yazarız.
+- <strong>Okunabilirlik:</strong> Döngüler, bir işlemin tekrarlandığını açıkça belirtir, bu da kodu daha anlaşılır kılar.
+- <strong>Bakım Kolaylığı:</strong> Tekrarlanan bir işlemde değişiklik yapmak istediğimizde, sadece döngü içindeki kodu değiştirmemiz yeterlidir.</p>
+<p><strong>Döngü Bileşenleri:</strong>
+Her döngü temel olarak dört bileşenden oluşur:
+1. <strong>Başlangıç Koşulu (Initialization):</strong> Döngü değişkeninin ilk değerinin atandığı kısım.
+2. <strong>Devam Koşulu (Condition):</strong> Döngü gövdesinin çalışıp çalışmayacağını belirleyen mantıksal ifade.
+3. <strong>Güncelleme Adımı (Update):</strong> Döngü değişkeninin her adımda nasıl değişeceğini belirleyen kısım.
+4. <strong>Döngü Gövdesi (Loop Body):</strong> Her tekrarda çalıştırılacak olan kod bloğu.</p>
+<p>Bu bölümde, Java’da bulunan üç temel döngü türünü inceleyeceğiz: <code>for</code>, <code>while</code> ve <code>do-while</code>.</p>
+<section id="for-döngüsü-sayılabilir-tekrarlar-için" class="level2">
+<h2>6.1 for Döngüsü: Sayılabilir Tekrarlar İçin</h2>
+<p><code>for</code> döngüsü, bir işlemin kaç kez tekrarlanacağını önceden bildiğimiz durumlar için idealdir. Başlangıç, koşul ve güncelleme adımlarını tek bir satırda birleştirerek düzenli bir yapı sunar.</p>
+</section>
+<section id="for-döngüsünün-yapısı-ve-çalışma-mantığı" class="level2">
+<h2>6.2 for Döngüsünün Yapısı ve Çalışma Mantığı</h2>
+<p>Bir <code>for</code> döngüsünün sözdizimi aşağıdaki gibidir:</p>
+<!-- CODE_META
+id: donguler_kod01
+chapter_id: donguler
+kind: example
+title: "Kod 1"
+file: "Ornek00.java"
+mainClass: Ornek00
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>baslatma<span class="op">;</span> kosul<span class="op">;</span> guncelleme<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Döngü gövdesi (loop body)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li><strong><code>baslatma</code></strong>: Döngü başlarken bir kez çalıştırılır. Genellikle döngü değişkeninin (<code>int i = 0</code> gibi) tanımlandığı ve ilk değerinin atandığı kısımdır.</li>
+<li><strong><code>kosul</code></strong>: Her adımda kontrol edilen boolean ifadedir. Eğer <code>true</code> ise döngü gövdesi çalışır. <code>false</code> olduğunda döngü sona erer.</li>
+<li><strong><code>guncelleme</code></strong>: Döngü gövdesi her çalıştıktan sonra çalıştırılır. Genellikle döngü değişkeninin değerini artırma (<code>i++</code>) veya azaltma (<code>i--</code>) işlemi için kullanılır.</li>
+</ul>
+<p><strong>Akış Diyagramı:</strong></p>
+<pre><code>[Başlatma] --&gt; [Koşul Kontrolü]
+                   |
+          (Koşul true ise) --&gt; [Döngü Gövdesi] --&gt; [Güncelleme] --&gt; [Koşul Kontrolü]
+                   |
+          (Koşul false ise) --&gt; [Döngüden Çık]</code></pre>
+</section>
+<section id="for-döngüsü-ile-temel-örnekler" class="level2">
+<h2>6.3 for Döngüsü ile Temel Örnekler</h2>
+<blockquote>
+<p><strong>PEDAGOJİK KUTU: İlk Adım</strong>
+Aşağıdaki örnek, bir <code>for</code> döngüsünün en basit halini göstermektedir. Döngü değişkeni <code>i</code>’nin 1’den 10’a kadar nasıl değiştiğine ve her adımda ekrana yazdırıldığına dikkat edin.</p>
+</blockquote>
+<p><strong>Kod Örneği 1: 1’den 10’a Kadar Sayıları Yazdırma</strong></p>
+<!-- CODE_META
+id: donguler_kod02
+chapter_id: donguler
+kind: example
+title: "Kod 2"
+file: "Ornek01.java"
+mainClass: Ornek01
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// SayilariYazdir.java</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SayilariYazdir <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 1&#39;den 10&#39;a kadar olan sayıları yazdır</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sayi: &quot;</span> <span class="op">+</span> i<span class="op">);</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Kod Örneği 2: 1’den n’e Kadar Olan Sayıların Toplamını Hesaplama</strong></p>
+<!-- CODE_META
+id: donguler_kod03
+chapter_id: donguler
+kind: example
+title: "Kod 3"
+file: "Ornek02.java"
+mainClass: Ornek02
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ToplamHesapla.java</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ToplamHesapla <span class="op">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> n <span class="op">=</span> <span class="dv">100</span><span class="op">;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> toplam <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>            toplam <span class="op">+=</span> i<span class="op">;</span>  <span class="co">// toplam = toplam + i;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;1&#39;den &quot;</span> <span class="op">+</span> n <span class="op">+</span> <span class="st">&quot;&#39;e kadar olan sayilarin toplami: &quot;</span> <span class="op">+</span> toplam<span class="op">);</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Kod Örneği 3: Çarpım Tablosu (Tek Döngü ile)</strong></p>
+<!-- CODE_META
+id: donguler_kod04
+chapter_id: donguler
+kind: example
+title: "Kod 4"
+file: "Ornek03.java"
+mainClass: Ornek03
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// CarpimTablosu.java</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CarpimTablosu <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayi <span class="op">=</span> <span class="dv">5</span><span class="op">;</span> <span class="co">// 5&#39;ler çarpım tablosu</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>sayi <span class="op">+</span> <span class="st">&quot;&#39;ler Carpim Tablosu:&quot;</span><span class="op">);</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="dt">int</span> sonuc <span class="op">=</span> sayi <span class="op">*</span> i<span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>sayi <span class="op">+</span> <span class="st">&quot; x &quot;</span> <span class="op">+</span> i <span class="op">+</span> <span class="st">&quot; = &quot;</span> <span class="op">+</span> sonuc<span class="op">);</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="for-döngüsünde-farklı-kullanım-şekilleri" class="level2">
+<h2>6.4 for Döngüsünde Farklı Kullanım Şekilleri</h2>
+<p><code>for</code> döngüsü sadece 1’den başlayıp 1’er artmak zorunda değildir. Çok daha esnek bir yapıya sahiptir.</p>
+<p><strong>Azalan Döngü (Decrement):</strong>
+<!-- CODE_META
+id: donguler_kod05
+chapter_id: donguler
+kind: example
+title: "Kod 5"
+file: "Ornek04.java"
+mainClass: Ornek04
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// GeriSayim.java</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> GeriSayim <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 10&#39;dan 1&#39;e kadar geri say</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">10</span><span class="op">;</span> i <span class="op">&gt;=</span> <span class="dv">1</span><span class="op">;</span> i<span class="op">--)</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>i<span class="op">);</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Geri sayim tamamlandi!&quot;</span><span class="op">);</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Adım Atlamalı Döngü:</strong>
+<!-- CODE_META
+id: donguler_kod06
+chapter_id: donguler
+kind: example
+title: "Kod 6"
+file: "Ornek05.java"
+mainClass: Ornek05
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// CiftSayilar.java</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> CiftSayilar <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 1 ile 20 arasındaki çift sayıları yazdır</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="dv">20</span><span class="op">;</span> i <span class="op">+=</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span>i <span class="op">+</span> <span class="st">&quot; &quot;</span><span class="op">);</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">();</span> <span class="co">// Alt satıra geç</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Döngü Değişkenini Döngü Dışında Tanımlama:</strong>
+<!-- CODE_META
+id: donguler_kod07
+chapter_id: donguler
+kind: example
+title: "Kod 7"
+file: "Ornek06.java"
+mainClass: Ornek06
+extract: true
+test: compile
+github: true
+qr: dual
+--></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// DisardaTanımlama.java</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> DisardaTanimlama <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> i<span class="op">;</span> <span class="co">// Döngü değişkeni dışarıda tanımlandı</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">5</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;i&#39;nin degeri: &quot;</span> <span class="op">+</span> i<span class="op">);</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// i&#39;ye döngüden sonra da erişilebilir</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Donguden sonra i&#39;nin degeri: &quot;</span> <span class="op">+</span> i<span class="op">);</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p><strong>UYARI: Sonsuz Döngü Tehlikesi</strong>
+Eğer <code>for</code> döngüsünün koşul kısmı her zaman <code>true</code> olacak şekilde ayarlanırsa, döngü hiç durmaz. Bu duruma <strong>sonsuz döngü (infinite loop)</strong> denir ve programın donmasına veya çökmesine neden olabilir.</p>
+<!-- CODE_META
+id: donguler_kod08
+chapter_id: donguler
+kind: example
+title: "Kod 8"
+file: "Ornek07.java"
+mainClass: Ornek07
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+</blockquote>
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="co">// Sonsuz dongu ORNEGI (CALISTIRMAYIN!)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">--)</span> <span class="op">{</span> <span class="co">// i sürekli azalıyor, koşul hep true</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span>     <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Sonsuz dongu!&quot;</span><span class="op">);</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">}</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> ```</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>## <span class="fl">6.5</span> <span class="cf">while</span> Döngüsü<span class="op">:</span> Koşul Odaklı Tekrarlar İçin</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>`while` döngüsü<span class="op">,</span> bir işlemin kaç kez tekrarlanacağını önceden bilmediğimiz<span class="op">,</span> ancak belirli bir koşul sağlandığı sürece devam etmesini istediğimiz durumlar için kullanılır<span class="op">.</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>## <span class="fl">6.6</span> <span class="cf">while</span> Döngüsünün Yapısı ve Çalışma Prensibi</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>`while` döngüsünün sözdizimi oldukça basittir<span class="op">:</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;!--</span> CODE_META</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>id<span class="op">:</span> donguler_kod09</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>chapter_id<span class="op">:</span> donguler</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>kind<span class="op">:</span> example</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>title<span class="op">:</span> <span class="st">&quot;Kod 9&quot;</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>file<span class="op">:</span> <span class="st">&quot;Ornek08.java&quot;</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>mainClass<span class="op">:</span> Ornek08</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>extract<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>test<span class="op">:</span> compile</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>github<span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>qr<span class="op">:</span> dual</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="op">--&gt;</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>```java</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>kosul<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Döngü gövdesi</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li><strong><code>kosul</code></strong>: Döngü gövdesine her girmeden önce kontrol edilen boolean ifadedir. Eğer <code>true</code> ise gövde çalışır, <code>false</code> ise döngü sona erer.</li>
+<li><strong>Döngü gövdesi içinde</strong>, koşulu etkileyecek bir değişiklik yapmak (örneğin bir sayaç artırmak) çok önemlidir. Aksi takdirde sonsuz döngü oluşur.</li>
+</ul>
+<p><strong>for ve while Arasındaki Temel Fark:</strong>
+<code>for</code> döngüsü, başlangıç, koşul ve güncelleme adımlarını tek bir yerde toplarken, <code>while</code> döngüsünde bu adımlar genellikle daha dağınıktır. <code>for</code> döngüsü, belirli bir aralıkta ilerlemek için daha uygunken, <code>while</code> döngüsü koşula bağlı çalışmak için daha uygundur.</p>
+<p><strong>Akış Diyagramı:</strong></p>
+<pre><code>[Koşul Kontrolü]
+      |
+(Koşul true ise) --&gt; [Döngü Gövdesi] --&gt; [Koşul Kontrolü]
+      |
+(Koşul false ise) --&gt; [Döngüden Çık]</code></pre>
+</section>
+<section id="while-döngüsü-ile-pratik-uygulamalar" class="level2">
+<h2>6.7 while Döngüsü ile Pratik Uygulamalar</h2>
+<blockquote>
+<p><strong>PEDAGOJİK KUTU: while’ın Gücü</strong>
+<code>while</code> döngüsü, özellikle kullanıcı girdisi gibi dış etkenlere bağlı durumlarda çok kullanışlıdır. Kullanıcı doğru giriş yapana kadar programın beklemesini sağlayabiliriz.</p>
+</blockquote>
+<p><strong>Kod Örneği 1: Kullanıcıdan Alınan Sayıya Kadar Sayma</strong></p>
+<!-- CODE_META
+id: donguler_kod10
+chapter_id: donguler
+kind: example
+title: "Kod 10"
+file: "Ornek09.java"
+mainClass: Ornek09
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// SayiKadarSay.java</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SayiKadarSay <span class="op">{</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> input <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Bir sayi girin: &quot;</span><span class="op">);</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sinir <span class="op">=</span> input<span class="op">.</span><span class="fu">nextInt</span><span class="op">();</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> sayac <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span>sayac <span class="op">&lt;=</span> sinir<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span>sayac <span class="op">+</span> <span class="st">&quot; &quot;</span><span class="op">);</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>            sayac<span class="op">++;</span> <span class="co">// Sayacı artırmazsak sonsuz döngü!</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">();</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        input<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Kod Örneği 2: Kullanıcı Doğru Şifre Girene Kadar Devam Eden Döngü</strong></p>
+<!-- CODE_META
+id: donguler_kod11
+chapter_id: donguler
+kind: example
+title: "Kod 11"
+file: "Ornek10.java"
+mainClass: Ornek10
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb12"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// SifreKontrol.java</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Scanner</span><span class="op">;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SifreKontrol <span class="op">{</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Scanner</span> input <span class="op">=</span> <span class="kw">new</span> <span class="bu">Scanner</span><span class="op">(</span><span class="bu">System</span><span class="op">.</span><span class="fu">in</span><span class="op">);</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> dogruSifre <span class="op">=</span> <span class="st">&quot;java123&quot;</span><span class="op">;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> girilenSifre <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Programa erismek icin sifre giriniz.&quot;</span><span class="op">);</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(!</span>girilenSifre<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>dogruSifre<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Sifre: &quot;</span><span class="op">);</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>            girilenSifre <span class="op">=</span> input<span class="op">.</span><span class="fu">nextLine</span><span class="op">();</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(!</span>girilenSifre<span class="op">.</span><span class="fu">equals</span><span class="op">(</span>dogruSifre<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>                <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Yanlis sifre! Tekrar deneyin.&quot;</span><span class="op">);</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Giris basarili! Hos geldiniz.&quot;</span><span class="op">);</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        input<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Kod Örneği 3: Belirli Bir Koşul Sağlanana Kadar Rastgele Sayı Üretme</strong></p>
+<!-- CODE_META
+id: donguler_kod12
+chapter_id: donguler
+kind: example
+title: "Kod 12"
+file: "Ornek11.java"
+mainClass: Ornek11
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb13"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">// RastgeleSayiUret.java</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Random</span><span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> RastgeleSayiUret <span class="op">{</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">Random</span> random <span class="op">=</span> <span class="kw">new</span> <span class="bu">Random</span><span class="op">();</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> zar<span class="op">;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;6 atana kadar zar atiliyor...&quot;</span><span class="op">);</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">((</span>zar <span class="op">=</span> random<span class="op">.</span><span class="fu">nextInt</span><span class="op">(</span><span class="dv">6</span><span class="op">)</span> <span class="op">+</span> <span class="dv">1</span><span class="op">)</span> <span class="op">!=</span> <span class="dv">6</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Gelen sayi: &quot;</span> <span class="op">+</span> zar<span class="op">);</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;6 geldi! Zar durdu.&quot;</span><span class="op">);</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="while-döngüsünde-dikkat-edilmesi-gerekenler" class="level2">
+<h2>6.8 while Döngüsünde Dikkat Edilmesi Gerekenler</h2>
+<ul>
+<li><strong>Sonsuz Döngüye Düşmemek:</strong> Döngü koşulunu etkileyen bir değişkeni güncellemeyi unutmak, en sık yapılan hatadır. Her zaman döngü gövdesi içinde koşulu <code>false</code> yapacak bir durum oluşturduğunuzdan emin olun.</li>
+<li><strong>Döngüye Hiç Girilmeme Durumu:</strong> Eğer <code>while</code> döngüsünün koşulu en baştan <code>false</code> ise, döngü gövdesi hiç çalıştırılmaz. Bu bazı durumlarda istenen bir davranıştır, ancak farkında olmak gerekir.</li>
+<li><strong>Kullanıcı Girdisine Bağlı Döngülerde Güvenlik:</strong> Kullanıcıdan alınan verilerle çalışırken, programın beklenmedik bir girdi karşısında kırılmaması için gerekli kontrolleri yapmak önemlidir.</li>
+</ul>
+</section>
+<section id="do-while-döngüsü-en-az-bir-kez-çalışması-gereken-durumlar" class="level2">
+<h2>6.9 do-while Döngüsü: En Az Bir Kez Çalışması Gereken Durumlar</h2>
+<p><code>do-while</code> döngüsü, <code>while</code> döngüsüne çok benzer, ancak önemli bir farkı vardır: Koşul, döngü gövdesi <strong>çalıştırıldıktan sonra</strong> kontrol edilir. Bu, döngü gövdesinin en az bir kez çalıştırılmasını garanti eder.</p>
+</section>
+<section id="do-while-döngüsünün-yapısı-ve-özellikleri" class="level2">
+<h2>6.10 do-while Döngüsünün Yapısı ve Özellikleri</h2>
+<p><code>do-while</code> döngüsünün sözdizimi:</p>
+<!-- CODE_META
+id: donguler_kod13
+chapter_id: donguler
+kind: example
+title: "Kod 13"
+file: "Ornek12.java"
+mainClass: Ornek12
+extract: true
+test: compile
+github: true
+qr: dual
+-->
+<div class="sourceCode" id="cb14"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Döngü gövdesi</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">while</span> <span class="op">(</span>kosul<span class="op">);</span></span></code></pre></div>
+<ul>
+<li><strong><code>do</code> anahtar kelimesi</strong> ile başlar, ardından döngü gövdesi gelir.</li>
+</ul>
+</section>
+</section>
+</body>
+</html>

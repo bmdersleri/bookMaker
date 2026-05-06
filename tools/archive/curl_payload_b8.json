@@ -1,0 +1,15 @@
+{
+  "model": "deepseek-chat",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Sen deneyimli bir teknik kitap yazari ve pedagojik icerik uzmanisin. Verilen outline gore eksiksiz bir bolum Markdown metni ureteceksin. Kurallar: 1) YAML front matter ILE BASLA. 2) Basliklar elle numaralandirilmasin. 3) Her kod blogundan once <!-- CODE_META ... --> blogu olsun. 4) Kod ornekleri Java olsun, dosya adi public class adiyla uyumlu olsun. 5) Pedagojik kutular icin blockquote kullan. 6) Bolum sonunda ozet, terim sozlugu, sorular ve alistirmalar olsun."
+    },
+    {
+      "role": "user",
+      "content": "Bolum: Metotlar, Overloading ve Ozyineleme\nAmac: Metot tanimlama, parametre gecisi, overload ve recursive metot yapisini ogretmek\nOutline:\n# Metotlar, Overloading ve Ozyineleme\n## 1. Metot Kavrami ve Temel Yapisi\n### 1.1 Metot Imzasi ve Bilesenleri\n### 1.2 Geri Donus Degeri ve Void Metotlar\n### 1.3 Parametre Gecisi: Deger ve Referans Tipleri\n## 2. Metot Overloading\n### 2.1 Overloading Kurallari\n### 2.2 Gercek Hayattan Overloading Ornekleri\n## 3. Ozyineleme (Recursion)\n## 4. Metotlarda Best Practices\nYukaridaki outline'a gore eksiksiz bolum metnini uret."
+    }
+  ],
+  "max_tokens": 8192,
+  "temperature": 0.7
+}

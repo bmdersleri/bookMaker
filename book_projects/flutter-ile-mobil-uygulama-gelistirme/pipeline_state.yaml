@@ -1,0 +1,390 @@
+pipeline:
+  schema_version: "1.0"
+  book_alias: "flutter-ile-mobil-uygulama-gelistirme"
+  current_version: "v001"
+  global_state: "initialized"  # initialized | authoring | review | approved | exporting | completed | blocked
+  created_at: "2026-05-06T00:00:00+03:00"
+  updated_at: "2026-05-06T00:00:00+03:00"
+  active_chapter: "giris"
+  last_completed_chapter: null
+  next_action: "Bölüm 1 için chapters/giris/prompt.md kullanılarak content/draft.md üretilecek."
+
+production_context:
+  producer_model: "deepseek-chat"
+  observer_model: "deepseek-chat"
+  generation_mode: "chapter_based"
+  approval_required: true
+  default_input_policy:
+    use_book_manifest: true
+    use_chapter_manifest: true
+    use_chapter_prompt_if_exists: true
+    fallback_to_default_chapter_prompt: true
+  review_policy:
+    observer_review_required: true
+    fallback_to_default_review_prompt: true
+    minimum_quality_score_for_approval: 85
+
+quality_gates:
+  per_chapter:
+    manifest_exists: true
+    draft_required: true
+    review_required_before_final: true
+    final_required_for_export: true
+    unresolved_placeholders_allowed: false
+    code_meta_required_for_extractable_code: true
+    screenshot_marker_required: true
+  book_level:
+    chapter_order_from_book_manifest: true
+    chapter_alias_references_only: true
+    no_framework_files_inside_project: true
+    exports_stay_inside_project: true
+
+chapters:
+  - alias: "giris"
+    order: 1
+    status:
+      state: "pending"             # pending | draft | review | revision | approved | exported | blocked
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "dart-temelleri"
+    order: 2
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "widget-mantigi"
+    order: 3
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "layout-sistemi"
+    order: 4
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "etkilesim-formlar"
+    order: 5
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "listeleme-dinamik-arayuzler"
+    order: 6
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "navigation-route"
+    order: 7
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "state-management"
+    order: 8
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "async-api-json"
+    order: 9
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "yerel-veri-saklama"
+    order: 10
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "tema-responsive-erisilebilirlik"
+    order: 11
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "paketler-pluginler"
+    order: 12
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "bulut-tabanli-uygulama"
+    order: 13
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "test-debugging"
+    order: 14
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "performans-yayinlama"
+    order: 15
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+  - alias: "final-proje"
+    order: 16
+    status:
+      state: "pending"
+      draft_generated: false
+      review_completed: false
+      revision_required: false
+      final_approved: false
+      exported: false
+      quality_score: null
+      last_review: null
+      last_updated: null
+      issues: []
+      suggestions: []
+    automation:
+      code_extraction_done: false
+      code_tests_done: false
+      screenshots_done: false
+      qr_generation_done: false
+      github_links_patched: false
+
+export_state:
+  merged_markdown_generated: false
+  docx_generated: false
+  pdf_generated: false
+  last_export_version: null
+  last_exported_at: null
+  included_chapters: []
+
+history:
+  - at: "2026-05-06T00:00:00+03:00"
+    event: "pipeline_initialized"
+    note: "pipeline_state.yaml oluşturuldu."

@@ -1,0 +1,58 @@
+chapter:
+  title: Test, Debugging ve Hata Yönetimi
+  alias: test-debugging
+  order: 14
+  references:
+  - alias: bulut-tabanli-uygulama
+    relation: prerequisite
+  - alias: performans-yayinlama
+    relation: next
+scope:
+  topics:
+  - Unit test
+  - Widget test
+  - Integration test
+  - Flutter DevTools
+  - Debugging
+  - Logging
+  - Error states
+  objectives:
+  - Okuyucu unit test ve widget test ayrımını açıklayabilmeli.
+  - Basit widget testi yazabilmeli.
+  - flutter analyze ve flutter test çıktılarını yorumlayabilmeli.
+  exclusions:
+  - Tam kapsamlı CI/CD
+  - Golden test ileri ayrıntıları
+  mini_project: Test edilebilir form ve liste uygulaması
+structure:
+  sections:
+  - title: Bölümün Yol Haritası
+    type: text
+  - title: Kavramsal Açıklama
+    type: text
+  - title: Temel Örnek
+    type: text+code
+  - title: Çalışan Mini Uygulama
+    type: text+code+screenshot
+  - title: Sık Yapılan Hatalar
+    type: text
+  - title: Bölüm Sonu Laboratuvarı
+    type: exercise
+  - title: Özet
+    type: text
+  estimated_pages: 24
+  code_examples_count: 7
+  screenshot_examples_count: 1
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  default_code_language: dart
+  default_framework: flutter
+  validation_modes:
+  - flutter_analyze
+  - flutter_test
+  - widget_test
+  - screenshot_only
+  - review_only
+  github_export: true
+  qr_policy: dual

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Teknik Kitap Ekibi" />
+  <meta name="dcterms.date" content="2025-01-01" />
+  <meta name="keywords" content="Spring Boot, Final Proje, Butunlesik Uygulama, Java, REST API, DevOps" />
+  <title>23. Java'nin Gelecegi ve Yeni Ozellikler</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">23. Java'nin Gelecegi ve Yeni Ozellikler</h1>
+<p class="subtitle">Spring Boot ile Kapsamli Bir Uygulama Gelistirme</p>
+<p class="author">Teknik Kitap Ekibi</p>
+<p class="date">2025-01-01</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#javanin-gelecegi-ve-yeni-ozellikler" id="toc-javanin-gelecegi-ve-yeni-ozellikler">23. Java’nin Gelecegi ve Yeni Ozellikler</a></li>
+<li><a href="#bölüm-23-butunlesik-uygulama-ve-final-proje-rehberi" id="toc-bölüm-23-butunlesik-uygulama-ve-final-proje-rehberi">Bölüm 23: Butunlesik Uygulama ve Final Proje Rehberi</a>
+<ul>
+<li><a href="#proje-amaci-ve-kapsami" id="toc-proje-amaci-ve-kapsami">23.1 Proje Amaci ve Kapsami</a></li>
+<li><a href="#proje-gereksinimleri" id="toc-proje-gereksinimleri">23.2 Proje Gereksinimleri</a></li>
+<li><a href="#teknolojik-yigin" id="toc-teknolojik-yigin">23.3 Teknolojik Yigin</a></li>
+<li><a href="#proje-mimarisi" id="toc-proje-mimarisi">23.4 Proje Mimarisi</a></li>
+<li><a href="#genel-mimari-yapi" id="toc-genel-mimari-yapi">23.5 Genel Mimari Yapi</a></li>
+<li><a href="#bilesenler-arasi-iletisim" id="toc-bilesenler-arasi-iletisim">23.7 Bilesenler Arasi Iletisim</a></li>
+<li><a href="#veri-katmani-data-layer" id="toc-veri-katmani-data-layer">23.8 Veri Katmani (Data Layer)</a></li>
+<li><a href="#veritabani-tasarimi" id="toc-veritabani-tasarimi">23.9 Veritabani Tasarimi</a></li>
+<li><a href="#repository-katmani" id="toc-repository-katmani">23.11 Repository Katmani</a></li>
+<li><a href="#is-mantigi-katmani-business-layer" id="toc-is-mantigi-katmani-business-layer">23.12 Is Mantigi Katmani (Business Layer)</a></li>
+<li><a href="#servis-siniflari-ve-is-akislari" id="toc-servis-siniflari-ve-is-akislari">23.13 Servis Siniflari ve Is Akislari</a></li>
+<li><a href="#validation-ve-exception-handling" id="toc-validation-ve-exception-handling">23.14 Validation ve Exception Handling</a></li>
+<li><a href="#transaction-yonetimi" id="toc-transaction-yonetimi">23.15 Transaction Yonetimi</a></li>
+<li><a href="#sunum-katmani-presentation-layer" id="toc-sunum-katmani-presentation-layer">23.16 Sunum Katmani (Presentation Layer)</a></li>
+<li><a href="#rest-api-tasarimi" id="toc-rest-api-tasarimi">23.17 REST API Tasarimi</a></li>
+<li><a href="#controller-ve-dtolar" id="toc-controller-ve-dtolar">23.18 Controller ve DTO’lar</a></li>
+<li><a href="#swaggeropenapi-dokumantasyonu" id="toc-swaggeropenapi-dokumantasyonu">23.19 Swagger/OpenAPI Dokumantasyonu</a></li>
+<li><a href="#guvenlik-katmani-security-layer" id="toc-guvenlik-katmani-security-layer">23.20 Guvenlik Katmani (Security Layer)</a></li>
+<li><a href="#spring-security-yapilandirmasi" id="toc-spring-security-yapilandirmasi">23.21 Spring Security Yapilandirmasi</a></li>
+<li><a href="#jwt-token-yonetimi" id="toc-jwt-token-yonetimi">23.22 JWT Token Yonetimi</a></li>
+<li><a href="#role-based-yetkilendirme" id="toc-role-based-yetkilendirme">23.23 Role-Based Yetkilendirme</a></li>
+<li><a href="#test-katmani" id="toc-test-katmani">23.24 Test Katmani</a></li>
+<li><a href="#unit-testler-junit-mockito" id="toc-unit-testler-junit-mockito">23.25 Unit Testler (JUnit + Mockito)</a></li>
+<li><a href="#integration-testler" id="toc-integration-testler">23.26 Integration Testler</a></li>
+<li><a href="#test-coverage-ve-raporlama" id="toc-test-coverage-ve-raporlama">23.27 Test Coverage ve Raporlama</a></li>
+<li><a href="#deployment-ve-devops" id="toc-deployment-ve-devops">23.28 Deployment ve DevOps</a></li>
+<li><a href="#docker-konteynerizasyonu" id="toc-docker-konteynerizasyonu">23.29 Docker Konteynerizasyonu</a></li>
+<li><a href="#cicd-pipeline-github-actions" id="toc-cicd-pipeline-github-actions">23.30 CI/CD Pipeline (GitHub Actions)</a></li>
+<li><a href="#cloud-deployment-awsazure" id="toc-cloud-deployment-awsazure">23.31 Cloud Deployment (AWS/Azure)</a></li>
+<li><a href="#performans-ve-monitoring" id="toc-performans-ve-monitoring">23.32 Performans ve Monitoring</a></li>
+<li><a href="#log-yonetimi-logbackelk" id="toc-log-yonetimi-logbackelk">23.33 Log Yonetimi (Logback/ELK)</a></li>
+<li><a href="#metrik-toplama-micrometer-prometheus" id="toc-metrik-toplama-micrometer-prometheus">23.34 Metrik Toplama (Micrometer + Prometheus)</a></li>
+<li><a href="#performans-optimizasyonu" id="toc-performans-optimizasyonu">23.35 Performans Optimizasyonu</a></li>
+<li><a href="#sonuc" id="toc-sonuc">23.36 Sonuc</a></li>
+<li><a href="#proje-teslimi-ve-dokumantasyon" id="toc-proje-teslimi-ve-dokumantasyon">23.37 Proje Teslimi ve Dokumantasyon</a></li>
+<li><a href="#gelecekteki-gelistirmeler" id="toc-gelecekteki-gelistirmeler">23.38 Gelecekteki Gelistirmeler</a></li>
+<li><a href="#kaynakca-ve-referanslar" id="toc-kaynakca-ve-referanslar">23.39 Kaynakca ve Referanslar</a></li>
+<li><a href="#ozet" id="toc-ozet">23.40 Ozet</a></li>
+<li><a href="#terim-sozlugu" id="toc-terim-sozlugu">23.41 Terim Sozlugu</a></li>
+<li><a href="#sorular" id="toc-sorular">23.42 Sorular</a></li>
+<li><a href="#alistirmalar" id="toc-alistirmalar">23.43 Alistirmalar</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="javanin-gelecegi-ve-yeni-ozellikler" class="level1">
+<h1>23. Java’nin Gelecegi ve Yeni Ozellikler</h1>
+</section>
+<section id="bölüm-23-butunlesik-uygulama-ve-final-proje-rehberi" class="level1">
+<h1>Bölüm 23: Butunlesik Uygulama ve Final Proje Rehberi</h1>
+<p>Bu bolumde, ogrendiginiz tum konulari birlestiren kapsamli bir uygulama gelistirme surecini adim adim inceleyeceksiniz. Gercek hayattan bir senaryo uzerinden, Spring Boot ile tam yigin (full-stack) bir uygulama olusturacak, test edecek ve devreye alacaksiniz.</p>
+<section id="proje-amaci-ve-kapsami" class="level2">
+<h2>23.1 Proje Amaci ve Kapsami</h2>
+<p>Projemiz, bir “E-Ticaret Yonetim Sistemi” olacak. Bu sistem:
+- Urun, kategori, musteri ve siparis yonetimi
+- Kullanici kimlik dogrulama ve yetkilendirme
+- REST API uzerinden tum islemler
+- Docker konteynerlerinde calisabilme
+- CI/CD pipeline ile otomatik test ve deployment</p>
+<blockquote>
+<p><strong>Pedagojik Not</strong>: Bu proje, gercek bir is ortaminda karsilasabileceginiz tum zorluklari icermektedir. Her bir katmani anlamak ve dogru sekilde uygulamak, profesyonel yazilim gelistirme becerilerinizi gelistirecektir.</p>
+</blockquote>
+</section>
+<section id="proje-gereksinimleri" class="level2">
+<h2>23.2 Proje Gereksinimleri</h2>
+<p>Proje gereksinimleri:
+- Java 17+
+- Spring Boot 3.x
+- PostgreSQL veritabani
+- Docker ve Docker Compose
+- Maven veya Gradle
+- Git versiyon kontrol sistemi</p>
+</section>
+<section id="teknolojik-yigin" class="level2">
+<h2>23.3 Teknolojik Yigin</h2>
+<p>Kullanacagimiz teknolojiler:
+- <strong>Backend</strong>: Spring Boot, Spring Data JPA, Spring Security
+- <strong>Veritabani</strong>: PostgreSQL
+- <strong>API Dokumantasyonu</strong>: Swagger/OpenAPI
+- <strong>Test</strong>: JUnit 5, Mockito, Testcontainers
+- <strong>Konteyner</strong>: Docker
+- <strong>CI/CD</strong>: GitHub Actions
+- <strong>Monitoring</strong>: Prometheus + Grafana</p>
+</section>
+<section id="proje-mimarisi" class="level2">
+<h2>23.4 Proje Mimarisi</h2>
+</section>
+<section id="genel-mimari-yapi" class="level2">
+<h2>23.5 Genel Mimari Yapi</h2>
+<p>Projemiz, katmanli mimari (layered architecture) kullanacak. Bu mimari, her katmanin belirli bir sorumlulugu olmasi prensibine dayanir.</p>
+<p><img src="../assets/images/mermaid-047.png" alt="Mermaid Diyagram 47" />
+## 23.6 Katmanli Mimari (Layered Architecture)</p>
+<p>Katmanli mimari, uygulamayi mantiksal olarak ayirir:
+1. <strong>Sunum Katmani</strong>: REST controller’lar, DTO’lar
+2. <strong>Is Mantigi Katmani</strong>: Servis siniflari, is akislari
+3. <strong>Veri Katmani</strong>: Repository, Entity siniflari
+4. <strong>Guvenlik Katmani</strong>: JWT, Spring Security</p>
+</section>
+<section id="bilesenler-arasi-iletisim" class="level2">
+<h2>23.7 Bilesenler Arasi Iletisim</h2>
+<p>Bilesenler arasi iletisim:
+- Controller -&gt; Servis -&gt; Repository
+- DTO’lar katmanlar arasi veri transferi icin kullanilir
+- Exception handling mekanizmasi ile hatalar yonetilir</p>
+</section>
+<section id="veri-katmani-data-layer" class="level2">
+<h2>23.8 Veri Katmani (Data Layer)</h2>
+</section>
+<section id="veritabani-tasarimi" class="level2">
+<h2>23.9 Veritabani Tasarimi</h2>
+<p>Veritabani tasarimimiz asagidaki tablolari icerir:
+- <code>categories</code>: Kategori bilgileri
+- <code>products</code>: Urun bilgileri
+- <code>customers</code>: Musteri bilgileri
+- <code>orders</code>: Siparis bilgileri
+- <code>order_items</code>: Siparis detaylari
+- <code>users</code>: Kullanici bilgileri</p>
+<p><img src="../assets/images/mermaid-048.png" alt="Mermaid Diyagram 48" />
+## 23.10 JPA Entity’leri ve Iliskiler</p>
+<!-- CODE_META: Entity siniflari - Category.java -->
+<div class="sourceCode" id="cb1"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">entity</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">jakarta</span><span class="op">.</span><span class="im">persistence</span><span class="op">.*;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">lombok</span><span class="op">.</span><span class="im">Data</span><span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">Set</span><span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">@Entity</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">@Table</span><span class="op">(</span>name <span class="op">=</span> <span class="st">&quot;categories&quot;</span><span class="op">)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">@Data</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Category <span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Id</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">@GeneratedValue</span><span class="op">(</span>strategy <span class="op">=</span> GenerationType<span class="op">.</span><span class="fu">IDENTITY</span><span class="op">)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">Long</span> id<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Column</span><span class="op">(</span>nullable <span class="op">=</span> <span class="kw">false</span><span class="op">,</span> unique <span class="op">=</span> <span class="kw">true</span><span class="op">)</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Column</span><span class="op">(</span>length <span class="op">=</span> <span class="dv">500</span><span class="op">)</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> description<span class="op">;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">@OneToMany</span><span class="op">(</span>mappedBy <span class="op">=</span> <span class="st">&quot;category&quot;</span><span class="op">,</span> cascade <span class="op">=</span> CascadeType<span class="op">.</span><span class="fu">ALL</span><span class="op">,</span> fetch <span class="op">=</span> FetchType<span class="op">.</span><span class="fu">LAZY</span><span class="op">)</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">Set</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> products<span class="op">;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Column</span><span class="op">(</span>name <span class="op">=</span> <span class="st">&quot;created_at&quot;</span><span class="op">)</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> LocalDateTime createdAt<span class="op">;</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">@PrePersist</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">protected</span> <span class="dt">void</span> <span class="fu">onCreate</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        createdAt <span class="op">=</span> LocalDateTime<span class="op">.</span><span class="fu">now</span><span class="op">();</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="repository-katmani" class="level2">
+<h2>23.11 Repository Katmani</h2>
+<!-- CODE_META: Repository siniflari - ProductRepository.java -->
+<div class="sourceCode" id="cb2"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">repository</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">entity</span><span class="op">.</span><span class="im">Product</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">data</span><span class="op">.</span><span class="im">jpa</span><span class="op">.</span><span class="im">repository</span><span class="op">.</span><span class="im">JpaRepository</span><span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">data</span><span class="op">.</span><span class="im">jpa</span><span class="op">.</span><span class="im">repository</span><span class="op">.</span><span class="im">Query</span><span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">stereotype</span><span class="op">.</span><span class="im">Repository</span><span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">List</span><span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">@Repository</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">interface</span> ProductRepository <span class="kw">extends</span> JpaRepository<span class="op">&lt;</span>Product<span class="op">,</span> <span class="bu">Long</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findByCategoryId</span><span class="op">(</span><span class="bu">Long</span> categoryId<span class="op">);</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Query</span><span class="op">(</span><span class="st">&quot;SELECT p FROM Product p WHERE p.price BETWEEN :minPrice AND :maxPrice&quot;</span><span class="op">)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findByPriceRange</span><span class="op">(</span><span class="bu">Double</span> minPrice<span class="op">,</span> <span class="bu">Double</span> maxPrice<span class="op">);</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findByNameContainingIgnoreCase</span><span class="op">(</span><span class="bu">String</span> name<span class="op">);</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="is-mantigi-katmani-business-layer" class="level2">
+<h2>23.12 Is Mantigi Katmani (Business Layer)</h2>
+</section>
+<section id="servis-siniflari-ve-is-akislari" class="level2">
+<h2>23.13 Servis Siniflari ve Is Akislari</h2>
+<p>Is mantigi katmani, uygulamanin temel islevselligini icerir. Her is akisi bir servis sinifinda tanimlanir.</p>
+<!-- CODE_META: Servis siniflari - OrderService.java -->
+<div class="sourceCode" id="cb3"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">service</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">dto</span><span class="op">.</span><span class="im">OrderDTO</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">entity</span><span class="op">.</span><span class="im">Order</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">entity</span><span class="op">.</span><span class="im">OrderItem</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">entity</span><span class="op">.</span><span class="im">Product</span><span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">exception</span><span class="op">.</span><span class="im">InsufficientStockException</span><span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">repository</span><span class="op">.</span><span class="im">OrderRepository</span><span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">repository</span><span class="op">.</span><span class="im">ProductRepository</span><span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">lombok</span><span class="op">.</span><span class="im">RequiredArgsConstructor</span><span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">stereotype</span><span class="op">.</span><span class="im">Service</span><span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">transaction</span><span class="op">.</span><span class="im">annotation</span><span class="op">.</span><span class="im">Transactional</span><span class="op">;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="at">@Service</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="at">@RequiredArgsConstructor</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> OrderService <span class="op">{</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> OrderRepository orderRepository<span class="op">;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> ProductRepository productRepository<span class="op">;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Transactional</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> OrderDTO <span class="fu">createOrder</span><span class="op">(</span>OrderDTO orderDTO<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        Order order <span class="op">=</span> <span class="kw">new</span> <span class="fu">Order</span><span class="op">();</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        order<span class="op">.</span><span class="fu">setCustomerId</span><span class="op">(</span>orderDTO<span class="op">.</span><span class="fu">getCustomerId</span><span class="op">());</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> totalAmount <span class="op">=</span> <span class="fl">0.0</span><span class="op">;</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>OrderItemDTO itemDTO <span class="op">:</span> orderDTO<span class="op">.</span><span class="fu">getItems</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>            Product product <span class="op">=</span> productRepository<span class="op">.</span><span class="fu">findById</span><span class="op">(</span>itemDTO<span class="op">.</span><span class="fu">getProductId</span><span class="op">())</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span><span class="fu">orElseThrow</span><span class="op">(()</span> <span class="op">-&gt;</span> <span class="kw">new</span> <span class="bu">RuntimeException</span><span class="op">(</span><span class="st">&quot;Product not found&quot;</span><span class="op">));</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>product<span class="op">.</span><span class="fu">getStock</span><span class="op">()</span> <span class="op">&lt;</span> itemDTO<span class="op">.</span><span class="fu">getQuantity</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>                <span class="cf">throw</span> <span class="kw">new</span> <span class="fu">InsufficientStockException</span><span class="op">(</span><span class="st">&quot;Insufficient stock for product: &quot;</span> <span class="op">+</span> product<span class="op">.</span><span class="fu">getName</span><span class="op">());</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>            OrderItem item <span class="op">=</span> <span class="kw">new</span> <span class="fu">OrderItem</span><span class="op">();</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>            item<span class="op">.</span><span class="fu">setProduct</span><span class="op">(</span>product<span class="op">);</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>            item<span class="op">.</span><span class="fu">setQuantity</span><span class="op">(</span>itemDTO<span class="op">.</span><span class="fu">getQuantity</span><span class="op">());</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>            item<span class="op">.</span><span class="fu">setUnitPrice</span><span class="op">(</span>product<span class="op">.</span><span class="fu">getPrice</span><span class="op">());</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>            order<span class="op">.</span><span class="fu">addItem</span><span class="op">(</span>item<span class="op">);</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>            totalAmount <span class="op">+=</span> product<span class="op">.</span><span class="fu">getPrice</span><span class="op">()</span> <span class="op">*</span> itemDTO<span class="op">.</span><span class="fu">getQuantity</span><span class="op">();</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Stock update</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>            product<span class="op">.</span><span class="fu">setStock</span><span class="op">(</span>product<span class="op">.</span><span class="fu">getStock</span><span class="op">()</span> <span class="op">-</span> itemDTO<span class="op">.</span><span class="fu">getQuantity</span><span class="op">());</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>            productRepository<span class="op">.</span><span class="fu">save</span><span class="op">(</span>product<span class="op">);</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        order<span class="op">.</span><span class="fu">setTotalAmount</span><span class="op">(</span>totalAmount<span class="op">);</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        order<span class="op">.</span><span class="fu">setStatus</span><span class="op">(</span>OrderStatus<span class="op">.</span><span class="fu">PENDING</span><span class="op">);</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>        Order savedOrder <span class="op">=</span> orderRepository<span class="op">.</span><span class="fu">save</span><span class="op">(</span>order<span class="op">);</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fu">convertToDTO</span><span class="op">(</span>savedOrder<span class="op">);</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="validation-ve-exception-handling" class="level2">
+<h2>23.14 Validation ve Exception Handling</h2>
+<p>Is mantigi katmaninda validation ve exception handling kritik onem tasir.</p>
+<!-- CODE_META: Global exception handler - GlobalExceptionHandler.java -->
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">exception</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">http</span><span class="op">.</span><span class="im">HttpStatus</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">http</span><span class="op">.</span><span class="im">ResponseEntity</span><span class="op">;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">web</span><span class="op">.</span><span class="im">bind</span><span class="op">.</span><span class="im">MethodArgumentNotValidException</span><span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">web</span><span class="op">.</span><span class="im">bind</span><span class="op">.</span><span class="im">annotation</span><span class="op">.</span><span class="im">ExceptionHandler</span><span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">web</span><span class="op">.</span><span class="im">bind</span><span class="op">.</span><span class="im">annotation</span><span class="op">.</span><span class="im">RestControllerAdvice</span><span class="op">;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="at">@RestControllerAdvice</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> GlobalExceptionHandler <span class="op">{</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">@ExceptionHandler</span><span class="op">(</span>InsufficientStockException<span class="op">.</span><span class="fu">class</span><span class="op">)</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> ResponseEntity<span class="op">&lt;</span>ErrorResponse<span class="op">&gt;</span> <span class="fu">handleInsufficientStock</span><span class="op">(</span>InsufficientStockException ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        ErrorResponse error <span class="op">=</span> <span class="kw">new</span> <span class="fu">ErrorResponse</span><span class="op">(</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            HttpStatus<span class="op">.</span><span class="fu">BAD_REQUEST</span><span class="op">.</span><span class="fu">value</span><span class="op">(),</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            ex<span class="op">.</span><span class="fu">getMessage</span><span class="op">(),</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">currentTimeMillis</span><span class="op">()</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">);</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">new</span> ResponseEntity<span class="op">&lt;&gt;(</span>error<span class="op">,</span> HttpStatus<span class="op">.</span><span class="fu">BAD_REQUEST</span><span class="op">);</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">@ExceptionHandler</span><span class="op">(</span>MethodArgumentNotValidException<span class="op">.</span><span class="fu">class</span><span class="op">)</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> ResponseEntity<span class="op">&lt;</span>ErrorResponse<span class="op">&gt;</span> <span class="fu">handleValidation</span><span class="op">(</span>MethodArgumentNotValidException ex<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">String</span> message <span class="op">=</span> ex<span class="op">.</span><span class="fu">getBindingResult</span><span class="op">().</span><span class="fu">getAllErrors</span><span class="op">().</span><span class="fu">stream</span><span class="op">()</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">map</span><span class="op">(</span>e <span class="op">-&gt;</span> e<span class="op">.</span><span class="fu">getDefaultMessage</span><span class="op">())</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">collect</span><span class="op">(</span>Collectors<span class="op">.</span><span class="fu">joining</span><span class="op">(</span><span class="st">&quot;, &quot;</span><span class="op">));</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        ErrorResponse error <span class="op">=</span> <span class="kw">new</span> <span class="fu">ErrorResponse</span><span class="op">(</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>            HttpStatus<span class="op">.</span><span class="fu">BAD_REQUEST</span><span class="op">.</span><span class="fu">value</span><span class="op">(),</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>            message<span class="op">,</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>            <span class="bu">System</span><span class="op">.</span><span class="fu">currentTimeMillis</span><span class="op">()</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">);</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">new</span> ResponseEntity<span class="op">&lt;&gt;(</span>error<span class="op">,</span> HttpStatus<span class="op">.</span><span class="fu">BAD_REQUEST</span><span class="op">);</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="transaction-yonetimi" class="level2">
+<h2>23.15 Transaction Yonetimi</h2>
+<p>Transaction yonetimi, veri tutarliligini saglar. <code>@Transactional</code> anotasyonu ile yonetilir.</p>
+<blockquote>
+<p><strong>Onemli Not</strong>: Transaction yonetimi, ozellikle birden fazla veritabani islemi iceren is akislarinda kritiktir. Ornegin, siparis olusturma isleminde hem siparis tablosuna ekleme hem de stok guncelleme islemleri ayni transaction icinde yapilmalidir.</p>
+</blockquote>
+</section>
+<section id="sunum-katmani-presentation-layer" class="level2">
+<h2>23.16 Sunum Katmani (Presentation Layer)</h2>
+</section>
+<section id="rest-api-tasarimi" class="level2">
+<h2>23.17 REST API Tasarimi</h2>
+<p>REST API tasariminda asagidaki prensiplere uyulur:
+- Kaynak odakli URL yapisi
+- HTTP metodlarinin dogru kullanimi (GET, POST, PUT, DELETE)
+- Status kodlarinin dogru kullanimi</p>
+</section>
+<section id="controller-ve-dtolar" class="level2">
+<h2>23.18 Controller ve DTO’lar</h2>
+<!-- CODE_META: Controller siniflari - ProductController.java -->
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">controller</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">dto</span><span class="op">.</span><span class="im">ProductDTO</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">service</span><span class="op">.</span><span class="im">ProductService</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">jakarta</span><span class="op">.</span><span class="im">validation</span><span class="op">.</span><span class="im">Valid</span><span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">lombok</span><span class="op">.</span><span class="im">RequiredArgsConstructor</span><span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">http</span><span class="op">.</span><span class="im">HttpStatus</span><span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">http</span><span class="op">.</span><span class="im">ResponseEntity</span><span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">web</span><span class="op">.</span><span class="im">bind</span><span class="op">.</span><span class="im">annotation</span><span class="op">.*;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">List</span><span class="op">;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="at">@RestController</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="at">@RequestMapping</span><span class="op">(</span><span class="st">&quot;/api/v1/products&quot;</span><span class="op">)</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="at">@RequiredArgsConstructor</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ProductController <span class="op">{</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> ProductService productService<span class="op">;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">@GetMapping</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> ResponseEntity<span class="op">&lt;</span><span class="bu">List</span><span class="op">&lt;</span>ProductDTO<span class="op">&gt;&gt;</span> <span class="fu">getAllProducts</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ResponseEntity<span class="op">.</span><span class="fu">ok</span><span class="op">(</span>productService<span class="op">.</span><span class="fu">getAllProducts</span><span class="op">());</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">@GetMapping</span><span class="op">(</span><span class="st">&quot;/{id}&quot;</span><span class="op">)</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> ResponseEntity<span class="op">&lt;</span>ProductDTO<span class="op">&gt;</span> <span class="fu">getProductById</span><span class="op">(</span><span class="at">@PathVariable</span> <span class="bu">Long</span> id<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ResponseEntity<span class="op">.</span><span class="fu">ok</span><span class="op">(</span>productService<span class="op">.</span><span class="fu">getProductById</span><span class="op">(</span>id<span class="op">));</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">@PostMapping</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> ResponseEntity<span class="op">&lt;</span>ProductDTO<span class="op">&gt;</span> <span class="fu">createProduct</span><span class="op">(</span><span class="at">@Valid</span> <span class="at">@RequestBody</span> ProductDTO productDTO<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        ProductDTO created <span class="op">=</span> productService<span class="op">.</span><span class="fu">createProduct</span><span class="op">(</span>productDTO<span class="op">);</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">new</span> ResponseEntity<span class="op">&lt;&gt;(</span>created<span class="op">,</span> HttpStatus<span class="op">.</span><span class="fu">CREATED</span><span class="op">);</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">@PutMapping</span><span class="op">(</span><span class="st">&quot;/{id}&quot;</span><span class="op">)</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> ResponseEntity<span class="op">&lt;</span>ProductDTO<span class="op">&gt;</span> <span class="fu">updateProduct</span><span class="op">(</span><span class="at">@PathVariable</span> <span class="bu">Long</span> id<span class="op">,</span> </span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>                                                     <span class="at">@Valid</span> <span class="at">@RequestBody</span> ProductDTO productDTO<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ResponseEntity<span class="op">.</span><span class="fu">ok</span><span class="op">(</span>productService<span class="op">.</span><span class="fu">updateProduct</span><span class="op">(</span>id<span class="op">,</span> productDTO<span class="op">));</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">@DeleteMapping</span><span class="op">(</span><span class="st">&quot;/{id}&quot;</span><span class="op">)</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> ResponseEntity<span class="op">&lt;</span><span class="bu">Void</span><span class="op">&gt;</span> <span class="fu">deleteProduct</span><span class="op">(</span><span class="at">@PathVariable</span> <span class="bu">Long</span> id<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        productService<span class="op">.</span><span class="fu">deleteProduct</span><span class="op">(</span>id<span class="op">);</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ResponseEntity<span class="op">.</span><span class="fu">noContent</span><span class="op">().</span><span class="fu">build</span><span class="op">();</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="swaggeropenapi-dokumantasyonu" class="level2">
+<h2>23.19 Swagger/OpenAPI Dokumantasyonu</h2>
+<p>Spring Boot ile Swagger dokumantasyonu otomatik olarak eklenir.</p>
+</section>
+<section id="guvenlik-katmani-security-layer" class="level2">
+<h2>23.20 Guvenlik Katmani (Security Layer)</h2>
+</section>
+<section id="spring-security-yapilandirmasi" class="level2">
+<h2>23.21 Spring Security Yapilandirmasi</h2>
+<!-- CODE_META: Security yapilandirmasi - SecurityConfig.java -->
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">config</span><span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">security</span><span class="op">.</span><span class="im">JwtAuthenticationFilter</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">lombok</span><span class="op">.</span><span class="im">RequiredArgsConstructor</span><span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">context</span><span class="op">.</span><span class="im">annotation</span><span class="op">.</span><span class="im">Bean</span><span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">context</span><span class="op">.</span><span class="im">annotation</span><span class="op">.</span><span class="im">Configuration</span><span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">security</span><span class="op">.</span><span class="im">config</span><span class="op">.</span><span class="im">annotation</span><span class="op">.</span><span class="im">web</span><span class="op">.</span><span class="im">builders</span><span class="op">.</span><span class="im">HttpSecurity</span><span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">security</span><span class="op">.</span><span class="im">config</span><span class="op">.</span><span class="im">annotation</span><span class="op">.</span><span class="im">web</span><span class="op">.</span><span class="im">configuration</span><span class="op">.</span><span class="im">EnableWebSecurity</span><span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">security</span><span class="op">.</span><span class="im">config</span><span class="op">.</span><span class="im">http</span><span class="op">.</span><span class="im">SessionCreationPolicy</span><span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">security</span><span class="op">.</span><span class="im">web</span><span class="op">.</span><span class="im">SecurityFilterChain</span><span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">springframework</span><span class="op">.</span><span class="im">security</span><span class="op">.</span><span class="im">web</span><span class="op">.</span><span class="im">authentication</span><span class="op">.</span><span class="im">UsernamePasswordAuthenticationFilter</span><span class="op">;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="at">@Configuration</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="at">@EnableWebSecurity</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="at">@RequiredArgsConstructor</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> SecurityConfig <span class="op">{</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">final</span> JwtAuthenticationFilter jwtAuthFilter<span class="op">;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Bean</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> SecurityFilterChain <span class="fu">securityFilterChain</span><span class="op">(</span>HttpSecurity http<span class="op">)</span> <span class="kw">throws</span> <span class="bu">Exception</span> <span class="op">{</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        http</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">csrf</span><span class="op">(</span>csrf <span class="op">-&gt;</span> csrf<span class="op">.</span><span class="fu">disable</span><span class="op">())</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">sessionManagement</span><span class="op">(</span>session <span class="op">-&gt;</span> session<span class="op">.</span><span class="fu">sessionCreationPolicy</span><span class="op">(</span>SessionCreationPolicy<span class="op">.</span><span class="fu">STATELESS</span><span class="op">))</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">authorizeHttpRequests</span><span class="op">(</span>auth <span class="op">-&gt;</span> auth</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span><span class="fu">requestMatchers</span><span class="op">(</span><span class="st">&quot;/api/v1/auth/**&quot;</span><span class="op">).</span><span class="fu">permitAll</span><span class="op">()</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span><span class="fu">requestMatchers</span><span class="op">(</span><span class="st">&quot;/api/v1/products/**&quot;</span><span class="op">).</span><span class="fu">hasAnyRole</span><span class="op">(</span><span class="st">&quot;USER&quot;</span><span class="op">,</span> <span class="st">&quot;ADMIN&quot;</span><span class="op">)</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span><span class="fu">requestMatchers</span><span class="op">(</span><span class="st">&quot;/api/v1/admin/**&quot;</span><span class="op">).</span><span class="fu">hasRole</span><span class="op">(</span><span class="st">&quot;ADMIN&quot;</span><span class="op">)</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span><span class="fu">anyRequest</span><span class="op">().</span><span class="fu">authenticated</span><span class="op">()</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>            <span class="op">)</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="fu">addFilterBefore</span><span class="op">(</span>jwtAuthFilter<span class="op">,</span> UsernamePasswordAuthenticationFilter<span class="op">.</span><span class="fu">class</span><span class="op">);</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> http<span class="op">.</span><span class="fu">build</span><span class="op">();</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="jwt-token-yonetimi" class="level2">
+<h2>23.22 JWT Token Yonetimi</h2>
+<p>JWT token yonetimi, kullanici kimlik dogrulamasi icin kullanilir.</p>
+</section>
+<section id="role-based-yetkilendirme" class="level2">
+<h2>23.23 Role-Based Yetkilendirme</h2>
+<p>Role-based yetkilendirme ile farkli kullanici rollerine farkli yetkiler verilir.</p>
+</section>
+<section id="test-katmani" class="level2">
+<h2>23.24 Test Katmani</h2>
+</section>
+<section id="unit-testler-junit-mockito" class="level2">
+<h2>23.25 Unit Testler (JUnit + Mockito)</h2>
+<!-- CODE_META: Unit test ornegi - ProductServiceTest.java -->
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">service</span><span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">dto</span><span class="op">.</span><span class="im">ProductDTO</span><span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">entity</span><span class="op">.</span><span class="im">Product</span><span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">eticaret</span><span class="op">.</span><span class="im">repository</span><span class="op">.</span><span class="im">ProductRepository</span><span class="op">;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">jupiter</span><span class="op">.</span><span class="im">api</span><span class="op">.</span><span class="im">BeforeEach</span><span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">jupiter</span><span class="op">.</span><span class="im">api</span><span class="op">.</span><span class="im">Test</span><span class="op">;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">jupiter</span><span class="op">.</span><span class="im">api</span><span class="op">.</span><span class="im">extension</span><span class="op">.</span><span class="im">ExtendWith</span><span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">mockito</span><span class="op">.</span><span class="im">InjectMocks</span><span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">mockito</span><span class="op">.</span><span class="im">Mock</span><span class="op">;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">mockito</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">jupiter</span><span class="op">.</span><span class="im">MockitoExtension</span><span class="op">;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">static</span><span class="im"> org</span><span class="op">.</span><span class="im">mockito</span><span class="op">.</span><span class="im">ArgumentMatchers</span><span class="op">.</span><span class="im">any</span><span class="op">;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">static</span><span class="im"> org</span><span class="op">.</span><span class="im">mockito</span><span class="op">.</span><span class="im">Mockito</span><span class="op">.</span><span class="im">when</span><span class="op">;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">static</span><span class="im"> org</span><span class="op">.</span><span class="im">assertj</span><span class="op">.</span><span class="im">core</span><span class="op">.</span><span class="im">api</span><span class="op">.</span><span class="im">Assertions</span><span class="op">.</span><span class="im">assertThat</span><span class="op">;</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="at">@ExtendWith</span><span class="op">(</span>MockitoExtension<span class="op">.</span><span class="fu">class</span><span class="op">)</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ProductServiceTest <span class="op">{</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Mock</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> ProductRepository productRepository<span class="op">;</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">@InjectMocks</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> ProductService productService<span class="op">;</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> Product product<span class="op">;</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> ProductDTO productDTO<span class="op">;</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">@BeforeEach</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">setUp</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        product <span class="op">=</span> <span class="kw">new</span> <span class="fu">Product</span><span class="op">();</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        product<span class="op">.</span><span class="fu">setId</span><span class="op">(</span><span class="dv">1L</span><span class="op">);</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        product<span class="op">.</span><span class="fu">setName</span><span class="op">(</span><span class="st">&quot;Test Product&quot;</span><span class="op">);</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>        product<span class="op">.</span><span class="fu">setPrice</span><span class="op">(</span><span class="fl">100.0</span><span class="op">);</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>        productDTO <span class="op">=</span> <span class="kw">new</span> <span class="fu">ProductDTO</span><span class="op">();</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>        productDTO<span class="op">.</span><span class="fu">setName</span><span class="op">(</span><span class="st">&quot;Test Product&quot;</span><span class="op">);</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>        productDTO<span class="op">.</span><span class="fu">setPrice</span><span class="op">(</span><span class="fl">100.0</span><span class="op">);</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">createProduct_ShouldReturnProductDTO</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        <span class="fu">when</span><span class="op">(</span>productRepository<span class="op">.</span><span class="fu">save</span><span class="op">(</span><span class="fu">any</span><span class="op">(</span>Product<span class="op">.</span><span class="fu">class</span><span class="op">))).</span><span class="fu">thenReturn</span><span class="op">(</span>product<span class="op">);</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>        ProductDTO result <span class="op">=</span> productService<span class="op">.</span><span class="fu">createProduct</span><span class="op">(</span>productDTO<span class="op">);</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertThat</span><span class="op">(</span>result<span class="op">).</span><span class="fu">isNotNull</span><span class="op">();</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertThat</span><span class="op">(</span>result<span class="op">.</span><span class="fu">getName</span><span class="op">()).</span><span class="fu">isEqualTo</span><span class="op">(</span><span class="st">&quot;Test Product&quot;</span><span class="op">);</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="integration-testler" class="level2">
+<h2>23.26 Integration Testler</h2>
+<p>Integration testler, uygulamanin tum bilesenlerini birlikte test eder.</p>
+</section>
+<section id="test-coverage-ve-raporlama" class="level2">
+<h2>23.27 Test Coverage ve Raporlama</h2>
+<p>Test coverage raporlari icin JaCoCo kullanilir.</p>
+</section>
+<section id="deployment-ve-devops" class="level2">
+<h2>23.28 Deployment ve DevOps</h2>
+</section>
+<section id="docker-konteynerizasyonu" class="level2">
+<h2>23.29 Docker Konteynerizasyonu</h2>
+<!-- CODE_META: Dockerfile - Dockerfile -->
+<div class="sourceCode" id="cb8"><pre class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> openjdk:17-jdk-slim <span class="kw">AS</span> build</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WORKDIR</span> /app</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> mvnw pom.xml ./</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> .mvn .mvn</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">./mvnw</span> dependency:go-offline</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> src ./src</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">./mvnw</span> clean package <span class="at">-DskipTests</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> openjdk:17-jdk-slim</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="kw">WORKDIR</span> /app</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> <span class="op">--from=build</span> /app/target/*.jar app.jar</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="kw">EXPOSE</span> 8080</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="kw">ENTRYPOINT</span> [<span class="st">&quot;java&quot;</span>, <span class="st">&quot;-jar&quot;</span>, <span class="st">&quot;app.jar&quot;</span>]</span></code></pre></div>
+</section>
+<section id="cicd-pipeline-github-actions" class="level2">
+<h2>23.30 CI/CD Pipeline (GitHub Actions)</h2>
+<!-- CODE_META: GitHub Actions workflow - ci-cd.yml -->
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> CI/CD Pipeline</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at"> main </span><span class="kw">]</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pull_request</span><span class="kw">:</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at"> main </span><span class="kw">]</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">build</span><span class="kw">:</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v3</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Set up JDK 17</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/setup-java@v3</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">java-version</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;17&#39;</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">distribution</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;temurin&#39;</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="at">    </span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build with Maven</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">run</span><span class="kw">:</span><span class="at"> mvn clean package</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="at">    </span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Run tests</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">run</span><span class="kw">:</span><span class="at"> mvn test</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="at">    </span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build Docker image</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">run</span><span class="kw">:</span><span class="at"> docker build -t e-ticaret-app .</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="at">    </span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Push to Docker Hub</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> docker/build-push-action@v2</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">push</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">tags</span><span class="kw">:</span><span class="at"> user/e-ticaret-app:latest</span></span></code></pre></div>
+</section>
+<section id="cloud-deployment-awsazure" class="level2">
+<h2>23.31 Cloud Deployment (AWS/Azure)</h2>
+<p>Cloud deployment icin AWS Elastic Beanstalk veya Azure App Service kullanilabilir.</p>
+</section>
+<section id="performans-ve-monitoring" class="level2">
+<h2>23.32 Performans ve Monitoring</h2>
+</section>
+<section id="log-yonetimi-logbackelk" class="level2">
+<h2>23.33 Log Yonetimi (Logback/ELK)</h2>
+<p>Log yonetimi icin Logback yapilandirmasi ve ELK stack kullanimi.</p>
+</section>
+<section id="metrik-toplama-micrometer-prometheus" class="level2">
+<h2>23.34 Metrik Toplama (Micrometer + Prometheus)</h2>
+<!-- CODE_META: Micrometer yapilandirmasi - application.yml -->
+<div class="sourceCode" id="cb10"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">management</span><span class="kw">:</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">endpoints</span><span class="kw">:</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">web</span><span class="kw">:</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">exposure</span><span class="kw">:</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">include</span><span class="kw">:</span><span class="at"> health,info,metrics,prometheus</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">metrics</span><span class="kw">:</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">export</span><span class="kw">:</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">prometheus</span><span class="kw">:</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code></pre></div>
+</section>
+<section id="performans-optimizasyonu" class="level2">
+<h2>23.35 Performans Optimizasyonu</h2>
+<p>Performans optimizasyonu icin:
+- Lazy loading kullanimi
+- Cache mekanizmasi (Redis)
+- Index yonetimi
+- Connection pool ayarlari</p>
+</section>
+<section id="sonuc" class="level2">
+<h2>23.36 Sonuc</h2>
+</section>
+<section id="proje-teslimi-ve-dokumantasyon" class="level2">
+<h2>23.37 Proje Teslimi ve Dokumantasyon</h2>
+<p>Proje teslimi icin:
+- Kaynak kod (GitHub reposu)
+- Docker imaji
+- API dokumantasyonu (Swagger)
+- Deployment kilavuzu
+- Test raporlari</p>
+</section>
+<section id="gelecekteki-gelistirmeler" class="level2">
+<h2>23.38 Gelecekteki Gelistirmeler</h2>
+<p>Gelecekteki gelistirmeler:
+- Mikroservis mimarisine gecis
+- Event-driven mimari
+- GraphQL API ekleme
+- Mobile uygulama entegrasyonu</p>
+</section>
+<section id="kaynakca-ve-referanslar" class="level2">
+<h2>23.39 Kaynakca ve Referanslar</h2>
+<ul>
+<li>Spring Boot Dokumantasyonu: https://spring.io/projects/spring-boot</li>
+<li>Docker Dokumantasyonu: https://docs.docker.com</li>
+<li>GitHub Actions: https://docs.github.com/en/actions</li>
+</ul>
+</section>
+<section id="ozet" class="level2">
+<h2>23.40 Ozet</h2>
+<p>Bu bolumde, ogrendiginiz tum konulari birlestiren kapsamli bir uygulama gelistirme surecini incelediniz. Katmanli mimari, veri katmani, is mantigi katmani, sunum katmani, guvenlik, test, deployment ve monitoring konularini kapsayan bir E-Ticaret Yonetim Sistemi projesi olusturdunuz.</p>
+</section>
+<section id="terim-sozlugu" class="level2">
+<h2>23.41 Terim Sozlugu</h2>
+<table>
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 58%" />
+</colgroup>
+<thead>
+<tr>
+<th>Terim</th>
+<th>Aciklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DTO</strong></td>
+<td>Data Transfer Object, katmanlar arasi veri transferi icin kullanilan nesne</td>
+</tr>
+<tr>
+<td><strong>JWT</strong></td>
+<td>JSON Web Token, kullanici kimlik dogrulamasi icin kullanilan token</td>
+</tr>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>Continuous Integration/Continuous Deployment, surekli entegrasyon ve teslimat</td>
+</tr>
+<tr>
+<td><strong>ORM</strong></td>
+<td>Object-Relational Mapping, nesne-iliskisel esleme</td>
+</tr>
+<tr>
+<td><strong>REST</strong></td>
+<td>Representational State Transfer, API tasarim mimarisi</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sorular" class="level2">
+<h2>23.42 Sorular</h2>
+<ol type="1">
+<li>Katmanli mimarinin avantajlari nelerdir?</li>
+<li>JWT token yonetimi nasil calisir?</li>
+<li>Transaction yonetimi neden onemlidir?</li>
+<li>Docker konteynerizasyonu hangi sorunlari cozer?</li>
+<li>CI/CD pipeline’in temel adimlari nelerdir?</li>
+</ol>
+</section>
+<section id="alistirmalar" class="level2">
+<h2>23.43 Alistirmalar</h2>
+<ol type="1">
+<li><p><strong>Entity Olusturma</strong>: <code>OrderItem</code> entity’sini olusturun ve <code>Order</code> ile iliskisini tanimlayin.</p></li>
+<li><p><strong>Servis Gelistirme</strong>: Yeni bir <code>DiscountService</code> servisi olusturun ve belirli kosullarda indirim uygulayin.</p></li>
+<li><p><strong>Test Yazma</strong>: <code>OrderService</code> icin bir unit test yazin ve transaction yonetimini test edin.</p></li>
+<li><p><strong>Docker Compose</strong>: PostgreSQL ve uygulama icin bir Docker Compose dosyasi olusturun.</p></li>
+<li><p><strong>API Dokumantasyonu</strong>: Swagger konfigurasyonunu ekleyin ve API dokumantasyonunu olusturun.</p></li>
+</ol>
+<blockquote>
+<p><strong>Pedagojik Not</strong>: Bu alistirmalari tamamladiktan sonra, butunlesik uygulama gelistirme konusunda kendinizi daha yetkin hissedeceksiniz. Her bir alistirma, gercek hayattaki bir problemi cozmenize yardimci olacaktir.</p>
+</blockquote>
+</section>
+</section>
+</body>
+</html>

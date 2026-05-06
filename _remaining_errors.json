@@ -1,0 +1,221 @@
+{
+  "bolum-12": [
+    {
+      "category": "code.fence_missing",
+      "line": 808,
+      "message": "CODE_META is not followed by a fenced code block."
+    }
+  ],
+  "bolum-13": [
+    {
+      "category": "code.fence_missing",
+      "line": 1113,
+      "message": "CODE_META is not followed by a fenced code block."
+    },
+    {
+      "category": "mermaid.meta_count",
+      "line": null,
+      "message": "Mermaid fence count and MERMAID_META count differ: 6 != 7"
+    }
+  ],
+  "bolum-14": [
+    {
+      "category": "mermaid.meta_count",
+      "line": null,
+      "message": "Mermaid fence count and MERMAID_META count differ: 2 != 6"
+    },
+    {
+      "category": "mermaid.fence_missing",
+      "line": 137,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    },
+    {
+      "category": "mermaid.fence_missing",
+      "line": 182,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    }
+  ],
+  "bolum-15": [
+    {
+      "category": "code.required_missing",
+      "line": 858,
+      "message": "CODE_META field missing: intentional_mismatch"
+    },
+    {
+      "category": "code.kind_unknown",
+      "line": 858,
+      "message": "Unknown code kind: flowchart"
+    },
+    {
+      "category": "code.intentional_mismatch_invalid",
+      "line": 858,
+      "message": "intentional_mismatch must be true or false."
+    },
+    {
+      "category": "code.fence_missing",
+      "line": 927,
+      "message": "CODE_META is not followed by a fenced code block."
+    },
+    {
+      "category": "mermaid.meta_count",
+      "line": null,
+      "message": "Mermaid fence count and MERMAID_META count differ: 5 != 10"
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 124,
+      "message": "MERMAID_META field missing: id"
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 124,
+      "message": "MERMAID_META field missing: kind"
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 124,
+      "message": "MERMAID_META field missing: output_file"
+    },
+    {
+      "category": "mermaid.fence_missing",
+      "line": 124,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 197,
+      "message": "MERMAID_META field missing: id"
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 197,
+      "message": "MERMAID_META field missing: kind"
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 197,
+      "message": "MERMAID_META field missing: output_file"
+    },
+    {
+      "category": "mermaid.fence_missing",
+      "line": 197,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 378,
+      "message": "MERMAID_META field missing: id"
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 378,
+      "message": "MERMAID_META field missing: kind"
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 378,
+      "message": "MERMAID_META field missing: output_file"
+    },
+    {
+      "category": "mermaid.fence_missing",
+      "line": 378,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 558,
+      "message": "MERMAID_META field missing: id"
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 558,
+      "message": "MERMAID_META field missing: kind"
+    },
+    {
+      "category": "mermaid.required_missing",
+      "line": 558,
+      "message": "MERMAID_META field missing: output_file"
+    },
+    {
+      "category": "mermaid.fence_missing",
+      "line": 558,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    }
+  ],
+  "bolum-18": [
+    {
+      "category": "mermaid.fence_missing",
+      "line": 463,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    },
+    {
+      "category": "mermaid.fence_missing",
+      "line": 565,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    },
+    {
+      "category": "mermaid.fence_missing",
+      "line": 759,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    }
+  ],
+  "bolum-20": [
+    {
+      "category": "code.heading_before_fence",
+      "line": 211,
+      "message": "A heading appears between CODE_META and its code fence."
+    },
+    {
+      "category": "code.heading_before_fence",
+      "line": 252,
+      "message": "A heading appears between CODE_META and its code fence."
+    },
+    {
+      "category": "code.id_duplicate",
+      "line": 279,
+      "message": "Duplicate code_id: bolum-20_kod06"
+    },
+    {
+      "category": "code.heading_before_fence",
+      "line": 279,
+      "message": "A heading appears between CODE_META and its code fence."
+    },
+    {
+      "category": "code.heading_before_fence",
+      "line": 531,
+      "message": "A heading appears between CODE_META and its code fence."
+    },
+    {
+      "category": "code.heading_before_fence",
+      "line": 820,
+      "message": "A heading appears between CODE_META and its code fence."
+    },
+    {
+      "category": "code.heading_before_fence",
+      "line": 919,
+      "message": "A heading appears between CODE_META and its code fence."
+    },
+    {
+      "category": "code.heading_before_fence",
+      "line": 1005,
+      "message": "A heading appears between CODE_META and its code fence."
+    },
+    {
+      "category": "code.heading_before_fence",
+      "line": 1083,
+      "message": "A heading appears between CODE_META and its code fence."
+    }
+  ],
+  "bolum-21": [
+    {
+      "category": "mermaid.fence_missing",
+      "line": 969,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    },
+    {
+      "category": "mermaid.fence_missing",
+      "line": 1439,
+      "message": "MERMAID_META is not followed by a mermaid code fence."
+    }
+  ]
+}

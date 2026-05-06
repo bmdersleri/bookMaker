@@ -1,0 +1,60 @@
+chapter:
+  title: Performans, Yayınlama ve Dağıtım
+  alias: performans-yayinlama
+  order: 15
+  references:
+  - alias: test-debugging
+    relation: prerequisite
+  - alias: final-proje
+    relation: next
+scope:
+  topics:
+  - Debug build
+  - Profile mode
+  - Release build
+  - APK
+  - AAB
+  - App signing
+  - Versioning
+  - Performance profiling
+  objectives:
+  - Okuyucu debug/profile/release build farkını açıklayabilmeli.
+  - Android release build üretim sürecini kavrayabilmeli.
+  - Yayınlama öncesi teknik kontrol listesi hazırlayabilmeli.
+  exclusions:
+  - App Store Connect ileri ayrıntılar
+  - Play Store optimizasyonu
+  - Kurumsal imzalama senaryoları
+  mini_project: Yayınlamaya hazır örnek uygulama kontrolü
+structure:
+  sections:
+  - title: Bölümün Yol Haritası
+    type: text
+  - title: Kavramsal Açıklama
+    type: text
+  - title: Temel Örnek
+    type: text+code
+  - title: Çalışan Mini Uygulama
+    type: text+code+screenshot
+  - title: Sık Yapılan Hatalar
+    type: text
+  - title: Bölüm Sonu Laboratuvarı
+    type: exercise
+  - title: Özet
+    type: text
+  estimated_pages: 20
+  code_examples_count: 4
+  screenshot_examples_count: 1
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  default_code_language: dart
+  default_framework: flutter
+  validation_modes:
+  - flutter_analyze
+  - flutter_test
+  - widget_test
+  - screenshot_only
+  - review_only
+  github_export: true
+  qr_policy: dual

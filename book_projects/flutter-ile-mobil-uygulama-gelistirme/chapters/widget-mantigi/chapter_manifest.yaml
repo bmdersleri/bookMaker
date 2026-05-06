@@ -1,0 +1,59 @@
+chapter:
+  title: Widget Mantığı ve Material Design
+  alias: widget-mantigi
+  order: 3
+  references:
+  - alias: dart-temelleri
+    relation: prerequisite
+  - alias: layout-sistemi
+    relation: next
+scope:
+  topics:
+  - Widget ağacı
+  - StatelessWidget
+  - StatefulWidget
+  - Build method
+  - BuildContext
+  - MaterialApp
+  - Scaffold
+  - Material 3
+  objectives:
+  - Okuyucu widget ağacı kavramını açıklayabilmeli.
+  - StatelessWidget ve StatefulWidget farkını örnekleyebilmeli.
+  - MaterialApp ve Scaffold ile temel ekran iskeleti oluşturabilmeli.
+  exclusions:
+  - Provider/Riverpod
+  - İleri tema mimarisi
+  mini_project: Akademik profil veya öğrenci profil kartı
+structure:
+  sections:
+  - title: Bölümün Yol Haritası
+    type: text
+  - title: Kavramsal Açıklama
+    type: text
+  - title: Temel Örnek
+    type: text+code
+  - title: Çalışan Mini Uygulama
+    type: text+code+screenshot
+  - title: Sık Yapılan Hatalar
+    type: text
+  - title: Bölüm Sonu Laboratuvarı
+    type: exercise
+  - title: Özet
+    type: text
+  estimated_pages: 20
+  code_examples_count: 6
+  screenshot_examples_count: 1
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  default_code_language: dart
+  default_framework: flutter
+  validation_modes:
+  - flutter_analyze
+  - flutter_test
+  - widget_test
+  - screenshot_only
+  - review_only
+  github_export: true
+  qr_policy: dual

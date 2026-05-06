@@ -5,12 +5,46 @@ Bu dosya mevcut Windows/PowerShell calisma ortaminda kullanilabilecek araclari, 
 ## Sistem
 
 ```text
-Calisma dizini: D:\bookMaker
+Calisma dizini: D:\bookMaker_Deepseek
 Isletim sistemi: Windows
-Shell: PowerShell 7.x
+Shell: PowerShell 7 (ZORUNLU)
 PowerShell surumu: 7.6.1
+PS7 Yolu: C:\Program Files\PowerShell\7\pwsh.exe
+PS5.1: Kullanilmayacak
 Timezone: Europe/Istanbul
 ```
+
+## ⚠️ ZORUNLU: PowerShell 7 Kullanimi
+
+**Tum komutlar PowerShell 7 (pwsh.exe) ile calistirilmalidir.** Windows PowerShell 5.1 (powershell.exe) kullanilmayacaktir.
+
+### Kullanim
+
+```powershell
+# DOGRU — PS7 ile:
+& "C:\Program Files\PowerShell\7\pwsh.exe" -NoProfile -Command "<komut>"
+
+# YANLIS — PS5.1:
+# powershell.exe -Command "<komut>"   ← KULLANMA
+```
+
+### PS7 Profil Alias'lari (`$PROFILE`)
+
+PS7 profilinde tanimli alias'lar (otomatik yuklenir):
+
+| Alias | Komut | Aciklama |
+|-------|-------|----------|
+| `cdgo` | `cd D:\bookMaker_Deepseek` | Proje kokune git |
+| `book` | `.\book.ps1` | Kitap komutlari |
+| `book-env` | Ortam bilgisi | Python yolunu gosterir |
+
+Profil konumu: `$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+
+### Notlar
+
+- `exec` tool'u her cagrildiginda PS7 ile calistirilmalidir
+- `cdgo` alias'i PS7 profilinde tanimlidir, `-NoProfile` ile kullanilamaz
+- Uzun sureli komutlarda `background: true` kullanilmalidir
 
 ## Repo
 
@@ -42,27 +76,30 @@ PowerShell ile dosya yazimi gerekirse UTF-8 acikca korunmalidir. Manuel kod duze
 - PATH kurulumdan sonra guncellense bile mevcut Codex oturumu yeni PATH'i otomatik miras almayabilir.
 - Bu durumda araclar tam executable yolu ile calistirilabilir.
 
-## Ana Runtime ve Gelistirme Araclari
+## Ana Runtime ve Gelistirme Araclari (2026-05-05 guncel)
 
 ```text
-Python: 3.14.0
-Node.js: v24.11.1
-npm: 11.13.0
-Java: 17.0.10
-javac: 17.0.10
-Git: 2.44.0.1
-GitHub CLI: mevcut
-PowerShell: 7.6.1
-SQLite CLI: 3.51.3
+Python: 3.14.4  (C:\Users\ismai\AppData\Local\Python\pythoncore-3.14-64\python.exe)
+uv:    0.11.9   (C:\Users\ismai\AppData\Local\Microsoft\WinGet\Packages\astral-sh.uv_*\uv.exe)
+Node:  v22.20.0
+npm:   11.13.0
+Java:  17.0.10 (javac: 17.0.10)
+Git:   2.54.0
 ```
 
-## Arama ve Inceleme
-
+### Python venv
 ```text
-rg: mevcut
-rga: ripgrep-all 0.10.9
-fd: 10.4.2
-fzf: mevcut
+Konum: D:\bookMaker_Deepseek\.venv
+Python: 3.14.4
+Paketler: 43 (uv sync ile kurulu)
+Eksik olan: requests (uv add requests ile eklenmisti, pyproject.toml'de olmayabilir)
+```
+
+### Kabuk Erişimi
+```text
+CLI: Bash (Unix sözdizimi, /dev/null, forward slash)
+Windows araclari bash'ten dogrudan calisir (python, uv, node, git, rg, pandoc, mmdc)
+Calismayanlar: fd, just, mkdocs (Windows exe'leri bash'ten erisilemiyor)
 ```
 
 Notlar:
@@ -187,6 +224,7 @@ uv: 0.11.8
 ruff: 0.15.12
 pre-commit: 4.6.0
 playwright: 1.59.0
+qrcode: 8.2 (pillow: 12.2.0)
 ```
 
 `uv` tam yolu:
@@ -198,6 +236,12 @@ C:\Users\ismai\AppData\Roaming\uv\tools\playwright\Scripts\python.exe
 ```
 
 Playwright Chromium browser bileseni kuruldu ve headless render smoke testi basarili oldu.
+
+`qrcode` uv tool ile kuruldu. CLI komutu `qr`, PNG ciktisi destekli:
+
+```powershell
+qr --output dosya.png "https://github.com/..."
+```
 
 ## SQLite
 

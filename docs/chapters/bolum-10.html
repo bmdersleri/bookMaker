@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr-TR" xml:lang="tr-TR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ismail Kirbas" />
+  <meta name="dcterms.date" content="2026-01-01" />
+  <title>10. Kalitim ve Cok Bicimlilik</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">10. Kalitim ve Cok Bicimlilik</h1>
+<p class="subtitle">Java’nin Temelleri</p>
+<p class="author">Ismail Kirbas</p>
+<p class="date">2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#kalitim-ve-cok-bicimlilik" id="toc-kalitim-ve-cok-bicimlilik">10. Kalitim ve Cok Bicimlilik</a></li>
+<li><a href="#bölüm-10-string-islemleri-ve-metin-problemleri" id="toc-bölüm-10-string-islemleri-ve-metin-problemleri">Bölüm 10: String Islemleri ve Metin Problemleri</a>
+<ul>
+<li><a href="#giriş" id="toc-giriş">10.1 Giriş</a></li>
+<li><a href="#string-sınıfı-ve-temel-metodlar" id="toc-string-sınıfı-ve-temel-metodlar">10.2 String Sınıfı ve Temel Metodlar</a></li>
+<li><a href="#string-metin-manipülasyon-metodları" id="toc-string-metin-manipülasyon-metodları">10.10 String Metin Manipülasyon Metodları</a></li>
+<li><a href="#string-arama-ve-kontrol-metodları" id="toc-string-arama-ve-kontrol-metodları">10.22 String Arama ve Kontrol Metodları</a></li>
+<li><a href="#string-biçimlendirme-ve-formatlama" id="toc-string-biçimlendirme-ve-formatlama">10.30 String Biçimlendirme ve Formatlama</a></li>
+<li><a href="#gelişmiş-string-işlemleri-ve-problem-çözme" id="toc-gelişmiş-string-işlemleri-ve-problem-çözme">10.43 Gelişmiş String İşlemleri ve Problem Çözme</a></li>
+<li><a href="#anagram-tespiti" id="toc-anagram-tespiti">10.58 Anagram tespiti</a></li>
+<li><a href="#basit-metin-sıkıştırma-run-length-encoding" id="toc-basit-metin-sıkıştırma-run-length-encoding">10.59 Basit metin sıkıştırma (Run-length encoding)</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="kalitim-ve-cok-bicimlilik" class="level1">
+<h1>10. Kalitim ve Cok Bicimlilik</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> String İşlemleri ve Metin Problemleri</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">description</span><span class="kw">:</span><span class="at"> String sınıfı metodları, metin manipulasyonu ve karakter işlemlerini öğrenin</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">keywords</span><span class="kw">:</span><span class="at"> string, metin, karakter, Python, programlama</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> Teknik Kitap Yazarı</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> </span><span class="dv">2024</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+</section>
+<section id="bölüm-10-string-islemleri-ve-metin-problemleri" class="level1">
+<h1>Bölüm 10: String Islemleri ve Metin Problemleri</h1>
+<section id="giriş" class="level2">
+<h2>10.1 Giriş</h2>
+<p>Programlamada metin işlemleri, en sık karşılaşılan ve en önemli konulardan biridir. Kullanıcı girdilerini işleme, dosya okuma/yazma, veri temizleme ve metin tabanlı algoritmalar geliştirme gibi birçok alanda string işlemleri kritik rol oynar.</p>
+<p>Bu bölümde, Python’daki <code>str</code> sınıfının sunduğu zengin metodları, metin manipulasyonu tekniklerini ve karakter işlemlerini adım adım inceleyeceksiniz. Temel string işlemlerinden başlayarak, gelişmiş metin problemlerinin çözümüne kadar geniş bir yelpazede bilgi edineceksiniz.</p>
+<blockquote>
+<p>💡 <strong>Pedagojik Not</strong>: Bu bölümdeki her konuyu, verilen kod örneklerini kendi bilgisayarınızda çalıştırarak pekiştirmeniz önerilir. Gerçek dünya problemlerinde string işlemleri sıklıkla kullanıldığından, bu konulara hakim olmak programlama becerilerinizi önemli ölçüde geliştirecektir.</p>
+</blockquote>
+</section>
+<section id="string-sınıfı-ve-temel-metodlar" class="level2">
+<h2>10.2 String Sınıfı ve Temel Metodlar</h2>
+<section id="string-oluşturma-ve-ilk-değer-atama" class="level3">
+<h3>String Oluşturma ve İlk Değer Atama</h3>
+<p>Python’da string oluşturmanın birden fazla yolu vardır. En yaygın yöntem, tek tırnak (<code>'</code>) veya çift tırnak (<code>"</code>) kullanmaktır.</p>
+<blockquote>
+<p>📘 <strong>Önemli Bilgi</strong>: String’ler Python’da immutable (değişmez) veri tipleridir. Bir string oluşturulduktan sonra içeriği değiştirilemez. Değişiklik yapmak istediğinizde yeni bir string oluşturmanız gerekir.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: string_olusturma.py -->
+<!-- Amaç: String oluşturma yöntemlerini göstermek -->
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.3 String oluşturma örnekleri</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>isim <span class="op">=</span> <span class="st">&quot;Ahmet&quot;</span>  <span class="co"># Çift tırnak ile</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&#39;Merhaba Dünya&#39;</span>  <span class="co"># Tek tırnak ile</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>bos_string <span class="op">=</span> <span class="st">&quot;&quot;</span>  <span class="co"># Boş string</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>cok_satirli <span class="op">=</span> <span class="st">&quot;&quot;&quot;Bu bir</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">çok satırlı</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">string örneğidir.&quot;&quot;&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;İsim: </span><span class="sc">{</span>isim<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Metin: </span><span class="sc">{</span>metin<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Boş mu?: </span><span class="sc">{</span><span class="bu">len</span>(bos_string) <span class="op">==</span> <span class="dv">0</span><span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Çok satırlı: </span><span class="sc">{</span>cok_satirli<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>İsim: Ahmet
+Metin: Merhaba Dünya
+Boş mu?: True
+Çok satırlı: Bu bir
+çok satırlı
+string örneğidir.</code></pre>
+</section>
+<section id="string-uzunluğu-ve-indeksleme" class="level3">
+<h3>String Uzunluğu ve İndeksleme</h3>
+<p>String’ler, karakter dizileri olduğu için indekslenebilirler. Python’da indeksleme 0’dan başlar ve negatif indeksler sondan başa doğru sayar.</p>
+<blockquote>
+<p>💡 <strong>İpucu</strong>: Negatif indeksleme, bir string’in sonundan itibaren karakterlere erişmek için oldukça kullanışlıdır. Örneğin, <code>metin[-1]</code> her zaman son karakteri verir.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: indeksleme.py -->
+<!-- Amaç: String indeksleme ve uzunluk kavramlarını göstermek -->
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&quot;Python Programlama&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.4 Uzunluk</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Uzunluk: </span><span class="sc">{</span><span class="bu">len</span>(metin)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.5 Pozitif indeksleme</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;İlk karakter (0): &#39;</span><span class="sc">{</span>metin[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;3. karakter (2): &#39;</span><span class="sc">{</span>metin[<span class="dv">2</span>]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.6 Negatif indeksleme</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Son karakter (-1): &#39;</span><span class="sc">{</span>metin[<span class="op">-</span><span class="dv">1</span>]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Sondan 3. karakter (-3): &#39;</span><span class="sc">{</span>metin[<span class="op">-</span><span class="dv">3</span>]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Uzunluk: 19
+İlk karakter (0): &#39;P&#39;
+3. karakter (2): &#39;t&#39;
+Son karakter (-1): &#39;a&#39;
+Sondan 3. karakter (-3): &#39;m&#39;</code></pre>
+</section>
+<section id="string-dilimleme-slicing" class="level3">
+<h3>String Dilimleme (Slicing)</h3>
+<p>Dilimleme, bir string’in belirli bir bölümünü almak için kullanılır. <code>[başlangıç:bitiş:adım]</code> formatında kullanılır.</p>
+<blockquote>
+<p>⚠️ <strong>Dikkat</strong>: Dilimleme işleminde <code>bitiş</code> indeksi dahil değildir. Yani <code>metin[0:5]</code> ifadesi 0, 1, 2, 3, 4. indeksleri alır, 5. indeksi almaz.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: dilimleme.py -->
+<!-- Amaç: String dilimleme işlemlerini göstermek -->
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&quot;Merhaba Dünya&quot;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.7 Temel dilimleme</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;İlk 7 karakter: &#39;</span><span class="sc">{</span>metin[:<span class="dv">7</span>]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)  <span class="co"># &#39;Merhaba&#39;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;5. karakterden sonra: &#39;</span><span class="sc">{</span>metin[<span class="dv">5</span>:]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)  <span class="co"># &#39;ba Dünya&#39;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.8 Adım kullanarak</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Her 2. karakter: &#39;</span><span class="sc">{</span>metin[::<span class="dv">2</span>]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Ters çevrilmiş: &#39;</span><span class="sc">{</span>metin[::<span class="op">-</span><span class="dv">1</span>]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.9 Negatif indekslerle dilimleme</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Son 5 karakter: &#39;</span><span class="sc">{</span>metin[<span class="op">-</span><span class="dv">5</span>:]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;2. indeksten 8. indekse: &#39;</span><span class="sc">{</span>metin[<span class="dv">2</span>:<span class="dv">8</span>]<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>İlk 7 karakter: &#39;Merhaba&#39;
+5. karakterden sonra: &#39;ba Dünya&#39;
+Her 2. karakter: &#39;MraaDny&#39;
+Ters çevrilmiş: &#39;aynaD übahreM&#39;
+Son 5 karakter: &#39;Dünya&#39;
+2. indeksten 8. indekse: &#39;rhaba &#39;</code></pre>
+</section>
+</section>
+<section id="string-metin-manipülasyon-metodları" class="level2">
+<h2>10.10 String Metin Manipülasyon Metodları</h2>
+<section id="büyükküçük-harf-dönüşümleri" class="level3">
+<h3>Büyük/Küçük Harf Dönüşümleri</h3>
+<p>Python, metinlerin büyük/küçük harf durumlarını değiştirmek için çeşitli metodlar sunar.</p>
+<blockquote>
+<p>📘 <strong>Önemli Bilgi</strong>: <code>casefold()</code> metodu, <code>lower()</code> metodundan daha agresif bir küçük harf dönüşümü yapar. Özellikle Almanca ‘ß’ gibi özel karakterler için kullanışlıdır.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: harf_donusumleri.py -->
+<!-- Amaç: Büyük/küçük harf dönüşüm metodlarını göstermek -->
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&quot;pYthon prOgramlama DİLİ&quot;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.11 Temel dönüşümler</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Orijinal: </span><span class="sc">{</span>metin<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Büyük harf: </span><span class="sc">{</span>metin<span class="sc">.</span>upper()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Küçük harf: </span><span class="sc">{</span>metin<span class="sc">.</span>lower()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Başlık formatı: </span><span class="sc">{</span>metin<span class="sc">.</span>title()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;İlk harf büyük: </span><span class="sc">{</span>metin<span class="sc">.</span>capitalize()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.12 Swapcase - büyük/küçük harf değiştirme</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Swapcase: </span><span class="sc">{</span>metin<span class="sc">.</span>swapcase()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.13 Casefold - özel karakterler için</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>ozel_metin <span class="op">=</span> <span class="st">&quot;STRASSE&quot;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Lower: </span><span class="sc">{</span>ozel_metin<span class="sc">.</span>lower()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Casefold: </span><span class="sc">{</span>ozel_metin<span class="sc">.</span>casefold()<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Orijinal: pYthon prOgramlama DİLİ
+Büyük harf: PYTHON PROGRAMLAMA DİLİ
+Küçük harf: python programlama dili
+Başlık formatı: Python Programlama Dili
+İlk harf büyük: Python programlama dili
+Swapcase: PyTHON PRoGRAMLAMA dili
+Lower: strasse
+Casefold: strasse</code></pre>
+</section>
+<section id="boşluk-ve-karakter-temizleme" class="level3">
+<h3>Boşluk ve Karakter Temizleme</h3>
+<p>Metinlerdeki gereksiz boşlukları ve özel karakterleri temizlemek için çeşitli metodlar bulunur.</p>
+<blockquote>
+<p>💡 <strong>İpucu</strong>: <code>strip()</code> metodu varsayılan olarak boşluk karakterlerini temizler. İsteğe bağlı olarak hangi karakterlerin temizleneceğini belirtebilirsiniz.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: karakter_temizleme.py -->
+<!-- Amaç: String temizleme metodlarını göstermek -->
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.14 Boşluk temizleme</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&quot;   Merhaba Dünya   &quot;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Strip: &#39;</span><span class="sc">{</span>metin<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Lstrip: &#39;</span><span class="sc">{</span>metin<span class="sc">.</span>lstrip()<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Rstrip: &#39;</span><span class="sc">{</span>metin<span class="sc">.</span>rstrip()<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.15 Özel karakter temizleme</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>metin2 <span class="op">=</span> <span class="st">&quot;***Merhaba***&quot;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;* strip: &#39;</span><span class="sc">{</span>metin2<span class="sc">.</span>strip(<span class="st">&#39;*&#39;</span>)<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.16 Replace ile karakter değiştirme</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>metin3 <span class="op">=</span> <span class="st">&quot;Merhaba Dünya&quot;</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Replace: &#39;</span><span class="sc">{</span>metin3<span class="sc">.</span>replace(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;e&#39;</span>)<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.17 translate() ile toplu dönüşüm</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>tablo <span class="op">=</span> <span class="bu">str</span>.maketrans({<span class="st">&#39;a&#39;</span>: <span class="st">&#39;e&#39;</span>, <span class="st">&#39;ı&#39;</span>: <span class="st">&#39;i&#39;</span>, <span class="st">&#39;o&#39;</span>: <span class="st">&#39;ö&#39;</span>})</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Translate: &#39;</span><span class="sc">{</span>metin3<span class="sc">.</span>translate(tablo)<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Strip: &#39;Merhaba Dünya&#39;
+Lstrip: &#39;Merhaba Dünya   &#39;
+Rstrip: &#39;   Merhaba Dünya&#39;
+* strip: &#39;Merhaba&#39;
+Replace: &#39;Merhebe Dünye&#39;
+Translate: &#39;Merhebe Dünye&#39;</code></pre>
+</section>
+<section id="bölme-ve-birleştirme-işlemleri" class="level3">
+<h3>Bölme ve Birleştirme İşlemleri</h3>
+<p>Metinleri parçalara ayırmak ve birleştirmek için kullanılan metodlar, veri işleme süreçlerinde sıklıkla kullanılır.</p>
+<blockquote>
+<p>⚠️ <strong>Dikkat</strong>: <code>split()</code> metodu varsayılan olarak tüm boşluk karakterlerine (space, tab, newline) göre böler. Belirli bir karaktere göre bölmek için parametre vermelisiniz.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: bolme_birlestirme.py -->
+<!-- Amaç: Bölme ve birleştirme işlemlerini göstermek -->
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.18 Split - bölme işlemi</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&quot;elma,armut,muz,çilek&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>meyveler <span class="op">=</span> metin.split(<span class="st">&quot;,&quot;</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Virgülle bölünmüş: </span><span class="sc">{</span>meyveler<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.19 Birden fazla ayırıcı ile split</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>metin2 <span class="op">=</span> <span class="st">&quot;elma;armut|muz,çilek&quot;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Regex ile bölme: </span><span class="sc">{</span>re<span class="sc">.</span>split(<span class="st">&#39;[;|,]&#39;</span>, metin2)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.20 Join - birleştirme işlemi</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>birlesik <span class="op">=</span> <span class="st">&quot; - &quot;</span>.join(meyveler)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Birleştirilmiş: &#39;</span><span class="sc">{</span>birlesik<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.21 Partition ve rpartition</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>telefon <span class="op">=</span> <span class="st">&quot;+90-555-123-4567&quot;</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Partition: </span><span class="sc">{</span>telefon<span class="sc">.</span>partition(<span class="st">&#39;-&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Rpartition: </span><span class="sc">{</span>telefon<span class="sc">.</span>rpartition(<span class="st">&#39;-&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Virgülle bölünmüş: [&#39;elma&#39;, &#39;armut&#39;, &#39;muz&#39;, &#39;çilek&#39;]
+Regex ile bölme: [&#39;elma&#39;, &#39;armut&#39;, &#39;muz&#39;, &#39;çilek&#39;]
+Birleştirilmiş: &#39;elma - armut - muz - çilek&#39;
+Partition: (&#39;+90&#39;, &#39;-&#39;, &#39;555-123-4567&#39;)
+Rpartition: (&#39;+90-555-123&#39;, &#39;-&#39;, &#39;4567&#39;)</code></pre>
+</section>
+</section>
+<section id="string-arama-ve-kontrol-metodları" class="level2">
+<h2>10.22 String Arama ve Kontrol Metodları</h2>
+<section id="içerik-kontrol-metodları" class="level3">
+<h3>İçerik Kontrol Metodları</h3>
+<p>Bir string’in belirli bir desenle başlayıp başlamadığını, belirli bir karakter veya kelimeyi içerip içermediğini kontrol etmek için kullanılır.</p>
+<blockquote>
+<p>📘 <strong>Önemli Bilgi</strong>: <code>in</code> operatörü, bir string’in başka bir string içinde olup olmadığını kontrol eder. Bu işlem büyük/küçük harf duyarlıdır.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: icerik_kontrol.py -->
+<!-- Amaç: İçerik kontrol metodlarını göstermek -->
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&quot;Python programlama dili Python ile yazılım geliştirme&quot;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.23 Başlangıç ve bitiş kontrolü</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;Python&#39; ile başlıyor mu?: </span><span class="sc">{</span>metin<span class="sc">.</span>startswith(<span class="st">&#39;Python&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;geliştirme&#39; ile bitiyor mu?: </span><span class="sc">{</span>metin<span class="sc">.</span>endswith(<span class="st">&#39;geliştirme&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.24 İçerik kontrolü</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;Java&#39; metinde var mı?: </span><span class="sc">{</span><span class="st">&#39;Java&#39;</span> <span class="kw">in</span> metin<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;Python&#39; metinde var mı?: </span><span class="sc">{</span><span class="st">&#39;Python&#39;</span> <span class="kw">in</span> metin<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.25 Sayma işlemi</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;Python&#39; kaç kez geçiyor?: </span><span class="sc">{</span>metin<span class="sc">.</span>count(<span class="st">&#39;Python&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;a&#39; harfi kaç kez geçiyor?: </span><span class="sc">{</span>metin<span class="sc">.</span>count(<span class="st">&#39;a&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>&#39;Python&#39; ile başlıyor mu?: True
+&#39;geliştirme&#39; ile bitiyor mu?: True
+&#39;Java&#39; metinde var mı?: False
+&#39;Python&#39; metinde var mı?: True
+&#39;Python&#39; kaç kez geçiyor?: 2
+&#39;a&#39; harfi kaç kez geçiyor?: 5</code></pre>
+</section>
+<section id="bulma-ve-indeks-metodları" class="level3">
+<h3>Bulma ve İndeks Metodları</h3>
+<p>Bir alt string’in konumunu bulmak için kullanılan metodlar. <code>find()</code> ve <code>index()</code> arasındaki fark, hata durumunda nasıl davrandıklarıdır.</p>
+<blockquote>
+<p>💡 <strong>İpucu</strong>: <code>find()</code> metodu, aranan değer bulunamazsa <code>-1</code> döndürür. <code>index()</code> metodu ise <code>ValueError</code> hatası fırlatır. Güvenli arama için <code>find()</code> tercih edilmelidir.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: bulma_metodlari.py -->
+<!-- Amaç: Bulma ve indeks metodlarını göstermek -->
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&quot;Merhaba Dünya, Merhaba Evren&quot;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.26 find() metodu</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;İlk &#39;Merhaba&#39; indeksi: </span><span class="sc">{</span>metin<span class="sc">.</span>find(<span class="st">&#39;Merhaba&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Son &#39;Merhaba&#39; indeksi: </span><span class="sc">{</span>metin<span class="sc">.</span>rfind(<span class="st">&#39;Merhaba&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Bulunamayan kelime: </span><span class="sc">{</span>metin<span class="sc">.</span>find(<span class="st">&#39;Selam&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)  <span class="co"># -1 döner</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.27 index() metodu</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;İlk &#39;Dünya&#39; indeksi: </span><span class="sc">{</span>metin<span class="sc">.</span>index(<span class="st">&#39;Dünya&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    metin.index(<span class="st">&#39;Selam&#39;</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> e:</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Hata: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.28 Belirli bir indexten sonra arama</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;10. indexten sonra &#39;Merhaba&#39;: </span><span class="sc">{</span>metin<span class="sc">.</span>find(<span class="st">&#39;Merhaba&#39;</span>, <span class="dv">10</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>İlk &#39;Merhaba&#39; indeksi: 0
+Son &#39;Merhaba&#39; indeksi: 16
+Bulunamayan kelime: -1
+İlk &#39;Dünya&#39; indeksi: 8
+Hata: substring not found
+10. indexten sonra &#39;Merhaba&#39;: 16</code></pre>
+</section>
+<section id="karakter-tipi-kontrolleri" class="level3">
+<h3>Karakter Tipi Kontrolleri</h3>
+<p>Bir string’in tamamen harflerden, rakamlardan veya belirli karakter tiplerinden oluşup oluşmadığını kontrol eder.</p>
+<blockquote>
+<p>⚠️ <strong>Dikkat</strong>: <code>isnumeric()</code>, <code>isdigit()</code> ve <code>isdecimal()</code> metodları arasında ince farklar vardır. <code>isnumeric()</code> en geniş kapsamlıdır ve Roma rakamlarını, kesirleri de içerir.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: karakter_tipi.py -->
+<!-- Amaç: Karakter tipi kontrol metodlarını göstermek -->
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>testler <span class="op">=</span> [<span class="st">&quot;Python3&quot;</span>, <span class="st">&quot;12345&quot;</span>, <span class="st">&quot;   &quot;</span>, <span class="st">&quot;Merhaba&quot;</span>, <span class="st">&quot;3.14&quot;</span>]</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Karakter Tipi Kontrolleri:&quot;</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;-&quot;</span> <span class="op">*</span> <span class="dv">50</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> test <span class="kw">in</span> testler:</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;&#39;</span><span class="sc">{</span>test<span class="sc">}</span><span class="ss">&#39; -&gt; &quot;</span>, end<span class="op">=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;alpha: </span><span class="sc">{</span>test<span class="sc">.</span>isalpha()<span class="sc">}</span><span class="ss">, &quot;</span>, end<span class="op">=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;digit: </span><span class="sc">{</span>test<span class="sc">.</span>isdigit()<span class="sc">}</span><span class="ss">, &quot;</span>, end<span class="op">=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;alnum: </span><span class="sc">{</span>test<span class="sc">.</span>isalnum()<span class="sc">}</span><span class="ss">, &quot;</span>, end<span class="op">=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;space: </span><span class="sc">{</span>test<span class="sc">.</span>isspace()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.29 Özel durumlar</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Özel Durumlar:&quot;</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;Ⅻ&#39; (Roma rakamı) isnumeric: </span><span class="sc">{</span><span class="st">&#39;Ⅻ&#39;</span><span class="sc">.</span>isnumeric()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;Ⅻ&#39; (Roma rakamı) isdigit: </span><span class="sc">{</span><span class="st">&#39;Ⅻ&#39;</span><span class="sc">.</span>isdigit()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;²&#39; (üst simge) isdigit: </span><span class="sc">{</span><span class="st">&#39;²&#39;</span><span class="sc">.</span>isdigit()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;²&#39; (üst simge) isnumeric: </span><span class="sc">{</span><span class="st">&#39;²&#39;</span><span class="sc">.</span>isnumeric()<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Karakter Tipi Kontrolleri:
+--------------------------------------------------
+&#39;Python3&#39; -&gt; alpha: False, digit: False, alnum: True, space: False
+&#39;12345&#39; -&gt; alpha: False, digit: True, alnum: True, space: False
+&#39;   &#39; -&gt; alpha: False, digit: False, alnum: False, space: True
+&#39;Merhaba&#39; -&gt; alpha: True, digit: False, alnum: True, space: False
+&#39;3.14&#39; -&gt; alpha: False, digit: False, alnum: False, space: False
+
+Özel Durumlar:
+&#39;Ⅻ&#39; (Roma rakamı) isnumeric: True
+&#39;Ⅻ&#39; (Roma rakamı) isdigit: False
+&#39;²&#39; (üst simge) isdigit: True
+&#39;²&#39; (üst simge) isnumeric: True</code></pre>
+</section>
+</section>
+<section id="string-biçimlendirme-ve-formatlama" class="level2">
+<h2>10.30 String Biçimlendirme ve Formatlama</h2>
+<section id="f-string-kullanımı" class="level3">
+<h3>f-string Kullanımı</h3>
+<p>Python 3.6 ile gelen f-string’ler, string biçimlendirmenin en modern ve okunabilir yoludur.</p>
+<blockquote>
+<p>📘 <strong>Önemli Bilgi</strong>: f-string’ler çalışma zamanında değerlendirilir ve içlerinde herhangi bir Python ifadesi kullanılabilir.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: fstring_kullanimi.py -->
+<!-- Amaç: f-string kullanımını göstermek -->
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>isim <span class="op">=</span> <span class="st">&quot;Ali&quot;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>yas <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>maas <span class="op">=</span> <span class="fl">5250.50</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.31 Temel kullanım</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Ad: </span><span class="sc">{</span>isim<span class="sc">}</span><span class="ss">, Yaş: </span><span class="sc">{</span>yas<span class="sc">}</span><span class="ss">, Maaş: </span><span class="sc">{</span>maas<span class="sc">:.2f}</span><span class="ss"> TL&quot;</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.32 Hizalama ve dolgu</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Sağa hizalı: &#39;</span><span class="sc">{</span>isim<span class="sc">:&gt;10}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Sola hizalı: &#39;</span><span class="sc">{</span>isim<span class="sc">:&lt;10}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Ortala: &#39;</span><span class="sc">{</span>isim<span class="sc">:^10}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Dolgulu: &#39;</span><span class="sc">{</span>isim<span class="sc">:*^10}</span><span class="ss">&#39;&quot;</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.33 İfade kullanımı</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;10 yıl sonra yaş: </span><span class="sc">{</span>yas <span class="op">+</span> <span class="dv">10</span><span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;İsmin uzunluğu: </span><span class="sc">{</span><span class="bu">len</span>(isim)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.34 Tarih formatlama</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>bugun <span class="op">=</span> datetime.now()</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Bugün: </span><span class="sc">{</span>bugun<span class="sc">:</span><span class="op">%</span>d<span class="sc">.</span><span class="op">%</span>m<span class="sc">.</span><span class="op">%</span>Y<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Saat: </span><span class="sc">{</span>bugun<span class="sc">:</span><span class="op">%</span>H<span class="sc">:</span><span class="op">%</span>M<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Ad: Ali, Yaş: 25, Maaş: 5250.50 TL
+Sağa hizalı: &#39;        Ali&#39;
+Sola hizalı: &#39;Ali       &#39;
+Ortala: &#39;   Ali   &#39;
+Dolgulu: &#39;***Ali****&#39;
+10 yıl sonra yaş: 35
+İsmin uzunluğu: 3
+Bugün: 15.01.2024
+Saat: 14:30</code></pre>
+</section>
+<section id="format-metodu" class="level3">
+<h3>format() Metodu</h3>
+<p>f-string’lerden önceki dönemde en yaygın kullanılan biçimlendirme yöntemiydi. Esnek ve güçlüdür.</p>
+<blockquote>
+<p>💡 <strong>İpucu</strong>: <code>format()</code> metodu, özellikle biçimlendirme şablonlarının dışarıdan alındığı durumlarda kullanışlıdır.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: format_metodu.py -->
+<!-- Amaç: format() metodunun kullanımını göstermek -->
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.35 Konumsal parametreler</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;</span><span class="sc">{}</span><span class="st"> </span><span class="sc">{}</span><span class="st"> </span><span class="sc">{}</span><span class="st"> yılında doğdu.&quot;</span>.<span class="bu">format</span>(<span class="st">&quot;Ahmet&quot;</span>, <span class="st">&quot;1980&quot;</span>, <span class="st">&quot;İstanbul&quot;</span>))</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.36 Sıra belirterek</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;</span><span class="sc">{2}</span><span class="st"> </span><span class="sc">{0}</span><span class="st"> </span><span class="sc">{1}</span><span class="st"> yılında doğdu.&quot;</span>.<span class="bu">format</span>(<span class="st">&quot;Ahmet&quot;</span>, <span class="st">&quot;1980&quot;</span>, <span class="st">&quot;İstanbul&quot;</span>))</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.37 Anahtarlı parametreler</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;</span><span class="sc">{ad}</span><span class="st"> </span><span class="sc">{soyad}</span><span class="st"> - </span><span class="sc">{meslek}</span><span class="st">&quot;</span>.<span class="bu">format</span>(</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    ad<span class="op">=</span><span class="st">&quot;Ayşe&quot;</span>, soyad<span class="op">=</span><span class="st">&quot;Yılmaz&quot;</span>, meslek<span class="op">=</span><span class="st">&quot;Mühendis&quot;</span>))</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.38 Sözlük ile kullanım</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>kisi <span class="op">=</span> {<span class="st">&quot;ad&quot;</span>: <span class="st">&quot;Mehmet&quot;</span>, <span class="st">&quot;yas&quot;</span>: <span class="dv">30</span>, <span class="st">&quot;sehir&quot;</span>: <span class="st">&quot;Ankara&quot;</span>}</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Ad: </span><span class="sc">{ad}</span><span class="st">, Yaş: </span><span class="sc">{yas}</span><span class="st">, Şehir: </span><span class="sc">{sehir}</span><span class="st">&quot;</span>.<span class="bu">format</span>(<span class="op">**</span>kisi))</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.39 Sayı formatlama</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>sayi <span class="op">=</span> <span class="fl">1234.5678</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Ondalık: </span><span class="sc">{:.2f}</span><span class="st">&quot;</span>.<span class="bu">format</span>(sayi))</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Bilimsel: </span><span class="sc">{:.2e}</span><span class="st">&quot;</span>.<span class="bu">format</span>(sayi))</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Yüzde: </span><span class="sc">{:.1%}</span><span class="st">&quot;</span>.<span class="bu">format</span>(<span class="fl">0.85</span>))</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Ahmet 1980 İstanbul yılında doğdu.
+İstanbul Ahmet 1980 yılında doğdu.
+Ayşe Yılmaz - Mühendis
+Ad: Mehmet, Yaş: 30, Şehir: Ankara
+Ondalık: 1234.57
+Bilimsel: 1.23e+03
+Yüzde: 85.0%</code></pre>
+</section>
+<section id="operatörü-ile-eski-tip-formatlama" class="level3">
+<h3>% Operatörü ile Eski Tip Formatlama</h3>
+<p>C dili benzeri bu formatlama yöntemi, eski Python kodlarında hala görülebilir.</p>
+<blockquote>
+<p>⚠️ <strong>Dikkat</strong>: Bu yöntem günümüzde önerilmemektedir. Yeni projelerde f-string veya <code>format()</code> metodu kullanılmalıdır.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: yuzde_formatlama.py -->
+<!-- Amaç: % operatörü ile formatlamayı göstermek -->
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>isim <span class="op">=</span> <span class="st">&quot;Veli&quot;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>not_ort <span class="op">=</span> <span class="fl">85.6789</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.40 Temel kullanım</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Öğrenci: </span><span class="sc">%s</span><span class="st">, Not ortalaması: </span><span class="sc">%.2f</span><span class="st">&quot;</span> <span class="op">%</span> (isim, not_ort))</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.41 Sayı formatlama</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Sayı: </span><span class="sc">%+d</span><span class="st">&quot;</span> <span class="op">%</span> <span class="dv">42</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Ondalık: </span><span class="sc">%.3f</span><span class="st">&quot;</span> <span class="op">%</span> <span class="fl">3.14159</span>)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Ondalık: </span><span class="sc">%8.2f</span><span class="st">&quot;</span> <span class="op">%</span> <span class="fl">3.14159</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.42 Farklı tipler</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Hex: </span><span class="sc">%x</span><span class="st">&quot;</span> <span class="op">%</span> <span class="dv">255</span>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Oct: </span><span class="sc">%o</span><span class="st">&quot;</span> <span class="op">%</span> <span class="dv">255</span>)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Bilimsel: </span><span class="sc">%e</span><span class="st">&quot;</span> <span class="op">%</span> <span class="fl">1234.5678</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Öğrenci: Veli, Not ortalaması: 85.68
+Sayı: +42
+Ondalık: 3.142
+Ondalık:     3.14
+Hex: ff
+Oct: 377
+Bilimsel: 1.234568e+03</code></pre>
+</section>
+</section>
+<section id="gelişmiş-string-işlemleri-ve-problem-çözme" class="level2">
+<h2>10.43 Gelişmiş String İşlemleri ve Problem Çözme</h2>
+<section id="düzenli-ifadelerle-string-işleme" class="level3">
+<h3>Düzenli İfadelerle String İşleme</h3>
+<p>Düzenli ifadeler (regex), metin işleme konusunda çok güçlü bir araçtır. Karmaşık desenleri kolayca tanımlayıp metin içinde arayabilirsiniz.</p>
+<blockquote>
+<p>📘 <strong>Önemli Bilgi</strong>: Düzenli ifadeler öğrenmesi biraz zaman alsa da, metin işleme konusunda size inanılmaz bir güç kazandırır. Özellikle veri temizleme ve doğrulama işlemlerinde vazgeçilmezdir.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: duzenli_ifadeler.py -->
+<!-- Amaç: Düzenli ifadelerle string işlemeyi göstermek -->
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.44 Temel desen eşleştirme</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&quot;Telefon: 555-123-4567, E-posta: test@ornek.com&quot;</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>telefon_deseni <span class="op">=</span> <span class="vs">r&#39;</span><span class="dv">\d</span><span class="op">{3}</span><span class="vs">-</span><span class="dv">\d</span><span class="op">{3}</span><span class="vs">-</span><span class="dv">\d</span><span class="op">{4}</span><span class="vs">&#39;</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>eposta_deseni <span class="op">=</span> <span class="vs">r&#39;</span><span class="dv">\w</span><span class="op">+</span><span class="vs">@</span><span class="dv">\w</span><span class="op">+</span><span class="ch">\.</span><span class="dv">\w</span><span class="op">+</span><span class="vs">&#39;</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>telefon <span class="op">=</span> re.search(telefon_deseni, metin)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>eposta <span class="op">=</span> re.search(eposta_deseni, metin)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Bulunan telefon: </span><span class="sc">{</span>telefon<span class="sc">.</span>group() <span class="cf">if</span> telefon <span class="cf">else</span> <span class="st">&#39;Bulunamadı&#39;</span><span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Bulunan e-posta: </span><span class="sc">{</span>eposta<span class="sc">.</span>group() <span class="cf">if</span> eposta <span class="cf">else</span> <span class="st">&#39;Bulunamadı&#39;</span><span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.45 Metin temizleme</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>kirli_metin <span class="op">=</span> <span class="st">&quot;Merhaba!! Bu bir *** test ## metnidir.&quot;</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>temiz <span class="op">=</span> re.sub(<span class="vs">r&#39;</span><span class="pp">[^</span><span class="dv">\w\s</span><span class="pp">]</span><span class="vs">&#39;</span>, <span class="st">&#39;&#39;</span>, kirli_metin)</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Temizlenmiş: </span><span class="sc">{</span>temiz<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.46 Tüm eşleşmeleri bulma</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>metin2 <span class="op">=</span> <span class="st">&quot;[email1@test.com, email2@test.com, email3@test.com]&quot;</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>emailler <span class="op">=</span> re.findall(<span class="vs">r&#39;</span><span class="dv">\w</span><span class="op">+</span><span class="vs">@</span><span class="dv">\w</span><span class="op">+</span><span class="ch">\.</span><span class="dv">\w</span><span class="op">+</span><span class="vs">&#39;</span>, metin2)</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Tüm e-postalar: </span><span class="sc">{</span>emailler<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.47 Gruplama</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>tarih_metni <span class="op">=</span> <span class="st">&quot;Bugün 15-01-2024&quot;</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>desen <span class="op">=</span> <span class="vs">r&#39;</span><span class="kw">(</span><span class="dv">\d</span><span class="op">{2}</span><span class="kw">)</span><span class="vs">-</span><span class="kw">(</span><span class="dv">\d</span><span class="op">{2}</span><span class="kw">)</span><span class="vs">-</span><span class="kw">(</span><span class="dv">\d</span><span class="op">{4}</span><span class="kw">)</span><span class="vs">&#39;</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>match <span class="op">=</span> re.search(desen, tarih_metni)</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> match:</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Gün: </span><span class="sc">{</span>match<span class="sc">.</span>group(<span class="dv">1</span>)<span class="sc">}</span><span class="ss">, Ay: </span><span class="sc">{</span>match<span class="sc">.</span>group(<span class="dv">2</span>)<span class="sc">}</span><span class="ss">, Yıl: </span><span class="sc">{</span>match<span class="sc">.</span>group(<span class="dv">3</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>Bulunan telefon: 555-123-4567
+Bulunan e-posta: test@ornek.com
+Temizlenmiş: Merhaba Bu bir  test  metnidir
+Tüm e-postalar: [&#39;email1@test.com&#39;, &#39;email2@test.com&#39;, &#39;email3@test.com&#39;]
+Gün: 15, Ay: 01, Yıl: 2024</code></pre>
+</section>
+<section id="string-kodlama-ve-karakter-setleri" class="level3">
+<h3>String Kodlama ve Karakter Setleri</h3>
+<p>Farklı karakter kodlamaları arasında dönüşüm yapmak, özellikle dosya işlemleri ve ağ programlamada önemlidir.</p>
+<blockquote>
+<p>💡 <strong>İpucu</strong>: Günümüzde metin işlemlerinde UTF-8 kodlaması standarttır. ASCII sadece İngilizce karakterler için uygundur.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: kodlama_islemleri.py -->
+<!-- Amaç: String kodlama ve karakter seti dönüşümlerini göstermek -->
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>metin <span class="op">=</span> <span class="st">&quot;Merhaba Dünya 🌍&quot;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.48 Encoding (karakter -&gt; byte)</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>utf8_bytes <span class="op">=</span> metin.encode(<span class="st">&#39;utf-8&#39;</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;UTF-8 bytes: </span><span class="sc">{</span>utf8_bytes<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Byte sayısı: </span><span class="sc">{</span><span class="bu">len</span>(utf8_bytes)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.49 Decoding (byte -&gt; karakter)</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>cozulmus <span class="op">=</span> utf8_bytes.decode(<span class="st">&#39;utf-8&#39;</span>)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Çözülmüş: </span><span class="sc">{</span>cozulmus<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.50 Farklı kodlamalar</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>latin1_bytes <span class="op">=</span> metin.encode(<span class="st">&#39;latin-1&#39;</span>, errors<span class="op">=</span><span class="st">&#39;replace&#39;</span>)</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Latin-1: </span><span class="sc">{</span>latin1_bytes<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.51 ASCII kontrolü</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    metin.encode(<span class="st">&#39;ascii&#39;</span>)</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">UnicodeEncodeError</span> <span class="im">as</span> e:</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;ASCII&#39;ye dönüştürülemez: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.52 Byte string işlemleri</span></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>byte_metin <span class="op">=</span> <span class="st">b&#39;Python&#39;</span></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Byte string: </span><span class="sc">{</span>byte_metin<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Byte&#39;dan string&#39;e: </span><span class="sc">{</span>byte_metin<span class="sc">.</span>decode(<span class="st">&#39;utf-8&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>UTF-8 bytes: b&#39;Merhaba D\xc3\xbcnya \xf0\x9f\x8c\x8d&#39;
+Byte sayısı: 17
+Çözülmüş: Merhaba Dünya 🌍
+Latin-1: b&#39;Merhaba D\xfcnya ?&#39;
+ASCII&#39;ye dönüştürülemez: &#39;ascii&#39; codec can&#39;t encode character &#39;\xfc&#39; in position 9: ordinal not in range(128)
+Byte string: b&#39;Python&#39;
+Byte&#39;dan string&#39;e: Python</code></pre>
+</section>
+<section id="string-performans-ipuçları" class="level3">
+<h3>String Performans İpuçları</h3>
+<p>Büyük metinlerle çalışırken performans önemli bir faktördür. Doğru yöntemleri kullanmak, uygulamanızın hızını önemli ölçüde etkileyebilir.</p>
+<blockquote>
+<p>⚠️ <strong>Dikkat</strong>: String birleştirme işlemlerinde <code>+</code> operatörü yerine <code>join()</code> metodu kullanmak, özellikle çok sayıda birleştirme işleminde çok daha verimlidir.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: performans_ipuclari.py -->
+<!-- Amaç: String performans karşılaştırmalarını göstermek -->
+<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.53 Performans testi fonksiyonu</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> performans_testi():</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Kötü performans - + operatörü</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    baslangic <span class="op">=</span> time.time()</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    sonuc <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10000</span>):</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        sonuc <span class="op">+=</span> <span class="bu">str</span>(i)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    bitis <span class="op">=</span> time.time()</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;+ operatörü: </span><span class="sc">{</span>bitis <span class="op">-</span> baslangic<span class="sc">:.4f}</span><span class="ss"> saniye&quot;</span>)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># İyi performans - join() metodu</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    baslangic <span class="op">=</span> time.time()</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    parcalar <span class="op">=</span> [<span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10000</span>)]</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    sonuc <span class="op">=</span> <span class="st">&quot;&quot;</span>.join(parcalar)</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    bitis <span class="op">=</span> time.time()</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;join() metodu: </span><span class="sc">{</span>bitis <span class="op">-</span> baslangic<span class="sc">:.4f}</span><span class="ss"> saniye&quot;</span>)</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Liste comprehension ile join</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    baslangic <span class="op">=</span> time.time()</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    sonuc <span class="op">=</span> <span class="st">&quot;&quot;</span>.join(<span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10000</span>))</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    bitis <span class="op">=</span> time.time()</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Generator ile join: </span><span class="sc">{</span>bitis <span class="op">-</span> baslangic<span class="sc">:.4f}</span><span class="ss"> saniye&quot;</span>)</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>performans_testi()</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.54 Büyük metinlerde arama performansı</span></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>buyuk_metin <span class="op">=</span> <span class="st">&quot;a&quot;</span> <span class="op">*</span> <span class="dv">1000000</span> <span class="op">+</span> <span class="st">&quot;b&quot;</span> <span class="op">+</span> <span class="st">&quot;a&quot;</span> <span class="op">*</span> <span class="dv">1000000</span></span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.55 in operatörü</span></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>baslangic <span class="op">=</span> time.time()</span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;b&#39; var mı?: </span><span class="sc">{</span><span class="st">&#39;b&#39;</span> <span class="kw">in</span> buyuk_metin<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;in operatörü: </span><span class="sc">{</span>time<span class="sc">.</span>time() <span class="op">-</span> baslangic<span class="sc">:.4f}</span><span class="ss"> saniye&quot;</span>)</span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a><span class="co">## 10.56 find metodu</span></span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>baslangic <span class="op">=</span> time.time()</span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&#39;b&#39; indeksi: </span><span class="sc">{</span>buyuk_metin<span class="sc">.</span>find(<span class="st">&#39;b&#39;</span>)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;find metodu: </span><span class="sc">{</span>time<span class="sc">.</span>time() <span class="op">-</span> baslangic<span class="sc">:.4f}</span><span class="ss"> saniye&quot;</span>)</span></code></pre></div>
+<p><strong>Çıktı:</strong></p>
+<pre><code>+ operatörü: 0.0023 saniye
+join() metodu: 0.0008 saniye
+Generator ile join: 0.0010 saniye
+&#39;b&#39; var mı?: True
+in operatörü: 0.0001 saniye
+&#39;b&#39; indeksi: 1000000
+find metodu: 0.0001 saniye</code></pre>
+</section>
+<section id="pratik-problem-çözümleri" class="level3">
+<h3>Pratik Problem Çözümleri</h3>
+<p>String işlemleriyle ilgili yaygın problemlerin çözümlerini inceleyelim.</p>
+<blockquote>
+<p>💡 <strong>İpucu</strong>: Bu problemler, iş görüşmelerinde sıkça sorulan sorulardır. Her birini kendi başınıza çözmeye çalışarak pratik yapabilirsiniz.</p>
+</blockquote>
+<!-- CODE_META -->
+<!-- Dosya: pratik_problemler.py -->
+<!-- Amaç: Yaygın string problemlerinin çözümlerini göstermek -->
+<p>```python
+## 10.57 Palindrom kontrolü
+def palindrom_mu(metin):
+““”
+Bir metnin palindrom olup olmadığını kontrol eder.
+Palindrom: Tersinden okunuşu aynı olan metin (örn: kabak, ada)
+““”
+# Boşlukları ve noktalama işaretlerini temizle
+metin = ’’.join(c.lower() for c in metin if c.isalnum())
+return metin == metin[::-1]</p>
+<p>print(“Palindrom Kontrolü:”)
+print(f”‘kabak’ palindrom mu?: {palindrom_mu(‘kabak’)}“)
+print(f”‘Merhaba’ palindrom mu?: {palindrom_mu(‘Merhaba’)}“)
+print(f”‘Ey Edip Adana’da pide ye’ palindrom mu?: {palindrom_mu(‘Ey Edip Adana'da pide ye’)}“)</p>
+</section>
+</section>
+<section id="anagram-tespiti" class="level2">
+<h2>10.58 Anagram tespiti</h2>
+<p>def anagram_mi(kelime1, kelime2):
+““”
+İki kelimenin anagram olup olmadığını kontrol eder.
+Anagram: Harfleri yeniden düzenlenerek oluşturulmuş kelime
+““”
+return sorted(kelime1.lower().replace(” “,”“)) == sorted(kelime2.lower().replace(” “,”“))</p>
+<p>print(“Kontrolü:”)
+print(f”‘elma’ ve ‘lame’ anagram mı?: {anagram_mi(‘elma’, ‘lame’)}“)
+print(f”‘kitap’ ve ‘katip’ anagram mı?: {anagram_mi(‘kitap’, ‘katip’)}“)
+print(f”‘Roma’ ve ‘amor’ anagram mı?: {anagram_mi(‘Roma’, ‘amor’)}“)</p>
+</section>
+<section id="basit-metin-sıkıştırma-run-length-encoding" class="level2">
+<h2>10.59 Basit metin sıkıştırma (Run-length encoding)</h2>
+<p>def metin_sikistir(metin):
+““”
+Tekrarlanan</p>
+</section>
+</section>
+</body>
+</html>
