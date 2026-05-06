@@ -22,24 +22,13 @@ VALIDATION_MODES: frozenset[str] = frozenset(
     }
 )
 
-CODE_TEST_MODES: frozenset[str] = frozenset(
+JAVA_TEST_MODES: frozenset[str] = frozenset(
     {
         "compile",
         "run",
         "run_assert",
         "compile_run",
         "compile_run_assert",
-        "dart_analyze",
-        "dart_test",
-        "dart_format_check",
-        "flutter_analyze",
-        "flutter_test",
-        "widget_test",
-        "integration_test",
-        "screenshot_only",
-        "review_only",
-        "skip",
-        "none",
     }
 )
 
@@ -55,16 +44,6 @@ DART_FLUTTER_TEST_MODES: frozenset[str] = frozenset(
     }
 )
 
-JAVA_TEST_MODES: frozenset[str] = frozenset(
-    {
-        "compile",
-        "run",
-        "run_assert",
-        "compile_run",
-        "compile_run_assert",
-    }
-)
-
 NON_EXECUTION_TEST_MODES: frozenset[str] = frozenset(
     {
         "screenshot_only",
@@ -72,6 +51,10 @@ NON_EXECUTION_TEST_MODES: frozenset[str] = frozenset(
         "skip",
         "none",
     }
+)
+
+CODE_TEST_MODES: frozenset[str] = frozenset(
+    JAVA_TEST_MODES | DART_FLUTTER_TEST_MODES | NON_EXECUTION_TEST_MODES
 )
 
 QR_POLICIES: frozenset[str] = frozenset(
@@ -93,6 +76,53 @@ CODE_KINDS: frozenset[str] = frozenset(
         "fixed_example",
     }
 )
+
+PROFILE_ALIASES: dict[str, str] = {
+    "java": "java",
+    "java-temelleri": "java",
+    "java_fundamentals": "java",
+    "flutter": "flutter",
+    "flutter-mobil": "flutter",
+    "flutter_mobile": "flutter",
+    "flutter-ile-mobil-uygulama-gelistirme": "flutter",
+    "dart": "flutter",
+    "generic": "generic",
+    "default": "generic",
+}
+
+PROFILE_TEST_MODES: dict[str, frozenset[str]] = {
+    "java": JAVA_TEST_MODES | NON_EXECUTION_TEST_MODES,
+    "flutter": DART_FLUTTER_TEST_MODES | NON_EXECUTION_TEST_MODES,
+    "generic": NON_EXECUTION_TEST_MODES,
+}
+
+
+def normalize_profile(profile: str | None) -> str:
+    """Profil adını dahili kanonik profile dönüştürür.
+
+    Bilinmeyen veya boş profiller ``generic`` kabul edilir. Böylece validator
+    profil bilgisiz durumda yalnızca güvenli, çalıştırma gerektirmeyen test
+    modlarını varsayılan olarak kullanabilir.
+    """
+    if not profile:
+        return "generic"
+
+    normalized = profile.strip().lower().replace(" ", "-")
+    return PROFILE_ALIASES.get(normalized, "generic")
+
+
+def get_allowed_test_modes(profile: str | None) -> frozenset[str]:
+    """Verilen profile göre izin verilen test modlarını döndürür."""
+    normalized = normalize_profile(profile)
+    return PROFILE_TEST_MODES.get(normalized, PROFILE_TEST_MODES["generic"])
+
+
+def is_allowed_test_mode_for_profile(test_mode: str | None, profile: str | None) -> bool:
+    """Test modunun verilen profile göre izinli olup olmadığını döndürür."""
+    if not test_mode:
+        return True
+
+    return test_mode in get_allowed_test_modes(profile)
 
 
 def is_known_validation_mode(value: str | None) -> bool:
