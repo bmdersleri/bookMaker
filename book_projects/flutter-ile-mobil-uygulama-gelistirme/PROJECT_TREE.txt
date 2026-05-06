@@ -1,0 +1,150 @@
+pipeline_state.yaml
+flutter-ile-mobil-uygulama-gelistirme/
+├── async-api-json/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── bulut-tabanli-uygulama/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── dart-temelleri/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── etkilesim-formlar/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── exports/
+│   ├── docx/
+│   │   └── .gitkeep
+│   ├── md/
+│   │   └── .gitkeep
+│   └── pdf/
+│       └── .gitkeep
+├── final-proje/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── giris/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── layout-sistemi/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── listeleme-dinamik-arayuzler/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── logs/
+│   ├── errors/
+│   │   └── .gitkeep
+│   ├── production/
+│   │   └── .gitkeep
+│   └── reviews/
+│       └── .gitkeep
+├── navigation-route/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── paketler-pluginler/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── performans-yayinlama/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── prompts/
+│   ├── default_chapter.md
+│   └── default_review.md
+├── state-management/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── tema-responsive-erisilebilirlik/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── test-debugging/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── widget-mantigi/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── yerel-veri-saklama/
+│   ├── content/
+│   │   ├── revisions/
+│   │   │   └── .gitkeep
+│   │   ├── draft.md
+│   │   └── final.md
+│   ├── chapter_manifest.yaml
+│   └── prompt.md
+├── MIGRATION_NOTES.md
+├── README.md
+└── book_manifest.yaml

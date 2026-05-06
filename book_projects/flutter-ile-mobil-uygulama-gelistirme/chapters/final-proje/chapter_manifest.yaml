@@ -1,0 +1,59 @@
+chapter:
+  title: 'Final Proje: Uçtan Uca Flutter Uygulaması'
+  alias: final-proje
+  order: 16
+  references:
+  - alias: performans-yayinlama
+    relation: prerequisite
+scope:
+  topics:
+  - Gereksinim analizi
+  - Feature-first architecture
+  - Navigation
+  - State management
+  - Local/cloud data
+  - Testing
+  - Release checklist
+  - Documentation
+  objectives:
+  - Okuyucu final proje gereksinimlerini analiz edebilmeli.
+  - Feature-first proje yapısı kurabilmeli.
+  - Navigation, state, veri, tema ve testleri bir araya getirebilmeli.
+  - Teknik rapor ve sunum çıktısı hazırlayabilmeli.
+  exclusions:
+  - Çok kullanıcılı kurumsal ölçek
+  - Gerçek ödeme süreçleri
+  - Hassas kişisel/sağlık verisi süreçleri
+  mini_project: Hayvancılık işletmesi kayıt ve takip uygulaması
+structure:
+  sections:
+  - title: Bölümün Yol Haritası
+    type: text
+  - title: Kavramsal Açıklama
+    type: text
+  - title: Temel Örnek
+    type: text+code
+  - title: Çalışan Mini Uygulama
+    type: text+code+screenshot
+  - title: Sık Yapılan Hatalar
+    type: text
+  - title: Bölüm Sonu Laboratuvarı
+    type: exercise
+  - title: Özet
+    type: text
+  estimated_pages: 30
+  code_examples_count: 10
+  screenshot_examples_count: 2
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  default_code_language: dart
+  default_framework: flutter
+  validation_modes:
+  - flutter_analyze
+  - flutter_test
+  - widget_test
+  - screenshot_only
+  - review_only
+  github_export: true
+  qr_policy: dual

@@ -1,0 +1,78 @@
+book:
+  title: Flutter ile Mobil Uygulama Geliştirme
+  subtitle: Dart Temellerinden Yayınlanabilir Mobil Uygulamaya
+  author: Prof. Dr. İsmail KIRBAŞ
+  alias: flutter-ile-mobil-uygulama-gelistirme
+  repo: https://github.com/bmdersleri/flutter-ile-mobil-uygulama-gelistirme
+  language: tr
+  version: 1.0.0
+  edition: '1'
+  year: 2026
+production:
+  producer_model: deepseek-chat
+  observer_model: deepseek-chat
+  producer_params:
+    temperature: 0.7
+    max_tokens: 8000
+  observer_params:
+    temperature: 0.3
+    max_tokens: 4000
+  generation_mode: chapter_based
+  approval_required: true
+style:
+  target_audience: Flutter ile mobil uygulama geliştirmeyi öğrenmek isteyen üniversite
+    öğrencileri ve başlangıç-orta seviye geliştiriciler
+  tone: akademik ama sade, uygulama odaklı, öğrenci dostu
+  code_language: dart
+  framework: flutter
+  terminology: Türkçe açıklama + ilk geçtiği yerde İngilizce teknik terim
+  chapter_pattern:
+  - Kavram
+  - Küçük örnek
+  - Çalışan uygulama
+  - Ekran çıktısı
+  - Kod açıklaması
+  - Sık hata
+  - Mini görev
+  - Bölüm sonu laboratuvarı
+technical_profile:
+  flutter_channel: stable
+  flutter_version: 3.41.x veya kurulum anındaki güncel stable sürüm
+  dart_version: 3.11.x veya Flutter stable ile gelen güncel Dart sürümü
+  material_design: Material 3
+  primary_platform: android
+  secondary_platforms:
+  - ios
+  - web
+  ide:
+  - Visual Studio Code
+  - Android Studio
+  state_management_main: Provider veya Riverpod
+  testing:
+  - flutter analyze
+  - flutter test
+  - widget test
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  minimum_screenshots_per_chapter: 1
+  qr_policy: dual
+  github_code_export: true
+  manual_asset_override: true
+chapters:
+- alias: giris
+- alias: dart-temelleri
+- alias: widget-mantigi
+- alias: layout-sistemi
+- alias: etkilesim-formlar
+- alias: listeleme-dinamik-arayuzler
+- alias: navigation-route
+- alias: state-management
+- alias: async-api-json
+- alias: yerel-veri-saklama
+- alias: tema-responsive-erisilebilirlik
+- alias: paketler-pluginler
+- alias: bulut-tabanli-uygulama
+- alias: test-debugging
+- alias: performans-yayinlama
+- alias: final-proje

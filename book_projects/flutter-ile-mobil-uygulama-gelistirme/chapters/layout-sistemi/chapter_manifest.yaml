@@ -1,0 +1,61 @@
+chapter:
+  title: 'Layout Sistemi: Row, Column, Stack ve Responsive Yapı'
+  alias: layout-sistemi
+  order: 4
+  references:
+  - alias: widget-mantigi
+    relation: prerequisite
+  - alias: etkilesim-formlar
+    relation: next
+scope:
+  topics:
+  - Row
+  - Column
+  - Stack
+  - Expanded
+  - Flexible
+  - Container
+  - Padding
+  - Constraints
+  - MediaQuery
+  - LayoutBuilder
+  objectives:
+  - Okuyucu temel layout bileşenleriyle ekran düzeni kurabilmeli.
+  - Overflow hatalarını teşhis edip çözebilmelidir.
+  - Responsive arayüz kararlarını MediaQuery ve LayoutBuilder ile uygulayabilmeli.
+  exclusions:
+  - CustomRenderObject
+  - İleri sliver mimarisi
+  mini_project: Ürün/hayvan/yem kartlarından oluşan responsive katalog
+structure:
+  sections:
+  - title: Bölümün Yol Haritası
+    type: text
+  - title: Kavramsal Açıklama
+    type: text
+  - title: Temel Örnek
+    type: text+code
+  - title: Çalışan Mini Uygulama
+    type: text+code+screenshot
+  - title: Sık Yapılan Hatalar
+    type: text
+  - title: Bölüm Sonu Laboratuvarı
+    type: exercise
+  - title: Özet
+    type: text
+  estimated_pages: 24
+  code_examples_count: 8
+  screenshot_examples_count: 2
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  default_code_language: dart
+  default_framework: flutter
+  validation_modes:
+  - flutter_analyze
+  - flutter_test
+  - widget_test
+  - screenshot_only
+  - review_only
+  github_export: true
+  qr_policy: dual

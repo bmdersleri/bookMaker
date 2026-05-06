@@ -1,0 +1,59 @@
+chapter:
+  title: Firebase/Supabase ile Bulut Tabanlı Uygulama
+  alias: bulut-tabanli-uygulama
+  order: 13
+  references:
+  - alias: paketler-pluginler
+    relation: prerequisite
+  - alias: test-debugging
+    relation: next
+scope:
+  topics:
+  - Firebase
+  - Supabase
+  - Authentication
+  - Cloud database
+  - Security rules
+  - Environment configuration
+  - Offline/hata durumları
+  objectives:
+  - Okuyucu bulut servis kullanım senaryolarını açıklayabilmeli.
+  - Auth ve bulut veri saklama akışını temel düzeyde kurabilmeli.
+  - Güvenlik kurallarının önemini açıklayabilmeli.
+  exclusions:
+  - İleri backend güvenliği
+  - Cloud Functions ileri kullanım
+  - Ödeme sistemleri
+  mini_project: Bulut destekli kayıt takip uygulaması
+structure:
+  sections:
+  - title: Bölümün Yol Haritası
+    type: text
+  - title: Kavramsal Açıklama
+    type: text
+  - title: Temel Örnek
+    type: text+code
+  - title: Çalışan Mini Uygulama
+    type: text+code+screenshot
+  - title: Sık Yapılan Hatalar
+    type: text
+  - title: Bölüm Sonu Laboratuvarı
+    type: exercise
+  - title: Özet
+    type: text
+  estimated_pages: 26
+  code_examples_count: 7
+  screenshot_examples_count: 2
+automation:
+  code_meta_required: true
+  screenshot_required: true
+  default_code_language: dart
+  default_framework: flutter
+  validation_modes:
+  - flutter_analyze
+  - flutter_test
+  - widget_test
+  - screenshot_only
+  - review_only
+  github_export: true
+  qr_policy: dual

@@ -29,6 +29,5 @@ build/
 
 node_modules/
 
-# Kitap projeleri - her biri ayri repo'da yonetilir
-book_projects/
-!book_projects/*/.git/
+# Kitap projeleri
+# book_projects/ artık bu repoda yönetiliyor
