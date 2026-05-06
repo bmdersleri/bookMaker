@@ -25,28 +25,40 @@ def _save_yaml(path: Path, data: dict[str, Any]) -> None:
 
 
 class BookInfo(BaseModel):
-    title: str
+    """Book identity section for book_manifest.yaml.
+
+    A few legacy fields are kept optional so older manager/pipeline code can
+    import and mutate BookManifest without immediately breaking.
+    """
+
+    title: str = ""
     subtitle: str | None = None
     author: str = ""
-    alias: str
+    alias: str = ""
     repo: str | None = None
     language: str = "tr"
+    lang: str | None = None
     version: str = "1.0.0"
     edition: str = "1"
     year: int | str | None = None
+    automation_profile: str | None = None
 
 
 class ProductionConfig(BaseModel):
     producer_model: str = "deepseek-chat"
     observer_model: str = "deepseek-chat"
-    producer_params: dict[str, Any] = Field(default_factory=lambda: {
-        "temperature": 0.7,
-        "max_tokens": 8000,
-    })
-    observer_params: dict[str, Any] = Field(default_factory=lambda: {
-        "temperature": 0.3,
-        "max_tokens": 4000,
-    })
+    producer_params: dict[str, Any] = Field(
+        default_factory=lambda: {
+            "temperature": 0.7,
+            "max_tokens": 8000,
+        }
+    )
+    observer_params: dict[str, Any] = Field(
+        default_factory=lambda: {
+            "temperature": 0.3,
+            "max_tokens": 4000,
+        }
+    )
     generation_mode: str = "chapter_based"
     approval_required: bool = True
 
@@ -74,11 +86,30 @@ class AutomationConfig(BaseModel):
 
 
 class BookChapterRef(BaseModel):
-    alias: str
+    """Chapter entry in book_manifest.yaml.
+
+    New project-based manifests only need alias. Legacy code/tests may still
+    refer to order, chapter_id, title, source or github_slug; they are accepted
+    here to keep collection/import stable during migration.
+    """
+
+    alias: str = ""
+    order: int = 0
+    chapter_id: str | None = None
+    title: str | None = None
+    source: str | None = None
+    github_slug: str | None = None
+
+    def effective_alias(self) -> str:
+        return self.alias or self.chapter_id or ""
+
+
+# Backward-compatible public name expected by older tests.
+ManifestChapter = BookChapterRef
 
 
 class BookManifest(BaseModel):
-    book: BookInfo
+    book: BookInfo = Field(default_factory=BookInfo)
     production: ProductionConfig = Field(default_factory=ProductionConfig)
     style: StyleConfig = Field(default_factory=StyleConfig)
     technical_profile: TechnicalProfile | None = None
@@ -93,7 +124,7 @@ class BookManifest(BaseModel):
         _save_yaml(path, self.model_dump(mode="json", exclude_none=True))
 
     def chapter_aliases(self) -> list[str]:
-        return [chapter.alias for chapter in self.chapters]
+        return [chapter.effective_alias() for chapter in self.chapters if chapter.effective_alias()]
 
 
 class ChapterReference(BaseModel):
@@ -149,6 +180,23 @@ class ChapterManifest(BaseModel):
 
     def save(self, path: Path) -> None:
         _save_yaml(path, self.model_dump(mode="json", exclude_none=True))
+
+
+class ChapterState(BaseModel):
+    """Backward-compatible chapter runtime state.
+
+    Older authoring/pipeline code expects this object and mutates attributes
+    such as current_step, score and decision. The new project-based state uses
+    ChapterPipelineEntry, but keeping this lightweight model avoids import
+    failures while the rest of the system is migrated.
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+    current_step: str = "planned"
+    score: float | int | None = None
+    decision: str | None = None
+    updated_at: str | None = None
 
 
 class ChapterStatus(BaseModel):
@@ -235,11 +283,11 @@ class ExportState(BaseModel):
 
 class PipelineInfo(BaseModel):
     schema_version: str = "1.0"
-    book_alias: str
+    book_alias: str = ""
     current_version: str = "v001"
     global_state: str = "initialized"
-    created_at: str
-    updated_at: str
+    created_at: str = ""
+    updated_at: str = ""
     active_chapter: str | None = None
     last_completed_chapter: str | None = None
     next_action: str | None = None
@@ -252,10 +300,14 @@ class HistoryEntry(BaseModel):
 
 
 class PipelineState(BaseModel):
-    pipeline: PipelineInfo
+    pipeline: PipelineInfo = Field(default_factory=PipelineInfo)
     production_context: ProductionContext = Field(default_factory=ProductionContext)
     quality_gates: QualityGates = Field(default_factory=QualityGates)
-    chapters: list[ChapterPipelineEntry] = Field(default_factory=list)
+
+    # New manifests use a list[ChapterPipelineEntry]. Legacy pipeline manager
+    # uses dict[str, ChapterState]. Accept both during migration.
+    chapters: list[ChapterPipelineEntry] | dict[str, ChapterState] = Field(default_factory=list)
+
     export_state: ExportState = Field(default_factory=ExportState)
     history: list[HistoryEntry] = Field(default_factory=list)
 
@@ -308,16 +360,26 @@ class PipelineState(BaseModel):
         )
 
     def sync_chapters(self, manifest: BookManifest) -> None:
-        existing = {entry.alias: entry for entry in self.chapters}
+        if isinstance(self.chapters, dict):
+            existing: dict[str, ChapterState | ChapterPipelineEntry] = self.chapters
+        else:
+            existing = {entry.alias: entry for entry in self.chapters}
+
         synced: list[ChapterPipelineEntry] = []
         for index, alias in enumerate(manifest.chapter_aliases(), start=1):
-            entry = existing.get(alias) or ChapterPipelineEntry(alias=alias, order=index)
-            entry.order = index
-            synced.append(entry)
+            entry = existing.get(alias)
+            if isinstance(entry, ChapterPipelineEntry):
+                entry.order = index
+                synced.append(entry)
+            else:
+                synced.append(ChapterPipelineEntry(alias=alias, order=index))
+
         self.chapters = synced
         self.pipeline.book_alias = manifest.book.alias
 
-    def get_chapter(self, alias: str) -> ChapterPipelineEntry | None:
+    def get_chapter(self, alias: str) -> ChapterPipelineEntry | ChapterState | None:
+        if isinstance(self.chapters, dict):
+            return self.chapters.get(alias)
         for entry in self.chapters:
             if entry.alias == alias:
                 return entry
