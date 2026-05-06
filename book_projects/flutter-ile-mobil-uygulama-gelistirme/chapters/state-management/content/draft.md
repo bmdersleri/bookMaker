@@ -1,3 +1,12 @@
+---
+chapter_id: state-management
+chapter_no: 12
+title: "State Management Temelleri"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 8 — State Management Temelleri
 
 ## Bölümün Amacı
@@ -17,7 +26,7 @@ Bu bölüm sonunda öğrenci:
 - `AnimatedBuilder` veya `ListenableBuilder` yaklaşımının mantığını kavrayabilir.
 - Küçük bir sepet uygulaması üzerinden state yönetimini uygulayabilir.
 
-## 8.1. State Nedir?
+## State Nedir?
 
 State, bir uygulamanın belirli bir andaki verisel durumudur. Kullanıcının ekranda gördüğü birçok şey state’e bağlı olarak değişir. Örneğin:
 
@@ -36,7 +45,7 @@ Flutter’da arayüz, state’e göre yeniden üretilir. State değiştiğinde F
 **Dikkat:** State management, yalnızca değişken tanımlamak değildir. Verinin yaşam süresini, kim tarafından değiştirileceğini ve hangi widget’ların bu değişiklikten etkileneceğini tasarlama sürecidir.
 :::
 
-## 8.2. Local State ve Shared State
+## Local State ve Shared State
 
 Flutter uygulamalarında state iki temel düzeyde düşünülebilir:
 
@@ -47,7 +56,7 @@ Flutter uygulamalarında state iki temel düzeyde düşünülebilir:
 
 Local state için çoğu zaman `StatefulWidget` ve `setState()` yeterlidir. Ancak veri birden fazla widget tarafından kullanılacaksa state’i daha merkezi ve kontrollü yönetmek gerekir.
 
-## 8.3. `setState()` ile Local State
+## `setState()` ile Local State
 
 `setState()`, Flutter’da state yönetiminin en temel yoludur. Küçük ve yerel değişiklikler için oldukça uygundur.
 
@@ -142,7 +151,7 @@ class _LocalStateSayfasiState extends State<LocalStateSayfasi> {
 
 Bu örnekte sayaç değeri yalnızca `LocalStateSayfasi` widget’ını ilgilendirir. Bu nedenle `setState()` yeterli ve anlaşılır bir çözümdür.
 
-## 8.4. `setState()` Ne Zaman Yetersiz Kalır?
+## `setState()` Ne Zaman Yetersiz Kalır?
 
 `setState()` basit durumlar için uygundur; ancak şu durumlarda kod karmaşıklaşabilir:
 
@@ -158,7 +167,7 @@ Bu durumlarda state’i ayrı sınıflara taşımak veya Flutter’ın `Listenab
 **Sınav Notu:** `setState()` kötü bir yöntem değildir. Ancak her problemi `setState()` ile çözmeye çalışmak, büyüyen uygulamalarda bakım maliyetini artırabilir.
 :::
 
-## 8.5. State’i Üst Widget’a Taşımak
+## State’i Üst Widget’a Taşımak
 
 Birden fazla alt widget aynı veriye ihtiyaç duyduğunda state üst widget’a taşınabilir. Alt widget’lar veriyi ve fonksiyonları parametre olarak alır.
 
@@ -290,7 +299,7 @@ class PuanPaneli extends StatelessWidget {
 
 Bu örnekte state `PuanSayfasi` içinde tutulur. `PuanPaneli` yalnızca kendisine verilen veriyi gösterir ve butonlara basıldığında üst widget’taki fonksiyonları çağırır. Bu yaklaşım, state yönetiminin daha anlaşılır olmasını sağlar.
 
-## 8.6. `ValueNotifier` ve `ValueListenableBuilder`
+## `ValueNotifier` ve `ValueListenableBuilder`
 
 Flutter SDK içinde gelen basit ama güçlü yapılardan biri `ValueNotifier` sınıfıdır. Tek bir değeri izlemek ve değiştiğinde arayüzü güncellemek için kullanılabilir.
 
@@ -396,7 +405,7 @@ Bu örnekte `setState()` kullanılmamıştır. `sayac.value` değiştiğinde `Va
 **İpucu:** `ValueNotifier`, tek değerlik basit state senaryoları için pratik bir çözümdür. Daha karmaşık yapılarda `ChangeNotifier` gibi modeller tercih edilebilir.
 :::
 
-## 8.7. `ChangeNotifier` ile State Modeli
+## `ChangeNotifier` ile State Modeli
 
 `ChangeNotifier`, birden fazla değeri ve iş mantığını tek bir model sınıfında toplamak için kullanılabilir. State değiştiğinde `notifyListeners()` çağrılır. Bu çağrı, ilgili dinleyicilere state’in değiştiğini bildirir.
 
@@ -520,7 +529,7 @@ class SayacModelSayfasi extends StatelessWidget {
 
 Bu örnekte sayaç verisi ve sayaçla ilgili işlemler `SayacModeli` sınıfında toplanmıştır. Arayüz ise modeli dinleyerek güncellenir. Bu yaklaşım, iş mantığını widget sınıfından ayırmaya yardımcı olur.
 
-## 8.8. State Modelini Alt Widget’lara Aktarmak
+## State Modelini Alt Widget’lara Aktarmak
 
 State modeli oluşturulduktan sonra bu model alt widget’lara parametre olarak aktarılabilir. Bu yöntem küçük ve orta ölçekli örneklerde anlaşılırdır.
 
@@ -661,11 +670,24 @@ class IlerlemeKarti extends StatelessWidget {
 
 Bu örnekte `DersIlerlemeModeli`, birden fazla widget tarafından kullanılabilir. Modeldeki değer değiştiğinde `ListenableBuilder` arayüzü yeniden üretir.
 
-## 8.9. Mini Uygulama: Basit Sepet Yönetimi
+## Mini Uygulama: Basit Sepet Yönetimi
 
 Bu mini uygulamada bir ürün listesi ve sepet özeti hazırlanacaktır. Kullanıcı ürünleri sepete ekleyebilecek, sepetten çıkarabilecek ve toplam tutarı görebilecektir.
 
 [SCREENSHOT:b08_01_basit_sepet_state_management]
+
+<!-- SCREENSHOT_META
+id: b08_01_basit_sepet_state_management
+chapter_id: chapter_12
+title: "Basit Sepet State Management"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/state-management/b08_01_basit_sepet_state_management"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b08_01_basit_sepet_state_management.png
+caption: "Basit Sepet State Management ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -870,7 +892,7 @@ class UrunKarti extends StatelessWidget {
 
 Bu uygulamada ürün listesi ve sepet içeriği `SepetModeli` içinde tutulmaktadır. Model değiştiğinde `notifyListeners()` çağrılır ve `ListenableBuilder` arayüzü yeniden üretir.
 
-## 8.10. State Management Yaklaşımı Seçerken
+## State Management Yaklaşımı Seçerken
 
 State management için tek bir doğru yöntem yoktur. Seçim; uygulamanın büyüklüğüne, ekibin deneyimine, bağımlılık politikasına ve veri akışının karmaşıklığına göre değişir.
 
@@ -888,7 +910,7 @@ Bu kitapta temel kavramların anlaşılması için Flutter SDK içinde gelen yap
 **Dikkat:** State management paketi seçmek, temel state mantığını öğrenmenin yerine geçmez. Önce state’in nerede yaşadığını ve kim tarafından değiştirildiğini anlamak gerekir.
 :::
 
-## 8.11. Sık Yapılan Hatalar
+## Sık Yapılan Hatalar
 
 | Hata | Açıklama | Çözüm |
 |---|---|---|
@@ -899,7 +921,7 @@ Bu kitapta temel kavramların anlaşılması için Flutter SDK içinde gelen yap
 | Basit durum için aşırı karmaşık yapı kurmak | Öğrenme ve bakım zorlaşır | Soruna uygun en basit yaklaşımı seç |
 | State ile UI kodunu tamamen karıştırmak | Test ve bakım zorlaşır | İş mantığını modele taşı |
 
-## 8.12. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 Bu laboratuvar çalışmasında öğrenciden “Ders Materyali Sepeti” adlı bir state management uygulaması geliştirmesi beklenmektedir.
 
@@ -926,7 +948,7 @@ Bu laboratuvar sonunda öğrenci:
 - Sepet benzeri paylaşılan state senaryosunu uygulayabilir.
 - Veriyi alt widget’lara parametre olarak aktarabilir.
 
-## 8.13. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -938,7 +960,7 @@ Bu laboratuvar sonunda öğrenci:
 | Kod okunabilirliği | 10 | Sınıf ve değişken adları anlamlıdır |
 | Kullanıcı deneyimi | 5 | Butonlar ve özet bilgiler anlaşılırdır |
 
-## 8.14. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde Flutter’da state management temelleri incelendi. State kavramı, local state ve shared state ayrımı, `setState()` kullanım sınırları, state’i üst widget’a taşıma yaklaşımı, `ValueNotifier`, `ValueListenableBuilder`, `ChangeNotifier` ve `ListenableBuilder` örneklerle açıklandı.
 

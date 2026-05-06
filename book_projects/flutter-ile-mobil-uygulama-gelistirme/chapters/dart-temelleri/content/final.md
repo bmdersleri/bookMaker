@@ -1,3 +1,12 @@
+---
+chapter_id: dart-temelleri
+chapter_no: 3
+title: "Dart Temelleri"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Flutter İçin Dart Temelleri
 
 ## Bölümün Yol Haritası
@@ -429,6 +438,19 @@ Bu örnek, Flutter arayüzüne geçmeden önce Dart model sınıfının neden ö
 `ListView.builder`, listedeki her öğe için bir `ListTile` üretir. Bu bölümde `ListView.builder` ayrıntılı olarak incelenmemektedir; yalnızca Dart listesinin Flutter ekranında nasıl kullanılabileceğini göstermek için kullanılmıştır.
 
 [SCREENSHOT:b02_01_dart_model_liste_ekrani]
+
+<!-- SCREENSHOT_META
+id: b02_01_dart_model_liste_ekrani
+chapter_id: chapter_03
+title: "Dart Model Liste Ekrani"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/dart-temelleri/b02_01_dart_model_liste_ekrani"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b02_01_dart_model_liste_ekrani.png
+caption: "Dart Model Liste Ekrani ekran görüntüsü."
+validation_mode: capture
+-->
 
 **Şekil 2.1.** Dart model sınıfından beslenen basit Flutter liste ekranı.
 

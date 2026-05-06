@@ -1,3 +1,12 @@
+---
+chapter_id: etkilesim-formlar
+chapter_no: 4
+title: "Etkileşim ve Formlar"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 5 — Etkileşim ve Formlar
 
 ## Bölümün Amacı
@@ -17,7 +26,7 @@ Bu bölüm sonunda öğrenci:
 - Basit bir geri bildirim formu geliştirebilir.
 - Form bileşenlerini küçük ve okunabilir widget’lara ayırabilir.
 
-## 5.1. Kullanıcı Etkileşimi Nedir?
+## Kullanıcı Etkileşimi Nedir?
 
 Mobil uygulamalarda kullanıcı etkileşimi, kullanıcının ekrandaki bileşenlerle iletişim kurmasıdır. Bu etkileşim bir butona basmak, metin yazmak, seçim yapmak, kaydırmak, liste öğesine dokunmak veya form göndermek şeklinde olabilir.
 
@@ -98,7 +107,7 @@ Bu örnekte kullanıcı butona bastığında `mesajGuncelle()` fonksiyonu çalı
 **İpucu:** Flutter’da birçok etkileşim, ilgili widget’ın `onPressed`, `onChanged`, `onTap` veya benzeri callback özelliklerine fonksiyon atanarak yönetilir.
 :::
 
-## 5.2. `TextField` ile Metin Girişi
+## `TextField` ile Metin Girişi
 
 `TextField`, kullanıcıdan metin girişi almak için kullanılan temel widget’tır. Arama kutusu, kullanıcı adı alanı veya kısa not alanı gibi basit girişlerde kullanılabilir.
 
@@ -185,7 +194,7 @@ Bu örnekte `onChanged` fonksiyonu, kullanıcı metin alanına her karakter yazd
 | `obscureText` | Şifre alanlarında metni gizler |
 | `onChanged` | Metin değiştikçe çalışan callback fonksiyonudur |
 
-## 5.3. `TextEditingController`
+## `TextEditingController`
 
 `TextEditingController`, metin alanındaki değeri okumak, değiştirmek veya temizlemek için kullanılır. Basit uygulamalarda `onChanged` yeterli olabilir; ancak form gönderme anında değeri okumak gerektiğinde controller daha kullanışlıdır.
 
@@ -297,7 +306,7 @@ Bu örnekte `notController.text` ile metin alanındaki değer okunmaktadır. `cl
 **Dikkat:** `TextEditingController` bir kaynak yönetimi nesnesidir. Stateful widget içinde kullanılıyorsa çoğu durumda `dispose()` metodunda temizlenmelidir.
 :::
 
-## 5.4. `Form` ve `TextFormField`
+## `Form` ve `TextFormField`
 
 Basit metin alanları için `TextField` yeterli olabilir. Ancak birden fazla alanın birlikte doğrulanması ve gönderilmesi gerekiyorsa `Form` yapısı kullanılmalıdır.
 
@@ -433,7 +442,7 @@ class _FormTemelSayfasiState extends State<FormTemelSayfasi> {
 
 Bu örnekte `formKey.currentState!.validate()` çağrısı, form içindeki tüm `TextFormField` alanlarının `validator` fonksiyonlarını çalıştırır. Eğer herhangi bir alan geçersizse form gönderilmez.
 
-## 5.5. Doğrulama Mantığı
+## Doğrulama Mantığı
 
 Form doğrulama, kullanıcının girdiği verinin beklenen kurallara uygun olup olmadığını kontrol etme işlemidir. Örneğin:
 
@@ -461,7 +470,7 @@ Bu fonksiyonun dönüş tipi `String?` şeklindedir. Çünkü hata yoksa `null`,
 **Sınav Notu:** `validator` fonksiyonunda `null` dönmek “alan geçerli” anlamına gelir. Hata mesajı dönmek ise alanın geçersiz olduğunu bildirir.
 :::
 
-## 5.6. Klavye Türü ve Giriş Davranışı
+## Klavye Türü ve Giriş Davranışı
 
 Flutter’da metin alanlarının klavye türü `keyboardType` ile belirlenebilir. Bu özellik, kullanıcının veri girişini kolaylaştırır.
 
@@ -491,7 +500,7 @@ TextFormField(
 
 Bu özellikler yalnızca görsel kolaylık sağlamaz; aynı zamanda kullanıcı deneyimini de iyileştirir.
 
-## 5.7. `SnackBar` ile Kullanıcıya Geri Bildirim Verme
+## `SnackBar` ile Kullanıcıya Geri Bildirim Verme
 
 Form gönderme, kayıt alma veya hata bildirme gibi işlemlerde kullanıcıya kısa geri bildirim göstermek gerekir. Flutter’da bunun için `SnackBar` kullanılabilir.
 
@@ -554,7 +563,7 @@ class SnackBarSayfasi extends StatelessWidget {
 
 `ScaffoldMessenger.of(context).showSnackBar()` çağrısı, mevcut sayfa üzerinde kısa bir mesaj gösterir. Bu yapı form gönderme işlemlerinde sık kullanılır.
 
-## 5.8. Formu Widget’lara Bölmek
+## Formu Widget’lara Bölmek
 
 Formlar büyüdükçe tüm kodu tek bir `build()` metodu içinde tutmak okunabilirliği azaltır. Bu nedenle form alanlarını küçük widget’lara bölmek iyi bir yaklaşımdır.
 
@@ -696,11 +705,24 @@ class OzelMetinAlani extends StatelessWidget {
 
 Bu örnekte `OzelMetinAlani`, form alanı üretmek için kullanılan yeniden kullanılabilir bir widget’tır. Böylece ana form kodu daha okunabilir hâle gelir.
 
-## 5.9. Mini Uygulama: Ders Geri Bildirim Formu
+## Mini Uygulama: Ders Geri Bildirim Formu
 
 Bu mini uygulamada öğrencinin bir ders için geri bildirim gönderebildiği basit bir form geliştirilecektir. Formda ad soyad, e-posta, ders adı ve geri bildirim mesajı alanları bulunacaktır.
 
 [SCREENSHOT:b05_01_ders_geri_bildirim_formu]
+
+<!-- SCREENSHOT_META
+id: b05_01_ders_geri_bildirim_formu
+chapter_id: chapter_04
+title: "Ders Geri Bildirim Formu"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/etkilesim-formlar/b05_01_ders_geri_bildirim_formu"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b05_01_ders_geri_bildirim_formu.png
+caption: "Ders Geri Bildirim Formu ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -891,7 +913,7 @@ class _GeriBildirimSayfasiState extends State<GeriBildirimSayfasi> {
 
 Bu uygulamada form doğrulama, controller kullanımı, temizleme işlemi ve kullanıcıya `SnackBar` ile geri bildirim verme bir arada kullanılmıştır. `SingleChildScrollView`, küçük ekranlarda formun taşmasını azaltmak için eklenmiştir.
 
-## 5.10. Sık Yapılan Hatalar
+## Sık Yapılan Hatalar
 
 | Hata | Açıklama | Çözüm |
 |---|---|---|
@@ -902,7 +924,7 @@ Bu uygulamada form doğrulama, controller kullanımı, temizleme işlemi ve kull
 | Tüm formu tek büyük widget içinde yazmak | Okunabilirlik azalır | Alanları alt widget’lara böl |
 | E-posta kontrolünü hiç yapmamak | Geçersiz veri alınabilir | Basit format kontrolü ekle |
 
-## 5.11. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 Bu laboratuvar çalışmasında öğrenciden “Öğrenci Etkinlik Başvuru Formu” geliştirmesi beklenmektedir.
 
@@ -929,7 +951,7 @@ Bu laboratuvar sonunda öğrenci:
 - Kullanıcıya `SnackBar` ile geri bildirim verebilir.
 - Form ekranını okunabilir widget parçalarına bölebilir.
 
-## 5.12. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -941,7 +963,7 @@ Bu laboratuvar sonunda öğrenci:
 | Scroll ve taşma yönetimi | 10 | Küçük ekranlar için uygun yapı kurulmuştur |
 | Kod okunabilirliği | 10 | Kod anlamlı widget parçalarına ayrılmıştır |
 
-## 5.13. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde Flutter’da kullanıcı etkileşimi ve form yapıları incelendi. `TextField` ile basit metin girişi alma, `TextEditingController` ile giriş değerini okuma ve temizleme, `Form` ve `TextFormField` ile doğrulama yapısı kurma konuları örneklerle ele alındı.
 

@@ -1,3 +1,12 @@
+---
+chapter_id: bulut-tabanli-uygulama
+chapter_no: 2
+title: "Bulut Tabanlı Uygulama Mantığı"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 13 — Bulut Tabanlı Uygulama Mantığı
 
 ## Bölümün Amacı
@@ -13,7 +22,7 @@ Bu bölüm sonunda öğrenci:
 - Bulut servislerini doğrudan widget içine yazmak yerine servis sınıfıyla temsil edebilir.
 - Asenkron veri alma ve modelleme mantığını bulut senaryosunda kullanabilir.
 
-## 13.1. Bulut Tabanlı Uygulama Nedir?
+## Bulut Tabanlı Uygulama Nedir?
 
 Bulut tabanlı uygulama, verisini ve bazı işlevlerini internet üzerindeki servislerle paylaşan uygulamadır. Kullanıcı bir hesaba giriş yapabilir, veriler farklı cihazlarda eşitlenebilir ve uygulama merkezi bir veritabanıyla çalışabilir.
 
@@ -31,13 +40,13 @@ Bulut tabanlı uygulama, verisini ve bazı işlevlerini internet üzerindeki ser
 **Dikkat:** Bulut servisleri uygulamayı güçlendirir; ancak gizlilik, güvenlik, internet bağımlılığı ve maliyet gibi başlıklar mutlaka düşünülmelidir.
 :::
 
-## 13.2. Backend ve BaaS Yaklaşımı
+## Backend ve BaaS Yaklaşımı
 
 Backend, uygulamanın sunucu tarafında çalışan veri ve iş mantığı katmanıdır. BaaS yani Backend as a Service yaklaşımı ise hazır bulut servisleriyle backend ihtiyacının önemli bir kısmını yönetmeyi sağlar. Firebase bu yaklaşımın en bilinen örneklerinden biridir.
 
 Bu kitapta doğrudan dış servis bağlantısı yerine, bulut servis mantığını öğretmek için simülasyon tabanlı örnekler kullanılacaktır. Böylece örnekler kopyala-çalıştır niteliğini korur.
 
-## 13.3. Kullanıcı Modeli ve Auth Mantığı
+## Kullanıcı Modeli ve Auth Mantığı
 
 ```yaml
 CODE_META:
@@ -184,7 +193,7 @@ class _AuthSayfasiState extends State<AuthSayfasi> {
 }
 ```
 
-## 13.4. Bulut Veritabanı Servisi Mantığı
+## Bulut Veritabanı Servisi Mantığı
 
 ```yaml
 CODE_META:
@@ -318,9 +327,22 @@ class _BulutVeriUygulamasiState extends State<BulutVeriUygulamasi> {
 }
 ```
 
-## 13.5. Mini Uygulama: Bulut Ders Paneli
+## Mini Uygulama: Bulut Ders Paneli
 
 [SCREENSHOT:b13_01_bulut_ders_paneli]
+
+<!-- SCREENSHOT_META
+id: b13_01_bulut_ders_paneli
+chapter_id: chapter_02
+title: "Bulut Ders Paneli"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/bulut-tabanli-uygulama/b13_01_bulut_ders_paneli"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b13_01_bulut_ders_paneli.png
+caption: "Bulut Ders Paneli ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -405,15 +427,15 @@ class _PanelKarti extends StatelessWidget {
 }
 ```
 
-## 13.6. Güvenlik ve Veri Kuralları
+## Güvenlik ve Veri Kuralları
 
 Bulut servislerinde authentication yeterli değildir. Kullanıcıların hangi verilere erişebileceği kurallarla sınırlandırılmalıdır. Database rules, API authorization ve güvenli veri modeli kritik başlıklardır.
 
-## 13.7. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 “Bulut Ders Kayıt Paneli” adlı uygulama geliştiriniz. Auth simülasyonu, cloud database servis simülasyonu, model sınıfı, asenkron veri çekme ve listeleme ekranı bulunmalıdır.
 
-## 13.8. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -424,7 +446,7 @@ Bulut servislerinde authentication yeterli değildir. Kullanıcıların hangi ve
 | Arayüz | 15 | Bulut verisi listelenmiştir |
 | Güvenlik farkındalığı | 10 | Yetki ve veri kuralları ele alınmıştır |
 
-## 13.9. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde bulut tabanlı uygulama, backend, BaaS, Firebase mantığı, auth, cloud database, servis sınıfı ve güvenlik farkındalığı ele alındı.
 

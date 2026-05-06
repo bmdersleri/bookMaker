@@ -1,3 +1,12 @@
+---
+chapter_id: navigation-route
+chapter_no: 9
+title: "Navigation ve Route Yönetimi"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 7 — Navigation ve Route Yönetimi
 
 ## Bölümün Amacı
@@ -17,7 +26,7 @@ Bu bölüm sonunda öğrenci:
 - Liste ekranından detay ekranına geçiş yapabilir.
 - Navigation akışını küçük bir örnek uygulamada kullanabilir.
 
-## 7.1. Navigation Nedir?
+## Navigation Nedir?
 
 Navigation, kullanıcının uygulama içinde bir ekrandan başka bir ekrana geçmesini sağlayan yapıdır. Mobil uygulamalarda navigation akışı kullanıcı deneyimini doğrudan etkiler. Kullanıcı bir ders listesine bakabilir, listeden bir ders seçebilir, ders detayına gidebilir ve ardından geri dönebilir.
 
@@ -35,7 +44,7 @@ Bu sayfalar arasında geçiş yapmak için `Navigator` kullanılır.
 **Dikkat:** Flutter’da navigation yalnızca ekran değiştirmek değildir. Geri dönüş davranışı, veri aktarımı, kullanıcı akışı ve uygulama mimarisiyle doğrudan ilişkilidir.
 :::
 
-## 7.2. Route Kavramı
+## Route Kavramı
 
 Flutter’da bir ekran genellikle bir route olarak düşünülebilir. Route, kullanıcının görebileceği bir sayfayı temsil eder. Yeni bir sayfaya geçildiğinde route yığınına yeni bir route eklenir. Geri dönüldüğünde ise bu route yığından çıkarılır.
 
@@ -54,7 +63,7 @@ Geri dönüldüğünde:
 
 Flutter bu yığın mantığını `Navigator` ile yönetir.
 
-## 7.3. İlk Sayfa Geçişi: `Navigator.push`
+## İlk Sayfa Geçişi: `Navigator.push`
 
 Yeni bir sayfaya geçmek için `Navigator.push` kullanılır. Aşağıdaki örnekte ana sayfadan bilgi sayfasına geçiş yapılmaktadır.
 
@@ -134,7 +143,7 @@ class BilgiSayfasi extends StatelessWidget {
 
 Bu örnekte `MaterialPageRoute`, yeni açılacak sayfayı üretir. `builder` fonksiyonu, geçilecek sayfanın widget’ını döndürür.
 
-## 7.4. Önceki Sayfaya Dönmek: `Navigator.pop`
+## Önceki Sayfaya Dönmek: `Navigator.pop`
 
 Bir sayfadan önceki sayfaya dönmek için `Navigator.pop(context)` kullanılır. AppBar içinde varsayılan geri butonu çoğu durumda otomatik olarak görünür. Ancak özel bir butonla da geri dönüş yapılabilir.
 
@@ -225,7 +234,7 @@ class IkinciSayfa extends StatelessWidget {
 **İpucu:** `push` yeni sayfa ekler, `pop` mevcut sayfayı kapatır. Bu iki kavram navigation sisteminin temelidir.
 :::
 
-## 7.5. Sayfaya Veri Göndermek
+## Sayfaya Veri Göndermek
 
 Gerçek uygulamalarda yalnızca sayfaya geçmek yeterli değildir. Çoğu zaman seçilen öğeye ait bilgiler detay sayfasına gönderilmelidir. Örneğin ders listesinden bir ders seçildiğinde, ders başlığı ve açıklaması detay sayfasında gösterilebilir.
 
@@ -345,7 +354,7 @@ class DersDetaySayfasi extends StatelessWidget {
 
 Bu örnekte `DersDetaySayfasi`, constructor üzerinden `Ders` nesnesi almaktadır. Liste öğesine dokunulduğunda ilgili ders detay sayfasına gönderilir.
 
-## 7.6. Sayfadan Geriye Veri Döndürmek
+## Sayfadan Geriye Veri Döndürmek
 
 Bazen açılan sayfa kapandığında önceki sayfaya bir değer döndürmek gerekir. Örneğin seçim ekranında kullanıcı bir seçenek seçer ve önceki sayfa bu seçimi kullanır.
 
@@ -462,7 +471,7 @@ class KonuSecimSayfasi extends StatelessWidget {
 
 Bu örnekte `Navigator.push<String>` çağrısı sonucunda bir `String` değer beklenmektedir. Seçim sayfasında `Navigator.pop(context, konu)` ile seçilen konu önceki sayfaya döndürülür.
 
-## 7.7. Named Routes
+## Named Routes
 
 Küçük uygulamalarda `MaterialPageRoute` doğrudan kullanılabilir. Ancak ekran sayısı arttıkça route adlarıyla çalışmak daha düzenli bir yapı sağlayabilir. Buna named routes denir.
 
@@ -571,7 +580,7 @@ Bu örnekte route adları `MaterialApp` içindeki `routes` haritasında tanımla
 **Dikkat:** Named routes düzen sağlar; ancak karmaşık parametre aktarımı gereken senaryolarda constructor tabanlı navigation veya daha gelişmiş route yönetimi tercih edilebilir.
 :::
 
-## 7.8. `pushReplacement` ve Akış Yönetimi
+## `pushReplacement` ve Akış Yönetimi
 
 Bazı durumlarda yeni sayfaya geçerken önceki sayfanın geri dönülebilir olmasını istemeyiz. Örneğin giriş başarılı olduktan sonra kullanıcı login ekranına geri dönmemelidir. Bu durumda `Navigator.pushReplacement` kullanılabilir.
 
@@ -651,11 +660,24 @@ class PanelSayfasi extends StatelessWidget {
 
 Bu örnekte giriş sayfası, panel sayfası ile değiştirilir. Kullanıcı geri butonuna bastığında giriş sayfasına dönmez.
 
-## 7.9. Mini Uygulama: Ders Listesi ve Detay Ekranı
+## Mini Uygulama: Ders Listesi ve Detay Ekranı
 
 Bu mini uygulamada ders konularını listeleyen ve seçilen konunun detayını ayrı sayfada gösteren bir navigation akışı geliştirilecektir.
 
 [SCREENSHOT:b07_01_ders_listesi_detay_navigation]
+
+<!-- SCREENSHOT_META
+id: b07_01_ders_listesi_detay_navigation
+chapter_id: chapter_09
+title: "Ders Listesi Detay Navigation"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/navigation-route/b07_01_ders_listesi_detay_navigation"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b07_01_ders_listesi_detay_navigation.png
+caption: "Ders Listesi Detay Navigation ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -847,7 +869,7 @@ class DersDetaySayfasi extends StatelessWidget {
 
 Bu mini uygulamada liste ekranı ve detay ekranı birlikte çalışır. Kullanıcı ders konusuna dokunduğunda ilgili model nesnesi detay sayfasına gönderilir. Detay sayfası bu nesneyi constructor üzerinden alır ve ekranda gösterir.
 
-## 7.10. Navigation Tasarımında Dikkat Edilecek Noktalar
+## Navigation Tasarımında Dikkat Edilecek Noktalar
 
 Navigation akışı tasarlanırken şu sorular sorulmalıdır:
 
@@ -860,7 +882,7 @@ Navigation akışı tasarlanırken şu sorular sorulmalıdır:
 
 Bu sorular navigation yapısının yalnızca teknik değil, kullanıcı deneyimi açısından da düşünülmesi gerektiğini gösterir.
 
-## 7.11. Sık Yapılan Hatalar
+## Sık Yapılan Hatalar
 
 | Hata | Açıklama | Çözüm |
 |---|---|---|
@@ -871,7 +893,7 @@ Bu sorular navigation yapısının yalnızca teknik değil, kullanıcı deneyimi
 | Route adlarını dağınık yazmak | Büyük projede bakım zorlaşır | Route adlarını sabitlerde veya merkezi yapıda tut |
 | Gereksiz named route kullanmak | Küçük projede fazladan karmaşıklık oluşur | Basit örneklerde doğrudan route kullan |
 
-## 7.12. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 Bu laboratuvar çalışmasında öğrenciden “Ders Kataloğu ve Detay Ekranı” adlı iki ekranlı bir Flutter uygulaması geliştirmesi beklenmektedir.
 
@@ -898,7 +920,7 @@ Bu laboratuvar sonunda öğrenci:
 - Geri dönüş davranışını yönetebilir.
 - Navigation akışını kullanıcı deneyimiyle birlikte düşünebilir.
 
-## 7.13. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -910,7 +932,7 @@ Bu laboratuvar sonunda öğrenci:
 | Kullanıcı deneyimi | 10 | Geri dönüş ve ekran akışı anlaşılırdır |
 | Kod okunabilirliği | 10 | Sayfalar ve widget’lar düzenli ayrılmıştır |
 
-## 7.14. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde Flutter’da navigation ve route yönetimi ele alındı. `Navigator.push`, `Navigator.pop`, `MaterialPageRoute`, sayfaya veri gönderme, sayfadan geriye veri döndürme, named routes ve `pushReplacement` konuları örneklerle açıklandı.
 

@@ -1,3 +1,12 @@
+---
+chapter_id: widget-mantigi
+chapter_no: 15
+title: "Flutter’da Widget Mantığı"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 3 — Flutter’da Widget Mantığı
 
 ## Bölümün Amacı
@@ -15,7 +24,7 @@ Bu bölüm sonunda öğrenci:
 - Basit durum değişimlerini `setState()` ile yönetebilir.
 - Küçük arayüzleri yeniden kullanılabilir alt widget’lara bölebilir.
 
-## 3.1. Flutter’da Widget Nedir?
+## Flutter’da Widget Nedir?
 
 Flutter’da widget, kullanıcı arayüzünün yapı taşıdır. Bir widget, ekranda neyin nasıl görüneceğini veya nasıl yerleşeceğini tanımlayan küçük bir yapı birimi olarak düşünülebilir.
 
@@ -37,7 +46,7 @@ Flutter’da arayüz geliştirme, widget’ları uygun biçimde iç içe yerleş
 **Dikkat:** Flutter’da widget kavramı yalnızca ekranda görünen nesneleri ifade etmez. Yerleşim, hizalama, tema, boşluk ve davranış gibi birçok unsur da widget yapısı içinde temsil edilir.
 :::
 
-## 3.2. Widget Ağacı
+## Widget Ağacı
 
 Flutter arayüzleri iç içe geçmiş widget’lardan oluşur. Bu yapı genellikle **widget ağacı** olarak adlandırılır.
 
@@ -60,7 +69,7 @@ Bu ağaçta en üstte uygulamanın genel yapısını tanımlayan `MaterialApp` b
 
 Widget ağacını doğru anlamak, Flutter’da hata ayıklama ve arayüz tasarımı açısından kritik öneme sahiptir. Çünkü çoğu arayüz problemi yanlış widget yerleşimi, hatalı parent-child ilişkisi veya gereksiz iç içe geçme nedeniyle ortaya çıkar.
 
-## 3.3. İlk Basit Widget Örneği
+## İlk Basit Widget Örneği
 
 Aşağıdaki örnekte tek görevi ekranda bir metin göstermek olan sade bir Flutter uygulaması bulunmaktadır.
 
@@ -107,7 +116,7 @@ class TemelWidgetUygulamasi extends StatelessWidget {
 
 Bu örnekte dikkat edilmesi gereken ilk nokta, uygulamanın `runApp()` fonksiyonu ile başlatılmasıdır. `runApp()` fonksiyonuna verilen nesne bir widget’tır. Bu örnekte uygulamanın kök widget’ı `TemelWidgetUygulamasi` sınıfıdır.
 
-## 3.4. `build()` Metodunun Görevi
+## `build()` Metodunun Görevi
 
 Flutter’da bir widget’ın ekranda nasıl görüneceğini belirleyen temel metot `build()` metodudur. Bu metot bir `Widget` döndürür.
 
@@ -124,7 +133,7 @@ Widget build(BuildContext context) {
 **İpucu:** `build()` metodunu, “Bu widget şu anda ekranda nasıl görünmeli?” sorusunun cevabını üreten fonksiyon gibi düşünebilirsiniz.
 :::
 
-## 3.5. `StatelessWidget`
+## `StatelessWidget`
 
 `StatelessWidget`, kendi içinde değişen bir duruma ihtiyaç duymayan widget türüdür. Bu tür widget’lar genellikle dışarıdan aldıkları değerleri ekranda gösterir veya sabit bir arayüz parçası üretir.
 
@@ -220,7 +229,7 @@ Bu örnekte `OgrenciKarti` sınıfı dışarıdan üç bilgi almaktadır:
 
 Bu bilgiler `final` olarak tanımlanmıştır. Çünkü `StatelessWidget` içinde bu değerlerin widget yaşam süresi boyunca değişmesi beklenmez.
 
-## 3.6. `StatefulWidget`
+## `StatefulWidget`
 
 Bazı arayüzlerde kullanıcı etkileşimi sonucunda ekranda görünen değerlerin değişmesi gerekir. Örneğin bir sayaç uygulamasında butona basıldıkça ekrandaki sayı artar. Bu tür durumlarda `StatefulWidget` kullanılır.
 
@@ -338,7 +347,7 @@ class _SayacSayfasiState extends State<SayacSayfasi> {
 
 Bu örnekte `sayac` değişkeni state sınıfı içinde tutulmaktadır. Kullanıcı butona bastığında ilgili fonksiyon çalışır ve `setState()` çağrısı ile Flutter’a arayüzün güncellenmesi gerektiği bildirilir.
 
-## 3.7. `setState()` Nasıl Çalışır?
+## `setState()` Nasıl Çalışır?
 
 `setState()` metodu, Flutter’a ilgili state nesnesindeki bir değerin değiştiğini bildirir. Bu çağrıdan sonra Flutter ilgili widget’ın `build()` metodunu tekrar çalıştırır ve yeni arayüz durumunu üretir.
 
@@ -363,7 +372,7 @@ setState(() {});
 **Sınav Notu:** `setState()` tüm uygulamayı yeniden başlatmaz. İlgili state nesnesinin arayüzünü tekrar üretir. Bu nedenle `setState()` kavramı “ekranı yenile” komutu gibi değil, “bu state değişti, arayüzü yeniden hesapla” bildirimi gibi anlaşılmalıdır.
 :::
 
-## 3.8. Widget Kompozisyonu
+## Widget Kompozisyonu
 
 Flutter’da iyi arayüz tasarımı, her şeyi tek bir büyük `build()` metodu içine yazmak yerine arayüzü küçük ve anlamlı widget’lara bölmeyi gerektirir. Bu yaklaşıma **widget kompozisyonu** denir.
 
@@ -501,7 +510,7 @@ Bu örnekte `PuanSayfasi` state’i yönetmektedir. `PuanPaneli` ise kendisine v
 
 Bu ayrım önemlidir. Çünkü büyük projelerde her widget’ın kendi görevine odaklanması beklenir. Böylece kod okunabilir, test edilebilir ve sürdürülebilir hâle gelir.
 
-## 3.9. `const` Kullanımı ve Performans
+## `const` Kullanımı ve Performans
 
 Flutter’da değişmeyen widget’lar için `const` kullanmak iyi bir pratiktir. `const`, Flutter’ın gereksiz nesne üretimini azaltmasına yardımcı olur.
 
@@ -523,11 +532,24 @@ Text('$sayac');
 **Dikkat:** `const` yalnızca performans için değil, kodun niyetini göstermek için de önemlidir. Değişmeyecek widget’ların `const` ile işaretlenmesi kodun okunabilirliğini artırır.
 :::
 
-## 3.10. Mini Uygulama: Etkileşimli Ders Katılım Kartı
+## Mini Uygulama: Etkileşimli Ders Katılım Kartı
 
 Bu mini uygulamada öğrenci katılım durumunu gösteren küçük bir Flutter ekranı hazırlanacaktır. Kullanıcı butona bastığında katılım puanı artacak ve ekrandaki değer güncellenecektir.
 
 [SCREENSHOT:b03_01_katilim_karti]
+
+<!-- SCREENSHOT_META
+id: b03_01_katilim_karti
+chapter_id: chapter_15
+title: "Katilim Karti"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/widget-mantigi/b03_01_katilim_karti"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b03_01_katilim_karti.png
+caption: "Katilim Karti ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -688,7 +710,7 @@ class KatilimKarti extends StatelessWidget {
 
 Bu uygulamada `KatilimSayfasi` değişen puanı yönetmektedir. `KatilimKarti` ise bu bilgileri ekranda gösteren ayrı bir widget olarak tasarlanmıştır. Bu yapı, state yönetimi ile arayüz sunumunun birbirinden ayrılmasını sağlar.
 
-## 3.11. Sık Yapılan Hatalar
+## Sık Yapılan Hatalar
 
 Flutter’da widget mantığını öğrenirken aşağıdaki hatalar sık görülür:
 
@@ -700,7 +722,7 @@ Flutter’da widget mantığını öğrenirken aşağıdaki hatalar sık görül
 | `const` kullanmamak | Gereksiz nesne üretimi artabilir | Sabit widget’larda `const` kullan |
 | Widget ağacını çok derinleştirmek | Bakım zorlaşır | Kompozisyon ve yardımcı widget kullan |
 
-## 3.12. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 Bu laboratuvar çalışmasında öğrenciden küçük bir “Görev Takip Kartı” uygulaması geliştirmesi beklenmektedir.
 
@@ -724,7 +746,7 @@ Bu laboratuvar sonunda öğrenci:
 - `setState()` ile arayüz güncelleyebilir.
 - Küçük ama anlamlı widget kompozisyonu kurabilir.
 
-## 3.13. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -735,7 +757,7 @@ Bu laboratuvar sonunda öğrenci:
 | Kod okunabilirliği | 15 | Sınıf ve değişken adları anlamlıdır |
 | `const` kullanımı | 10 | Sabit widget’larda `const` tercih edilmiştir |
 
-## 3.14. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde Flutter’ın temel yapı taşı olan widget kavramı incelendi. Widget ağacının uygulama arayüzünü nasıl oluşturduğu açıklandı. `StatelessWidget` ve `StatefulWidget` arasındaki temel farklar örneklerle gösterildi. `build()` metodunun arayüz üretme görevi, `setState()` metodunun ise değişen state sonrasında arayüzü güncelleme rolü ele alındı.
 

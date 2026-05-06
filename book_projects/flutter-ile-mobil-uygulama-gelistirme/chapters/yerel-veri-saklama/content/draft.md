@@ -1,3 +1,12 @@
+---
+chapter_id: yerel-veri-saklama
+chapter_no: 16
+title: "Yerel Veri Saklama"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 10 — Yerel Veri Saklama
 
 ## Bölümün Amacı
@@ -6,7 +15,7 @@ Bu bölümde Flutter uygulamalarında yerel veri saklama mantığı ele alınmak
 
 Bu bölüm sonunda öğrenci geçici state ile kalıcı veri arasındaki farkı ayırt edebilir, JSON tabanlı küçük veri saklama yaklaşımını açıklayabilir ve yerel veri saklama için servis sınıfı tasarlayabilir.
 
-## 10.1. Neden Yerel Veri Saklarız?
+## Neden Yerel Veri Saklarız?
 
 Yerel veri saklama; tema tercihi, son girilen kullanıcı adı, dil seçimi, taslak notlar, offline küçük kayıtlar ve API cache verileri için kullanılabilir.
 
@@ -14,7 +23,7 @@ Yerel veri saklama; tema tercihi, son girilen kullanıcı adı, dil seçimi, tas
 **Dikkat:** Şifre, token veya kişisel hassas veriler için güvenli saklama yaklaşımları ayrıca ele alınmalıdır.
 :::
 
-## 10.2. SharedPreferences Mantığı
+## SharedPreferences Mantığı
 
 Küçük anahtar-değer verileri için Flutter ekosisteminde sık kullanılan paketlerden biri `shared_preferences` paketidir.
 
@@ -25,7 +34,7 @@ dependencies:
 
 Bu bölümde harici bağımlılığı azaltmak için bazı örneklerde local storage servis mantığı simüle edilmiştir.
 
-## 10.3. Basit Saklama Servisi
+## Basit Saklama Servisi
 
 ```yaml
 CODE_META:
@@ -125,7 +134,7 @@ class _AyarSaklamaSayfasiState extends State<AyarSaklamaSayfasi> {
 }
 ```
 
-## 10.4. JSON Olarak Saklama Mantığı
+## JSON Olarak Saklama Mantığı
 
 ```yaml
 CODE_META:
@@ -185,13 +194,26 @@ class JsonSaklamaUygulamasi extends StatelessWidget {
 }
 ```
 
-## 10.5. Dosya ve Cache Mantığı
+## Dosya ve Cache Mantığı
 
 Dosya tabanlı saklama için gerçek projelerde `path_provider` gibi paketler gerekebilir. Cache verileri ise kalıcı veri kadar güvenilir kabul edilmemelidir. Cache, performansı artırmak için geçici olarak saklanan veridir.
 
-## 10.6. Mini Uygulama: Yerel Not Defteri Simülasyonu
+## Mini Uygulama: Yerel Not Defteri Simülasyonu
 
 [SCREENSHOT:b10_01_yerel_not_defteri]
+
+<!-- SCREENSHOT_META
+id: b10_01_yerel_not_defteri
+chapter_id: chapter_16
+title: "Yerel Not Defteri"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/yerel-veri-saklama/b10_01_yerel_not_defteri"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b10_01_yerel_not_defteri.png
+caption: "Yerel Not Defteri ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -332,11 +354,11 @@ class _YerelNotUygulamasiState extends State<YerelNotUygulamasi> {
 }
 ```
 
-## 10.7. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 “Ders Çalışma Notları” adlı uygulama geliştiriniz. Kullanıcı başlık ve içerik girebilmeli, notlar listelenmeli, boş alan girilirse kayıt yapılmamalı, notlar model sınıfı ile temsil edilmeli ve servis sınıfı üzerinden yönetilmelidir.
 
-## 10.8. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -347,7 +369,7 @@ class _YerelNotUygulamasiState extends State<YerelNotUygulamasi> {
 | Form etkileşimi | 15 | Kullanıcıdan veri alınmıştır |
 | Kod okunabilirliği | 20 | Sınıflar ve metotlar düzenlidir |
 
-## 10.9. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde yerel veri saklama ihtiyacı, geçici state ile kalıcı veri farkı, SharedPreferences mantığı, JSON dönüşümü, dosya tabanlı saklama, local storage ve cache kavramları ele alındı.
 

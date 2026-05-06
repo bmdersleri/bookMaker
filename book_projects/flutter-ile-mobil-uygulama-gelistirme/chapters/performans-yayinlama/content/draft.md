@@ -1,3 +1,12 @@
+---
+chapter_id: performans-yayinlama
+chapter_no: 11
+title: "Performans ve Yayınlama"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 15 — Performans ve Yayınlama
 
 ## Bölümün Amacı
@@ -13,7 +22,7 @@ Bu bölüm sonunda öğrenci:
 - Release build mantığını açıklayabilir.
 - Sürüm numarası ve yayınlama hazırlıklarını yorumlayabilir.
 
-## 15.1. Performans Neden Önemlidir?
+## Performans Neden Önemlidir?
 
 Mobil uygulamalarda yavaş açılış, takılan animasyonlar, geciken listeleme ve aşırı bellek kullanımı kullanıcı deneyimini olumsuz etkiler. Performans yalnızca teknik değil, doğrudan kullanıcı memnuniyetini etkileyen bir kalite ölçütüdür.
 
@@ -21,7 +30,7 @@ Mobil uygulamalarda yavaş açılış, takılan animasyonlar, geciken listeleme 
 **Dikkat:** Performans optimizasyonu, ölçmeden tahmin yürütmek değildir. Önce problem gözlenmeli, sonra uygun araçlarla analiz edilmelidir.
 :::
 
-## 15.2. `const` Kullanımı
+## `const` Kullanımı
 
 ```yaml
 CODE_META:
@@ -74,7 +83,7 @@ class ConstSayfasi extends StatelessWidget {
 }
 ```
 
-## 15.3. Uzun Listelerde Builder Kullanımı
+## Uzun Listelerde Builder Kullanımı
 
 ```yaml
 CODE_META:
@@ -126,7 +135,7 @@ class BuilderPerformansSayfasi extends StatelessWidget {
 }
 ```
 
-## 15.4. Rebuild Mantığını Anlamak
+## Rebuild Mantığını Anlamak
 
 Gereksiz rebuild, uygulama performansını olumsuz etkileyebilir. Widget ağacını küçük parçalara bölmek, sabit widget’larda `const` kullanmak ve state kapsamını dar tutmak önemlidir.
 
@@ -200,11 +209,11 @@ class SabitBaslik extends StatelessWidget {
 }
 ```
 
-## 15.5. Profiling ve DevTools
+## Profiling ve DevTools
 
 Flutter DevTools, performans analizi için frame rendering, CPU, memory ve widget rebuild gibi alanlarda yardımcı olur. Performans sorunu yaşandığında önce debug tahmini değil, ölçüm yapılmalıdır.
 
-## 15.6. Release Build Mantığı
+## Release Build Mantığı
 
 Geliştirme sırasında kullanılan debug build, performans ve hata ayıklama bilgileri açısından yayın sürümünden farklıdır. Yayınlama öncesi release build hazırlanır.
 
@@ -217,7 +226,7 @@ flutter build appbundle --release
 
 Platforma göre iOS ve Android gereksinimleri farklıdır. İmzalama, sürüm numarası ve mağaza yönergeleri ayrıca dikkate alınmalıdır.
 
-## 15.7. Version ve Yayınlama Hazırlıkları
+## Version ve Yayınlama Hazırlıkları
 
 `pubspec.yaml` içinde version bilgisi uygulamanın sürümünü belirtir.
 
@@ -227,9 +236,22 @@ version: 1.0.0+1
 
 Burada `1.0.0` kullanıcıya görünen sürüm, `+1` ise build numarasıdır.
 
-## 15.8. Mini Uygulama: Performans Kontrol Paneli
+## Mini Uygulama: Performans Kontrol Paneli
 
 [SCREENSHOT:b15_01_performans_kontrol_paneli]
+
+<!-- SCREENSHOT_META
+id: b15_01_performans_kontrol_paneli
+chapter_id: chapter_11
+title: "Performans Kontrol Paneli"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/performans-yayinlama/b15_01_performans_kontrol_paneli"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b15_01_performans_kontrol_paneli.png
+caption: "Performans Kontrol Paneli ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -325,11 +347,11 @@ class PerformansPaneli extends StatelessWidget {
 }
 ```
 
-## 15.9. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 “Yayın Öncesi Kontrol Paneli” uygulaması geliştiriniz. Performans, version, release build, store hazırlığı, profiling ve test maddelerini kartlar hâlinde gösteriniz.
 
-## 15.10. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -340,7 +362,7 @@ class PerformansPaneli extends StatelessWidget {
 | Mini uygulama | 15 | Kontrol paneli düzgün tasarlanmıştır |
 | Kod okunabilirliği | 15 | Model ve listeleme yapısı düzenlidir |
 
-## 15.11. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde performans ilkeleri, `const`, builder kullanımı, rebuild mantığı, profiling, release build, version ve yayınlama hazırlıkları ele alındı.
 

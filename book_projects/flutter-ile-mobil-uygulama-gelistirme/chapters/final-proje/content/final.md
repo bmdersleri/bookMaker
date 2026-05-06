@@ -1,3 +1,12 @@
+---
+chapter_id: final-proje
+chapter_no: 5
+title: "Final Proje"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 16 — Final Proje
 
 ## Bölümün Amacı
@@ -15,7 +24,7 @@ Bu bölüm sonunda öğrenci:
 - Tema, layout ve erişilebilirlik ilkelerini dikkate alabilir.
 - Projesini rubrik ölçütlerine göre değerlendirebilir.
 
-## 16.1. Final Proje Tanımı
+## Final Proje Tanımı
 
 Final proje önerisi: **Ders Takip ve Görev Yönetimi Uygulaması**
 
@@ -37,7 +46,7 @@ Temel özellikler:
 **Dikkat:** Final proje, karmaşık paket kullanımından çok temel Flutter becerilerinin temiz, anlaşılır ve sürdürülebilir biçimde uygulanmasına odaklanmalıdır.
 :::
 
-## 16.2. Proje Modeli
+## Proje Modeli
 
 ```yaml
 CODE_META:
@@ -76,9 +85,22 @@ class Gorev {
 }
 ```
 
-## 16.3. Bütünleşik Mini Final Proje
+## Bütünleşik Mini Final Proje
 
 [SCREENSHOT:b16_01_final_proje_ders_gorev_yonetimi]
+
+<!-- SCREENSHOT_META
+id: b16_01_final_proje_ders_gorev_yonetimi
+chapter_id: chapter_05
+title: "Final Proje Ders Gorev Yonetimi"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/final-proje/b16_01_final_proje_ders_gorev_yonetimi"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b16_01_final_proje_ders_gorev_yonetimi.png
+caption: "Final Proje Ders Gorev Yonetimi ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -328,7 +350,7 @@ class GorevDetaySayfasi extends StatelessWidget {
 }
 ```
 
-## 16.4. Proje Klasör Önerisi
+## Proje Klasör Önerisi
 
 ```text
 lib/
@@ -345,7 +367,7 @@ lib/
     └── gorev_servisi.dart
 ```
 
-## 16.5. Teslim Beklentileri
+## Teslim Beklentileri
 
 Öğrenci final proje tesliminde şu çıktıları sunmalıdır:
 
@@ -357,11 +379,11 @@ lib/
 - Bilinen eksikler
 - Geliştirme önerileri
 
-## 16.6. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 Final proje uygulamasını kendi senaryonuza göre genişletiniz. En az bir form, bir liste, bir detay ekranı, navigation, state yönetimi, tema ve boş durum mesajı bulunmalıdır.
 
-## 16.7. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -373,7 +395,7 @@ Final proje uygulamasını kendi senaryonuza göre genişletiniz. En az bir form
 | State yönetimi | 10 | Veri değişimleri doğru yönetilmiştir |
 | Kod okunabilirliği | 10 | Kod düzenli ve anlaşılırdır |
 
-## 16.8. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde kitap boyunca öğrenilen model, form, listview, navigation, state, tema ve proje teslim becerileri final proje çatısı altında birleştirildi.
 

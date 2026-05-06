@@ -1,3 +1,12 @@
+---
+chapter_id: layout-sistemi
+chapter_no: 7
+title: "Layout Sistemi"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 4 — Flutter Layout Sistemi
 
 ## Bölümün Amacı
@@ -17,7 +26,7 @@ Bu bölüm sonunda öğrenci:
 - Basit responsive layout kararlarını `LayoutBuilder` ile uygulayabilir.
 - Küçük bir profil/özet kartı arayüzünü layout ilkelerine uygun biçimde geliştirebilir.
 
-## 4.1. Layout Sistemi Neden Önemlidir?
+## Layout Sistemi Neden Önemlidir?
 
 Mobil uygulamalarda ekran alanı sınırlıdır. Aynı uygulama farklı telefonlarda, tabletlerde ve masaüstü boyutlarında farklı genişliklerde çalışabilir. Bu nedenle arayüz elemanlarının yalnızca ekrana konulması yeterli değildir; aynı zamanda okunabilir, düzenli ve uyumlu biçimde yerleştirilmesi gerekir.
 
@@ -35,7 +44,7 @@ Bu sorulara verilen cevaplar, uygulamanın kullanıcı deneyimini doğrudan etki
 **Dikkat:** Flutter’da layout problemlerinin önemli bir kısmı, widget ağacındaki parent-child ilişkisini ve kısıt mantığını yeterince anlamamaktan kaynaklanır.
 :::
 
-## 4.2. Flutter’da Kısıt Mantığı
+## Flutter’da Kısıt Mantığı
 
 Flutter layout sisteminin temelinde **constraints go down, sizes go up, parent sets position** yaklaşımı bulunur. Bu ifade şu şekilde açıklanabilir:
 
@@ -96,7 +105,7 @@ class LayoutGirisSayfasi extends StatelessWidget {
 
 Bu örnekte `Scaffold` sayfa iskeletini kurar. `Center`, kendisine verilen `Text` widget’ını içerik alanının ortasına yerleştirir.
 
-## 4.3. `Column` ile Dikey Yerleşim
+## `Column` ile Dikey Yerleşim
 
 `Column`, child widget’ları dikey yönde alt alta yerleştirir. Mobil uygulamalarda en sık kullanılan layout widget’larından biridir.
 
@@ -165,7 +174,7 @@ Bu örnekte `Column` içindeki widget’lar yukarıdan aşağıya sıralanır. `
 
 `mainAxisSize: MainAxisSize.min` kullanımı, `Column` widget’ının dikey eksende yalnızca ihtiyacı kadar yer kaplamasını sağlar. Bu ifade kaldırılırsa `Column`, bulunduğu alanın yüksekliğini daha geniş kullanabilir.
 
-## 4.4. `Row` ile Yatay Yerleşim
+## `Row` ile Yatay Yerleşim
 
 `Row`, child widget’ları yatay yönde yan yana yerleştirir. Buton grupları, küçük bilgi satırları ve ikon-metin birliktelikleri için sık kullanılır.
 
@@ -228,7 +237,7 @@ Bu örnekte ikon ve metin yan yana gösterilmiştir. `SizedBox(width: 8)` yatay 
 **İpucu:** `Column` dikey eksende, `Row` yatay eksende çalışır. Bu iki widget Flutter layout sisteminin en temel düzenleme araçlarıdır.
 :::
 
-## 4.5. Ana Eksen ve Çapraz Eksen
+## Ana Eksen ve Çapraz Eksen
 
 `Row` ve `Column` kullanırken iki temel eksen vardır:
 
@@ -309,7 +318,7 @@ class HizalamaSayfasi extends StatelessWidget {
 
 Bu örnekte `mainAxisAlignment: MainAxisAlignment.center`, elemanların dikey eksende ortalanmasını sağlar. `crossAxisAlignment: CrossAxisAlignment.stretch` ise child widget’ların yatay eksende genişlemesine izin verir.
 
-## 4.6. `Container`
+## `Container`
 
 `Container`, Flutter’da en çok kullanılan yardımcı layout widget’larından biridir. Kenar boşluğu, iç boşluk, arka plan rengi, genişlik, yükseklik ve dekorasyon gibi işlemler için kullanılabilir.
 
@@ -390,7 +399,7 @@ class ContainerOrnegiSayfasi extends StatelessWidget {
 
 Bu örnekte `Container`, kart benzeri bir yapı oluşturmak için kullanılmıştır. `padding`, içerik ile kenarlar arasında boşluk bırakır. `decoration`, arka plan ve kenarlık gibi görsel özellikleri tanımlar.
 
-## 4.7. `Padding` ve `SizedBox`
+## `Padding` ve `SizedBox`
 
 `Padding`, bir widget’ın çevresinde iç boşluk oluşturmak için kullanılır. `SizedBox` ise sabit boşluk veya sabit boyut oluşturmak için tercih edilir.
 
@@ -413,7 +422,7 @@ const SizedBox(height: 16);
 **Dikkat:** Boşluk vermek için gereksiz `Container` kullanmak yerine çoğu durumda `SizedBox` veya `Padding` daha açık ve okunabilir bir tercihtir.
 :::
 
-## 4.8. `Expanded` ve `Flexible`
+## `Expanded` ve `Flexible`
 
 `Row` ve `Column` içinde yer paylaşımı yapmak için `Expanded` ve `Flexible` kullanılır.
 
@@ -484,7 +493,7 @@ class EsnekLayoutSayfasi extends StatelessWidget {
 
 Bu örnekte ekran dikey olarak iki alana ayrılmıştır. Birinci alan `flex: 2`, ikinci alan `flex: 1` değerine sahiptir. Bu nedenle birinci alan ikinci alana göre daha fazla yer kaplar.
 
-## 4.9. Taşma Problemleri ve `Wrap`
+## Taşma Problemleri ve `Wrap`
 
 Flutter’da `Row` içine çok fazla widget yerleştirildiğinde yatay taşma hatası oluşabilir. Bu durumda ekranda sarı-siyah uyarı çizgileri görülebilir. Böyle durumlarda `Wrap`, uygun bir çözüm olabilir.
 
@@ -559,7 +568,7 @@ class WrapOrnegiSayfasi extends StatelessWidget {
 
 Bu örnekte konu etiketleri ekrana sığmadığında alt satıra geçebilir. Bu yapı, özellikle filtre etiketleri, kategori listeleri ve beceri kartları için kullanışlıdır.
 
-## 4.10. `LayoutBuilder` ile Responsive Karar Verme
+## `LayoutBuilder` ile Responsive Karar Verme
 
 `LayoutBuilder`, parent widget’tan gelen kısıtları okuyarak ekran genişliğine göre farklı layout kararları vermeye imkân tanır.
 
@@ -657,11 +666,24 @@ class BilgiKarti extends StatelessWidget {
 
 Bu örnekte `constraints.maxWidth` değeri okunur. Genişlik 600 piksel veya üzerindeyse iki sütunlu yapı, daha dar ekranlarda tek sütunlu yapı kullanılır.
 
-## 4.11. Mini Uygulama: Responsive Profil Kartı
+## Mini Uygulama: Responsive Profil Kartı
 
 Bu mini uygulamada layout sisteminin temel parçaları bir araya getirilerek responsive davranış gösteren bir profil kartı geliştirilecektir.
 
 [SCREENSHOT:b04_01_responsive_profil_karti]
+
+<!-- SCREENSHOT_META
+id: b04_01_responsive_profil_karti
+chapter_id: chapter_07
+title: "Responsive Profil Karti"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/layout-sistemi/b04_01_responsive_profil_karti"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b04_01_responsive_profil_karti.png
+caption: "Responsive Profil Karti ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -837,7 +859,7 @@ class ProfilBilgileri extends StatelessWidget {
 
 Bu uygulamada dar ekranlarda profil görseli ve bilgiler dikey olarak sıralanır. Geniş ekranlarda ise avatar solda, bilgiler sağda olacak şekilde yatay layout kullanılır. Böylece aynı arayüz farklı ekran boyutlarına daha uyumlu hâle gelir.
 
-## 4.12. Sık Yapılan Hatalar
+## Sık Yapılan Hatalar
 
 | Hata | Açıklama | Çözüm |
 |---|---|---|
@@ -848,7 +870,7 @@ Bu uygulamada dar ekranlarda profil görseli ve bilgiler dikey olarak sıralanı
 | Tüm arayüzü tek widget içine yığmak | Bakım zorlaşır | Anlamlı alt widget’lara böl |
 | Responsive davranışı hiç düşünmemek | Tablet/geniş ekran deneyimi zayıflar | `LayoutBuilder` veya uygun grid yapıları kullan |
 
-## 4.13. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 Bu laboratuvar çalışmasında öğrenciden “Ders Bilgi Paneli” adlı responsive bir arayüz geliştirmesi beklenmektedir.
 
@@ -873,7 +895,7 @@ Bu laboratuvar sonunda öğrenci:
 - `Wrap` ile taşma riskini azaltabilir.
 - Büyük arayüzleri küçük widget bileşenlerine ayırabilir.
 
-## 4.14. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -885,7 +907,7 @@ Bu laboratuvar sonunda öğrenci:
 | Kod okunabilirliği | 10 | Sınıf ve değişken adları anlamlıdır |
 | `const` kullanımı | 5 | Sabit widget’larda `const` tercih edilmiştir |
 
-## 4.15. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde Flutter layout sisteminin temel mantığı incelendi. `Row` ve `Column` ile yatay ve dikey yerleşim kurma, `mainAxisAlignment` ve `crossAxisAlignment` ile hizalama yapma, `Container`, `Padding` ve `SizedBox` ile boşluk ve görsel yapı oluşturma konuları ele alındı.
 

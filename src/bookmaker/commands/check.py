@@ -106,16 +106,68 @@ def check_book_command(
     result = validate_book(project_root)
     report = result.report
 
+    # Kitap düzeyi rapor ile bölüm bazlı tablo aynı doğruluk kaynağını
+    # temsil etmelidir. validate_book(project_root) kitap raporunu ve
+    # bölüm raporlarını ayrı ürettiğinde, bölüm bazlı hata/uyarılar üst
+    # rapora yansıtılmazsa CLI çıktısı çelişkili görünür:
+    #
+    #   Kitap Kalite Raporu: pass
+    #   Bölüm Bazlı Durum : bazı bölümler blocked
+    #
+    # Bu nedenle CLI çıktısı ve JSON raporu için "effective_report"
+    # oluşturulur. Bölüm raporları varsa toplam hata/uyarı, en düşük skor,
+    # karar ve issue listesi üst rapora yansıtılır.
+    chapter_reports = list(result.chapter_reports.values()) if result.chapter_reports else []
+
+    chapter_error_count = sum(cr.error_count for cr in chapter_reports)
+    chapter_warning_count = sum(cr.warning_count for cr in chapter_reports)
+
+    effective_error_count = report.error_count + chapter_error_count
+    effective_warning_count = report.warning_count + chapter_warning_count
+
+    effective_score = report.score
+    if chapter_reports:
+        effective_score = min([report.score] + [cr.score for cr in chapter_reports])
+
+    effective_issues = list(report.issues)
+    for cr in chapter_reports:
+        effective_issues.extend(cr.issues)
+
+    decision_cls = report.decision.__class__
+    effective_decision = report.decision
+
+    chapter_has_blocker = any(
+        cr.decision.value == "blocked" or cr.error_count > 0
+        for cr in chapter_reports
+    )
+
+    if effective_error_count > 0 or chapter_has_blocker:
+        effective_decision = decision_cls("blocked")
+    elif effective_warning_count > 0:
+        effective_decision = decision_cls("pass_with_warnings")
+    else:
+        effective_decision = decision_cls("pass")
+
+    effective_report = report.model_copy(
+        update={
+            "score": effective_score,
+            "decision": effective_decision,
+            "error_count": effective_error_count,
+            "warning_count": effective_warning_count,
+            "issues": effective_issues,
+        }
+    )
+
     summary = Table(title="Kitap Kalite Raporu", show_header=True, header_style="bold cyan")
     summary.add_column("Alan", style="cyan")
     summary.add_column("Değer", justify="right")
 
-    decision_color = "green" if report.decision.value in ("pass", "pass_with_warnings") else "red"
-    summary.add_row("Skor", f"[bold]{report.score}[/bold]")
-    summary.add_row("Karar", f"[{decision_color}]{report.decision.value}[/{decision_color}]")
-    summary.add_row("Hatalar", f"[red]{report.error_count}[/red]")
-    summary.add_row("Uyarılar", f"[yellow]{report.warning_count}[/yellow]")
-    summary.add_row("Toplam Sorun", str(report.error_count + report.warning_count))
+    decision_color = "green" if effective_report.decision.value in ("pass", "pass_with_warnings") else "red"
+    summary.add_row("Skor", f"[bold]{effective_report.score}[/bold]")
+    summary.add_row("Karar", f"[{decision_color}]{effective_report.decision.value}[/{decision_color}]")
+    summary.add_row("Hatalar", f"[red]{effective_report.error_count}[/red]")
+    summary.add_row("Uyarılar", f"[yellow]{effective_report.warning_count}[/yellow]")
+    summary.add_row("Toplam Sorun", str(effective_report.error_count + effective_report.warning_count))
     console.print(summary)
 
     if result.chapter_reports:
@@ -143,14 +195,14 @@ def check_book_command(
             )
         console.print(ch_table)
 
-    if verbose and report.issues:
+    if verbose and effective_report.issues:
         issue_table = Table(title="Detaylı Sorun Listesi", show_header=True, header_style="bold")
         issue_table.add_column("Seviye", style="bold")
         issue_table.add_column("Kategori")
         issue_table.add_column("Dosya")
         issue_table.add_column("Satır", justify="right")
         issue_table.add_column("Mesaj")
-        for issue in report.issues:
+        for issue in effective_report.issues:
             color = "red" if issue.severity.value == "error" else "yellow"
             file_short = issue.location.file or "-"
             line_str = str(issue.location.line) if issue.location.line else "-"
@@ -178,5 +230,5 @@ def check_book_command(
                 encoding="utf-8",
             )
 
-    if report.error_count > 0:
+    if effective_report.error_count > 0:
         raise typer.Exit(1)

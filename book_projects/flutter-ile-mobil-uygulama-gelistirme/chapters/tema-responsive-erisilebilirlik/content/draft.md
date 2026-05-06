@@ -1,10 +1,19 @@
+---
+chapter_id: tema-responsive-erisilebilirlik
+chapter_no: 13
+title: "Tema, Responsive Tasarım ve Erişilebilirlik"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 11 — Tema, Responsive Tasarım ve Erişilebilirlik
 
 ## Bölümün Amacı
 
 Bu bölümde Flutter uygulamalarında tema yönetimi, responsive tasarım ve erişilebilirlik konuları ele alınmaktadır. Kullanıcı arayüzü yalnızca çalışır durumda olmakla yetinmemeli; farklı ekran boyutlarında düzenli görünmeli, görsel bütünlük taşımalı ve mümkün olduğunca geniş kullanıcı grupları tarafından erişilebilir olmalıdır.
 
-## 11.1. Tema Nedir?
+## Tema Nedir?
 
 Tema, uygulamanın renk, tipografi, buton görünümü, kart yapısı ve genel görsel dilini belirleyen kurallar bütünüdür. Flutter’da tema çoğunlukla `ThemeData` ile tanımlanır.
 
@@ -69,7 +78,7 @@ class TemaSayfasi extends StatelessWidget {
 **İpucu:** Renkleri her widget içinde elle vermek yerine tema üzerinden yönetmek, büyük projelerde bakım kolaylığı sağlar.
 :::
 
-## 11.2. Açık ve Koyu Tema
+## Açık ve Koyu Tema
 
 ```yaml
 CODE_META:
@@ -128,7 +137,7 @@ class CiftTemaSayfasi extends StatelessWidget {
 }
 ```
 
-## 11.3. Responsive Tasarım, MediaQuery ve LayoutBuilder
+## Responsive Tasarım, MediaQuery ve LayoutBuilder
 
 Responsive tasarım, arayüzün farklı ekran boyutlarına uyum sağlamasıdır. Flutter’da responsive kararlar için `MediaQuery`, `LayoutBuilder`, `Flexible`, `Expanded`, `Wrap` ve `GridView` kullanılabilir.
 
@@ -222,7 +231,7 @@ class BilgiKarti extends StatelessWidget {
 }
 ```
 
-## 11.4. Accessibility ve Semantics
+## Accessibility ve Semantics
 
 Erişilebilirlik; uygulamanın farklı kullanıcı ihtiyaçlarına uygun biçimde kullanılabilmesini ifade eder. Kontrast, okunabilir metin, yeterli dokunma alanı ve ekran okuyucu dostu açıklamalar önemlidir.
 
@@ -264,9 +273,22 @@ class SemanticsUygulamasi extends StatelessWidget {
 }
 ```
 
-## 11.5. Mini Uygulama: Erişilebilir Responsive Ders Paneli
+## Mini Uygulama: Erişilebilir Responsive Ders Paneli
 
 [SCREENSHOT:b11_01_responsive_erisilebilir_ders_paneli]
+
+<!-- SCREENSHOT_META
+id: b11_01_responsive_erisilebilir_ders_paneli
+chapter_id: chapter_13
+title: "Responsive Erisilebilir Ders Paneli"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/tema-responsive-erisilebilirlik/b11_01_responsive_erisilebilir_ders_paneli"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b11_01_responsive_erisilebilir_ders_paneli.png
+caption: "Responsive Erisilebilir Ders Paneli ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -364,15 +386,15 @@ class PanelKarti extends StatelessWidget {
 }
 ```
 
-## 11.6. Kontrast ve Okunabilirlik
+## Kontrast ve Okunabilirlik
 
 Kontrast, metnin arka plan üzerinde ne kadar rahat okunabildiğiyle ilgilidir. Sadece renk değişimiyle anlam vermek erişilebilir değildir. İkon, metin ve açıklama birlikte kullanılmalıdır.
 
-## 11.7. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 “Responsive ve Erişilebilir Ders Paneli” uygulaması geliştiriniz. Uygulamada tema, kart tabanlı responsive yapı, `LayoutBuilder`, `MediaQuery`, `Semantics`, okunabilir metin stilleri, accessibility ve yeterli contrast kullanılmalıdır.
 
-## 11.8. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -383,7 +405,7 @@ Kontrast, metnin arka plan üzerinde ne kadar rahat okunabildiğiyle ilgilidir. 
 | Kod okunabilirliği | 15 | Widget’lar anlamlı ayrılmıştır |
 | Kullanıcı deneyimi | 10 | Farklı ekranlarda anlaşılır yapı sunulmuştur |
 
-## 11.9. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde tema yönetimi, açık/koyu tema, responsive tasarım, `MediaQuery`, `LayoutBuilder`, accessibility, contrast ve `Semantics` kullanımı ele alındı.
 

@@ -1,3 +1,12 @@
+---
+chapter_id: async-api-json
+chapter_no: 1
+title: "Asenkron Programlama, API ve JSON"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 9 — Asenkron Programlama, API ve JSON
 
 ## Bölümün Amacı
@@ -6,7 +15,7 @@ Bu bölümde Flutter uygulamalarında asenkron işlemler, API istekleri ve JSON 
 
 Bu bölüm sonunda öğrenci `Future`, `async`, `await`, `jsonDecode`, model sınıfı, servis sınıfı ve `FutureBuilder` ile temel API veri akışını kurabilir.
 
-## 9.1. Asenkron Programlama Nedir?
+## Asenkron Programlama Nedir?
 
 Asenkron programlama, uzun sürebilecek işlemlerin kullanıcı arayüzünü kilitlemeden yürütülmesini sağlar. API isteği göndermek, dosya okumak, veritabanından kayıt almak veya zamanlayıcı beklemek asenkron işlem örnekleridir.
 
@@ -14,7 +23,7 @@ Asenkron programlama, uzun sürebilecek işlemlerin kullanıcı arayüzünü kil
 **Dikkat:** Ağ isteği, dosya okuma veya uzun süren hesaplama gibi işlemler doğrudan `build()` metodu içinde başlatılmamalıdır.
 :::
 
-## 9.2. `Future`, `async` ve `await`
+## `Future`, `async` ve `await`
 
 ```yaml
 CODE_META:
@@ -87,7 +96,7 @@ class _AsyncGirisSayfasiState extends State<AsyncGirisSayfasi> {
 }
 ```
 
-## 9.3. JSON Verisini Model Sınıfına Dönüştürme
+## JSON Verisini Model Sınıfına Dönüştürme
 
 JSON, web servislerinde veri taşımak için yaygın kullanılan metinsel veri biçimidir. Dart’ta JSON çözümlemek için `dart:convert` paketinden `jsonDecode` kullanılır.
 
@@ -155,7 +164,7 @@ class JsonModelUygulamasi extends StatelessWidget {
 }
 ```
 
-## 9.4. `FutureBuilder` ile Veri Akışı
+## `FutureBuilder` ile Veri Akışı
 
 ```yaml
 CODE_META:
@@ -260,9 +269,22 @@ class _ApiServisSayfasiState extends State<ApiServisSayfasi> {
 }
 ```
 
-## 9.5. Mini Uygulama: API Benzeri Ders Listesi
+## Mini Uygulama: API Benzeri Ders Listesi
 
 [SCREENSHOT:b09_01_api_ders_listesi]
+
+<!-- SCREENSHOT_META
+id: b09_01_api_ders_listesi
+chapter_id: chapter_01
+title: "Api Ders Listesi"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/async-api-json/b09_01_api_ders_listesi"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b09_01_api_ders_listesi.png
+caption: "Api Ders Listesi ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -391,11 +413,11 @@ class _ApiDersListesiSayfasiState extends State<ApiDersListesiSayfasi> {
 }
 ```
 
-## 9.6. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 “API Destekli Ders Listesi” adlı uygulama geliştiriniz. Uygulamada servis sınıfı, model sınıfı, `FutureBuilder`, yükleniyor göstergesi, hata mesajı, boş liste mesajı ve yenileme davranışı bulunmalıdır.
 
-## 9.7. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -406,7 +428,7 @@ class _ApiDersListesiSayfasiState extends State<ApiDersListesiSayfasi> {
 | Hata yönetimi | 15 | Kullanıcıya anlaşılır hata mesajı sunulmuştur |
 | Kod okunabilirliği | 15 | Servis, model ve arayüz ayrımı yapılmıştır |
 
-## 9.8. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde asenkron programlama, `Future`, `async`, `await`, JSON çözümleme, model sınıfı, servis sınıfı ve `FutureBuilder` kullanımı ele alındı.
 

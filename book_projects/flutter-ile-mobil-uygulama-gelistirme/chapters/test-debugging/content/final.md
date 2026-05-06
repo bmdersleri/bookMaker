@@ -1,3 +1,12 @@
+---
+chapter_id: test-debugging
+chapter_no: 14
+title: "Test ve Debugging"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 14 — Test ve Debugging
 
 ## Bölümün Amacı
@@ -13,7 +22,7 @@ Bu bölüm sonunda öğrenci:
 - Basit bir widget için widget test mantığını kavrayabilir.
 - Test edilebilir kod yazmanın önemini açıklayabilir.
 
-## 14.1. Debugging Nedir?
+## Debugging Nedir?
 
 Debugging, uygulamadaki hataları bulma, nedenlerini anlama ve düzeltme sürecidir. Flutter’da debugging için konsol çıktıları, breakpoint, inspector, hot reload, hot restart ve DevTools gibi araçlar kullanılabilir.
 
@@ -21,7 +30,7 @@ Debugging, uygulamadaki hataları bulma, nedenlerini anlama ve düzeltme süreci
 **Dikkat:** Debugging yalnızca hata çıktısını okumak değildir. Hatanın hangi veri, hangi state ve hangi kullanıcı akışıyla oluştuğunu sistematik olarak incelemek gerekir.
 :::
 
-## 14.2. `debugPrint` Kullanımı
+## `debugPrint` Kullanımı
 
 ```yaml
 CODE_META:
@@ -92,7 +101,7 @@ class _DebugPrintSayfasiState extends State<DebugPrintSayfasi> {
 }
 ```
 
-## 14.3. Test Edilebilir Kod Yazmak
+## Test Edilebilir Kod Yazmak
 
 Test yazmayı kolaylaştırmak için iş mantığı mümkün olduğunca widget kodundan ayrılmalıdır.
 
@@ -154,7 +163,7 @@ class PuanUygulamasi extends StatelessWidget {
 }
 ```
 
-## 14.4. Unit Test Mantığı
+## Unit Test Mantığı
 
 Unit test, küçük bir fonksiyonun veya sınıfın beklenen sonucu üretip üretmediğini sınar.
 
@@ -195,7 +204,7 @@ void main() {
 }
 ```
 
-## 14.5. Widget Test Mantığı
+## Widget Test Mantığı
 
 Widget test, bir widget’ın ekranda beklenen metni, butonu veya davranışı üretip üretmediğini sınar.
 
@@ -232,13 +241,26 @@ void main() {
 }
 ```
 
-## 14.6. Flutter DevTools
+## Flutter DevTools
 
 Flutter DevTools; performans, widget ağacı, memory, network ve logging gibi alanlarda inceleme yapmaya yardımcı olur. Özellikle karmaşık arayüzlerde widget inspector ve performance sekmeleri önemlidir.
 
-## 14.7. Mini Uygulama: Test Edilebilir Görev Sayacı
+## Mini Uygulama: Test Edilebilir Görev Sayacı
 
 [SCREENSHOT:b14_01_test_edilebilir_gorev_sayaci]
+
+<!-- SCREENSHOT_META
+id: b14_01_test_edilebilir_gorev_sayaci
+chapter_id: chapter_14
+title: "Test Edilebilir Gorev Sayaci"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/test-debugging/b14_01_test_edilebilir_gorev_sayaci"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b14_01_test_edilebilir_gorev_sayaci.png
+caption: "Test Edilebilir Gorev Sayaci ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -336,11 +358,11 @@ class _GorevSayaciUygulamasiState extends State<GorevSayaciUygulamasi> {
 }
 ```
 
-## 14.8. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 “Test Edilebilir Puan Hesaplayıcı” uygulaması geliştiriniz. Puan hesaplama iş mantığı ayrı sınıfta olmalı, en az üç unit test senaryosu yazılmalı ve arayüzde test edilebilir bir sonuç gösterilmelidir.
 
-## 14.9. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -351,7 +373,7 @@ class _GorevSayaciUygulamasiState extends State<GorevSayaciUygulamasi> {
 | DevTools farkındalığı | 10 | Araçların kullanım amacı açıklanmıştır |
 | Kod okunabilirliği | 20 | Sınıflar ve testler düzenlidir |
 
-## 14.10. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde debugging, `debugPrint`, test edilebilir kod, unit test, widget test, `flutter_test`, `expect` ve Flutter DevTools kavramları ele alındı.
 

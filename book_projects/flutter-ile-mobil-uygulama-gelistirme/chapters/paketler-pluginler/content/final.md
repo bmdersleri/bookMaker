@@ -1,10 +1,19 @@
+---
+chapter_id: paketler-pluginler
+chapter_no: 10
+title: "Paketler ve Plugin Kullanımı"
+artifact_type: chapter
+artifact_version: project-based
+language: tr
+---
+
 # Bölüm 12 — Paketler ve Plugin Kullanımı
 
 ## Bölümün Amacı
 
 Bu bölümde Flutter ekosisteminde paket ve plugin kullanımı ele alınmaktadır. Gerçek uygulamalarda her işlevi sıfırdan yazmak yerine güvenilir paketlerden yararlanmak gerekir. HTTP isteği göndermek, yerel veri saklamak, kamera kullanmak, konum almak, ikon paketi eklemek veya grafik çizmek gibi birçok işlev paketler aracılığıyla sağlanır.
 
-## 12.1. Package ve Plugin
+## Package ve Plugin
 
 Paket, Flutter veya Dart projelerine eklenebilen yeniden kullanılabilir kod birimidir. Plugin ise genellikle platforma özgü işlevlere erişim sağlayan pakettir. Kamera, konum, dosya sistemi, bildirimler ve sensörler gibi cihaz özelliklerine erişmek için plugin kullanılabilir.
 
@@ -17,11 +26,11 @@ Paket, Flutter veya Dart projelerine eklenebilen yeniden kullanılabilir kod bir
 **Dikkat:** Her plugin platform permission veya ek yapılandırma gerektirebilir. Sadece dependency eklemek çoğu zaman yeterli olmayabilir.
 :::
 
-## 12.2. `pub.dev` Üzerinden Paket Seçimi
+## `pub.dev` Üzerinden Paket Seçimi
 
 Paket seçerken güncellik, Flutter sürümüyle uyumluluk, lisans, dokümantasyon, örnek kod, bakım durumu, platform desteği ve güvenilirlik incelenmelidir.
 
-## 12.3. `pubspec.yaml` Dosyasına Dependency Ekleme
+## `pubspec.yaml` Dosyasına Dependency Ekleme
 
 ```yaml
 dependencies:
@@ -36,7 +45,7 @@ Paket eklendikten sonra şu komut çalıştırılır:
 flutter pub get
 ```
 
-## 12.4. Paket Import Etme
+## Paket Import Etme
 
 ```dart
 import 'package:http/http.dart' as http;
@@ -44,7 +53,7 @@ import 'package:http/http.dart' as http;
 
 Bu kullanımda `as http`, isim çakışmalarını azaltmak ve kodun okunabilirliğini artırmak için tercih edilir.
 
-## 12.5. Harici Paket Olmadan Paket Mantığını Simüle Etme
+## Harici Paket Olmadan Paket Mantığını Simüle Etme
 
 ```yaml
 CODE_META:
@@ -96,7 +105,7 @@ class PaketMantigiUygulamasi extends StatelessWidget {
 }
 ```
 
-## 12.6. HTTP Paketi Kullanım Şeması
+## HTTP Paketi Kullanım Şeması
 
 ```yaml
 CODE_META:
@@ -128,15 +137,28 @@ class ApiServisi {
 }
 ```
 
-## 12.7. Platform İzinleri ve Version Yönetimi
+## Platform İzinleri ve Version Yönetimi
 
 Bazı pluginler Android veya iOS tarafında izin gerektirir. Android tarafında izinler çoğunlukla `AndroidManifest.xml`, iOS tarafında ise `Info.plist` içinde tanımlanır.
 
 Paket version yönetimi yapılırken changelog okunmalı, breaking changes kontrol edilmeli ve testler çalıştırılmalıdır.
 
-## 12.8. Mini Uygulama: Paket Bilgi Kartları
+## Mini Uygulama: Paket Bilgi Kartları
 
 [SCREENSHOT:b12_01_paket_bilgi_kartlari]
+
+<!-- SCREENSHOT_META
+id: b12_01_paket_bilgi_kartlari
+chapter_id: chapter_10
+title: "Paket Bilgi Kartlari"
+kind: browser_page
+url: "http://127.0.0.1:5173/__book__/paketler-pluginler/b12_01_paket_bilgi_kartlari"
+viewport: 1440x900
+wait_for: "networkidle"
+output_file: assets/auto/screenshots/b12_01_paket_bilgi_kartlari.png
+caption: "Paket Bilgi Kartlari ekran görüntüsü."
+validation_mode: capture
+-->
 
 ```yaml
 CODE_META:
@@ -232,11 +254,11 @@ class PaketBilgiSayfasi extends StatelessWidget {
 }
 ```
 
-## 12.9. Laboratuvar Görevi
+## Laboratuvar Görevi
 
 “Paket Değerlendirme Paneli” adlı uygulama geliştiriniz. Öğrenci en az beş package/plugin kriterini kartlar halinde göstermeli; her kartta başlık, açıklama ve ikon bulunmalıdır. Ayrıca `pubspec.yaml`, dependencies, import, version, permission ve `pub.dev` seçimi kavramları açıklanmalıdır.
 
-## 12.10. Değerlendirme Rubriği
+## Değerlendirme Rubriği
 
 | Ölçüt | Puan | Açıklama |
 |---|---:|---|
@@ -247,7 +269,7 @@ class PaketBilgiSayfasi extends StatelessWidget {
 | Platform farkındalığı | 10 | Permission ve platform yapılandırması düşünülmüştür |
 | Kod okunabilirliği | 15 | Model ve listeleme yapısı düzenlidir |
 
-## 12.11. Bölüm Özeti
+## Bölüm Özeti
 
 Bu bölümde Flutter package ve plugin kavramları, `pub.dev`, `pubspec.yaml`, dependencies, import kullanımı, platform permission, version yönetimi ve paket seçimi kriterleri ele alındı.
 
