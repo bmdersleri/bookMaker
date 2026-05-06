@@ -4,42 +4,14 @@ from __future__ import annotations
 import re
 
 from bookmaker.chapter.parser import MetaBlock, ParsedChapter
+from bookmaker.chapter.validation_modes import (
+    CODE_KINDS,
+    CODE_TEST_MODES,
+    QR_POLICIES,
+    VALIDATION_MODES,
+)
 from bookmaker.core.ids import new_issue_id
 from bookmaker.models.quality import Issue, IssueLocation, Severity
-
-_ALLOWED_VALIDATION_MODES = {
-    "runnable",
-    "compile_only",
-    "analyze_only",
-    "test_only",
-    "review_only",
-    "skip",
-    "render",
-    "capture",
-    "screenshot_only",
-}
-
-_ALLOWED_CODE_TESTS = {
-    "compile",
-    "run",
-    "run_assert",
-    "compile_run",
-    "compile_run_assert",
-    "dart_analyze",
-    "dart_test",
-    "dart_format_check",
-    "flutter_analyze",
-    "flutter_test",
-    "widget_test",
-    "integration_test",
-    "screenshot_only",
-    "review_only",
-    "skip",
-    "none",
-}
-
-_ALLOWED_QR_POLICIES = {"none", "source", "page", "single", "dual"}
-_ALLOWED_CODE_KINDS = {"example", "application", "snippet", "broken_example", "fixed_example"}
 
 
 def _line_number(text: str, offset: int) -> int:
@@ -246,7 +218,7 @@ def _validate_code_meta(text: str, blocks: list[MetaBlock], issues: list[Issue],
             )
 
         mode = data.get("validation_mode", "")
-        if mode and mode not in _ALLOWED_VALIDATION_MODES:
+        if mode and mode not in VALIDATION_MODES:
             _add(
                 issues,
                 "error",
@@ -257,15 +229,15 @@ def _validate_code_meta(text: str, blocks: list[MetaBlock], issues: list[Issue],
             )
 
         test = data.get("test", "")
-        if test and test not in _ALLOWED_CODE_TESTS:
+        if test and test not in CODE_TEST_MODES:
             _add(issues, "error", "code.test_unknown", f"Bilinmeyen test modu: {test}", file, block.line)
 
         kind = data.get("kind", "")
-        if kind and kind not in _ALLOWED_CODE_KINDS:
+        if kind and kind not in CODE_KINDS:
             _add(issues, "warning", "code.kind_unknown", f"Bilinmeyen code kind: {kind}", file, block.line)
 
         qr_policy = data.get("qr_policy", "")
-        if qr_policy and qr_policy not in _ALLOWED_QR_POLICIES:
+        if qr_policy and qr_policy not in QR_POLICIES:
             _add(
                 issues,
                 "error",

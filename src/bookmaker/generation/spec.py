@@ -55,9 +55,11 @@ Aşağıdaki başlıklarla bir PLAN hazırla. SADECE PLAN, kod veya diyagram YAZ
 
 4. **SÖZLÜK** — 10-15 terim adı listele (tanım yazma, sadece terimleri listele)
 
-5. **DEĞERLENDİRME** — 5-10 D/Y sorusu konusu + 5-10 Boşluk Doldurma sorusu konusu belirle (çoktan seçmeli YOK, açık uçlu YOK)
+5. **DEĞERLENDİRME** — 5-10 D/Y sorusu konusu + 5-10 Boşluk Doldurma sorusu
+   konusu belirle (çoktan seçmeli YOK, açık uçlu YOK)
 
-6. **ALIŞTIRMALAR** — 2-3 alıştırma konusu ve zorluk seviyesi (konuyu tarif et, kodu sonra yazacağız)
+6. **ALIŞTIRMALAR** — 2-3 alıştırma konusu ve zorluk seviyesi
+   (konuyu tarif et, kodu sonra yazacağız)
 
 7. **SIK YAPILAN HATALAR** — 3-5 hata konusu başlığı (hatanın ne olduğunu 1 cümleyle söyle)
 
@@ -122,7 +124,8 @@ Toplam bölüm uzunluğu 6000-8000 kelime arası olsun.
 Yazım kuralları:
 - H1 = bölüm başlığı, H2 = ana bölümler, H3 = alt bölümler
 - Kod yazmaya uygun H2/H3 altında ```java örneği ver
-  (Kod ZORUNLU DEĞİL: yol haritası, öğrenme çıktıları, ön bilgi, özet, sözlük, sorular, rubrik, kaynaklar, köprü)
+  (Kod ZORUNLU DEĞİL: yol haritası, öğrenme çıktıları, ön bilgi,
+   özet, sözlük, sorular, rubrik, kaynaklar, köprü)
 - Değişken isimleri anlamlı Türkçe, her kodda 3+ yorum satırı, // Çıktı: ... gösterimi
 - Bölüm sonunda: Özet, Sözlük, Sorular, Alıştırmalar, Hatalar
 - Spesifikasyonda DİYAGRAMLAR bölümü varsa, HER diyagramı ```mermaid kod bloğu olarak üret

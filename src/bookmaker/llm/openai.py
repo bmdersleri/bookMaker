@@ -522,7 +522,10 @@ class OpenAICompatibleClient(LLMClient):
             continue_messages = [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
-                {"role": "assistant", "content": content[-3000:] if len(content) > 3000 else content},
+                {
+                    "role": "assistant",
+                    "content": content[-3000:] if len(content) > 3000 else content,
+                },
                 {"role": "user", "content": continue_user},
             ]
 

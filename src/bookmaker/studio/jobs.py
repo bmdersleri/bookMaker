@@ -160,7 +160,6 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     from bookmaker.generation.spec import (
         build_seed_from_spec_prompt,
         build_spec_prompt,
-        build_spec_validation_prompt,
         generate_spec,
         validate_spec,
     )
@@ -206,11 +205,11 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     # STEP 2: VALIDATE
     progress("validate", "running")
     t0 = time.time()
-    vp = build_spec_validation_prompt(spec, title)
     try:
         validation = validate_spec(gen.client, spec, title)
         vnotes = validation.get("notes", "") if isinstance(validation, dict) else str(validation)
-        progress("validate", "done", f"{validation.get('status', '?') if isinstance(validation, dict) else 'OK'}, {time.time()-t0:.1f}s")
+        validate_status = validation.get("status", "?") if isinstance(validation, dict) else "OK"
+        progress("validate", "done", f"{validate_status}, {time.time() - t0:.1f}s")
         (GEN_DIR / "step0_validation.md").write_text(str(vnotes), encoding="utf-8")
     except Exception as e:
         progress("validate", "done", f"atlandi: {e}")
@@ -237,7 +236,7 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     t0 = time.time()
     sections = extract_sections(normalized)
     headings = [s["heading"] for s in sections if s["heading"] != "__title__"]
-    ctx_lines = [l for l in normalized.splitlines() if not l.startswith("---")]
+    ctx_lines = [line for line in normalized.splitlines() if not line.startswith("---")]
     context = "\n".join(ctx_lines[:20])
 
     builders: dict = {
@@ -278,7 +277,8 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
             except Exception as e:
                 append_log(job_id, f"  enrich/{etype}: HATA - {e}")
 
-    progress("enrich", "done", f"{len(enrich_parts)}/{len(pending_types)} tamam, {time.time()-t0:.1f}s")
+    enrich_status = f"{len(enrich_parts)}/{len(pending_types)} tamam, {time.time() - t0:.1f}s"
+    progress("enrich", "done", enrich_status)
 
     # STEP 6: ASSEMBLE
     progress("assemble", "running")
