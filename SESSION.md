@@ -9,15 +9,15 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 ## ŞU AN
 
 ```text
-Aktif Faz       : MIGRATION.md - FAZ 4 Bölüm Validasyonu / profile-aware test mode altyapısı
-Son Oturum      : 2026-05-06 - Codex manifest-based validator profile refactor
+Aktif Faz       : MIGRATION.md - FAZ 5 Studio ve Servis Katmanı
+Son Oturum      : 2026-05-06 - Codex FAZ 5 Studio project-based wizard geçişi
 Repo            : D:\bookMaker_clean
 Önceki Repo     : D:\bookMaker_Deepseek  # artık geliştirme için kullanılmamalı
 Branch          : feat/chapter-validator-profile-modes
 Base            : local main üzerindeki ad348a0 + origin/main üzerindeki 4e9a4e8
 Remote          : origin
-Son Kod Commit  : 59b99ed Resolve validator profile from project manifest
-Durum           : FAZ 4 Adım 4 tamamlandı; validator profile bilgisi manifestten taşınıyor
+Son Kod Commit  : 1d07f32 Align Studio wizard with project manifests
+Durum           : FAZ 4 tamamlandı; FAZ 5 başladı, Studio wizard/project selector project-based manifest akışına hizalandı
 Dikkat          : Repo kökünde geçici *.ps1 dosyası varsa commit'e alınmamalı
 ```
 
@@ -375,11 +375,127 @@ Commit:
 
 ---
 
+### 7. Codex Skill ve Plugin Hazırlığı
+
+Proje için repo-local Codex skill ve plugin dosyaları hazırlandı:
+
+```text
+.codex/skills/bookmaker-dev
+.codex/skills/bookmaker-project-manifests
+.codex/skills/bookmaker-chapter-validator
+.agents/plugins/marketplace.json
+plugins/bookmaker-dev
+plugins/bookmaker-project-manifests
+plugins/bookmaker-chapter-validator
+```
+
+Doğrulama:
+
+```text
+quick_validate.py bookmaker-dev
+Sonuç: PASS
+
+quick_validate.py bookmaker-project-manifests
+Sonuç: PASS
+
+quick_validate.py bookmaker-chapter-validator
+Sonuç: PASS
+
+git diff --check
+Sonuç: PASS
+```
+
+Commit:
+
+```text
+30c0cd0 Add BookMaker Codex skills and plugins
+```
+
+Push:
+
+```text
+origin/feat/chapter-validator-profile-modes
+```
+
+---
+
+### 8. FAZ 5 / Adım 1 - Studio Wizard Project-based Yapıya Hizalandı
+
+FAZ 4 tamamlandıktan sonra FAZ 5'e geçildi. Bu çalışma alanında Studio servis
+ayrımının büyük ölçüde mevcut olduğu doğrulandı:
+
+```text
+book_service.py
+chapter_service.py
+prompt_service.py
+generation_service.py
+observer_service.py
+pipeline_service.py
+manifest_service.py facade
+```
+
+İlk FAZ 5 kod adımı olarak Studio'nun legacy proje oluşturma ve proje seçme
+varsayımları project-based yapıya taşındı:
+
+- `/api/projects` artık `book_profile.yaml` yerine `book_manifest.yaml` olan projeleri listeler.
+- `/api/active-book` başlık/alias bilgisini `book_manifest.yaml` üzerinden döndürür.
+- Studio wizard artık yeni kitap oluştururken legacy `book_profile.yaml`, `book_architecture.yaml`, `approved/`, `draft_versions/`, `seed/`, `outline_versions/` üretmez.
+- Wizard çıktısı project-based dizinleri üretir:
+  - `book_manifest.yaml`
+  - `pipeline_state.yaml`
+  - `prompts/default_chapter.md`
+  - `prompts/default_review.md`
+  - `chapters/<alias>/chapter_manifest.yaml`
+  - `chapters/<alias>/prompt.md`
+  - `chapters/<alias>/content/draft.md`
+  - `chapters/<alias>/content/final.md`
+  - `chapters/<alias>/content/revisions/`
+  - `exports/`
+  - `logs/`
+- Aktif kitap bir proje kökü ise wizard yeni projeyi yanlışlıkla nested
+  `active_project/book_projects/` altına yazmaz; parent `book_projects`
+  workspace'ini kullanır.
+- Studio UI wizard özetindeki oluşturulacak dosya listesi yeni yapıya göre güncellendi.
+
+Yeni test kapsamı:
+
+- `/api/projects` yalnız `book_manifest.yaml` bulunan projeleri listeler.
+- `/api/active-book` manifest alias/title değerlerini döndürür.
+- `wizard_service.create_book(...)` project-based workspace üretir ve legacy dosyaları üretmez.
+- Aktif kitap proje kökü olduğunda wizard yeni projeyi parent `book_projects` altına oluşturur.
+
+Doğrulama:
+
+```text
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 207 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+
+git diff --check
+Sonuç: PASS
+```
+
+Commit:
+
+```text
+1d07f32 Align Studio wizard with project manifests
+```
+
+---
+
 ## Mevcut Commit Zinciri
 
 Beklenen son log yaklaşık olarak:
 
 ```text
+1d07f32 Align Studio wizard with project manifests
+30c0cd0 Add BookMaker Codex skills and plugins
+caf7d33 Update session notes for manifest profile refactor
 59b99ed Resolve validator profile from project manifest
 056a63d Apply profile-aware test mode validation
 020635a Remove unused import from studio app test
@@ -410,7 +526,7 @@ uv run ruff check src/ tests/
 Sonuç: PASS
 
 uv run pytest tests/ -q --tb=short
-Sonuç: 204 passed, 1 PytestCacheWarning
+Sonuç: 207 passed, 1 PytestCacheWarning
 
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
 Sonuç: skor 100, karar pass, hata 0, uyarı 0
@@ -470,21 +586,26 @@ _validate_code_meta(..., profile=None)
 resolve_validation_profile_from_manifest(...)
 ```
 
+### FAZ 5 / Adım 1 - Studio Wizard Project-based Yapı
+
+Tamamlandı. Studio proje seçici ve wizard artık project-based manifest
+varsayımlarıyla çalışıyor; legacy kitap üretim dosyaları yeni wizard akışında
+üretilmiyor.
+
 ---
 
 ## Alternatif Sonraki Hedefler
 
-FAZ 4 Adım 4 tamamlandıktan sonra:
+FAZ 5 devam hedefleri:
 
 ```text
-1. Profile bilgisini pipeline_state.yaml içine yazmak gerekip gerekmediğini değerlendir.
-2. CODE_META language alanı ile profile test mode uyumluluğunu ayrı warning/error olarak ekle.
-3. Flutter/Dart test mode mapping için adapter altyapısına hazırlık yap.
-4. `bookmaker check chapter` komutunun profile bilgisini nasıl alacağını netleştir.
-5. FAZ 5 Studio servis katmanı çalışmasına geri dön:
-   - Studio UI prompt endpoint entegrasyonu
-   - job/worker sınırları
-   - observer/review servis sınırları
+1. Studio generation/job worker'ın build/generation varsayımlarını project-based logs/content yapısına taşı.
+2. quality_service/build_service/export_service içinde kalan legacy approved/build path varsayımlarını ayıkla.
+3. Studio UI prompt endpoint entegrasyonunu görünür düzenleme akışına bağla.
+4. observer_service'i review üretimi ve logs/reviews yazımı için genişlet.
+5. manifest_service facade kullanımını azaltıp app.py route'larını servis sınırlarına göre sadeleştir.
+6. Profile bilgisini pipeline_state.yaml içine yazmak gerekip gerekmediğini değerlendir.
+7. CODE_META language alanı ile profile test mode uyumluluğunu ayrı warning/error olarak ekle.
 ```
 
 ---
@@ -539,7 +660,9 @@ BookMaker project-based architecture sonrası FAZ 4 validator refactor üzerinde
 Repo: D:\bookMaker_clean
 Branch: feat/chapter-validator-profile-modes
 Son commit: 056a63d Apply profile-aware test mode validation
-Güncel commit: 59b99ed Resolve validator profile from project manifest
+FAZ 4 güncel commit: 59b99ed Resolve validator profile from project manifest
+Skill/plugin commit: 30c0cd0 Add BookMaker Codex skills and plugins
+FAZ 5 güncel commit: 1d07f32 Align Studio wizard with project manifests
 
 Tamamlananlar:
 - Ruff cleanup
@@ -547,13 +670,15 @@ Tamamlananlar:
 - profile-aware helper fonksiyonları
 - validator içinde profile-aware test mode kontrolü
 - manifest tabanlı explicit profile taşıma
-- test kapsamı: 204 passed
+- Codex skill/plugin dosyaları
+- Studio wizard/project selector project-based manifest yapıya taşındı
+- test kapsamı: 207 passed
 - Flutter kitap validasyonu: 100/pass
 
 Sıradaki:
-- FAZ 4 sonrası kalan profil/pipeline değerlendirmeleri
-- CODE_META language alanı ile profile test mode uyumluluğu için ayrı kontrol ihtiyacını değerlendirmek
-- `bookmaker check chapter` için manifest/profile davranışını dokümante etmek
+- FAZ 5 devam: Studio generation/job worker path varsayımlarını project-based yapıya taşı
+- FAZ 5 devam: quality/build/export servislerindeki legacy path varsayımlarını azalt
+- FAZ 5 devam: prompt/review UI akışlarını servis endpoint'lerine bağla
 ```
 
 ---

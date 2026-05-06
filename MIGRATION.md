@@ -210,7 +210,26 @@ Studio servisleri yeni mimariye göre bölünmelidir:
 | `observer_service.py` | Gözlemci LLM review |
 | `export_service.py` | Birleştirme + DOCX/PDF export |
 
-Bu faz, CLI temeli stabil olduktan sonra uygulanmalıdır.
+Durum:
+
+```text
+Başladı.
+İlk adım: Studio proje seçici ve wizard project-based manifest yapıya hizalandı.
+```
+
+Tamamlanan ilk işler:
+
+- `/api/projects` ve `/api/active-book` legacy `book_profile.yaml` yerine `book_manifest.yaml` okur.
+- Studio wizard yeni kitap oluştururken project-based workspace üretir.
+- Wizard artık yeni projelerde `book_profile.yaml`, `book_architecture.yaml`, `approved/`, `draft_versions/`, `seed/`, `outline_versions/` oluşturmaz.
+- Aktif kitap bir proje kökü ise yeni kitap parent `book_projects/` workspace altında oluşturulur.
+
+Sıradaki işler:
+
+- Generation/job worker çıktısını `build/generation` yerine project-based `content/` ve `logs/` yapısına taşımak.
+- `quality_service`, `build_service`, `export_service` içinde kalan legacy path varsayımlarını azaltmak.
+- Prompt edit UI akışını mevcut `prompt_service` endpoint'lerine bağlamak.
+- `observer_service` için review üretim/yazım sorumluluğunu netleştirmek.
 
 ---
 
