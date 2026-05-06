@@ -59,10 +59,15 @@ def create_book(project_root: str | Path, data: dict) -> dict:
 
         chapter_count = data.get("chapter_count", 23)
         appendix_count = data.get("appendix_count", 4)
-        chapters = data.get("chapters") or _DEFAULT_CHAPTERS[:chapter_count + appendix_count]
+        chapters = _normalize_chapters(
+            data.get("chapters"),
+            chapter_count,
+            appendix_count,
+        )
+        chapter_aliases = [chapter["alias"] for chapter in chapters]
 
         _create_book_manifest(book_dir, data, chapters)
-        _create_pipeline_state(book_dir, chapters)
+        _create_pipeline_state(book_dir, chapter_aliases)
         _create_llm_config(book_dir, data)
         _create_chapter_workspaces(book_dir, chapters)
 
@@ -103,7 +108,29 @@ def _create_directory_structure(book_dir: Path, data: dict) -> None:
         d.mkdir(parents=True, exist_ok=True)
 
 
-def _create_book_manifest(book_dir: Path, data: dict, chapters: list[str]) -> None:
+def _normalize_chapters(
+    chapters: Any,
+    chapter_count: int,
+    appendix_count: int,
+) -> list[dict[str, str]]:
+    """Normalize string/dict chapter plans to alias/title mappings."""
+    chapter_count = int(chapter_count or 23)
+    appendix_count = int(appendix_count or 0)
+    raw_chapters = chapters or _DEFAULT_CHAPTERS[:chapter_count + appendix_count]
+    normalized = []
+    for item in raw_chapters:
+        if isinstance(item, dict):
+            alias = str(item.get("alias") or item.get("chapter_id") or "").strip()
+            title = str(item.get("title") or alias).strip()
+        else:
+            alias = str(item).strip()
+            title = alias
+        if alias:
+            normalized.append({"alias": alias, "title": title or alias})
+    return normalized
+
+
+def _create_book_manifest(book_dir: Path, data: dict, chapters: list[dict[str, str]]) -> None:
     """book_manifest.yaml oluşturur."""
     book_type = data.get("book_type", "ders_kitabi")
     manifest = {
@@ -138,8 +165,13 @@ def _create_book_manifest(book_dir: Path, data: dict, chapters: list[str]) -> No
             "github_code_export": True,
         },
         "chapters": [
-            {"alias": cid, "order": i + 1, "title": cid, "status": "planned"}
-            for i, cid in enumerate(chapters)
+            {
+                "alias": chapter["alias"],
+                "order": i + 1,
+                "title": chapter["title"],
+                "status": "planned",
+            }
+            for i, chapter in enumerate(chapters)
         ],
     }
     with (book_dir / "book_manifest.yaml").open("w", encoding="utf-8") as handle:
@@ -166,20 +198,22 @@ def _create_llm_config(book_dir: Path, data: dict) -> None:
         json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def _create_chapter_workspaces(book_dir: Path, chapters: list[str]) -> None:
+def _create_chapter_workspaces(book_dir: Path, chapters: list[dict[str, str]]) -> None:
     """Project-based bölüm workspace'lerini oluşturur."""
     _write_text(book_dir / "prompts" / "default_chapter.md", "# Varsayılan Bölüm Promptu\n\n")
     _write_text(book_dir / "prompts" / "default_review.md", "# Varsayılan Review Promptu\n\n")
-    for order, cid in enumerate(chapters, start=1):
+    for order, chapter in enumerate(chapters, start=1):
+        cid = chapter["alias"]
+        title = chapter["title"]
         chapter_root = book_dir / "chapters" / cid
         content_dir = chapter_root / "content"
         (content_dir / "revisions").mkdir(parents=True, exist_ok=True)
-        _write_text(chapter_root / "prompt.md", f"# {cid}\n\n")
-        _write_text(content_dir / "draft.md", f"# {cid}\n\n> Taslak henüz üretilmedi.\n")
-        _write_text(content_dir / "final.md", f"# {cid}\n\n> Final henüz onaylanmadı.\n")
+        _write_text(chapter_root / "prompt.md", f"# {title}\n\n")
+        _write_text(content_dir / "draft.md", f"# {title}\n\n> Taslak henüz üretilmedi.\n")
+        _write_text(content_dir / "final.md", f"# {title}\n\n> Final henüz onaylanmadı.\n")
         chapter_manifest = {
             "chapter": {
-                "title": cid,
+                "title": title,
                 "alias": cid,
                 "order": order,
                 "references": [],

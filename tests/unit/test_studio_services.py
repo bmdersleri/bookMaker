@@ -303,6 +303,37 @@ def test_wizard_creates_project_based_book(tmp_path):
     assert state.pipeline.book_alias == "flutter-demo"
 
 
+def test_wizard_accepts_chapter_plan_titles(tmp_path):
+    from bookmaker.manifest.models import BookManifest, ChapterManifest
+    from bookmaker.studio.services import wizard_service
+
+    result = wizard_service.create_book(
+        tmp_path,
+        {
+            "project_name": "custom-plan",
+            "title": "Custom Plan",
+            "author": "Test Yazar",
+            "chapters": [
+                {"alias": "giris", "title": "Giriş"},
+                {"chapter_id": "kurulum", "title": "Kurulum"},
+            ],
+        },
+    )
+
+    assert "error" not in result
+    project = tmp_path / "book_projects" / "custom-plan"
+    manifest = BookManifest.load(project / "book_manifest.yaml")
+    chapter_manifest = ChapterManifest.load(
+        project / "chapters" / "giris" / "chapter_manifest.yaml"
+    )
+    assert manifest.chapter_aliases() == ["giris", "kurulum"]
+    assert manifest.chapters[0].title == "Giriş"
+    assert chapter_manifest.chapter.title == "Giriş"
+    assert (project / "chapters" / "giris" / "content" / "draft.md").read_text(
+        encoding="utf-8"
+    ).startswith("# Giriş")
+
+
 def test_wizard_uses_parent_book_projects_when_active_book_is_project(tmp_path):
     from bookmaker.studio.services import wizard_service
 

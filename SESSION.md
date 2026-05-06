@@ -713,6 +713,62 @@ Not: Studio dev server bu oturumda `http://127.0.0.1:8765` üzerinde
 başlatıldı. `build/studio_config.json` runtime config olarak Flutter kitap
 projesine yönlendirildi; commit'e alınmıyor.
 
+### FAZ 5 / Studio GUI Aşama 2 - Wizard UI Sözleşmesi
+
+Wizard HTML, JS ve `wizard_service.create_book()` aynı üç adımlı sözleşmeye
+hizalandı.
+
+Yapılanlar:
+
+```text
+- Wizard varsayılan proje adı Java odaklı olmaktan çıkarıldı: book-...
+- HTML input sözleşmesi netleştirildi:
+  wiz-project, wiz-title, wiz-author, wiz-audience, wiz-language,
+  wiz-book-type, wiz-chapter-count, wiz-appendix-count, wiz-chapters
+- JS tarafındaki eski 5 adımlı wizard varsayımı 3 adıma indirildi.
+- Eksik nextWiz(), wiz-submit, wizard-error, wiz-lang, wiz-type gibi kırık
+  referanslar kaldırıldı.
+- Bölüm listesi parser'ı `alias: Başlık` formatını destekliyor.
+- wizard_service.create_book() artık geriye uyumlu şekilde string alias listesi
+  yanında `{alias/chapter_id, title}` objelerini de kabul ediyor.
+- Chapter manifest ve içerik başlangıç başlıkları kullanıcı başlığını kullanıyor.
+```
+
+Tarayıcı doğrulaması:
+
+```text
+URL: http://127.0.0.1:8765
+Browser plugin: mevcut değil; normal Playwright kullanıldı.
+Screenshot: C:\Users\ismai\AppData\Local\Temp\bookmaker-wizard-step2.png
+
+Playwright sonucu:
+- wizard modal açıldı
+- proje/title/author dolduruldu
+- bölüm listesi `giris: Giriş`, `kurulum: Kurulum` olarak parse edildi
+- onay adımı özeti proje/title/author değerlerini gösterdi
+- son buton etiketi: Kitabi Olustur
+- console errors/warnings: []
+```
+
+Doğrulama:
+
+```text
+node --check src/bookmaker/studio/static/app.js
+Sonuç: PASS
+
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/unit/test_studio_app.py tests/unit/test_studio_services.py -q --tb=short
+Sonuç: 33 passed, 1 PytestCacheWarning
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 209 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+```
+
 ---
 
 ## Alternatif Sonraki Hedefler

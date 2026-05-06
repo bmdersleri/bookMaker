@@ -452,59 +452,74 @@ function setActiveBook(path,el) {
 
 // =========== WIZARD ===========
 var wizStep=1,wizChapters=[];
-function openWizard(){wizStep=1;document.getElementById('wizard-overlay').classList.remove('hidden');updateWizard();document.getElementById('wiz-project').value='java-'+Date.now().toString(36);}
+function openWizard(){
+  wizStep=1;
+  wizChapters=[];
+  document.getElementById('wizard-overlay').classList.remove('hidden');
+  document.getElementById('wiz-project').value='book-'+Date.now().toString(36);
+  document.getElementById('wiz-title').value='';
+  document.getElementById('wiz-author').value='';
+  document.getElementById('wiz-chapters').value='';
+  document.getElementById('wiz-plan-table').innerHTML='';
+  updateWizard();
+}
 function closeWizard(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('wizard-overlay').classList.add('hidden');}
 
 function updateWizard(){
   document.querySelectorAll('.wiz-step').forEach(function(s){s.classList.toggle('active',parseInt(s.dataset.step)===wizStep);});
   document.querySelectorAll('.wiz-panel').forEach(function(p){p.classList.toggle('hidden',parseInt(p.dataset.step)!==wizStep);});
   document.getElementById('wiz-prev').style.display=wizStep>1?'':'none';
-  document.getElementById('wiz-next').style.display=wizStep<5?'':'none';
-  document.getElementById('wiz-submit').classList.toggle('hidden',wizStep!==5);
-  document.getElementById('wiz-error').classList.add('hidden');
+  document.getElementById('wiz-next').textContent=wizStep===3?'Kitabi Olustur':'Ilerle';
+  setWizardError('');
+  if(wizStep===3) updateSummary();
+}
+function setWizardError(message){
+  var err=document.getElementById('wiz-err');
+  if(!err) return;
+  err.textContent=message||'';
+  err.classList.toggle('hidden',!message);
 }
 function validateStep(n){
-  var err=document.getElementById('wizard-error');
   if(n===1){
-    if(!document.getElementById('wiz-project').value.trim()){err.textContent='Proje adi gerekli';err.classList.remove('hidden');return false;}
-    if(!document.getElementById('wiz-title').value.trim()){err.textContent='Kitap adi gerekli';err.classList.remove('hidden');return false;}
-    if(!document.getElementById('wiz-author').value.trim()){err.textContent='Yazar gerekli';err.classList.remove('hidden');return false;}
+    if(!document.getElementById('wiz-project').value.trim()){setWizardError('Proje adi gerekli');return false;}
+    if(!document.getElementById('wiz-title').value.trim()){setWizardError('Kitap adi gerekli');return false;}
+    if(!document.getElementById('wiz-author').value.trim()){setWizardError('Yazar gerekli');return false;}
   }
   if(n===2){
-    if(!wizChapters.length){err.textContent='En az 1 bolum ekleyin';err.classList.remove('hidden');return false;}
+    parseWizardChapters();
+    if(!wizChapters.length){setWizardError('En az 1 bolum ekleyin');return false;}
   }
   return true;
 }
-function nextStep(){
+function nextWiz(){
   if(!validateStep(wizStep)) return;
-  if(wizStep===5){submitWizard();return;}
-  if(wizStep===4) updateSummary();
+  if(wizStep===3){submitWizard();return;}
   wizStep++;updateWizard();
 }
 function prevStep(){if(wizStep>1){wizStep--;updateWizard();}}
 function wizValidate(n){validateStep(n);}
+function nextStep(){ nextWiz(); }
 
-function generatePlan(){
-  var topic=document.getElementById('wiz-topic').value.trim();
-  if(!topic){showToast('Konu girin','error');return;}
-  var el=document.getElementById('wiz-plan-table');
-  el.innerHTML='<span class="spinner"></span> LLM plan olusturuyor...';
-  fetch('/api/wizard/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-    topic:topic,chapter_count:parseInt(document.getElementById('wiz-chapter-count').value)||23,
-    appendix_count:parseInt(document.getElementById('wiz-appendix-count').value)||4
-  })}).then(function(r){return r.json();}).then(function(d){
-    if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
-    wizChapters=d.chapters;
-    renderPlanTable();
-    showToast(d.count+' bolum planlandi','success');
-  }).catch(function(e){el.innerHTML='<div class="message error">'+e.message+'</div>';});
+function parseWizardChapters(){
+  var raw=document.getElementById('wiz-chapters').value.split(/\r?\n/);
+  wizChapters=[];
+  raw.forEach(function(line){
+    var text=line.trim();
+    if(!text) return;
+    var parts=text.split(':');
+    var alias=parts.shift().trim();
+    var title=(parts.join(':').trim()||alias);
+    if(alias) wizChapters.push({alias:alias,chapter_id:alias,title:title,type:'core'});
+  });
+  return wizChapters;
 }
 function initManualPlan(){
   var count=parseInt(document.getElementById('wiz-chapter-count').value)||23;
   var appendix=parseInt(document.getElementById('wiz-appendix-count').value)||4;
   wizChapters=[];
-  for(var i=1;i<=count;i++) wizChapters.push({chapter_id:'bolum-'+String(i).padStart(2,'0'),title:'Bolum '+i,type:'core'});
-  for(var i=0;i<appendix;i++) wizChapters.push({chapter_id:'ek-'+'abcd'[i],title:'Ek '+'ABCD'[i],type:'appendix'});
+  for(var i=1;i<=count;i++) wizChapters.push({alias:'bolum-'+String(i).padStart(2,'0'),chapter_id:'bolum-'+String(i).padStart(2,'0'),title:'Bolum '+i,type:'core'});
+  for(var j=0;j<appendix;j++) wizChapters.push({alias:'ek-'+'abcdefghijklmnop'[j],chapter_id:'ek-'+'abcdefghijklmnop'[j],title:'Ek '+String.fromCharCode(65+j),type:'appendix'});
+  document.getElementById('wiz-chapters').value=wizChapters.map(function(ch){return ch.alias+': '+ch.title;}).join('\n');
   renderPlanTable();
   showToast(count+appendix+' bolum olusturuldu','success');
 }
@@ -512,12 +527,15 @@ function renderPlanTable(){
   var el=document.getElementById('wiz-plan-table');
   if(!wizChapters.length){el.innerHTML='<div class="message info">Plan bos</div>';return;}
   el.innerHTML='<table><thead><tr><th>ID</th><th>Baslik</th><th>Tur</th><th></th></tr></thead><tbody>'+
-    wizChapters.map(function(ch,i){return '<tr><td><code>'+escHtml(ch.chapter_id)+'</code></td><td><input type="text" value="'+escHtml(ch.title||'')+'" style="width:100%;border:none;border-bottom:1px solid var(--border);padding:2px 4px;font-size:.82rem" onchange="wizChapters['+i+'].title=this.value"></td><td>'+ch.type+'</td><td><button class="btn btn-sm danger" onclick="wizChapters.splice('+i+',1);renderPlanTable()">X</button></td></tr>';}).join('')+
+    wizChapters.map(function(ch,i){return '<tr><td><code>'+escHtml(ch.alias||ch.chapter_id)+'</code></td><td><input type="text" value="'+escHtml(ch.title||'')+'" style="width:100%;border:none;border-bottom:1px solid var(--border);padding:2px 4px;font-size:.82rem" onchange="wizChapters['+i+'].title=this.value;syncWizardChapterText()"></td><td>'+ch.type+'</td><td><button class="btn btn-sm danger" onclick="wizChapters.splice('+i+',1);syncWizardChapterText();renderPlanTable()">X</button></td></tr>';}).join('')+
     '</tbody></table>';
+}
+function syncWizardChapterText(){
+  document.getElementById('wiz-chapters').value=wizChapters.map(function(ch){return (ch.alias||ch.chapter_id)+': '+(ch.title||ch.alias||ch.chapter_id);}).join('\n');
 }
 function updateSummary(){
   var el=document.getElementById('wiz-summary');
-  if(!wizChapters.length) initManualPlan();
+  parseWizardChapters();
   var core=wizChapters.filter(function(c){return c.type==='core';}).length;
   var appx=wizChapters.filter(function(c){return c.type!=='core';}).length;
   el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">'+
@@ -528,25 +546,27 @@ function updateSummary(){
     '<div style="font-size:.82rem;color:var(--muted)">Olusturulacak dosyalar:<br>book_manifest.yaml, pipeline_state.yaml, prompts/, chapters/&lt;alias&gt;/chapter_manifest.yaml, content/draft.md, content/final.md</div>';
 }
 async function submitWizard(){
-  var btn=document.getElementById('wiz-submit');btn.disabled=true;btn.textContent='Olusturuluyor...';
+  var btn=document.getElementById('wiz-next');btn.disabled=true;btn.textContent='Olusturuluyor...';
   try{
     var r=await fetch('/api/book/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       project_name:document.getElementById('wiz-project').value.trim(),
       title:document.getElementById('wiz-title').value.trim(),
-      title_en:document.getElementById('wiz-title-en').value.trim(),
       author:document.getElementById('wiz-author').value.trim(),
-      language:document.getElementById('wiz-lang').value,
-      book_type:document.getElementById('wiz-type').value,
-      chapter_count:parseInt(document.getElementById('wiz-chapter-count').value)||23,
-      appendix_count:parseInt(document.getElementById('wiz-appendix-count').value)||4,
-      chapters:wizChapters.map(function(ch){return ch.chapter_id;})
+      audience:document.getElementById('wiz-audience').value,
+      language:document.getElementById('wiz-language').value,
+      book_type:document.getElementById('wiz-book-type').value,
+      chapter_count:parseInt(document.getElementById('wiz-chapter-count').value)||5,
+      appendix_count:parseInt(document.getElementById('wiz-appendix-count').value)||0,
+      chapters:wizChapters.map(function(ch){return {alias:ch.alias||ch.chapter_id,title:ch.title||ch.alias||ch.chapter_id};})
     })});
     var d=await r.json();
-    if(d.error){showToast(d.error,'error');btn.disabled=false;btn.textContent='Kitabi Olustur';return;}
+    if(d.error){showToast(d.error,'error');setWizardError(d.error);btn.disabled=false;btn.textContent='Kitabi Olustur';return;}
     showToast('Kitap olusturuldu: '+d.title,'success');
     closeWizard();
-    refreshAll();
-  }catch(e){showToast('Hata: '+e.message,'error');btn.disabled=false;btn.textContent='Kitabi Olustur';}
+    await loadBookSelector();
+    await refreshAll();
+  }catch(e){showToast('Hata: '+e.message,'error');setWizardError(e.message);}
+  finally{btn.disabled=false;btn.textContent='Kitabi Olustur';}
 }
 
 function stepBadgeClass(s) { return {'approved':'success','full_text_pasted':'success','enriched':'info','seed':'info','outline':'warning','planned':'neutral'}[s]||'neutral'; }

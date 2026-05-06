@@ -155,6 +155,10 @@ def test_index_page() -> None:
     assert 'data-tab="build"' in resp.text
     assert 'data-tab="prompts"' in resp.text
     assert 'id="toast-container"' in resp.text
+    assert 'id="wiz-author"' in resp.text
+    assert 'id="wiz-book-type"' in resp.text
+    assert 'id="wiz-chapter-count"' in resp.text
+    assert 'onclick="nextWiz()"' in resp.text
 
 
 def test_api_projects_uses_book_manifest(tmp_path) -> None:
