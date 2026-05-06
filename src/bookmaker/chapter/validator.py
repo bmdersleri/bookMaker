@@ -9,6 +9,7 @@ from bookmaker.chapter.validation_modes import (
     CODE_TEST_MODES,
     QR_POLICIES,
     VALIDATION_MODES,
+    is_allowed_test_mode_for_profile,
 )
 from bookmaker.core.ids import new_issue_id
 from bookmaker.models.quality import Issue, IssueLocation, Severity
@@ -47,6 +48,26 @@ def _bool_value(value: str | None) -> bool | None:
         return True
     if lower == "false":
         return False
+    return None
+
+
+
+def _infer_profile_from_path(file: str) -> str | None:
+    """Dosya yolundan doğrulama profili çıkarır.
+
+    Bu fonksiyon geçiş dönemi için bilinçli olarak muhafazakârdır.
+    Yalnızca açık ipucu varsa profil döndürür. Profil çıkarılamazsa None
+    döner ve validator eski davranışı koruyarak sadece "bilinen test modu"
+    kontrolü yapar.
+    """
+    normalized = file.replace("\\", "/").casefold()
+
+    if "flutter" in normalized or "/dart-" in normalized or "dart-temelleri" in normalized:
+        return "flutter"
+
+    if "java" in normalized or "javanin-temelleri" in normalized:
+        return "java"
+
     return None
 
 
@@ -230,7 +251,25 @@ def _validate_code_meta(text: str, blocks: list[MetaBlock], issues: list[Issue],
 
         test = data.get("test", "")
         if test and test not in CODE_TEST_MODES:
-            _add(issues, "error", "code.test_unknown", f"Bilinmeyen test modu: {test}", file, block.line)
+            _add(
+                issues,
+                "error",
+                "code.test_unknown",
+                f"Bilinmeyen test modu: {test}",
+                file,
+                block.line,
+            )
+        elif test:
+            profile = _infer_profile_from_path(file)
+            if profile and not is_allowed_test_mode_for_profile(test, profile):
+                _add(
+                    issues,
+                    "error",
+                    "code.test_not_allowed_for_profile",
+                    f"Test modu profile uygun değil: {test} ({profile})",
+                    file,
+                    block.line,
+                )
 
         kind = data.get("kind", "")
         if kind and kind not in CODE_KINDS:
