@@ -82,6 +82,35 @@ def test_split_services_project_info_and_pipeline_state(tmp_path):
     assert state["chapters"] == {}
 
 
+def test_book_service_project_info_includes_flutter_profile(tmp_path):
+    root = _create_test_project(tmp_path)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: Flutter Demo\n"
+        "  alias: flutter-ile-mobil-uygulama-gelistirme\n"
+        "  author: Test Yazar\n"
+        "style:\n"
+        "  code_language: dart\n"
+        "  framework: flutter\n"
+        "automation:\n"
+        "  screenshot_required: true\n"
+        "  qr_policy: dual\n"
+        "chapters:\n"
+        "  - alias: giris\n",
+        encoding="utf-8",
+    )
+    from bookmaker.studio.services import book_service
+
+    info = book_service.get_project_info(root)
+
+    assert info["alias"] == "flutter-ile-mobil-uygulama-gelistirme"
+    assert info["profile"] == "flutter"
+    assert info["framework"] == "flutter"
+    assert info["code_language"] == "dart"
+    assert info["screenshot_required"] is True
+    assert info["qr_policy"] == "dual"
+
+
 def test_chapter_service_creates_project_workspace(tmp_path):
     root = _create_test_project(tmp_path)
     from bookmaker.studio.services import chapter_service

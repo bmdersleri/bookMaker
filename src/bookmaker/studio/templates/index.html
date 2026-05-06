@@ -32,6 +32,8 @@
 <div class="stats" id="stats">
   <div class="stat-card"><div class="num" id="stat-chapters">-</div><div class="lbl">Bölüm</div></div>
   <div class="stat-card"><div class="num" id="stat-approved">-</div><div class="lbl">Onaylı</div></div>
+  <div class="stat-card"><div class="num" id="stat-profile">-</div><div class="lbl">Profil</div></div>
+  <div class="stat-card"><div class="num" id="stat-code-language">-</div><div class="lbl">Kod</div></div>
   <div class="stat-card"><div class="num" id="stat-stage">-</div><div class="lbl">Pipeline Aşaması</div></div>
   <div class="stat-card"><div class="num" id="stat-llm">-</div><div class="lbl">LLM</div></div>
 </div>
@@ -49,6 +51,9 @@
 <div class="tabs">
   <button class="tab active" data-tab="chapters" onclick="switchTab('chapters')">Bölümler</button>
   <button class="tab" data-tab="pipeline" onclick="switchTab('pipeline')">Pipeline</button>
+  <button class="tab" data-tab="quality" onclick="switchTab('quality')">Kalite</button>
+  <button class="tab" data-tab="build" onclick="switchTab('build')">Build/Export</button>
+  <button class="tab" data-tab="prompts" onclick="switchTab('prompts')">Promptlar</button>
   <button class="tab" data-tab="config" onclick="switchTab('config')">Yapılandırma</button>
 </div>
 
@@ -154,6 +159,27 @@
         <button class="btn primary" onclick="saveLlmConfig()">💾 Kaydet</button>
       </div>
       <div id="llm-current" style="margin-top:1rem;font-size:1rem;color:var(--muted)">Yukleniyor...</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Prompts -->
+<div class="tab-content" id="tab-prompts">
+  <div class="card">
+    <div class="card-header"><h2>Promptlar</h2><span class="badge" id="prompt-path">-</span></div>
+    <div class="card-body">
+      <div class="filter-bar">
+        <select id="prompt-scope" onchange="updatePromptControls()">
+          <option value="default_chapter">Varsayılan Bölüm</option>
+          <option value="default_review">Varsayılan Review</option>
+          <option value="chapter">Bölüm Promptu</option>
+        </select>
+        <select id="prompt-chapter" class="hidden"></select>
+        <button class="btn outline" onclick="loadSelectedPrompt()">Yükle</button>
+        <button class="btn primary" id="prompt-save" onclick="saveSelectedPrompt()" disabled>Kaydet</button>
+      </div>
+      <div id="prompt-message" class="message info hidden"></div>
+      <textarea id="prompt-editor" rows="18" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:.95rem;font-family:Consolas,monospace;line-height:1.45" oninput="markPromptDirty()" placeholder="Prompt yükleniyor..."></textarea>
     </div>
   </div>
 </div>
@@ -288,6 +314,8 @@
     </div>
   </div>
 </div>
+
+<div id="toast-container" class="toast-container"></div>
 
 <!-- Modal -->
 <div class="modal-overlay hidden" id="modal-overlay" onclick="closeModal(event)">

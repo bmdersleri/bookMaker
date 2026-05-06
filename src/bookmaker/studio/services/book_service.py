@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from bookmaker.chapter.validation_modes import resolve_validation_profile_from_manifest
 from bookmaker.manifest.manager import ManifestManager
 from bookmaker.manifest.models import BookManifest, ChapterPipelineEntry, ChapterState
 from bookmaker.manifest.pipeline import PipelineManager
@@ -42,8 +43,14 @@ def get_project_info(project_root: str | Path) -> dict:
 
     return {
         "title": manifest.book.title or "(isimsiz)",
+        "alias": manifest.book.alias or root.name,
         "chapters": len(manifest.chapters),
         "author": manifest.book.author or "-",
+        "profile": resolve_validation_profile_from_manifest(manifest),
+        "framework": manifest.style.framework or "",
+        "code_language": manifest.style.code_language or "",
+        "screenshot_required": manifest.automation.screenshot_required,
+        "qr_policy": manifest.automation.qr_policy,
         "stage": pipeline_state.current_stage or pipeline_state.pipeline.global_state,
         "stage_counts": stages,
     }

@@ -65,6 +65,10 @@ async function loadProject() {
     const sc = projectData.stage_counts || {};
     el = document.getElementById('stat-approved');
     if (el) el.textContent = (sc.approved || 0) + '/' + (projectData.chapters || 0);
+    el = document.getElementById('stat-profile');
+    if (el) el.textContent = projectData.profile || projectData.framework || '\u2014';
+    el = document.getElementById('stat-code-language');
+    if (el) el.textContent = projectData.code_language || '\u2014';
     el = document.getElementById('stat-stage');
     if (el) el.textContent = projectData.stage || '\u2014';
   } catch(e) { console.error('loadProject:', e); }
@@ -379,6 +383,21 @@ function switchTab(name) {
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   var at=document.querySelector('.tab[data-tab="'+name+'"]'); if(at) at.classList.add('active');
   var ac=document.getElementById('tab-'+name); if(ac) ac.classList.add('active');
+  var loaders = {
+    chapters: loadChapters,
+    pipeline: async function() { await loadPipelineState(); await loadJobs(); },
+    config: loadLlmStatus,
+    quality: loadQualityTab,
+    build: initBuildPanel,
+    prompts: loadPromptTab
+  };
+  var loader = loaders[name];
+  if (loader) {
+    Promise.resolve(loader()).catch(function(e) {
+      console.error('Tab load failed:', name, e);
+      showToast(name + ' sekmesi yuklenemedi: ' + e.message, 'error');
+    });
+  }
 }
 function showModal(title,bodyHtml) {
   document.getElementById('modal-title').textContent=title;
@@ -539,9 +558,6 @@ function showToast(msg,type) {
   c.appendChild(el); setTimeout(function(){if(el.parentElement)el.remove();},4000);
 }
 
-// BOOT
-
-
 // =========== QUALITY PANEL ===========
 let qualityData = [];
 let qualitySortKey = 'score', qualitySortDir = 'desc';
@@ -637,6 +653,130 @@ async function runSearch() {
     }
     if(data.length>20) r.innerHTML+='<div class="message info">... ve '+(data.length-20)+' sonuc daha</div>';
   } catch(e){r.innerHTML='<div class="message error">Hata: '+e.message+'</div>';}
+}
+
+// =========== PROMPT PANEL ===========
+let currentPromptEndpoint = null;
+let promptDirty = false;
+
+function selectedPromptEndpoint() {
+  var scope = document.getElementById('prompt-scope')?.value || 'default_chapter';
+  if (scope === 'default_review') return '/api/prompts/default/review';
+  if (scope === 'chapter') {
+    var chapter = document.getElementById('prompt-chapter')?.value;
+    return chapter ? '/api/prompts/chapter/' + encodeURIComponent(chapter) : null;
+  }
+  return '/api/prompts/default/chapter';
+}
+
+async function loadPromptTab() {
+  await populatePromptChapters();
+  updatePromptControls();
+  if (!currentPromptEndpoint) await loadSelectedPrompt();
+}
+
+async function populatePromptChapters() {
+  var sel = document.getElementById('prompt-chapter');
+  if (!sel) return;
+  var source = chapters;
+  if (!source.length) {
+    try {
+      var r = await fetch('/api/chapters');
+      source = await r.json();
+    } catch(e) {
+      source = [];
+    }
+  }
+  sel.innerHTML = source.map(function(ch) {
+    var title = ch.title ? ' - ' + ch.title : '';
+    return '<option value="' + escHtml(ch.chapter_id) + '">' +
+      escHtml(ch.chapter_id + title) + '</option>';
+  }).join('');
+}
+
+function updatePromptControls() {
+  var scope = document.getElementById('prompt-scope')?.value || 'default_chapter';
+  var chapter = document.getElementById('prompt-chapter');
+  if (chapter) chapter.classList.toggle('hidden', scope !== 'chapter');
+}
+
+function showPromptMessage(message, type) {
+  var el = document.getElementById('prompt-message');
+  if (!el) return;
+  el.className = 'message ' + (type || 'info');
+  el.textContent = message;
+  el.classList.remove('hidden');
+}
+
+function markPromptDirty() {
+  promptDirty = true;
+  var btn = document.getElementById('prompt-save');
+  if (btn && currentPromptEndpoint) btn.disabled = false;
+}
+
+async function loadSelectedPrompt() {
+  var endpoint = selectedPromptEndpoint();
+  var editor = document.getElementById('prompt-editor');
+  var path = document.getElementById('prompt-path');
+  var save = document.getElementById('prompt-save');
+  if (!endpoint || !editor) {
+    showPromptMessage('Once bir bolum secin.', 'warning');
+    return;
+  }
+  editor.disabled = true;
+  showPromptMessage('Prompt yukleniyor...', 'info');
+  try {
+    var r = await fetch(endpoint);
+    var data = await r.json();
+    if (data.error) {
+      showPromptMessage(data.error, 'error');
+      return;
+    }
+    currentPromptEndpoint = endpoint;
+    editor.value = data.content || '';
+    editor.disabled = false;
+    promptDirty = false;
+    if (save) save.disabled = true;
+    if (path) path.textContent = data.path || '-';
+    showPromptMessage('Prompt yuklendi.', 'success');
+  } catch(e) {
+    showPromptMessage('Prompt yuklenemedi: ' + e.message, 'error');
+  } finally {
+    editor.disabled = false;
+  }
+}
+
+async function saveSelectedPrompt() {
+  var endpoint = currentPromptEndpoint || selectedPromptEndpoint();
+  var editor = document.getElementById('prompt-editor');
+  var save = document.getElementById('prompt-save');
+  if (!endpoint || !editor) {
+    showPromptMessage('Kaydedilecek prompt yok.', 'warning');
+    return;
+  }
+  if (save) save.disabled = true;
+  try {
+    var r = await fetch(endpoint, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({content: editor.value})
+    });
+    var data = await r.json();
+    if (data.error) {
+      showPromptMessage(data.error, 'error');
+      if (save) save.disabled = false;
+      return;
+    }
+    promptDirty = false;
+    if (document.getElementById('prompt-path')) {
+      document.getElementById('prompt-path').textContent = data.path || '-';
+    }
+    showPromptMessage('Prompt kaydedildi.', 'success');
+    showToast('Prompt kaydedildi', 'success');
+  } catch(e) {
+    showPromptMessage('Prompt kaydedilemedi: ' + e.message, 'error');
+    if (save) save.disabled = false;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', init);
@@ -764,16 +904,4 @@ async function runGlossary() {
     el.innerHTML='<div class="message success">Glossary: '+d.terms+' terim -> '+escHtml(d.path)+'</div>';
   } catch(e) { el.innerHTML='<div class="message error">'+e.message+'</div>'; }
 }
-
-// Tab switch override
-var _origSwitchTab = switchTab;
-switchTab = function(name) {
-  if (name === 'build') initBuildPanel();
-  _origSwitchTab(name);
-};
-
-// =========== PAGE START ===========
-document.addEventListener('DOMContentLoaded', function() {
-  init().catch(function(e) { console.error('Init failed:', e); });
-});
 

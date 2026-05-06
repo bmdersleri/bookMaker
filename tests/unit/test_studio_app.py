@@ -151,6 +151,10 @@ def test_index_page() -> None:
     assert resp.status_code == 200
     assert "bookMaker" in resp.text
     assert "Bölüm" in resp.text
+    assert 'data-tab="quality"' in resp.text
+    assert 'data-tab="build"' in resp.text
+    assert 'data-tab="prompts"' in resp.text
+    assert 'id="toast-container"' in resp.text
 
 
 def test_api_projects_uses_book_manifest(tmp_path) -> None:

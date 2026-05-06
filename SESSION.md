@@ -654,6 +654,65 @@ Doğrulama sonucu:
 207 passed in 17.15s
 ```
 
+### FAZ 5 / Studio GUI Aşama 1 - Sekmeler ve Flutter Dashboard
+
+İlk GUI geliştirme paketi başlatıldı ve tamamlandı.
+
+Yapılanlar:
+
+```text
+- Üst navigasyona Kalite, Build/Export ve Promptlar sekmeleri eklendi.
+- switchTab() tek loader akışına çekildi.
+- Eski build sekmesi override'u ve ikinci DOMContentLoaded init çağrısı kaldırıldı.
+- Flutter proje dashboard'ında profil ve kod dili görünür hale getirildi.
+- book_service.get_project_info() manifestten alias, profile, framework, code_language,
+  screenshot_required ve qr_policy alanlarını döndürüyor.
+- Promptlar sekmesine mevcut prompt endpointlerini kullanan temel yükle/kaydet editörü eklendi.
+- Toast container HTML'e eklendi; showToast artık görünür bildirim üretebiliyor.
+```
+
+Flutter kitap görsel doğrulaması:
+
+```text
+URL: http://127.0.0.1:8765
+Browser plugin: mevcut değil; normal Playwright kullanıldı.
+Screenshot: C:\Users\ismai\AppData\Local\Temp\bookmaker-studio-step1.png
+
+Playwright sonucu:
+- page title: bookMaker Studio
+- not blank: true
+- tabs: Bölümler, Pipeline, Kalite, Build/Export, Promptlar, Yapılandırma
+- dashboard: 16 / flutter / dart
+- quality tab active: true
+- build tab active: true
+- prompts tab active: true
+- prompt loaded: true
+- console errors/warnings: []
+```
+
+Doğrulama:
+
+```text
+node --check src/bookmaker/studio/static/app.js
+Sonuç: PASS
+
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/unit/test_studio_app.py tests/unit/test_studio_services.py -q --tb=short
+Sonuç: 32 passed, 1 PytestCacheWarning
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 208 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+```
+
+Not: Studio dev server bu oturumda `http://127.0.0.1:8765` üzerinde
+başlatıldı. `build/studio_config.json` runtime config olarak Flutter kitap
+projesine yönlendirildi; commit'e alınmıyor.
+
 ---
 
 ## Alternatif Sonraki Hedefler
