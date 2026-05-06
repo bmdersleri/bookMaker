@@ -81,6 +81,7 @@ PROFILE_ALIASES: dict[str, str] = {
     "java": "java",
     "java-temelleri": "java",
     "java_fundamentals": "java",
+    "javanin-temelleri": "java",
     "flutter": "flutter",
     "flutter-mobil": "flutter",
     "flutter_mobile": "flutter",
@@ -109,6 +110,61 @@ def normalize_profile(profile: str | None) -> str:
 
     normalized = profile.strip().lower().replace(" ", "-")
     return PROFILE_ALIASES.get(normalized, "generic")
+
+
+def _get_manifest_value(manifest: object, path: tuple[str, ...]) -> object | None:
+    current: object = manifest
+    for key in path:
+        if isinstance(current, dict):
+            current = current.get(key)
+        else:
+            current = getattr(current, key, None)
+        if current is None:
+            return None
+    return current
+
+
+def _profile_from_candidate(value: object) -> str | None:
+    if not isinstance(value, str):
+        return None
+    normalized = normalize_profile(value)
+    if normalized != "generic":
+        return normalized
+    if value.strip().lower().replace(" ", "-") in {"generic", "default"}:
+        return normalized
+    return None
+
+
+def resolve_validation_profile_from_manifest(manifest: object | dict | None) -> str | None:
+    """Manifest benzeri nesneden doğrulama profilini çözer.
+
+    Bilinen alias'lar kanonik profile normalize edilir. Bilinmeyen veya boş
+    manifest değerleri None döndürür; böylece validator explicit profil
+    taşınmadığında eski path fallback davranışını koruyabilir.
+    """
+    if manifest is None:
+        return None
+
+    candidate_paths = (
+        ("book", "profile"),
+        ("book", "type"),
+        ("book", "alias"),
+        ("book", "preset"),
+        ("technical_profile",),
+        ("framework",),
+        ("preset",),
+        ("language", "primary_language"),
+        ("language",),
+        ("style", "framework"),
+        ("style", "code_language"),
+    )
+    for path in candidate_paths:
+        value = _get_manifest_value(manifest, path)
+        profile = _profile_from_candidate(value)
+        if profile:
+            return profile
+
+    return None
 
 
 def get_allowed_test_modes(profile: str | None) -> frozenset[str]:

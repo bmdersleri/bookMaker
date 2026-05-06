@@ -210,7 +210,13 @@ def _validate_placeholders(text: str, issues: list[Issue], file: str, final_mode
             )
 
 
-def _validate_code_meta(text: str, blocks: list[MetaBlock], issues: list[Issue], file: str) -> None:
+def _validate_code_meta(
+    text: str,
+    blocks: list[MetaBlock],
+    issues: list[Issue],
+    file: str,
+    profile: str | None = None,
+) -> None:
     code_ids: dict[str, int] = {}
 
     for block in [b for b in blocks if b.kind == "CODE_META"]:
@@ -260,13 +266,16 @@ def _validate_code_meta(text: str, blocks: list[MetaBlock], issues: list[Issue],
                 block.line,
             )
         elif test:
-            profile = _infer_profile_from_path(file)
-            if profile and not is_allowed_test_mode_for_profile(test, profile):
+            effective_profile = profile if profile is not None else _infer_profile_from_path(file)
+            if (
+                effective_profile is not None
+                and not is_allowed_test_mode_for_profile(test, effective_profile)
+            ):
                 _add(
                     issues,
                     "error",
                     "code.test_not_allowed_for_profile",
-                    f"Test modu profile uygun değil: {test} ({profile})",
+                    f"Test modu profile uygun değil: {test} ({effective_profile})",
                     file,
                     block.line,
                 )
@@ -415,7 +424,11 @@ def _validate_screenshots(text: str, blocks: list[MetaBlock], issues: list[Issue
             )
 
 
-def validate(chapter: ParsedChapter, final_mode: bool = False) -> list[Issue]:
+def validate(
+    chapter: ParsedChapter,
+    final_mode: bool = False,
+    profile: str | None = None,
+) -> list[Issue]:
     """Bölümü doğrular ve Issue listesi döndürür."""
     issues: list[Issue] = []
     text = chapter.text
@@ -426,7 +439,7 @@ def validate(chapter: ParsedChapter, final_mode: bool = False) -> list[Issue]:
     _validate_forbidden_markers(text, issues, file_str)
     _validate_placeholders(text, issues, file_str, final_mode)
     _validate_section_meta(blocks, issues, file_str)
-    _validate_code_meta(text, blocks, issues, file_str)
+    _validate_code_meta(text, blocks, issues, file_str, profile=profile)
     _validate_mermaid(text, blocks, issues, file_str)
     _validate_screenshots(text, blocks, issues, file_str)
 

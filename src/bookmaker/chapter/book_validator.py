@@ -14,6 +14,7 @@ from ruamel.yaml import YAML
 
 from bookmaker.chapter.parser import parse
 from bookmaker.chapter.scoring import make_report as make_chapter_report
+from bookmaker.chapter.validation_modes import resolve_validation_profile_from_manifest
 from bookmaker.chapter.validator import validate as validate_chapter
 from bookmaker.core.ids import new_issue_id
 from bookmaker.models.quality import Issue, IssueLocation, QualityReport, Severity
@@ -322,7 +323,11 @@ def _validate_chapter_files(
     return (draft if draft.exists() else None, final if final.exists() else None)
 
 
-def _run_content_validation(path: Path | None, alias: str) -> QualityReport | None:
+def _run_content_validation(
+    path: Path | None,
+    alias: str,
+    profile: str | None = None,
+) -> QualityReport | None:
     if path is None:
         return None
     try:
@@ -336,7 +341,7 @@ def _run_content_validation(path: Path | None, alias: str) -> QualityReport | No
 
     try:
         parsed = parse(path)
-        issues = validate_chapter(parsed)
+        issues = validate_chapter(parsed, profile=profile)
         return make_chapter_report(alias, issues)
     except Exception as exc:
         issue = Issue(
@@ -355,6 +360,7 @@ def validate_book(project_root: Path, images_dir: Path | None = None) -> BookChe
     all_issues: list[Issue] = []
 
     manifest = _validate_project_root(project_root, all_issues)
+    validation_profile = resolve_validation_profile_from_manifest(manifest)
     aliases = _chapter_aliases(manifest)
     valid_aliases = set(aliases)
 
@@ -371,7 +377,7 @@ def validate_book(project_root: Path, images_dir: Path | None = None) -> BookChe
         _validate_chapter_manifest(project_root, alias, order, valid_aliases, all_issues)
         draft, final = _validate_chapter_files(project_root, alias, all_issues)
         content_for_validation = final if final and final.stat().st_size > 80 else draft
-        report = _run_content_validation(content_for_validation, alias)
+        report = _run_content_validation(content_for_validation, alias, validation_profile)
         if report is not None:
             chapter_reports[alias] = report
         if draft and draft.exists():

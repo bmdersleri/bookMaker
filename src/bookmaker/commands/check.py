@@ -29,14 +29,26 @@ def check_chapter_command(
     """Bölüm Markdown dosyasını doğrular ve kalite raporu üretir."""
     from bookmaker.chapter.parser import parse
     from bookmaker.chapter.scoring import make_report
+    from bookmaker.chapter.validation_modes import resolve_validation_profile_from_manifest
     from bookmaker.chapter.validator import validate
+    from bookmaker.manifest.models import BookManifest
 
     if not path.exists():
         console.print(f"[red]Dosya bulunamadı: {path}[/red]")
         raise typer.Exit(1)
 
+    project_root = _find_project_root(path)
+    profile = None
+    if project_root:
+        try:
+            profile = resolve_validation_profile_from_manifest(
+                BookManifest.load(project_root / "book_manifest.yaml")
+            )
+        except Exception:
+            profile = None
+
     parsed = parse(path)
-    issues = validate(parsed, final_mode=final)
+    issues = validate(parsed, final_mode=final, profile=profile)
     chapter_id = parsed.frontmatter.get("chapter_id") or parsed.frontmatter.get("chapter-alias")
     if not chapter_id:
         chapter_id = path.parent.parent.name if path.parent.name == "content" else path.stem
@@ -69,7 +81,6 @@ def check_chapter_command(
         console.print(issue_table)
 
     if json_output:
-        project_root = _find_project_root(path)
         report_dir = (project_root / "logs" / "reviews") if project_root else Path("logs") / "reviews"
         report_dir.mkdir(parents=True, exist_ok=True)
         report_path = report_dir / f"{chapter_id}_quality_report.json"
