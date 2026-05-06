@@ -26,6 +26,16 @@ debug.log
 build/
 !book_projects/*/build/.gitkeep
 *.log
+*.stackdump
+
+# Oturum / ajan girdileri
+CODEX_TASK_PROMPT.md
+
+# Kitap proje runtime raporlari
+book_projects/*/logs/**/*.json
+
+# Ornek/render ciktilari
+sample/mermaid_images/
 
 node_modules/
 
