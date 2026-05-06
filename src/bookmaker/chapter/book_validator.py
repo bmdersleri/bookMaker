@@ -21,6 +21,10 @@ from bookmaker.models.quality import Issue, IssueLocation, QualityReport, Severi
 _yaml = YAML()
 
 
+CHAPTER_ORDER: tuple[str, ...] = ()
+"""Legacy public symbol; project-based validation reads order from book_manifest.yaml."""
+
+
 class BookCheckResult:
     """Kitap validasyonu sonucu."""
 

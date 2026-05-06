@@ -41,6 +41,26 @@ def find_project_root(
     return None
 
 
+def chapter_dir(project_root: str | Path, chapter_id: str) -> Path:
+    """Legacy helper for old chapter workspaces."""
+    return Path(project_root) / "chapters" / chapter_id
+
+
+def approved_path(project_root: str | Path, chapter_id: str, version: str = "v001") -> Path:
+    """Legacy helper for approved chapter markdown."""
+    return chapter_dir(project_root, chapter_id) / "approved" / f"{chapter_id}_{version}.md"
+
+
+def version_log_path(project_root: str | Path, chapter_id: str) -> Path:
+    """Legacy helper for chapter version event logs."""
+    return chapter_dir(project_root, chapter_id) / "version_log.jsonl"
+
+
+def active_version_path(project_root: str | Path, chapter_id: str) -> Path:
+    """Legacy helper for active version state."""
+    return chapter_dir(project_root, chapter_id) / "active_version.yaml"
+
+
 @dataclass(frozen=True)
 class ChapterPaths:
     """Convention-based paths for one chapter."""
