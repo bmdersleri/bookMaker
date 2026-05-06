@@ -51,7 +51,9 @@ def create_book(project_root: str | Path, data: dict) -> dict:
         _create_directory_structure(book_dir, data)
 
         # Dosyaları oluştur
-        chapters = data.get("chapters") or _DEFAULT_CHAPTERS[:data.get("chapter_count", 23) + data.get("appendix_count", 4)]
+        chapter_count = data.get("chapter_count", 23)
+        appendix_count = data.get("appendix_count", 4)
+        chapters = data.get("chapters") or _DEFAULT_CHAPTERS[:chapter_count + appendix_count]
 
         _create_book_profile(book_dir, data)
         _create_book_manifest(book_dir, data, chapters)

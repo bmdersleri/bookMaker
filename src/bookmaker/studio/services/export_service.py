@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-import json
 import re
-import shutil
 import subprocess
 import zipfile
 from datetime import datetime
 from pathlib import Path
-from typing import Any
 
 from bookmaker.manifest.manager import ManifestManager
 

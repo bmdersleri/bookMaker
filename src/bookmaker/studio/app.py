@@ -2,23 +2,29 @@
 
 from __future__ import annotations
 
-import time
 from pathlib import Path
 
 try:
-    from fastapi import FastAPI, WebSocket
+    from fastapi import FastAPI
     from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import HTMLResponse, FileResponse
+    from fastapi.responses import FileResponse, HTMLResponse
     from fastapi.staticfiles import StaticFiles
 except ImportError:
     FastAPI = None  # type: ignore
 
-from bookmaker.studio.jobs import (create_job, list_jobs, get_job,
-                                    load_jobs, save_jobs, cancel_job)
-from bookmaker.studio.services import (assemble_service, build_service,
-                                       export_service, llm_service,
-                                       manifest_service, pipeline_service,
-                                       quality_service, wizard_service)
+from bookmaker.studio.services import (
+    assemble_service,
+    book_service,
+    build_service,
+    chapter_service,
+    export_service,
+    generation_service,
+    llm_service,
+    pipeline_service,
+    prompt_service,
+    quality_service,
+    wizard_service,
+)
 
 app: FastAPI | None = None
 
@@ -179,39 +185,60 @@ if FastAPI is not None:
 
     @app.get("/api/project")
     async def api_project() -> dict:
-        return manifest_service.get_project_info(get_active_book())
+        return book_service.get_project_info(get_active_book())
 
     @app.get("/api/pipeline-state")
     async def api_pipeline_state() -> dict:
-        return manifest_service.get_pipeline_state(get_active_book())
+        return pipeline_service.get_pipeline_state(get_active_book())
 
     # ================================================================
     # Chapters
     # ================================================================
     @app.get("/api/chapters")
     async def api_chapters() -> list[dict]:
-        return manifest_service.get_chapter_list(get_active_book())
+        return chapter_service.get_chapter_list(get_active_book())
 
     @app.post("/api/chapters")
     async def api_chapter_create(data: dict) -> dict:
-        return manifest_service.add_chapter(
+        return chapter_service.add_chapter(
             get_active_book(), data.get("chapter_id", ""),
             data.get("title", ""), data.get("order"))
 
     @app.put("/api/chapters/{chapter_id}")
     async def api_chapter_update(chapter_id: str, data: dict) -> dict:
-        return manifest_service.update_chapter(
+        return chapter_service.update_chapter(
             get_active_book(), chapter_id, data)
 
     @app.delete("/api/chapters/{chapter_id}")
     async def api_chapter_delete(chapter_id: str) -> dict:
-        return manifest_service.remove_chapter(
+        return chapter_service.remove_chapter(
             get_active_book(), chapter_id)
 
     @app.put("/api/chapters/reorder")
     async def api_chapter_reorder(data: dict) -> dict:
-        return manifest_service.reorder_chapters(
+        return chapter_service.reorder_chapters(
             get_active_book(), data.get("chapter_ids", []))
+
+    # ================================================================
+    # Prompts
+    # ================================================================
+    @app.get("/api/prompts/default/{prompt_type}")
+    async def api_default_prompt_get(prompt_type: str) -> dict:
+        return prompt_service.get_default_prompt(get_active_book(), prompt_type)
+
+    @app.put("/api/prompts/default/{prompt_type}")
+    async def api_default_prompt_save(prompt_type: str, data: dict) -> dict:
+        return prompt_service.save_default_prompt(
+            get_active_book(), data.get("content", ""), prompt_type)
+
+    @app.get("/api/prompts/chapter/{chapter_id}")
+    async def api_chapter_prompt_get(chapter_id: str) -> dict:
+        return prompt_service.get_chapter_prompt(get_active_book(), chapter_id)
+
+    @app.put("/api/prompts/chapter/{chapter_id}")
+    async def api_chapter_prompt_save(chapter_id: str, data: dict) -> dict:
+        return prompt_service.save_chapter_prompt(
+            get_active_book(), chapter_id, data.get("content", ""))
 
     # ================================================================
     # Content & Quality
@@ -341,7 +368,7 @@ if FastAPI is not None:
         cfg = llm_service.get_status(get_active_book())
         if not cfg.get("configured"):
             return {"error": "LLM yapılandırılmamış"}
-        gen = pipeline_service.get_generator(get_active_book())
+        gen = generation_service.get_generator(get_active_book())
         if not gen:
             return {"error": "LLM istemcisi başlatılamadı"}
         plan = wizard_service.generate_llm_plan(
@@ -359,14 +386,14 @@ if FastAPI is not None:
     async def api_generate(chapter_id: str,
                            data: dict | None = None) -> dict:
         """Pipeline isini kuyruga ekler, hemen job_id doner."""
-        from bookmaker.studio.jobs import (create_job, load_jobs,
-                                            save_jobs)
+        from bookmaker.studio.jobs import create_job, load_jobs, save_jobs
+
         cfg = llm_service.get_status(get_active_book())
         if not cfg.get("configured"):
             return {"error": "LLM yapılandırılmamış"}
         d = data or {}
         title = d.get("title") or chapter_id
-        ch_info = pipeline_service.get_chapter_info(
+        ch_info = chapter_service.get_chapter_info(
             get_active_book(), chapter_id)
         params = {
             "title": title,
@@ -401,8 +428,8 @@ if FastAPI is not None:
 
     @app.post("/api/jobs")
     async def api_job_create(data: dict) -> dict:
-        from bookmaker.studio.jobs import (create_job, load_jobs,
-                                            save_jobs)
+        from bookmaker.studio.jobs import create_job, load_jobs, save_jobs
+
         root = get_active_book()
         load_jobs(root)
         job = create_job(
@@ -423,8 +450,10 @@ if FastAPI is not None:
 def run_studio(host: str = "127.0.0.1", port: int = 8765) -> None:
     if app is None:
         raise ImportError("FastAPI kurulu değil")
-    from bookmaker.studio.jobs import start_worker, load_jobs
+    from bookmaker.studio.jobs import load_jobs, start_worker
+
     load_jobs(get_active_book())
     start_worker(get_active_book())
     import uvicorn
+
     uvicorn.run(app, host=host, port=port)

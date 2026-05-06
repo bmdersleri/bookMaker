@@ -118,7 +118,6 @@ def get_book_stats(project_root: str | Path) -> dict:
     total_code = 0
     total_mermaid = 0
     total_tables = 0
-    chapter_stats = []
     word_counts = []
 
     for ch in manifest.chapters:
@@ -251,8 +250,9 @@ def compile_code(project_root: str | Path, chapter_id: str) -> dict:
                                 "class_name": class_name})
             else:
                 # Hata satırlarını parse et
-                error_lines = [l.strip() for l in proc.stderr.splitlines()
-                               if l.strip()][:5]
+                error_lines = [
+                    line.strip() for line in proc.stderr.splitlines() if line.strip()
+                ][:5]
                 results.append({"block": i + 1, "status": "error",
                                 "class_name": class_name,
                                 "errors": error_lines})

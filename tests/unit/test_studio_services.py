@@ -1,5 +1,6 @@
-"""Servis birim testleri — Faz 1 servis mimarisi."""
+"""Servis birim testleri - Faz 1 servis mimarisi."""
 from __future__ import annotations
+
 import json
 from pathlib import Path
 
@@ -57,6 +58,59 @@ def test_manifest_get_project_info(tmp_path):
     assert info["title"] == "Test Kitap"
     assert info["chapters"] == 0
     assert "stage" in info
+
+
+def test_manifest_load_manifest_returns_model(tmp_path):
+    root = _create_test_project(tmp_path)
+    from bookmaker.studio.services import manifest_service
+
+    manifest = manifest_service.load_manifest(root)
+
+    assert manifest.book.title == "Test Kitap"
+
+
+def test_split_services_project_info_and_pipeline_state(tmp_path):
+    root = _create_test_project(tmp_path)
+    from bookmaker.studio.services import book_service, pipeline_service
+
+    info = book_service.get_project_info(root)
+    state = pipeline_service.get_pipeline_state(root)
+
+    assert info["title"] == "Test Kitap"
+    assert info["chapters"] == 0
+    assert state["pipeline_id"] == "test"
+    assert state["chapters"] == {}
+
+
+def test_chapter_service_creates_project_workspace(tmp_path):
+    root = _create_test_project(tmp_path)
+    from bookmaker.studio.services import chapter_service
+
+    result = chapter_service.add_chapter(root, "bolum-02", "Yeni Bolum", 1)
+
+    assert result["chapter_id"] == "bolum-02"
+    assert (root / "chapters" / "bolum-02" / "chapter_manifest.yaml").exists()
+    assert (root / "chapters" / "bolum-02" / "prompt.md").exists()
+    assert (root / "chapters" / "bolum-02" / "content" / "draft.md").exists()
+    assert (root / "chapters" / "bolum-02" / "content" / "final.md").exists()
+    assert (root / "chapters" / "bolum-02" / "content" / "revisions").is_dir()
+
+
+def test_prompt_service_roundtrip(tmp_path):
+    root = _create_test_project(tmp_path)
+    from bookmaker.studio.services import chapter_service, prompt_service
+
+    prompt_service.save_default_prompt(root, "Default prompt", "chapter")
+    default_prompt = prompt_service.get_default_prompt(root, "chapter")
+
+    chapter_service.add_chapter(root, "bolum-02", "Yeni Bolum", 1)
+    prompt_service.save_chapter_prompt(root, "bolum-02", "Chapter prompt")
+    chapter_prompt = prompt_service.get_chapter_prompt(root, "bolum-02")
+
+    assert default_prompt["content"] == "Default prompt"
+    assert default_prompt["path"].replace("\\", "/") == "prompts/default_chapter.md"
+    assert chapter_prompt["content"] == "Chapter prompt"
+    assert chapter_prompt["path"].replace("\\", "/") == "chapters/bolum-02/prompt.md"
 
 
 def test_manifest_add_and_remove_chapter(tmp_path):
@@ -163,8 +217,8 @@ def test_pipeline_get_generator_no_llm(tmp_path):
 
 def test_pipeline_get_chapter_info(tmp_path):
     root = _create_test_project(tmp_path)
-    from bookmaker.studio.services import (manifest_service,
-                                            pipeline_service)
+    from bookmaker.studio.services import manifest_service, pipeline_service
+
     manifest_service.add_chapter(root, "bolum-01", "Test", 1)
     info = pipeline_service.get_chapter_info(root, "bolum-01")
     assert info is not None

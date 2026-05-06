@@ -1,66 +1,89 @@
-"""Pipeline servisi — LLM pipeline başlatma, WebSocket progress."""
+"""Pipeline state service for Studio."""
 
 from __future__ import annotations
 
-import time
 from pathlib import Path
 
-from bookmaker.generation.pipeline import ChapterGenerator
-from bookmaker.llm.config import LLMConfig
+from bookmaker.manifest.models import ChapterPipelineEntry, ChapterState
+from bookmaker.manifest.pipeline import PipelineManager
+from bookmaker.studio.services import chapter_service, generation_service
 
 
-def get_generator(project_root: str | Path) -> ChapterGenerator | None:
-    """ChapterGenerator oluşturur (LLM yoksa None)."""
-    cfg = LLMConfig(Path(project_root).resolve())
-    if not cfg.is_configured():
-        return None
-    gen = ChapterGenerator(Path(project_root).resolve())
-    return gen if gen.is_ready() else None
+def _chapter_state_dict(state) -> dict:
+    if isinstance(state, ChapterPipelineEntry):
+        return {
+            "current_step": state.status.state,
+            "score": state.status.quality_score or 0,
+            "decision": "approved" if state.status.final_approved else "unknown",
+            "error_count": len(state.status.issues),
+            "warning_count": 0,
+        }
+    if isinstance(state, ChapterState):
+        return {
+            "current_step": state.current_step,
+            "score": state.score,
+            "decision": state.decision,
+            "error_count": getattr(state, "error_count", 0),
+            "warning_count": getattr(state, "warning_count", 0),
+        }
+    return {
+        "current_step": "planned",
+        "score": 0,
+        "decision": "unknown",
+        "error_count": 0,
+        "warning_count": 0,
+    }
 
 
-def run_generation(project_root: str | Path, chapter_id: str,
-                   title: str, concepts: list[str] | None = None,
-                   enrich_types: list[str] | None = None,
-                   chapter_no: int | None = None) -> dict:
-    """Pipeline senkron çalıştırır (REST)."""
-    gen = get_generator(project_root)
-    if not gen:
-        return {"error": "LLM yapılandırılmamış"}
+def get_pipeline_state(project_root: str | Path) -> dict:
+    """Return pipeline_state.yaml as the Studio API shape."""
+    state = PipelineManager(Path(project_root).resolve()).load()
+    chapters = state.chapters
+    if isinstance(chapters, dict):
+        chapter_data = {
+            chapter_id: _chapter_state_dict(chapter_state)
+            for chapter_id, chapter_state in chapters.items()
+        }
+    else:
+        chapter_data = {entry.alias: _chapter_state_dict(entry) for entry in chapters}
+    return {
+        "pipeline_id": getattr(state, "pipeline_id", state.pipeline.book_alias),
+        "current_stage": state.current_stage or state.pipeline.global_state,
+        "chapters": chapter_data,
+    }
 
-    t0 = time.time()
-    try:
-        result = gen.generate_chapter_with_spec(
-            chapter_id=chapter_id, title=title,
-            concepts=concepts or [f"{title} ana kavramları"],
-            chapter_no=chapter_no,
-            enrich_types=enrich_types or [
-                "ozet", "sozluk", "soru", "alistirma", "hata", "kopru"],
-        )
-        elapsed = time.time() - t0
-        gen_dir = Path(project_root).resolve() / "build" / "generation"
-        final_path = gen_dir / "step4_final.md"
-        resp = {"chapter_id": chapter_id, "title": title,
-                "elapsed_s": round(elapsed, 1),
-                "spec_words": len(result.get("spec", "").split()),
-                "seed_words": len(result.get("seed", "").split()),
-                "enriched_count": len(result.get("enriched", {})),
-                "final_words": 0, "path": None}
-        if final_path.exists():
-            final_text = final_path.read_text(encoding="utf-8")
-            resp["final_words"] = len(final_text.split())
-            resp["path"] = str(final_path.relative_to(Path(project_root).resolve()))
-        return resp
-    except RuntimeError as e:
-        return {"error": f"Pipeline hatasi: {str(e)[:300]}"}
+
+def update_chapter_state(project_root: str | Path, chapter_id: str, **kwargs) -> dict:
+    """Update one chapter state using the manifest pipeline manager."""
+    manager = PipelineManager(Path(project_root).resolve())
+    state = manager.update_chapter(chapter_id, **kwargs)
+    return {"chapter_id": chapter_id, **_chapter_state_dict(state)}
+
+
+def get_generator(project_root: str | Path):
+    """Compatibility wrapper for generation_service.get_generator."""
+    return generation_service.get_generator(project_root)
+
+
+def run_generation(
+    project_root: str | Path,
+    chapter_id: str,
+    title: str,
+    concepts: list[str] | None = None,
+    enrich_types: list[str] | None = None,
+    chapter_no: int | None = None,
+) -> dict:
+    """Compatibility wrapper for generation_service.run_generation."""
+    return generation_service.run_generation(
+        project_root,
+        chapter_id,
+        title,
+        concepts=concepts,
+        enrich_types=enrich_types,
+        chapter_no=chapter_no,
+    )
 
 
 def get_chapter_info(project_root: str | Path, chapter_id: str) -> dict | None:
-    """Manifest'ten bölüm bilgisini döndürür."""
-    from bookmaker.manifest.manager import ManifestManager
-    mgr = ManifestManager(Path(project_root).resolve())
-    manifest = mgr.load_or_generate()
-    for ch in manifest.chapters:
-        if ch.chapter_id == chapter_id:
-            return {"chapter_id": ch.chapter_id, "title": ch.title,
-                    "order": ch.order, "status": ch.status}
-    return None
+    """Compatibility wrapper for chapter_service.get_chapter_info."""
+    return chapter_service.get_chapter_info(project_root, chapter_id)
