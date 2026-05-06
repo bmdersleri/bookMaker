@@ -4,7 +4,6 @@ book_profile.yaml -> BookConfig ile yapilandirilir."""
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 from bookmaker.build.pipeline import build_chapter
 from bookmaker.core.config import BookConfig, load_config
@@ -16,7 +15,7 @@ from bookmaker.production.qrcode import generate_qr
 def run(
     chapter_path: Path,
     build_root: Path | None = None,
-    config: Optional[BookConfig] = None,
+    config: BookConfig | None = None,
 ) -> dict:
     """Full production pipeline: compile → mermaid → qr → docx.
 

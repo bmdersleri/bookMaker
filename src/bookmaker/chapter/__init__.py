@@ -1,8 +1,8 @@
 """Kitap bölümü için validasyon ve analiz araçları."""
 
 from bookmaker.chapter.book_validator import (
-    BookCheckResult,
     CHAPTER_ORDER,
+    BookCheckResult,
     validate_book,
     validate_book_cli,
 )

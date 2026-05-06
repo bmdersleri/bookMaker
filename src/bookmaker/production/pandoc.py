@@ -11,7 +11,6 @@ from __future__ import annotations
 import re
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 from bookmaker.core.config import BookConfig, load_config
 
@@ -28,7 +27,7 @@ def pandoc_available() -> bool:
 def _render_mermaid_blocks(
     markdown_path: Path,
     image_dir: Path,
-    config: Optional[BookConfig] = None,
+    config: BookConfig | None = None,
     naming: str = "diagram_%03d.png",
 ) -> list[dict]:
     """Markdown'daki Mermaid bloklarini PNG'ye donusturur."""
@@ -89,13 +88,13 @@ def _render_mermaid_blocks(
 def export_docx(
     markdown_path: Path,
     output_path: Path,
-    reference_doc: Optional[Path] = None,
-    lua_filter: Optional[Path] = None,
-    toc: Optional[bool] = None,
-    toc_depth: Optional[int] = None,
-    toc_title: Optional[str] = None,
+    reference_doc: Path | None = None,
+    lua_filter: Path | None = None,
+    toc: bool | None = None,
+    toc_depth: int | None = None,
+    toc_title: str | None = None,
     render_mermaid: bool = True,
-    config: Optional[BookConfig] = None,
+    config: BookConfig | None = None,
 ) -> dict:
     """Markdown dosyasini Pandoc ile DOCX'e donusturur.
 
@@ -198,9 +197,9 @@ def export_docx(
 
 
 def export_all_chapters(
-    project_root: Optional[Path] = None,
-    output_dir: Optional[Path] = None,
-    config: Optional[BookConfig] = None,
+    project_root: Path | None = None,
+    output_dir: Path | None = None,
+    config: BookConfig | None = None,
 ) -> dict[str, dict]:
     """Projedeki tum onaylanmis bolumleri DOCX'e donusturur."""
     if config is None:

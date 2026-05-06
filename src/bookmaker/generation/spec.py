@@ -6,10 +6,7 @@ Bu sayede kod blokları, diyagramlar, sözlük gibi yapılar garantilenmiş olur
 
 from __future__ import annotations
 
-from typing import Optional
-
 from bookmaker.generation.prompts import SYSTEM_AUTHOR
-
 
 # ============================================================
 # SPEC PROMPT
@@ -19,7 +16,7 @@ def build_spec_prompt(
     chapter_title: str,
     concepts: list[str],
     book_context: str = "",
-    chapter_no: Optional[int] = None,
+    chapter_no: int | None = None,
 ) -> str:
     """LLM'e bölüm spesifikasyonu üretmesi için prompt."""
     concepts_str = "\n".join(f"  - {c}" for c in concepts)
@@ -139,7 +136,7 @@ Yazım kuralları:
 # ============================================================
 
 def generate_spec(client, chapter_title: str, concepts: list[str],
-                  book_context: str = "", chapter_no: Optional[int] = None) -> str:
+                  book_context: str = "", chapter_no: int | None = None) -> str:
     """LLM'e bölüm spesifikasyonu ürettirir."""
     user = build_spec_prompt(chapter_title, concepts, book_context, chapter_no)
     print(f"  [SPEC] {chapter_title} planı hazırlanıyor...")
@@ -155,7 +152,7 @@ def validate_spec(client, spec: str, chapter_title: str) -> dict:
         {"status": "PASS"|"REVISION", "notes": "...", "response": "..."}
     """
     user = build_spec_validation_prompt(spec, chapter_title)
-    print(f"  [VALIDATE] Spesifikasyon kontrol ediliyor...")
+    print("  [VALIDATE] Spesifikasyon kontrol ediliyor...")
     result = client.generate_text(SYSTEM_AUTHOR, user)
     status = "PASS" if "PASS" in result.upper() else "REVISION"
     print(f"  [VALIDATE] {status}, {len(result.split())} kelime")

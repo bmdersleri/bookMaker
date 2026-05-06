@@ -140,22 +140,30 @@ def _execute_job(root: Path, job: dict) -> None:
 
 def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> None:
     """ChapterGenerator pipeline'ini adim adim calistirir, progress gunceller."""
+    import concurrent.futures
+
     from bookmaker.generation.pipeline import ChapterGenerator
-    from bookmaker.generation.spec import (
-        generate_spec, validate_spec,
-        build_spec_prompt, build_spec_validation_prompt,
-        build_seed_from_spec_prompt,
-    )
     from bookmaker.generation.postprocess import (
-        normalize, extract_sections, insert_section,
+        extract_sections,
+        insert_section,
+        normalize,
     )
     from bookmaker.generation.prompts import (
         SYSTEM_AUTHOR,
-        build_enrich_summary_prompt, build_enrich_glossary_prompt,
-        build_enrich_questions_prompt, build_enrich_exercises_prompt,
-        build_enrich_errors_prompt, build_enrich_bridge_prompt,
+        build_enrich_bridge_prompt,
+        build_enrich_errors_prompt,
+        build_enrich_exercises_prompt,
+        build_enrich_glossary_prompt,
+        build_enrich_questions_prompt,
+        build_enrich_summary_prompt,
     )
-    import concurrent.futures
+    from bookmaker.generation.spec import (
+        build_seed_from_spec_prompt,
+        build_spec_prompt,
+        build_spec_validation_prompt,
+        generate_spec,
+        validate_spec,
+    )
 
     gen = ChapterGenerator(root)
     if not gen.is_ready():

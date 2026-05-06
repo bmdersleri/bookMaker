@@ -11,12 +11,11 @@ Kullanim:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import yaml
 
 from bookmaker.core.errors import ConfigError
-
 
 # ============================================================
 # VARSAYILAN DEGERLER
@@ -134,7 +133,7 @@ class BookConfig:
                 f"book_profile.yaml bulunamadi: {profile}\n"
                 f"Proje kokunde book_profile.yaml olmali."
             )
-        with open(profile, "r", encoding="utf-8") as f:
+        with open(profile, encoding="utf-8") as f:
             self._raw = yaml.safe_load(f) or {}
 
     def reload(self) -> None:

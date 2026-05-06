@@ -3,7 +3,7 @@ import typer
 from bookmaker import __version__
 from bookmaker.commands.build import build_chapter_command
 from bookmaker.commands.chapter_commands import chapter_app as chapter_typer
-from bookmaker.commands.check import check_chapter_command, check_book_command
+from bookmaker.commands.check import check_book_command, check_chapter_command
 from bookmaker.commands.generate_commands import generate_app as generate_typer
 from bookmaker.commands.github_commands import github_app as github_typer
 from bookmaker.commands.init import init_command

@@ -10,7 +10,6 @@ from __future__ import annotations
 import re
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 from bookmaker.core.config import BookConfig
 
@@ -18,8 +17,8 @@ from bookmaker.core.config import BookConfig
 def render_mermaid(
     code: str,
     output_path: Path,
-    config: Optional[BookConfig] = None,
-    timeout: Optional[int] = None,
+    config: BookConfig | None = None,
+    timeout: int | None = None,
 ) -> dict:
     """Tek bir Mermaid kodunu PNG'ye donusturur.
 
@@ -95,7 +94,7 @@ def extract_mermaid_blocks(text: str) -> list[dict]:
 def render_from_file(
     markdown_path: Path,
     output_dir: Path,
-    config: Optional[BookConfig] = None,
+    config: BookConfig | None = None,
 ) -> list[dict]:
     """Markdown dosyasindaki tum Mermaid bloklarini render eder."""
     text = markdown_path.read_text(encoding="utf-8")

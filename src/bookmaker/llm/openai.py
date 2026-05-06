@@ -71,7 +71,8 @@ class OpenAICompatibleClient(LLMClient):
         """
         if not self._api_log_dir:
             return
-        import json, os
+        import json
+        import os
         from datetime import datetime
         log_dir = os.path.join(self._api_log_dir, "api_logs")
         os.makedirs(log_dir, exist_ok=True)

@@ -15,12 +15,10 @@ from __future__ import annotations
 import re
 import subprocess
 import tempfile
-from pathlib import Path
-from typing import Optional
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from bookmaker.core.config import BookConfig
-
 
 # ============================================================
 # VERI YAPILARI
@@ -42,7 +40,7 @@ class MermaidResult:
     fixed: bool = False
     issues: list[MermaidIssue] = field(default_factory=list)
     status: str = "unknown"
-    path: Optional[str] = None
+    path: str | None = None
     error: str = ""
 
 
@@ -61,7 +59,7 @@ class MermaidValidator:
         (r'(\w+)\s*->(\s*\w)', r'\1 --> \2'),
     ]
 
-    def __init__(self, config: Optional[BookConfig] = None) -> None:
+    def __init__(self, config: BookConfig | None = None) -> None:
         self.config = config
         self.mmdc_cmd = config.mermaid_mmdc_cmd if config else [
             "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
@@ -123,7 +121,7 @@ class MermaidValidator:
     # ----------------------------------------------------------
 
     def compile(self, code: str,
-                output_path: Optional[Path] = None) -> MermaidResult:
+                output_path: Path | None = None) -> MermaidResult:
         """mmdc ile PNG'ye derlemeyi dener. ~5s timeout."""
         if output_path is None:
             with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
@@ -198,7 +196,7 @@ class MermaidValidator:
     # ----------------------------------------------------------
 
     def validate(self, code: str,
-                 output_path: Optional[Path] = None) -> MermaidResult:
+                 output_path: Path | None = None) -> MermaidResult:
         """Syntax -> auto-fix -> compile -> fallback."""
         issues = self.syntax_check(code)
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 from rich.console import Console
@@ -17,8 +17,8 @@ console = Console()
 production_app = typer.Typer(help="Production islemleri.")
 
 
-def _resolve_config(project: Optional[str] = None,
-                    path: Optional[Path] = None) -> BookConfig:
+def _resolve_config(project: str | None = None,
+                    path: Path | None = None) -> BookConfig:
     """Config'i cozumler — path varsa ondan, yoksa proje adindan."""
     try:
         if path:
@@ -125,7 +125,7 @@ def export_to_docx(
 
 @production_app.command("info")
 def show_info(
-    project: Annotated[Optional[str], typer.Option("--project", "-p",
+    project: Annotated[str | None, typer.Option("--project", "-p",
                         help="Proje adi (varsayilan: java-temelleri)")] = None,
 ) -> None:
     """Kitap yapilandirma bilgisini gosterir."""
@@ -180,7 +180,7 @@ def show_info(
 
 @production_app.command("build-all")
 def build_all_chapters(
-    project: Annotated[Optional[str], typer.Option("--project", "-p",
+    project: Annotated[str | None, typer.Option("--project", "-p",
                         help="Proje adi")] = None,
 ) -> None:
     """Tum onaylanmis bolumleri tek tek DOCX'e donusturur."""
@@ -201,11 +201,12 @@ def build_all_chapters(
 
 @production_app.command("build-book")
 def build_book(
-    project: Annotated[Optional[str], typer.Option("--project", "-p",
+    project: Annotated[str | None, typer.Option("--project", "-p",
                         help="Proje adi")] = None,
 ) -> None:
     """Tum bolumleri tek bir DOCX'te birlestirir."""
-    import subprocess, sys
+    import subprocess
+    import sys
 
     config = _resolve_config(project=project)
     if not config:
