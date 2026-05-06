@@ -14,10 +14,11 @@ from __future__ import annotations
 import concurrent.futures
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from bookmaker.authoring.pipeline import AuthoringPipeline
 from bookmaker.core.config import load_config
+from bookmaker.core.errors import ConfigError
 from bookmaker.generation.postprocess import (
     deepen_theory,
     detect_missing_sections,
@@ -26,13 +27,6 @@ from bookmaker.generation.postprocess import (
     insert_section,
     normalize,
     reassemble_from_sections,
-)
-from bookmaker.generation.spec import (
-    build_seed_from_spec_prompt,
-    build_spec_prompt,
-    build_spec_validation_prompt,
-    generate_spec,
-    validate_spec,
 )
 from bookmaker.generation.prompts import (
     SYSTEM_AUTHOR,
@@ -45,8 +39,51 @@ from bookmaker.generation.prompts import (
     build_enrich_summary_prompt,
     build_seed_prompt,
 )
+from bookmaker.generation.spec import (
+    build_seed_from_spec_prompt,
+    build_spec_prompt,
+    build_spec_validation_prompt,
+    generate_spec,
+    validate_spec,
+)
 from bookmaker.llm.config import LLMConfig
 from bookmaker.llm.openai import OpenAICompatibleClient
+
+
+def _fallback_content(key: str, chapter_title: str) -> str:
+    """LLM enrichment çalışmadığında güvenli varsayılan içerik üretir."""
+    fallback_map = {
+        "ozet": (
+            f"{chapter_title} bölümünde işlenen temel kavramlar özetlenir. "
+            "Bu bölüm, öğrencinin ana fikirleri tekrar etmesine yardımcı olur."
+        ),
+        "sozluk": (
+            "**Temel Kavram** — Bölümde açıklanan ana teknik terim.\n"
+            "**Uygulama** — Kavramın çalışan örneklerle gösterilmesi."
+        ),
+        "soru": (
+            "**Soru 1:** Bu bölümün ana amacı nedir?\n"
+            "- Cevap: Bölümdeki temel kavramları anlamak ve uygulamaktır."
+        ),
+        "alistirma": (
+            "**Alıştırma 1: Temel Uygulama**\n"
+            "- Amaç: Bölüm kavramlarını pekiştirmek.\n"
+            "- Görev: Bölümdeki örneği küçük bir değişiklikle yeniden uygulayın.\n"
+            "- İpucu: Önce temel akışı çalıştırın, sonra değişkenleri güncelleyin."
+        ),
+        "hata": (
+            "**Yaygın Hata:** Kavramı ezberleyip uygulama bağlamını kaçırmak.\n"
+            "- Çözüm: Kodu küçük örneklerle çalıştırarak sonucu gözlemleyin."
+        ),
+        "kopru": (
+            "Bu bölümde öğrenilen kavramlar, bir sonraki bölümde daha kapsamlı "
+            "uygulama örnekleri için temel oluşturur."
+        ),
+    }
+    return fallback_map.get(
+        key,
+        f"{chapter_title} için {key} başlığı altında tamamlayıcı içerik eklenmelidir.",
+    )
 
 
 class ChapterGenerator:
@@ -70,9 +107,12 @@ class ChapterGenerator:
 
     def __init__(self, project_root: str | Path) -> None:
         self.root = Path(project_root).resolve()
-        self.config = load_config(start=self.root)
+        try:
+            self.config = load_config(start=self.root)
+        except ConfigError:
+            self.config = None
         self.llm_config = LLMConfig(self.root)
-        self.client: Optional[OpenAICompatibleClient] = None
+        self.client: OpenAICompatibleClient | None = None
         self._init_clients()
 
     def _init_clients(self) -> None:
@@ -87,15 +127,15 @@ class ChapterGenerator:
             **base, timeout=120, api_log_dir=api_log_dir)
 
     def is_ready(self) -> bool:
-        return bool(self.llm_config.is_configured() and self.client)
+        return bool(self.config and self.llm_config.is_configured() and self.client)
 
     # ----------------------------------------------------------
     # ASAMA 1: SEEDING (Pro model)
     # ----------------------------------------------------------
 
     def seed(self, chapter_title: str, concepts: list[str],
-             outline: Optional[str] = None,
-             chapter_no: Optional[int] = None) -> str:
+             outline: str | None = None,
+             chapter_no: int | None = None) -> str:
         """LLM ile serbest bolum icerigi uretir."""
         if not self.client:
             raise RuntimeError("LLM API yapilandirilmamis.")
@@ -127,10 +167,10 @@ class ChapterGenerator:
         return detect_missing_sections(normalized_text)
 
     def enrich(self, normalized_text: str, chapter_title: str,
-               enrich_types: Optional[list[str]] = None,
-               next_chapter: Optional[str] = None,
-               concepts: Optional[list[str]] = None,
-               save_dir: Optional[Path] = None) -> dict[str, str]:
+               enrich_types: list[str] | None = None,
+               next_chapter: str | None = None,
+               concepts: list[str] | None = None,
+               save_dir: Path | None = None) -> dict[str, str]:
         """Eksik bolumleri LLM ile paralel doldurur."""
         if not self.client:
             print("  [WARN] Enrich client yok, fallback kullaniliyor.")
@@ -260,10 +300,10 @@ class ChapterGenerator:
 
     def generate_chapter(
         self, chapter_id: str, title: str, concepts: list[str],
-        outline: Optional[str] = None,
-        chapter_no: Optional[int] = None,
-        enrich_types: Optional[list[str]] = None,
-        next_chapter: Optional[str] = None,
+        outline: str | None = None,
+        chapter_no: int | None = None,
+        enrich_types: list[str] | None = None,
+        next_chapter: str | None = None,
         save: bool = True,
     ) -> dict[str, Any]:
         """Bolum uretimini bastan sona calistirir."""
@@ -344,7 +384,7 @@ class ChapterGenerator:
         Normalize edilmis metni dondurur.
         """
         # STEP 0: SPEC
-        print(f"\n--- ADIM 0: SPEC ---")
+        print("\n--- ADIM 0: SPEC ---")
         spec = generate_spec(self.client, title, concepts,
                              f"Hedef: {self.config.audience}", chapter_no)
         self._save(gen_dir / "step0_spec.md", spec)
@@ -354,7 +394,7 @@ class ChapterGenerator:
         result["spec"] = spec
 
         # STEP 0.5: VALIDATE
-        print(f"\n--- ADIM 0.5: DOGRULAMA ---")
+        print("\n--- ADIM 0.5: DOGRULAMA ---")
         validation = validate_spec(self.client, spec, title)
         self._save(gen_dir / "step0_validation.md", validation["notes"])
         self._save(gen_dir / "prompt0_validation.txt",
@@ -362,7 +402,7 @@ class ChapterGenerator:
         result["validation"] = validation
 
         # STEP 1: SEED
-        print(f"\n--- ADIM 1: SEED ---")
+        print("\n--- ADIM 1: SEED ---")
         seed_prompt = build_seed_from_spec_prompt(spec, title)
         self._save(gen_dir / "prompt1_seed.txt", seed_prompt)
         seed_start = time.time()
@@ -458,7 +498,7 @@ class ChapterGenerator:
         result = {"chapter_id": chapter_id, "title": title, "sections": {}}
 
         # --- STEP 0: SPEC ---
-        print(f"\n--- ADIM 0: SPEC (Parçali) ---")
+        print("\n--- ADIM 0: SPEC (Parçali) ---")
         spec = generate_spec(self.client, title, concepts,
                              f"Hedef: {self.config.audience}", chapter_no)
         self._save(gen_dir / "step0_spec.md", spec)
@@ -504,7 +544,8 @@ class ChapterGenerator:
                 f"Yalnızca '{section_title}' alt bölümünü üret.\n\n"
                 f"İÇERİK DERİNLİĞİ KURALLARI:\n"
                 f"- Her kavramı en az 3-5 paragraf ile derinlemesine açıkla\n"
-                f"- NEDEN var? → NE işe yarar? → NASIL kullanılır? → NE ZAMAN tercih edilir? yapısını kullan\n"
+                f"- NEDEN var? → NE işe yarar? → NASIL kullanılır? → "
+                f"NE ZAMAN tercih edilir? yapısını kullan\n"
                 f"- Günlük hayattan en az 1 analoji ile somutlaştır\n"
                 f"- Benzer kavramlarla karşılaştırma yap\n"
                 f"- Kod örneklerinden sonra satır satır açıklama ekle\n\n"
@@ -537,7 +578,7 @@ class ChapterGenerator:
                 result["sections"][part_id] = {"title": section_title, "error": str(e)}
 
         # --- STEP 2: Parçaları birleştir ---
-        print(f"\n--- ADIM 2: BIRLESTIRME ---")
+        print("\n--- ADIM 2: BIRLESTIRME ---")
         combined = f"# {title}\n\n"
         for i, part in enumerate(all_parts):
             # İlk parçada H1 başlığı var, sonrakilerde yoksa ekle
@@ -548,12 +589,12 @@ class ChapterGenerator:
         self._save(gen_dir / "combined_raw.md", combined)
 
         # --- STEP 3: Normalize ---
-        print(f"\n--- ADIM 3: NORMALIZASYON ---")
+        print("\n--- ADIM 3: NORMALIZASYON ---")
         normalized = self.normalize_chapter(combined, chapter_id, title)
         self._save(gen_dir / "combined_normalized.md", normalized)
 
         # --- STEP 4: ENRICH ---
-        print(f"\n--- ADIM 4: ENRICHMENT ---")
+        print("\n--- ADIM 4: ENRICHMENT ---")
         missing = self.detect_missing(normalized)
         enriched = self.enrich(normalized, title, concepts=concepts) if missing else {}
         for k, v in enriched.items():
@@ -616,7 +657,7 @@ class ChapterGenerator:
         Her H2 bölümünü ayrı LLM çağrısıyla genişletir,
         kod bloklarını korur, sadece açıklamaları derinleştirir.
         """
-        print(f"\n--- ADIM 3.5: TEORIK DERINLESTIRME ---")
+        print("\n--- ADIM 3.5: TEORIK DERINLESTIRME ---")
         t0 = time.time()
 
         sections = extract_h2_sections(text)
@@ -662,7 +703,7 @@ class ChapterGenerator:
         result = {"chapter_id": chapter_id, "title": title, "mode": "two_pass"}
 
         # --- GECIS 1: HIZLI TASLAK ---
-        print(f"\n=== GECIS 1: HIZLI TASLAK ===")
+        print("\n=== GECIS 1: HIZLI TASLAK ===")
         # Spec ile outline al
         spec = generate_spec(self.client, title, concepts,
                              f"Hedef: {self.config.audience}", chapter_no)
@@ -684,7 +725,7 @@ class ChapterGenerator:
         self._save(gen_dir / "pass1_draft.md", draft)
 
         # --- GECIS 2: DERINLESTIR ---
-        print(f"\n=== GECIS 2: BOLUM BOLUM GENISLET ===")
+        print("\n=== GECIS 2: BOLUM BOLUM GENISLET ===")
         # Önce normalize et
         normalized = self.normalize_chapter(draft, chapter_id, title)
         self._save(gen_dir / "pass2_before_deepen.md", normalized)
@@ -699,7 +740,7 @@ class ChapterGenerator:
         self._save(gen_dir / "pass2_deepened.md", deepened)
 
         # --- ENRICHMENT ---
-        print(f"\n--- ENRICHMENT ---")
+        print("\n--- ENRICHMENT ---")
         missing = self.detect_missing(deepened)
         enriched = {}
         if missing:
