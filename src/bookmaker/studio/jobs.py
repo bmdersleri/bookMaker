@@ -19,6 +19,47 @@ def _now() -> str:
     return datetime.now().isoformat(timespec="seconds")
 
 
+def _rel(root: Path, path: Path) -> str:
+    """Return a project-relative path with platform separators."""
+    return str(path.resolve().relative_to(root.resolve()))
+
+
+def _jobs_dir(root: Path) -> Path:
+    return root / "logs" / "studio_jobs"
+
+
+def _legacy_jobs_dir(root: Path) -> Path:
+    return root / "build" / "studio_jobs"
+
+
+def _generation_dir(root: Path, job_id: str) -> Path:
+    return root / "logs" / "production" / job_id
+
+
+def _chapter_content_dir(root: Path, chapter_id: str) -> Path:
+    return root / "chapters" / chapter_id / "content"
+
+
+def _draft_path(root: Path, chapter_id: str) -> Path:
+    return _chapter_content_dir(root, chapter_id) / "draft.md"
+
+
+def _final_path(root: Path, chapter_id: str) -> Path:
+    return _chapter_content_dir(root, chapter_id) / "final.md"
+
+
+def _build_source_candidates(root: Path, chapter_id: str) -> list[Path]:
+    content = _chapter_content_dir(root, chapter_id)
+    approved = root / "chapters" / chapter_id / "approved"
+    return [
+        content / "final.md",
+        content / "draft.md",
+        approved / f"{chapter_id}_v001.md",
+        approved / f"{chapter_id}_v002.md",
+        approved / "v001.md",
+    ]
+
+
 # ================================================================
 # CRUD
 # ================================================================
@@ -58,6 +99,13 @@ def update_job(job_id: str, **kwargs) -> dict | None:
         job = _JOBS.get(job_id)
         if not job:
             return None
+        progress = kwargs.get("progress")
+        if isinstance(progress, dict) and isinstance(job.get("progress"), dict):
+            previous_log = job["progress"].get("log", [])
+            merged_progress = {**job["progress"], **progress}
+            if not progress.get("log") and previous_log:
+                merged_progress["log"] = previous_log
+            kwargs["progress"] = merged_progress
         job.update(kwargs)
         if kwargs.get("status") == "running" and not job["started_at"]:
             job["started_at"] = _now()
@@ -174,7 +222,7 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     enrich_types = params.get("enrich_types") or [
         "ozet", "sozluk", "soru", "alistirma", "hata", "kopru"]
 
-    GEN_DIR = root / "build" / "generation"
+    GEN_DIR = _generation_dir(root, job_id)
     GEN_DIR.mkdir(parents=True, exist_ok=True)
     t_all = time.time()
     model = gen.llm_config.model
@@ -306,28 +354,32 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     final = normalize(text, chapter_id, title, gen.config)
     progress("assemble", "done", f"{len(final.split())} kel, {time.time()-t0:.1f}s")
 
-    # Save
+    # Save runtime artifacts and project draft content.
     (GEN_DIR / "step4_final.md").write_text(final, encoding="utf-8")
+    draft_path = _draft_path(root, chapter_id)
+    draft_path.parent.mkdir(parents=True, exist_ok=True)
+    draft_path.write_text(final, encoding="utf-8")
     total_elapsed = round(time.time() - t_all, 1)
     (GEN_DIR / "metrics.json").write_text(
         json.dumps({"chapter": chapter_id, "words": len(final.split()),
                      "time": total_elapsed, "model": model},
                    ensure_ascii=False), encoding="utf-8")
 
-    # Save to chapters
     try:
-        from bookmaker.authoring.pipeline import AuthoringPipeline
-        AuthoringPipeline(root).paste_draft(chapter_id, final)
-        AuthoringPipeline(root).advance(chapter_id, "full_text_pasted")
-    except Exception:
-        pass
+        from bookmaker.manifest.pipeline import PipelineManager
+
+        PipelineManager(root).update_chapter(chapter_id, current_step="full_text_pasted")
+    except Exception as exc:
+        append_log(job_id, f"Pipeline state guncellenemedi: {exc}")
 
     update_job(job_id, status="done", summary={
         "chapter_id": chapter_id, "title": title,
         "words": len(final.split()),
         "elapsed_s": total_elapsed,
         "enriched_count": len(enrich_parts),
-        "path": "build/generation/step4_final.md",
+        "path": _rel(root, draft_path),
+        "draft_path": _rel(root, draft_path),
+        "log_path": _rel(root, GEN_DIR),
     })
     append_log(job_id, f"DONE: {len(final.split())} kel, {total_elapsed}s")
 
@@ -343,10 +395,7 @@ def _run_build(root: Path, job_id: str, chapter_id: str, params: dict) -> None:
     if source_path:
         p = root / source_path
     else:
-        base = root / "chapters" / chapter_id / "approved"
-        candidates = [base / f"{chapter_id}_v001.md",
-                      base / f"{chapter_id}_v002.md", base / "v001.md"]
-        p = next((c for c in candidates if c.exists()), None)
+        p = next((c for c in _build_source_candidates(root, chapter_id) if c.exists()), None)
 
     if not p or not p.exists():
         update_job(job_id, status="error", error=f"Kaynak bulunamadi: {chapter_id}")
@@ -365,7 +414,7 @@ def _run_build(root: Path, job_id: str, chapter_id: str, params: dict) -> None:
 
 
 def save_jobs(project_root: str | Path) -> None:
-    path = Path(project_root).resolve() / "build" / "studio_jobs"
+    path = _jobs_dir(Path(project_root).resolve())
     path.mkdir(parents=True, exist_ok=True)
     with _LOCK:
         for jid, job in _JOBS.items():
@@ -375,13 +424,15 @@ def save_jobs(project_root: str | Path) -> None:
 
 
 def load_jobs(project_root: str | Path) -> None:
-    path = Path(project_root).resolve() / "build" / "studio_jobs"
-    if not path.exists():
-        return
+    root = Path(project_root).resolve()
+    paths = [_jobs_dir(root), _legacy_jobs_dir(root)]
     with _LOCK:
-        for f in sorted(path.glob("*.json")):
-            try:
-                job = json.loads(f.read_text(encoding="utf-8"))
-                _JOBS[job["id"]] = job
-            except (json.JSONDecodeError, KeyError):
-                pass
+        for path in paths:
+            if not path.exists():
+                continue
+            for f in sorted(path.glob("*.json")):
+                try:
+                    job = json.loads(f.read_text(encoding="utf-8"))
+                    _JOBS[job["id"]] = job
+                except (json.JSONDecodeError, KeyError):
+                    pass

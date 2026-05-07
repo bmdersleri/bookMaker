@@ -132,15 +132,30 @@ def test_api_llm_configure_missing_key() -> None:
     assert "error" in data
 
 
-def test_api_generate_not_configured() -> None:
+def test_api_generate_not_configured(tmp_path) -> None:
     if app is None:
         return
     from fastapi.testclient import TestClient
+
+    from bookmaker.studio import app as studio_app
+
+    project = tmp_path / "book_projects" / "no-llm"
+    project.mkdir(parents=True)
+    (project / "book_manifest.yaml").write_text(
+        "book:\n  alias: no-llm\nchapters: []\n",
+        encoding="utf-8",
+    )
+    previous = studio_app._active_book
+    studio_app._active_book = str(project)
     client = TestClient(app)
-    resp = client.post("/api/generate/bolum-03", json={})
-    assert resp.status_code == 200
-    data = resp.json()
-    assert "error" in data or "final_words" in data or data.get("status") == "queued"
+    try:
+        resp = client.post("/api/generate/bolum-03", json={})
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["error"] == "LLM yapılandırılmamış"
+        assert not (project / "logs" / "studio_jobs").exists()
+    finally:
+        studio_app._active_book = previous
 
 
 def test_index_page() -> None:
@@ -159,6 +174,8 @@ def test_index_page() -> None:
     assert 'id="stat-qr"' in resp.text
     assert 'id="build-targets"' in resp.text
     assert 'id="quality-book-summary"' in resp.text
+    assert 'id="jobs-body"' in resp.text
+    assert "logs/studio_jobs" in resp.text
     assert "sortQuality('chapter_id')" in resp.text
     assert 'id="toast-container"' in resp.text
     assert 'id="wiz-author"' in resp.text
@@ -391,3 +408,52 @@ def test_export_targets_and_output_serving_are_project_based(tmp_path) -> None:
         assert resp.status_code == 403
     finally:
         studio_app._active_book = previous
+
+
+def test_api_jobs_create_list_cancel_use_project_logs(tmp_path) -> None:
+    if app is None:
+        return
+    from fastapi.testclient import TestClient
+
+    from bookmaker.studio import app as studio_app
+    from bookmaker.studio import jobs
+
+    project = tmp_path / "book_projects" / "jobs-demo"
+    project.mkdir(parents=True)
+    (project / "book_manifest.yaml").write_text(
+        "book:\n  alias: jobs-demo\nchapters: []\n",
+        encoding="utf-8",
+    )
+
+    previous = studio_app._active_book
+    previous_jobs = dict(jobs._JOBS)
+    studio_app._active_book = str(project)
+    try:
+        with jobs._LOCK:
+            jobs._JOBS.clear()
+
+        client = TestClient(app)
+        resp = client.post(
+            "/api/jobs",
+            json={"step": "build", "chapter_id": "giris", "params": {}},
+        )
+        assert resp.status_code == 200
+        job = resp.json()
+        assert job["status"] == "queued"
+
+        job_file = project / "logs" / "studio_jobs" / f"{job['id']}.json"
+        assert job_file.exists()
+        assert not (project / "build" / "studio_jobs").exists()
+
+        resp = client.get("/api/jobs")
+        assert resp.status_code == 200
+        assert any(item["id"] == job["id"] for item in resp.json())
+
+        resp = client.post(f"/api/jobs/{job['id']}/cancel")
+        assert resp.status_code == 200
+        assert resp.json()["status"] == "cancelled"
+    finally:
+        studio_app._active_book = previous
+        with jobs._LOCK:
+            jobs._JOBS.clear()
+            jobs._JOBS.update(previous_jobs)

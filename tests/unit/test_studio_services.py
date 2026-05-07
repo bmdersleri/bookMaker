@@ -316,6 +316,96 @@ def test_pipeline_get_chapter_info(tmp_path):
     assert info["chapter_id"] == "bolum-01"
 
 
+def test_studio_jobs_persist_under_project_logs(tmp_path):
+    root = _create_test_project(tmp_path)
+    from bookmaker.studio import jobs
+
+    previous_jobs = dict(jobs._JOBS)
+    try:
+        with jobs._LOCK:
+            jobs._JOBS.clear()
+
+        job = jobs.create_job("generate", "bolum-01", {"title": "Test"})
+        jobs.save_jobs(root)
+
+        job_file = root / "logs" / "studio_jobs" / f"{job['id']}.json"
+        assert job_file.exists()
+        assert not (root / "build" / "studio_jobs").exists()
+
+        with jobs._LOCK:
+            jobs._JOBS.clear()
+        jobs.load_jobs(root)
+
+        loaded = jobs.get_job(job["id"])
+        assert loaded is not None
+        assert loaded["chapter_id"] == "bolum-01"
+    finally:
+        with jobs._LOCK:
+            jobs._JOBS.clear()
+            jobs._JOBS.update(previous_jobs)
+
+
+def test_studio_job_progress_updates_preserve_log(tmp_path):
+    _create_test_project(tmp_path)
+    from bookmaker.studio import jobs
+
+    previous_jobs = dict(jobs._JOBS)
+    try:
+        with jobs._LOCK:
+            jobs._JOBS.clear()
+
+        job = jobs.create_job("generate", "bolum-01")
+        jobs.append_log(job["id"], "ilk log")
+        jobs.update_job(
+            job["id"],
+            progress={"current": "spec", "done": 0, "total": 6, "log": []},
+        )
+
+        updated = jobs.get_job(job["id"])
+        assert updated is not None
+        assert updated["progress"]["current"] == "spec"
+        assert "ilk log" in updated["progress"]["log"][0]
+    finally:
+        with jobs._LOCK:
+            jobs._JOBS.clear()
+            jobs._JOBS.update(previous_jobs)
+
+
+def test_studio_build_job_prefers_project_content(tmp_path, monkeypatch):
+    root = _create_test_project(tmp_path)
+    content_dir = root / "chapters" / "bolum-01" / "content"
+    content_dir.mkdir(parents=True)
+    final_path = content_dir / "final.md"
+    final_path.write_text("# Final\n\n```python\nprint('ok')\n```\n", encoding="utf-8")
+
+    from bookmaker.studio import jobs
+
+    previous_jobs = dict(jobs._JOBS)
+    called = {}
+
+    def fake_build_chapter(path):
+        called["path"] = path
+        return {"compiled": 1, "extracted": 1, "total_code_blocks": 1}
+
+    monkeypatch.setattr("bookmaker.build.pipeline.build_chapter", fake_build_chapter)
+    try:
+        with jobs._LOCK:
+            jobs._JOBS.clear()
+
+        job = jobs.create_job("build", "bolum-01")
+        jobs._run_build(root, job["id"], "bolum-01", {})
+
+        assert called["path"] == final_path
+        completed = jobs.get_job(job["id"])
+        assert completed is not None
+        assert completed["status"] == "done"
+        assert completed["summary"]["compiled"] == 1
+    finally:
+        with jobs._LOCK:
+            jobs._JOBS.clear()
+            jobs._JOBS.update(previous_jobs)
+
+
 # ================================================================
 # BUILD SERVICE TESTS
 # ================================================================

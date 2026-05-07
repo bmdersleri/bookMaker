@@ -247,8 +247,14 @@ async function loadJobs() {
   try {
     const r=await fetch('/api/jobs'); const jobs=await r.json();
     const tb=document.getElementById('jobs-body'); if(!tb) return;
-    if(!jobs.length) { tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#999">Henuz is yok</td></tr>'; return; }
-    tb.innerHTML=jobs.slice(0,10).map(j=>'<tr><td><code>'+j.id.slice(0,8)+'</code></td><td>'+escHtml(j.chapter_id)+'</td><td>'+j.step+'</td><td><span class="tag '+jobStatusClass(j.status)+'">'+j.status+'</span></td><td>'+(j.elapsed_s?j.elapsed_s+'s':'-')+'</td></tr>').join('');
+    if(!jobs.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#999">Henuz is yok</td></tr>'; return; }
+    tb.innerHTML=jobs.slice(0,10).map(function(j){
+      var summary = j.summary || {};
+      var output = summary.draft_path || summary.path || summary.log_path || '-';
+      return '<tr><td><code>'+j.id.slice(0,8)+'</code></td><td>'+escHtml(j.chapter_id)+'</td><td>'+escHtml(j.step)+'</td>'+
+        '<td><span class="tag '+jobStatusClass(j.status)+'">'+escHtml(j.status)+'</span></td>'+
+        '<td><code>'+escHtml(output)+'</code></td><td>'+(j.elapsed_s?j.elapsed_s+'s':'-')+'</td></tr>';
+    }).join('');
   } catch(e) {}
 }
 function jobStatusClass(s) { return {'queued':'neutral','running':'info','done':'success','error':'danger','cancelled':'warning'}[s]||'neutral'; }

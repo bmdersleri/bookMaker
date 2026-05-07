@@ -9,6 +9,24 @@ from bookmaker.generation.pipeline import ChapterGenerator
 from bookmaker.llm.config import LLMConfig
 
 
+def _chapter_draft_path(root: Path, chapter_id: str) -> Path:
+    return root / "chapters" / chapter_id / "content" / "draft.md"
+
+
+def _latest_generation_final(root: Path) -> Path | None:
+    production = root / "logs" / "production"
+    if production.exists():
+        finals = sorted(
+            production.glob("*/step4_final.md"),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+        if finals:
+            return finals[0]
+    legacy = root / "build" / "generation" / "step4_final.md"
+    return legacy if legacy.exists() else None
+
+
 def get_generator(project_root: str | Path) -> ChapterGenerator | None:
     """Create a ChapterGenerator when LLM is configured."""
     root = Path(project_root).resolve()
@@ -42,7 +60,7 @@ def run_generation(
             chapter_no=chapter_no,
             enrich_types=enrich_types or ["ozet", "sozluk", "soru", "alistirma", "hata", "kopru"],
         )
-        final_path = root / "build" / "generation" / "step4_final.md"
+        final_path = _latest_generation_final(root)
         response = {
             "chapter_id": chapter_id,
             "title": title,
@@ -53,10 +71,14 @@ def run_generation(
             "final_words": 0,
             "path": None,
         }
-        if final_path.exists():
+        if final_path and final_path.exists():
             final_text = final_path.read_text(encoding="utf-8")
+            draft_path = _chapter_draft_path(root, chapter_id)
+            draft_path.parent.mkdir(parents=True, exist_ok=True)
+            draft_path.write_text(final_text, encoding="utf-8")
             response["final_words"] = len(final_text.split())
-            response["path"] = str(final_path.relative_to(root))
+            response["path"] = str(draft_path.relative_to(root))
+            response["log_path"] = str(final_path.parent.relative_to(root))
         return response
     except RuntimeError as exc:
         return {"error": f"Pipeline hatasi: {str(exc)[:300]}"}

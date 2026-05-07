@@ -10,14 +10,14 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 
 ```text
 Aktif Faz       : MIGRATION.md - FAZ 5 Studio ve Servis Katmanı
-Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio Build/Export paneli
+Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio Pipeline job path uyumu
 Repo            : D:\bookMaker_clean
 Önceki Repo     : D:\bookMaker_Deepseek  # artık geliştirme için kullanılmamalı
 Branch          : feat/chapter-validator-profile-modes
 Base            : local main üzerindeki ad348a0 + origin/main üzerindeki 4e9a4e8
 Remote          : origin
-Son Kod Commit  : Align Studio Build/Export with project exports
-Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, Build/Export paneli project-based exports yollarına taşındı
+Son Kod Commit  : Align Studio Pipeline jobs with project logs
+Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, Pipeline job/generation yolları project-based logs/content yapısına taşındı
 Dikkat          : Repo kökünde geçici *.ps1 dosyası varsa commit'e alınmamalı
 ```
 
@@ -1097,6 +1097,76 @@ git diff --check
 Sonuç: PASS
 ```
 
+### FAZ 5 / Studio GUI Aşama 7 - Pipeline Job Path Uyumu
+
+Pipeline/job worker akışı project-based runtime yollarına taşındı.
+
+Yapılanlar:
+
+```text
+- Studio job kayıtları build/studio_jobs yerine logs/studio_jobs altına yazılıyor.
+- load_jobs() geriye uyumluluk için legacy build/studio_jobs kayıtlarını da okuyabiliyor.
+- Generation worker ara çıktılarını build/generation yerine logs/production/<job_id>/ altında tutuyor.
+- Üretilen bölüm metni chapters/<alias>/content/draft.md dosyasına yazılıyor.
+- Job summary artık draft_path ve log_path alanlarını project-relative döndürüyor.
+- Pipeline state üretim sonrası full_text_pasted olarak güncelleniyor.
+- Build job kaynak seçimi content/final.md ve content/draft.md dosyalarını legacy approved/ yollarından önce deniyor.
+- generation_service.run_generation() Studio tarafında yeni logs/production çıktısını okuyup content/draft.md hedefine yansıtıyor; legacy build/generation fallback'i korunuyor.
+- Pipeline sekmesine logs/studio_jobs badge'i ve job listesi tablosu eklendi.
+- Job progress güncellemesi mevcut log satırlarını sıfırlamayacak şekilde düzeltildi.
+- /api/generate LLM yapılandırılmamış test akışı tmp project ile izole edildi.
+```
+
+Yeni test kapsamı:
+
+```text
+- Job create/list/cancel endpointleri logs/studio_jobs altında kayıt üretir.
+- Job persistence servisleri logs/studio_jobs kullanır ve legacy build/studio_jobs üretmez.
+- Build job project-based content/final.md kaynağını legacy approved/ kaynağından önce seçer.
+- Progress update mevcut job loglarını korur.
+- Index HTML Pipeline job tablosu ve logs/studio_jobs sözleşmesini içerir.
+```
+
+Tarayıcı doğrulaması:
+
+```text
+URL: http://127.0.0.1:8765
+Browser plugin: mevcut değil; normal Playwright kullanıldı.
+Screenshot:
+  C:\Users\ismai\AppData\Local\Temp\bookmaker-pipeline-step7.png
+  C:\Users\ismai\AppData\Local\Temp\bookmaker-pipeline-step7-mobile.png
+
+Playwright sonucu:
+- Pipeline sekmesi açıldı.
+- logs/studio_jobs badge'i göründü.
+- /api/jobs ile manual-check job'u oluşturuldu ve job tablosunda göründü.
+- Masaüstü ve mobil viewport ekran görüntüsü alındı.
+- console errors/warnings: []
+- Geçici .tmp scripti temizlendi.
+```
+
+Doğrulama:
+
+```text
+node --check src/bookmaker/studio/static/app.js
+Sonuç: PASS
+
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/unit/test_studio_app.py tests/unit/test_studio_services.py -q --tb=short
+Sonuç: 45 passed, 1 PytestCacheWarning
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 221 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+
+git diff --check
+Sonuç: PASS
+```
+
 ---
 
 ## Alternatif Sonraki Hedefler
@@ -1104,13 +1174,12 @@ Sonuç: PASS
 FAZ 5 devam hedefleri:
 
 ```text
-1. FAZ 5 / Aşama 7: Studio generation/job worker'ın build/generation varsayımlarını project-based logs/content yapısına taşı.
-2. FAZ 5 / Aşama 8: Studio görsel ergonomisini sıkılaştır.
-3. FAZ 5 / Aşama 9: Flutter kitap kabul senaryosunu baştan sona çalıştır.
-4. observer_service'i review üretimi ve logs/reviews yazımı için genişlet.
-5. manifest_service facade kullanımını azaltıp app.py route'larını servis sınırlarına göre sadeleştir.
-6. Profile bilgisini pipeline_state.yaml içine yazmak gerekip gerekmediğini değerlendir.
-7. CODE_META language alanı ile profile test mode uyumluluğunu ayrı warning/error olarak ekle.
+1. FAZ 5 / Aşama 8: Studio görsel ergonomisini sıkılaştır.
+2. FAZ 5 / Aşama 9: Flutter kitap kabul senaryosunu baştan sona çalıştır.
+3. observer_service'i review üretimi ve logs/reviews yazımı için genişlet.
+4. manifest_service facade kullanımını azaltıp app.py route'larını servis sınırlarına göre sadeleştir.
+5. Profile bilgisini pipeline_state.yaml içine yazmak gerekip gerekmediğini değerlendir.
+6. CODE_META language alanı ile profile test mode uyumluluğunu ayrı warning/error olarak ekle.
 ```
 
 ---
@@ -1164,10 +1233,10 @@ book check -> 100/pass
 BookMaker project-based architecture sonrası FAZ 5 Studio GUI üzerinde devam ediyoruz.
 Repo: D:\bookMaker_clean
 Branch: feat/chapter-validator-profile-modes
-Son commit: Align Studio Build/Export with project exports
+Son commit: Align Studio Pipeline jobs with project logs
 FAZ 4 güncel commit: 59b99ed Resolve validator profile from project manifest
 Skill/plugin commit: 30c0cd0 Add BookMaker Codex skills and plugins
-FAZ 5 güncel commit: Align Studio Build/Export with project exports
+FAZ 5 güncel commit: Align Studio Pipeline jobs with project logs
 
 Tamamlananlar:
 - Ruff cleanup
@@ -1180,11 +1249,11 @@ Tamamlananlar:
 - Studio sekmeleri, Flutter dashboard, bölüm sıralama, wizard, prompt editörü tamamlandı
 - Studio kalite paneli kitap düzeyi 100/pass özeti ve bölüm kontrol modalı ile güçlendirildi
 - Studio Build/Export paneli project-based exports hedeflerine taşındı
-- test kapsamı: 217 passed
+- Studio Pipeline/job worker logs/production, logs/studio_jobs ve content/draft.md yollarına taşındı
+- test kapsamı: 221 passed
 - Flutter kitap validasyonu: 100/pass
 
 Sıradaki:
-- FAZ 5 / Aşama 7: Studio generation/job worker path varsayımlarını project-based yapıya taşı
 - FAZ 5 / Aşama 8: Studio görsel ergonomisini sıkılaştır
 - FAZ 5 / Aşama 9: Flutter kabul senaryosunu tamamla
 ```
