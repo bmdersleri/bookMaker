@@ -9,15 +9,59 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 ## ŞU AN
 
 ```text
-Aktif Faz       : Mermaid Tema Motoru Entegrasyonu tamamlandı; sırada kullanıcı yönlendirmesiyle yeni iş
-Son Oturum      : 2026-05-07 - Mermaid theme engine entegrasyonu (340 test, ruff clean)
+Aktif Faz       : Screenshot Engine Entegrasyonu tamamlandı; sırada kullanıcı yönlendirmesiyle yeni iş
+Son Oturum      : 2026-05-07 - Screenshot engine entegrasyonu (377 test, ruff clean)
 Repo            : D:\bookMaker_clean
 Branch          : main  (tek branch)
 Remote          : origin
-Son Kod Commit  : 541b886 Integrate Mermaid theme engine with profile-based PNG rendering
-Durum           : Mermaid tema motoru (5 profil teması), mmdc PNG renderer, normalize_with_mermaid wrapper
-Test            : 340 passed, ruff clean
+Son Kod Commit  : d4a0b5b Integrate screenshot engine with Playwright-based code rendering
+Durum           : Screenshot motoru (3 strateji: python plot/console, react), Playwright ana bağımlılığa taşındı
+Test            : 377 passed, ruff clean
 ```
+
+---
+
+## 2026-05-07 Oturumu — Screenshot Engine Entegrasyonu
+
+### Yapılan İşler
+
+- `screenshot_engine/` içindeki hazır dosyalar proje yapısına taşındı:
+  - `src/bookmaker/production/screenshot_engine.py` — Ana motor, tagged block regex, cache yönetimi
+  - `src/bookmaker/production/screenshot_strategies/` — 3 strateji: `python_plot` (matplotlib/plotly), `python_console` (terminal HTML), `react_component` (CDN React + Babel)
+  - `tests/production/test_screenshot_engine.py` — 37 test (config, regex, strateji, engine entegrasyonu)
+- `pyproject.toml` — Playwright dev bağımlılıktan ana bağımlılığa taşındı, `uv sync` yapıldı
+- `src/bookmaker/manifest/models.py` — `ScreenshotsConfig` Pydantic modeli eklendi, `ProductionConfig`'e `screenshots` alanı bağlandı
+- `src/bookmaker/generation/postprocess.py` — `process_screenshots()` wrapper fonksiyonu eklendi (manifest → ScreenshotEngine → process_markdown)
+- `src/bookmaker/generation/pipeline.py` — `_save_chapter()` içinde ASSEMBLE sonrası screenshot işleme eklendi (tüm 5 generation stratejisini kapsar)
+- `book_projects/flutter-ile-mobil-uygulama-gelistirme/book_manifest.yaml` — `production.screenshots` bölümü eklendi
+- `src/bookmaker/generation/prompts.py` — SEED prompt'a `python plot`, `python console`, `jsx screenshot` fence syntax talimatı eklendi
+- `screenshot_engine/` dizini temizlendi
+
+### Düzeltilen Hata
+
+- `python_console.py`: `_render_html()` boş çıktıda "(Çıktı yok)" fallback'i göstermiyordu — test hatası düzeltildi
+
+### Doğrulama
+
+```text
+uv run ruff check src/ tests/   -> PASS
+uv run pytest tests/production/test_screenshot_engine.py -v --tb=short  -> 37 passed
+uv run pytest tests/ -q --tb=short  -> 377 passed
+```
+
+### Commit
+
+```text
+d4a0b5b Integrate screenshot engine with Playwright-based code rendering
+15 files changed, 1550 insertions(+), 719 deletions(-)
+```
+
+### Mimari Notlar
+
+- Tüm Playwright import'ları lazy (fonksiyon içinde `try/except ImportError`) — kurulu değilse `process_screenshots()` sessizce geçer
+- Screenshot engine sadece işaretlenmiş blokları işler (`python plot`, `python console`, `jsx/tsx screenshot`); normal `python` bloklarına dokunmaz
+- Pipeline'da `_save_chapter()` tek noktadan tüm generation stratejilerini kapsar
+- `ScreenshotsConfig` Pydantic modeli manifest validation'ından geçer; `ScreenshotConfig` dataclass'ı engine içinde kullanılır
 
 ---
 
@@ -676,6 +720,7 @@ Commit:
 ## Mevcut Commit Zinciri
 
 ```text
+d4a0b5b Integrate screenshot engine with Playwright-based code rendering
 541b886 Integrate Mermaid theme engine with profile-based PNG rendering
 516b9cb Add reproducible dev environment and toolchain checks
 e463ef2 Add CI smoke tests and release checklist
@@ -706,7 +751,7 @@ uv run ruff check src/ tests/
 Sonuç: PASS
 
 uv run pytest tests/ -q --tb=short
-Sonuç: 340 passed
+Sonuç: 377 passed
 
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
 Sonuç: skor 100, karar pass, hata 0, uyarı 0
