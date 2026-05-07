@@ -972,17 +972,51 @@ document.addEventListener('DOMContentLoaded', init);
 // =========== BUILD PANEL ===========
 var buildPanelInitialized = false;
 function initBuildPanel() {
-  if (buildPanelInitialized) return;
-  buildPanelInitialized = true;
-  fetch('/api/chapters').then(function(r){return r.json();}).then(function(chs){
-    ['extract-chapter','mermaid-chapter'].forEach(function(id){
-      var sel=document.getElementById(id);
-      if(!sel) return;
-      sel.innerHTML='<option value="">Tum Bolumler</option>'+chs.map(function(ch){
-        return '<option value="'+ch.chapter_id+'">'+escHtml(ch.chapter_id)+'</option>';
-      }).join('');
-    });
-  }).catch(function(){});
+  loadBuildTargets();
+  if (!buildPanelInitialized) {
+    buildPanelInitialized = true;
+    fetch('/api/chapters').then(function(r){return r.json();}).then(function(chs){
+      ['extract-chapter','mermaid-chapter'].forEach(function(id){
+        var sel=document.getElementById(id);
+        if(!sel) return;
+        sel.innerHTML='<option value="">Tum Bolumler</option>'+chs.map(function(ch){
+          return '<option value="'+ch.chapter_id+'">'+escHtml(ch.chapter_id)+'</option>';
+        }).join('');
+      });
+    }).catch(function(){});
+  }
+}
+
+async function loadBuildTargets() {
+  var el = document.getElementById('build-targets');
+  if (!el) return;
+  try {
+    var r = await fetch('/api/export/targets');
+    var d = await r.json();
+    if (d.error) {
+      el.innerHTML = '<div class="message error">'+escHtml(d.error)+'</div>';
+      return;
+    }
+    var targets = d.targets || {};
+    var labels = [
+      ['markdown', 'Markdown'],
+      ['docx', 'DOCX'],
+      ['pdf', 'PDF'],
+      ['code', 'Kod'],
+      ['mermaid', 'Diyagram'],
+      ['backups', 'Yedek']
+    ];
+    el.innerHTML = labels.map(function(item){
+      return '<div class="output-target"><strong>'+item[1]+'</strong><code>'+escHtml(targets[item[0]] || '-')+'</code></div>';
+    }).join('');
+    var desc = document.getElementById('extract-description');
+    if (desc) {
+      desc.textContent = (d.code_language || 'kod') +
+        ' kod bloklarini ayiklayip ' + (targets.code || 'exports/code') + ' altina kaydeder.';
+    }
+  } catch(e) {
+    el.innerHTML = '<div class="message error">Export hedefleri yuklenemedi: '+escHtml(e.message)+'</div>';
+  }
 }
 
 async function runExtractCode() {

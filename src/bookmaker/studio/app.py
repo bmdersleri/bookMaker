@@ -115,13 +115,19 @@ if FastAPI is not None:
 
     @app.get("/output/{file_path:path}")
     async def serve_output(file_path: str):
-        """Build çıktı dosyalarını sunar (PNG, DOCX, PDF vb)."""
-        full = get_active_book() / "build" / file_path
-        if not full.resolve().is_relative_to(get_active_book().resolve()):
-            from fastapi.responses import PlainTextResponse
+        """Project output dosyalarını güvenli şekilde sunar."""
+        from fastapi.responses import PlainTextResponse
+
+        root = get_active_book().resolve()
+        rel = Path(file_path)
+        if rel.is_absolute() or any(part == ".." for part in rel.parts):
+            return PlainTextResponse("Forbidden", status_code=403)
+        if not rel.parts or rel.parts[0] not in {"exports", "logs", "build"}:
+            return PlainTextResponse("Forbidden", status_code=403)
+        full = (root / rel).resolve()
+        if not full.is_relative_to(root):
             return PlainTextResponse("Forbidden", status_code=403)
         if not full.exists():
-            from fastapi.responses import PlainTextResponse
             return PlainTextResponse("Not found", status_code=404)
         return FileResponse(str(full))
 
@@ -323,6 +329,10 @@ if FastAPI is not None:
     async def api_extract_code(data: dict | None = None) -> dict:
         cid = data.get("chapter_id") if data else None
         return export_service.extract_code(get_active_book(), cid)
+
+    @app.get("/api/export/targets")
+    async def api_export_targets() -> dict:
+        return export_service.get_export_targets(get_active_book())
 
     @app.post("/api/extract/{chapter_id}")
     async def api_extract(chapter_id: str,

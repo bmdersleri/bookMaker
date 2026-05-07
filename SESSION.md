@@ -10,14 +10,14 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 
 ```text
 Aktif Faz       : MIGRATION.md - FAZ 5 Studio ve Servis Katmanı
-Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio kalite paneli
+Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio Build/Export paneli
 Repo            : D:\bookMaker_clean
 Önceki Repo     : D:\bookMaker_Deepseek  # artık geliştirme için kullanılmamalı
 Branch          : feat/chapter-validator-profile-modes
 Base            : local main üzerindeki ad348a0 + origin/main üzerindeki 4e9a4e8
 Remote          : origin
-Son Kod Commit  : Enhance Studio quality panel
-Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, Kalite Paneli Flutter kitapla güçlendirildi
+Son Kod Commit  : Align Studio Build/Export with project exports
+Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, Build/Export paneli project-based exports yollarına taşındı
 Dikkat          : Repo kökünde geçici *.ps1 dosyası varsa commit'e alınmamalı
 ```
 
@@ -1015,6 +1015,88 @@ Not:
 - Playwright geçici scriptleri .tmp altında oluşturuldu ve doğrulama sonrası silindi.
 ```
 
+### FAZ 5 / Studio GUI Aşama 6 - Build/Export Paneli Project-based Yollar
+
+Build/Export paneli Flutter kitap projesiyle `exports/` tabanlı çıktı hedeflerine
+hizalandı.
+
+Yapılanlar:
+
+```text
+- export_service.get_export_targets() eklendi.
+- Yeni /api/export/targets endpointi Build/Export paneline project-based hedefleri
+  döndürüyor.
+- assemble_book() alias-only manifest bölümlerini
+  chapters/<alias>/content/final.md üzerinden buluyor.
+- Birleştirilmiş markdown çıktısı build/ yerine exports/md/ altına yazılıyor.
+- export_to_format() DOCX/PDF/EPUB/HTML çıktısını exports/<format>/ altına yazıyor.
+- extract_code() manifestten code_language çözüp Flutter kitapta Dart bloklarını
+  exports/code/dart/ altına çıkarıyor.
+- render_mermaid() alias-only bölümleri tarıyor ve çıktıları
+  exports/assets/mermaid/ altında topluyor.
+- create_backup() çıktısı exports/backups/ altına alındı.
+- restore_backup() proje dışı zip yolunu ve zip içindeki güvenli olmayan yolları
+  reddediyor.
+- /output/{path} route'u yalnız exports/, logs/ ve legacy build/ köklerini güvenli
+  şekilde servis edecek hale getirildi.
+- Build/Export sekmesine Export Hedefleri özeti eklendi; kod çıkarma açıklaması
+  profile-aware olarak Dart/Flutter bağlamını gösteriyor.
+- build_service.build_docx() project-based content/final.md ve draft.md
+  kaynaklarını legacy approved/ fallback'lerinden önce deniyor.
+```
+
+Yeni test kapsamı:
+
+```text
+- /api/export/targets endpointi exports/md ve Dart code target döndürür.
+- /output/exports/... dosyası servis edilir, proje dışı/izin dışı kökler reddedilir.
+- export_service alias-only Flutter bölümünü assemble eder.
+- Dart kod çıkarma exports/code/dart hedefini kullanır.
+- Sandbox/symlink tmp path farkı için proje listeleme testi resolved path ile
+  karşılaştırılır.
+```
+
+Tarayıcı doğrulaması:
+
+```text
+URL: http://127.0.0.1:8765
+Browser plugin: mevcut değil; normal Playwright kullanıldı.
+Screenshot: C:\Users\ismai\AppData\Local\Temp\bookmaker-build-export-step6.png
+
+Playwright sonucu:
+- Build/Export sekmesi açıldı.
+- hedefler: exports\md, exports\docx, exports\pdf, exports\code\dart,
+  exports\assets\mermaid, exports\backups
+- açıklama: dart kod bloklarini ayiklayip exports\code\dart altina kaydeder.
+- giris bölümü için 4 Dart kod bloğu çıkarıldı.
+- kitap birleştirme 16 bölüm / 28451 kelime ile exports\md\kitap_birlestirilmis.md
+  çıktısını üretti.
+- console errors/warnings: []
+- Playwright doğrulamasının ürettiği exports çıktıları ve .tmp scripti temizlendi.
+```
+
+Doğrulama:
+
+```text
+node --check src/bookmaker/studio/static/app.js
+Sonuç: PASS
+
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/unit/test_studio_app.py tests/unit/test_studio_services.py -q --tb=short
+Sonuç: 41 passed, 1 PytestCacheWarning
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 217 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+
+git diff --check
+Sonuç: PASS
+```
+
 ---
 
 ## Alternatif Sonraki Hedefler
@@ -1022,12 +1104,13 @@ Not:
 FAZ 5 devam hedefleri:
 
 ```text
-1. FAZ 5 / Aşama 6: Build/Export panelini project-based exports/logs yollarına taşı.
-2. Studio generation/job worker'ın build/generation varsayımlarını project-based logs/content yapısına taşı.
-3. observer_service'i review üretimi ve logs/reviews yazımı için genişlet.
-4. manifest_service facade kullanımını azaltıp app.py route'larını servis sınırlarına göre sadeleştir.
-5. Profile bilgisini pipeline_state.yaml içine yazmak gerekip gerekmediğini değerlendir.
-6. CODE_META language alanı ile profile test mode uyumluluğunu ayrı warning/error olarak ekle.
+1. FAZ 5 / Aşama 7: Studio generation/job worker'ın build/generation varsayımlarını project-based logs/content yapısına taşı.
+2. FAZ 5 / Aşama 8: Studio görsel ergonomisini sıkılaştır.
+3. FAZ 5 / Aşama 9: Flutter kitap kabul senaryosunu baştan sona çalıştır.
+4. observer_service'i review üretimi ve logs/reviews yazımı için genişlet.
+5. manifest_service facade kullanımını azaltıp app.py route'larını servis sınırlarına göre sadeleştir.
+6. Profile bilgisini pipeline_state.yaml içine yazmak gerekip gerekmediğini değerlendir.
+7. CODE_META language alanı ile profile test mode uyumluluğunu ayrı warning/error olarak ekle.
 ```
 
 ---
@@ -1081,10 +1164,10 @@ book check -> 100/pass
 BookMaker project-based architecture sonrası FAZ 5 Studio GUI üzerinde devam ediyoruz.
 Repo: D:\bookMaker_clean
 Branch: feat/chapter-validator-profile-modes
-Son commit: Complete Studio prompt editor workflow
+Son commit: Align Studio Build/Export with project exports
 FAZ 4 güncel commit: 59b99ed Resolve validator profile from project manifest
 Skill/plugin commit: 30c0cd0 Add BookMaker Codex skills and plugins
-FAZ 5 güncel commit: Enhance Studio quality panel
+FAZ 5 güncel commit: Align Studio Build/Export with project exports
 
 Tamamlananlar:
 - Ruff cleanup
@@ -1096,13 +1179,14 @@ Tamamlananlar:
 - Studio wizard/project selector project-based manifest yapıya taşındı
 - Studio sekmeleri, Flutter dashboard, bölüm sıralama, wizard, prompt editörü tamamlandı
 - Studio kalite paneli kitap düzeyi 100/pass özeti ve bölüm kontrol modalı ile güçlendirildi
-- test kapsamı: 215 passed
+- Studio Build/Export paneli project-based exports hedeflerine taşındı
+- test kapsamı: 217 passed
 - Flutter kitap validasyonu: 100/pass
 
 Sıradaki:
-- FAZ 5 / Aşama 6: Build/Export panelini project-based exports/logs yollarına taşı
 - FAZ 5 / Aşama 7: Studio generation/job worker path varsayımlarını project-based yapıya taşı
 - FAZ 5 / Aşama 8: Studio görsel ergonomisini sıkılaştır
+- FAZ 5 / Aşama 9: Flutter kabul senaryosunu tamamla
 ```
 
 ---

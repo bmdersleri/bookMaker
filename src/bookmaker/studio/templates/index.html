@@ -192,9 +192,18 @@
 
 <div class="tab-content" id="tab-build">
   <div class="card">
+    <div class="card-header"><h2>Export Hedefleri</h2><span class="badge">exports/</span></div>
+    <div class="card-body">
+      <div id="build-targets" class="output-targets">
+        <div class="message info">Hedef klasorler yukleniyor...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-header"><h2>Kod Cikarma</h2></div>
     <div class="card-body">
-      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Java kod bloklarini .java dosyasi olarak ayiklayip build/code/ altina kaydeder.</p>
+      <p id="extract-description" style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Kod bloklarini profile gore ayiklayip exports/code/ altina kaydeder.</p>
       <div style="display:flex;gap:8px;align-items:center">
         <select id="extract-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem;min-width:120px">
           <option value="">Tum Bolumler</option>
@@ -222,7 +231,7 @@
   <div class="card">
     <div class="card-header"><h2>Kitap Birlestirme ve Export</h2></div>
     <div class="card-body">
-      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Tum bolumleri tek .md dosyada birlestir ve DOCX/PDF/EPUB/HTML olarak disa aktar.</p>
+      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Tum bolumleri exports/md altinda birlestir ve formatlari exports/docx, exports/pdf, exports/epub veya exports/html altina aktar.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn outline" onclick="runAssemble()">Birlestir (.md)</button>
         <select id="export-format" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem">

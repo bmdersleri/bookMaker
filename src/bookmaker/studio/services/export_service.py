@@ -11,6 +11,59 @@ from pathlib import Path
 from bookmaker.manifest.manager import ManifestManager
 
 
+def _chapter_alias(chapter) -> str:
+    return chapter.chapter_id or chapter.alias or ""
+
+
+def _chapter_matches(chapter, chapter_id: str) -> bool:
+    return chapter_id in {chapter.chapter_id, chapter.alias}
+
+
+def _chapter_source(chapter) -> str:
+    alias = _chapter_alias(chapter)
+    return chapter.source or f"chapters/{alias}/content/final.md"
+
+
+def _output_dir(root: Path, *parts: str) -> Path:
+    out = root / "exports" / Path(*parts)
+    out.mkdir(parents=True, exist_ok=True)
+    return out
+
+
+def _detect_code_language(root: Path) -> str:
+    manifest = ManifestManager(root).load_or_generate()
+    lang = (manifest.style.code_language or "").strip().lower()
+    if lang:
+        return lang
+    framework = (manifest.style.framework or "").strip().lower()
+    if framework == "flutter":
+        return "dart"
+    return "java"
+
+
+def get_export_targets(project_root: str | Path) -> dict:
+    """Return project-based output targets for the Build/Export panel."""
+    root = Path(project_root).resolve()
+    language = _detect_code_language(root)
+    targets = {
+        "markdown": str(Path("exports") / "md"),
+        "docx": str(Path("exports") / "docx"),
+        "pdf": str(Path("exports") / "pdf"),
+        "epub": str(Path("exports") / "epub"),
+        "html": str(Path("exports") / "html"),
+        "code": str(Path("exports") / "code" / language),
+        "mermaid": str(Path("exports") / "assets" / "mermaid"),
+        "backups": str(Path("exports") / "backups"),
+    }
+    for rel in targets.values():
+        (root / rel).mkdir(parents=True, exist_ok=True)
+    return {
+        "root": str(Path("exports")),
+        "code_language": language,
+        "targets": targets,
+    }
+
+
 def assemble_book(project_root: str | Path,
                   chapter_ids: list[str] | None = None) -> dict:
     """Tüm bölüm markdown'larını birleştirip kitap.md olarak kaydeder."""
@@ -20,17 +73,17 @@ def assemble_book(project_root: str | Path,
 
     targets = []
     for ch in manifest.chapters:
-        if chapter_ids and ch.chapter_id not in chapter_ids:
+        cid = _chapter_alias(ch)
+        if chapter_ids and not any(_chapter_matches(ch, item) for item in chapter_ids):
             continue
-        src = ch.source
-        p = root / src if src else None
+        src = _chapter_source(ch)
+        p = root / src
         if p and p.exists():
-            targets.append((ch.order, ch.chapter_id, ch.title or ch.chapter_id, p))
+            targets.append((ch.order, cid, ch.title or cid, p))
 
     targets.sort(key=lambda x: x[0])
 
-    out_dir = root / "build"
-    out_dir.mkdir(parents=True, exist_ok=True)
+    out_dir = _output_dir(root, "md")
 
     toc_lines = ["# İçindekiler\n"]
     body_parts = []
@@ -67,20 +120,18 @@ def export_to_format(project_root: str | Path, fmt: str,
         return assembled
 
     md_path = root / assembled["path"]
-    out_dir = root / "build" / "exports"
-    out_dir.mkdir(parents=True, exist_ok=True)
-
     fmt_map = {
-        "docx": ("docx", ".docx"),
-        "pdf": ("pdf", ".pdf"),
-        "epub": ("epub", ".epub"),
-        "html": ("html", ".html"),
+        "docx": ("docx", ".docx", "docx"),
+        "pdf": ("pdf", ".pdf", "pdf"),
+        "epub": ("epub", ".epub", "epub"),
+        "html": ("html", ".html", "html"),
     }
 
     if fmt not in fmt_map:
         return {"error": f"Desteklenmeyen format: {fmt}. docx/pdf/epub/html desteklenir."}
 
-    pandoc_fmt, ext = fmt_map[fmt]
+    pandoc_fmt, ext, target_dir = fmt_map[fmt]
+    out_dir = _output_dir(root, target_dir)
     out_path = out_dir / f"kitap{ext}"
 
     cmd = [
@@ -92,7 +143,7 @@ def export_to_format(project_root: str | Path, fmt: str,
     ]
 
     # DOCX için referans şablon
-    ref_docx = root / "build" / "referenceV17_java_temelleri.docx"
+    ref_docx = root / "exports" / "reference.docx"
     if fmt == "docx" and ref_docx.exists():
         cmd.extend(["--reference-doc", str(ref_docx)])
 
@@ -127,49 +178,46 @@ def render_mermaid(project_root: str | Path,
     else:
         mgr = ManifestManager(root)
         manifest = mgr.load_or_generate()
-        chapters_to_scan = [ch.chapter_id for ch in manifest.chapters]
+        chapters_to_scan = [_chapter_alias(ch) for ch in manifest.chapters]
 
-    out_dir = root / "build" / "mermaid_images"
-    out_dir.mkdir(parents=True, exist_ok=True)
+    out_dir = _output_dir(root, "assets", "mermaid")
 
     rendered = 0
     errors = []
     images: list[str] = []
 
+    manifest = ManifestManager(root).load_or_generate()
     for cid in chapters_to_scan:
-        # Bölüm metnini bul
-        for path_candidate in [
-            root / "chapters" / cid / "approved",
-        ]:
-            if not path_candidate.exists():
-                continue
-            for f in sorted(path_candidate.glob("*.md")):
-                text = f.read_text(encoding="utf-8")
-                blocks = re.findall(r'```mermaid\n(.*?)```', text, re.DOTALL)
-                for i, block in enumerate(blocks):
-                    mmd_path = out_dir / f"{cid}_diagram_{i+1:03d}.mmd"
-                    mmd_path.write_text(block.strip(), encoding="utf-8")
+        src = next((_chapter_source(ch) for ch in manifest.chapters
+                    if _chapter_matches(ch, cid)), None)
+        p = root / src if src else None
+        if not p or not p.exists():
+            errors.append(f"{cid}: icerik bulunamadi")
+            continue
+        text = p.read_text(encoding="utf-8")
+        blocks = re.findall(r'```mermaid\n(.*?)```', text, re.DOTALL)
+        for i, block in enumerate(blocks):
+            mmd_path = out_dir / f"{cid}_diagram_{i+1:03d}.mmd"
+            mmd_path.write_text(block.strip(), encoding="utf-8")
 
-                    png_path = mmd_path.with_suffix(".png")
-                    try:
-                        proc = subprocess.run(
-                            ["mmdc", "-i", str(mmd_path), "-o", str(png_path),
-                             "-b", "white"],
-                            capture_output=True, text=True, timeout=30)
-                        if proc.returncode == 0:
-                            rendered += 1
-                            images.append(str(png_path.relative_to(root)))
-                        else:
-                            errors.append(f"{cid}:{i+1} -> {proc.stderr[:100]}")
-                    except FileNotFoundError:
-                        errors.append("mmdc bulunamadi. npm install -g @mermaid-js/mermaid-cli")
-                        break
-                    except subprocess.TimeoutExpired:
-                        errors.append(f"{cid}:{i+1} -> Timeout")
-                    except Exception as e:
-                        errors.append(f"{cid}:{i+1} -> {str(e)[:50]}")
-                break  # sadece ilk dosyayı tara
-            break
+            png_path = mmd_path.with_suffix(".png")
+            try:
+                proc = subprocess.run(
+                    ["mmdc", "-i", str(mmd_path), "-o", str(png_path),
+                     "-b", "white"],
+                    capture_output=True, text=True, timeout=30)
+                if proc.returncode == 0:
+                    rendered += 1
+                    images.append(str(png_path.relative_to(root)))
+                else:
+                    errors.append(f"{cid}:{i+1} -> {proc.stderr[:100]}")
+            except FileNotFoundError:
+                errors.append("mmdc bulunamadi. npm install -g @mermaid-js/mermaid-cli")
+                break
+            except subprocess.TimeoutExpired:
+                errors.append(f"{cid}:{i+1} -> Timeout")
+            except Exception as e:
+                errors.append(f"{cid}:{i+1} -> {str(e)[:50]}")
 
     result = {
         "rendered": rendered,
@@ -183,57 +231,66 @@ def render_mermaid(project_root: str | Path,
 
 def extract_code(project_root: str | Path,
                  chapter_id: str | None = None) -> dict:
-    """Tüm veya tek bölümden Java kod bloklarını ayıklar."""
+    """Tüm veya tek bölümden profile-aware kod bloklarını ayıklar."""
     root = Path(project_root).resolve()
+    language = _detect_code_language(root)
 
     if chapter_id:
         chapters_to_extract = [chapter_id]
     else:
         mgr = ManifestManager(root)
         manifest = mgr.load_or_generate()
-        chapters_to_extract = [ch.chapter_id for ch in manifest.chapters]
+        chapters_to_extract = [_chapter_alias(ch) for ch in manifest.chapters]
 
-    out_dir = root / "build" / "code"
+    out_dir = _output_dir(root, "code", language)
     total_extracted = 0
     results = []
+    lang_ext = {"dart": ".dart", "java": ".java", "python": ".py",
+                "javascript": ".js", "html": ".html", "css": ".css",
+                "xml": ".xml"}
+    ext = lang_ext.get(language, ".txt")
+    manifest = ManifestManager(root).load_or_generate()
 
     for cid in chapters_to_extract:
-        for path_candidate in [root / "chapters" / cid / "approved"]:
-            if not path_candidate.exists():
-                results.append({"chapter_id": cid, "extracted": 0,
-                                "error": "Klasor yok"})
-                break
-            for f in sorted(path_candidate.glob("*.md")):
-                text = f.read_text(encoding="utf-8")
-                blocks = re.findall(r'```java\n(.*?)```', text, re.DOTALL)
+        src = next((_chapter_source(ch) for ch in manifest.chapters
+                    if _chapter_matches(ch, cid)), None)
+        p = root / src if src else None
+        if not p or not p.exists():
+            results.append({"chapter_id": cid, "extracted": 0,
+                            "error": "Icerik yok"})
+            continue
+        text = p.read_text(encoding="utf-8")
+        blocks = re.findall(rf'```{re.escape(language)}\n(.*?)```', text, re.DOTALL)
 
-                ch_dir = out_dir / cid
-                ch_dir.mkdir(parents=True, exist_ok=True)
-                ch_extracted = 0
+        ch_dir = out_dir / cid
+        ch_dir.mkdir(parents=True, exist_ok=True)
+        ch_extracted = 0
 
-                for i, block in enumerate(blocks):
-                    first_line = block.strip().splitlines()[0] if block.strip() else ""
-                    class_match = re.search(r'class\s+(\w+)', first_line)
-                    base_name = class_match.group(1) if class_match else f"block_{i+1:03d}"
-                    fname = f"{base_name}.java"
-                    fpath = ch_dir / fname
+        for i, block in enumerate(blocks):
+            first_line = block.strip().splitlines()[0] if block.strip() else ""
+            name_match = re.search(
+                r'(?:class|void|Future<[^>]+>|Widget|State<[^>]+>|func|def|function)\s+(\w+)',
+                first_line,
+            )
+            base_name = name_match.group(1) if name_match else f"block_{i+1:03d}"
+            fname = f"{base_name}{ext}"
+            fpath = ch_dir / fname
 
-                    idx = 1
-                    while fpath.exists():
-                        fname = f"{base_name}_{idx:03d}.java"
-                        fpath = ch_dir / fname
-                        idx += 1
+            idx = 1
+            while fpath.exists():
+                fname = f"{base_name}_{idx:03d}{ext}"
+                fpath = ch_dir / fname
+                idx += 1
 
-                    fpath.write_text(block, encoding="utf-8")
-                    ch_extracted += 1
-                    total_extracted += 1
+            fpath.write_text(block, encoding="utf-8")
+            ch_extracted += 1
+            total_extracted += 1
 
-                results.append({"chapter_id": cid, "extracted": ch_extracted})
-                break
-            break
+        results.append({"chapter_id": cid, "extracted": ch_extracted})
 
     return {
         "total_extracted": total_extracted,
+        "language": language,
         "output_dir": str(out_dir.relative_to(root)),
         "details": results,
     }
@@ -242,8 +299,7 @@ def extract_code(project_root: str | Path,
 def create_backup(project_root: str | Path) -> dict:
     """Projenin .zip yedeğini oluşturur."""
     root = Path(project_root).resolve()
-    backup_dir = root / "build" / "backups"
-    backup_dir.mkdir(parents=True, exist_ok=True)
+    backup_dir = _output_dir(root, "backups")
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     zip_name = f"backup_{root.name}_{timestamp}.zip"
@@ -252,10 +308,10 @@ def create_backup(project_root: str | Path) -> dict:
     try:
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
             for item in root.rglob("*"):
-                # build/backups ve build/.pytest_cache'ı hariç tut
+                # Runtime/cache dizinlerini yedek içine tekrar alma.
                 rel = item.relative_to(root)
                 parts = rel.parts
-                if len(parts) > 1 and parts[0] == "build":
+                if len(parts) > 1 and parts[0] in {"build", "exports"}:
                     if parts[1] in ("backups", ".pytest_cache", "__pycache__",
                                     ".ruff_cache", ".continue"):
                         continue
@@ -279,12 +335,19 @@ def restore_backup(project_root: str | Path, zip_path_str: str) -> dict:
 
     if not zip_path.is_absolute():
         zip_path = root / zip_path_str
+    zip_path = zip_path.resolve()
 
     if not zip_path.exists():
         return {"error": f"Dosya bulunamadi: {zip_path}"}
+    if not zip_path.is_relative_to(root):
+        return {"error": "Yedek dosyasi proje disinda olamaz."}
 
     try:
         with zipfile.ZipFile(zip_path, "r") as zf:
+            for member in zf.namelist():
+                target = (root / member).resolve()
+                if not target.is_relative_to(root):
+                    return {"error": "Yedek arsivinde guvensiz yol var."}
             zf.extractall(root)
         return {"restored": True, "files": len(zf.namelist())}
     except Exception as e:

@@ -327,6 +327,43 @@ def test_build_no_source(tmp_path):
     assert "error" in r
 
 
+def test_export_service_uses_project_exports_and_alias_sources(tmp_path):
+    root = _create_test_project(tmp_path)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: Flutter Demo\n"
+        "  alias: flutter-demo\n"
+        "style:\n"
+        "  code_language: dart\n"
+        "  framework: flutter\n"
+        "chapters:\n"
+        "  - alias: giris\n",
+        encoding="utf-8",
+    )
+    content_dir = root / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True)
+    (content_dir / "final.md").write_text(
+        "# Giriş\n\n```dart\nvoid main() {}\n```\n",
+        encoding="utf-8",
+    )
+
+    from bookmaker.studio.services import export_service
+
+    targets = export_service.get_export_targets(root)
+    assert targets["root"] == "exports"
+    assert targets["code_language"] == "dart"
+    assert targets["targets"]["docx"].replace("\\", "/") == "exports/docx"
+
+    assembled = export_service.assemble_book(root)
+    assert assembled["chapters"] == 1
+    assert assembled["path"].replace("\\", "/") == "exports/md/kitap_birlestirilmis.md"
+
+    extracted = export_service.extract_code(root, "giris")
+    assert extracted["language"] == "dart"
+    assert extracted["total_extracted"] == 1
+    assert extracted["output_dir"].replace("\\", "/") == "exports/code/dart"
+
+
 def test_wizard_creates_project_based_book(tmp_path):
     from bookmaker.manifest.models import BookManifest, PipelineState
     from bookmaker.studio.services import wizard_service

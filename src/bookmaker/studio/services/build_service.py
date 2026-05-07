@@ -14,9 +14,15 @@ def build_docx(project_root: str | Path, chapter_id: str,
     if source_path:
         p = root / source_path
     else:
+        project_content = root / "chapters" / chapter_id / "content"
         base = root / "chapters" / chapter_id / "approved"
-        candidates = [base / f"{chapter_id}_v001.md",
-                      base / f"{chapter_id}_v002.md", base / "v001.md"]
+        candidates = [
+            project_content / "final.md",
+            project_content / "draft.md",
+            base / f"{chapter_id}_v001.md",
+            base / f"{chapter_id}_v002.md",
+            base / "v001.md",
+        ]
         p = next((c for c in candidates if c.exists()), None)
     if not p or not p.exists():
         return {"error": f"Kaynak bulunamadi: {chapter_id}"}
