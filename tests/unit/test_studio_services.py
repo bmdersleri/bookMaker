@@ -476,6 +476,87 @@ def test_export_service_uses_project_exports_and_alias_sources(tmp_path):
     assert extracted["output_dir"].replace("\\", "/") == "exports/code/dart"
 
 
+def test_assemble_book_uses_draft_fallback_when_final_missing(tmp_path):
+    root = tmp_path / "book_projects" / "assemble-draft-fallback"
+    content_dir = root / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  alias: assemble-draft-fallback\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    order: 1\n",
+        encoding="utf-8",
+    )
+    (content_dir / "draft.md").write_text("# Giriş\n\nTaslak içerik.", encoding="utf-8")
+
+    from bookmaker.studio.services import export_service
+
+    assembled = export_service.assemble_book(root)
+
+    assert "error" not in assembled
+    assert assembled["chapters"] == 1
+    assert assembled["sources"][0]["source_kind"] == "draft"
+    assert "Taslak içerik." in assembled["output"]
+
+
+def test_assemble_book_reports_sources(tmp_path):
+    root = tmp_path / "book_projects" / "assemble-sources"
+    (root / "chapters" / "giris" / "content").mkdir(parents=True)
+    (root / "chapters" / "kurulum" / "content").mkdir(parents=True)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  alias: assemble-sources\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    order: 1\n"
+        "  - alias: kurulum\n"
+        "    order: 2\n",
+        encoding="utf-8",
+    )
+    (root / "chapters" / "giris" / "content" / "final.md").write_text(
+        "# Giriş\n\nFinal içerik.",
+        encoding="utf-8",
+    )
+    (root / "chapters" / "kurulum" / "content" / "draft.md").write_text(
+        "# Kurulum\n\nTaslak içerik.",
+        encoding="utf-8",
+    )
+
+    from bookmaker.studio.services import export_service
+
+    assembled = export_service.assemble_book(root)
+
+    assert "error" not in assembled
+    assert assembled["chapters"] == 2
+    sources = {row["chapter_id"]: row for row in assembled["sources"]}
+    assert sources["giris"]["source_kind"] == "final"
+    assert sources["kurulum"]["source_kind"] == "draft"
+    assert assembled["skipped"] == []
+
+
+def test_assemble_book_errors_when_no_readable_chapters(tmp_path):
+    root = tmp_path / "book_projects" / "assemble-empty"
+    root.mkdir(parents=True)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  alias: assemble-empty\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    order: 1\n",
+        encoding="utf-8",
+    )
+
+    from bookmaker.studio.services import export_service
+
+    assembled = export_service.assemble_book(root)
+
+    assert assembled["error"] == "Export icin okunabilir bolum bulunamadi."
+    assert assembled["sources"] == []
+    assert assembled["chapters"] == 0
+    assert assembled["skipped"][0]["chapter_id"] == "giris"
+
+
 def test_quality_service_compile_code_uses_flutter_adapter(tmp_path):
     root = _create_test_project(tmp_path)
     (root / "book_manifest.yaml").write_text(

@@ -7,14 +7,11 @@ from pathlib import Path
 
 from bookmaker.manifest.manager import ManifestManager
 from bookmaker.manifest.pipeline import PipelineManager
-
-
-def _chapter_alias(chapter) -> str:
-    return chapter.chapter_id or chapter.alias or ""
-
-
-def _chapter_matches(chapter, chapter_id: str) -> bool:
-    return chapter_id in {chapter.chapter_id, chapter.alias}
+from bookmaker.production.sources import (
+    chapter_alias,
+    chapter_matches,
+    resolve_chapter_source,
+)
 
 
 def _final_required_for_export(root: Path) -> bool:
@@ -23,26 +20,6 @@ def _final_required_for_export(root: Path) -> bool:
         return bool(state.quality_gates.per_chapter.final_required_for_export)
     except Exception:
         return True
-
-
-def _chapter_candidates(root: Path, chapter) -> list[tuple[Path, str]]:
-    alias = _chapter_alias(chapter)
-    candidates: list[tuple[Path, str]] = []
-
-    if chapter.source:
-        candidates.append(((root / chapter.source).resolve(), "manifest"))
-
-    base = root / "chapters" / alias
-    candidates.extend(
-        [
-            ((base / "content" / "final.md").resolve(), "final"),
-            ((base / "content" / "draft.md").resolve(), "draft"),
-            ((base / "approved" / f"{alias}_v001.md").resolve(), "legacy"),
-            ((base / "approved" / f"{alias}_v002.md").resolve(), "legacy"),
-            ((base / "approved" / "v001.md").resolve(), "legacy"),
-        ]
-    )
-    return candidates
 
 
 def _check_pandoc() -> tuple[bool, str]:
@@ -99,7 +76,7 @@ def check_export_readiness(
     if chapter_ids:
         for cid in chapter_ids:
             chapter = next(
-                (ch for ch in manifest.chapters if _chapter_matches(ch, cid)),
+                (ch for ch in manifest.chapters if chapter_matches(ch, cid)),
                 None,
             )
             if chapter is None:
@@ -112,16 +89,9 @@ def check_export_readiness(
     final_required = _final_required_for_export(root)
 
     for chapter in selected:
-        alias = _chapter_alias(chapter)
-        resolved_path: Path | None = None
-        resolved_kind = ""
-        for candidate, kind in _chapter_candidates(root, chapter):
-            if candidate.exists():
-                resolved_path = candidate
-                resolved_kind = kind
-                break
-
-        if resolved_path is None:
+        alias = chapter_alias(chapter)
+        resolved = resolve_chapter_source(root, chapter)
+        if resolved is None:
             errors.append(f"Bölüm içeriği bulunamadi: {alias}")
             chapters.append(
                 {
@@ -133,6 +103,8 @@ def check_export_readiness(
             )
             continue
 
+        resolved_path = resolved["path"]
+        resolved_kind = resolved["source_kind"]
         chapter_ready = True
         if final_required and resolved_kind != "final":
             chapter_ready = False

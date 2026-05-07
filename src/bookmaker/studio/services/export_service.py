@@ -11,19 +11,24 @@ from pathlib import Path
 from bookmaker.manifest.manager import ManifestManager
 from bookmaker.production.export_report import write_export_report
 from bookmaker.production.readiness import check_export_readiness
+from bookmaker.production.sources import (
+    chapter_alias,
+    chapter_matches,
+    default_chapter_source,
+    resolve_chapter_source,
+)
 
 
 def _chapter_alias(chapter) -> str:
-    return chapter.chapter_id or chapter.alias or ""
+    return chapter_alias(chapter)
 
 
 def _chapter_matches(chapter, chapter_id: str) -> bool:
-    return chapter_id in {chapter.chapter_id, chapter.alias}
+    return chapter_matches(chapter, chapter_id)
 
 
 def _chapter_source(chapter) -> str:
-    alias = _chapter_alias(chapter)
-    return chapter.source or f"chapters/{alias}/content/final.md"
+    return default_chapter_source(chapter)
 
 
 def _output_dir(root: Path, *parts: str) -> Path:
@@ -83,17 +88,63 @@ def assemble_book(project_root: str | Path,
     mgr = ManifestManager(root)
     manifest = mgr.load_or_generate()
 
+    requested_ids = set(chapter_ids or [])
     targets = []
+    sources: list[dict] = []
+    skipped: list[dict] = []
+    matched_requested: set[str] = set()
+
     for ch in manifest.chapters:
         cid = _chapter_alias(ch)
         if chapter_ids and not any(_chapter_matches(ch, item) for item in chapter_ids):
             continue
-        src = _chapter_source(ch)
-        p = root / src
-        if p and p.exists():
-            targets.append((ch.order, cid, ch.title or cid, p))
+        if chapter_ids:
+            for item in chapter_ids:
+                if _chapter_matches(ch, item):
+                    matched_requested.add(item)
+
+        resolved = resolve_chapter_source(root, ch)
+        if resolved is None:
+            skipped.append(
+                {
+                    "chapter_id": cid,
+                    "reason": "Okunabilir kaynak bulunamadi.",
+                }
+            )
+            continue
+
+        path = resolved["path"]
+        source = resolved["source"]
+        source_kind = resolved["source_kind"]
+        targets.append((ch.order, cid, ch.title or cid, path))
+        sources.append(
+            {
+                "chapter_id": cid,
+                "source": source,
+                "source_kind": source_kind,
+            }
+        )
 
     targets.sort(key=lambda x: x[0])
+    sources.sort(key=lambda x: next((t[0] for t in targets if t[1] == x["chapter_id"]), 0))
+
+    if chapter_ids:
+        for requested in requested_ids:
+            if requested not in matched_requested:
+                skipped.append(
+                    {
+                        "chapter_id": requested,
+                        "reason": "Manifestte bolum bulunamadi.",
+                    }
+                )
+
+    if not targets:
+        return {
+            "error": "Export icin okunabilir bolum bulunamadi.",
+            "sources": [],
+            "skipped": skipped,
+            "chapters": 0,
+        }
 
     out_dir = _output_dir(root, "md")
 
@@ -114,6 +165,8 @@ def assemble_book(project_root: str | Path,
         "words": len(full_text.split()),
         "chars": len(full_text),
         "chapters": len(targets),
+        "sources": sources,
+        "skipped": skipped,
         "output": full_text[:500],
     }
 
