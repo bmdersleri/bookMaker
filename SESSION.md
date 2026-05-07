@@ -9,16 +9,14 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 ## ŞU AN
 
 ```text
-Aktif Faz       : MIGRATION.md - FAZ 5 Studio ve Servis Katmanı (TAMAMLANDI)
-Son Oturum      : 2026-05-07 - FAZ 5 kalan 5 adım tamamlandı
+Aktif Faz       : FAZ 5 tamamlandı; book_profile.yaml eliminasyonu + GUI iyileştirmeleri yapıldı
+Son Oturum      : 2026-05-07 - book_profile eliminasyonu, export UI, inline edit, pipeline tracking, repo temizliği
 Repo            : D:\bookMaker_clean
-Önceki Repo     : D:\bookMaker_Deepseek  # artık geliştirme için kullanılmamalı
-Branch          : feat/chapter-validator-profile-modes
-Base            : local main üzerindeki ad348a0 + origin/main üzerindeki 4e9a4e8
+Branch          : main  (tek branch, diğerleri silindi)
 Remote          : origin
-Son Kod Commit  : FAZ 5 kapanış — observer, manifest temizliği, pipeline profili, CODE_META uyumu
-Durum           : FAZ 4 + FAZ 5 tamamlandı; sıradaki FAZ 7 ileri seviye (v2.0) veya kullanıcı yönlendirmesi
-Dikkat          : Repo kökünde geçici *.ps1 dosyası varsa commit'e alınmamalı
+Son Kod Commit  : f11f41c — inline chapter title editing + pipeline job detail tracking
+Durum           : FAZ 4 + FAZ 5 tamam; book_profile.yaml kaldırıldı; GUI'de inline edit + pipeline detay paneli var
+Test            : 218 passed, ruff clean
 ```
 
 ---
@@ -1407,6 +1405,84 @@ Tamamlananlar:
 Sıradaki:
 - FAZ 5 / Aşama 9: Flutter kabul senaryosunu tamamla
 - observer_service review üretimi ve logs/reviews yazımı
+```
+
+---
+
+## 2026-05-07 Oturumu — book_profile.yaml Eliminasyonu + Export UI
+
+### Yapılan İşler
+
+#### 1. book_profile.yaml Tamamen Kaldırıldı
+
+`book_profile.yaml` ve `book_manifest.yaml` arasındaki çift konfigürasyon sorunu çözüldü. Tek kaynak: `book_manifest.yaml`.
+
+- **`manifest/models.py`** — `PandocConfig`, `MermaidConfig`, `OutputsConfig` Pydantic modelleri eklendi, `BookManifest`'e opsiyonel alan olarak bağlandı.
+- **`core/config.py`** — `BookConfig._load()` artık önce `book_manifest.yaml` okuyor, `book_profile.yaml` fallback. `_manifest_to_raw()` converter'ı manifest modelini legacy dict formatına dönüştürüyor.
+- **`core/paths.py`** — `find_project_root()` önce `book_manifest.yaml`, sonra `book_profile.yaml` arıyor.
+- **`manifest/manager.py`** — `profile_path()`, `architecture_path()` kaldırıldı. `load_or_generate()` basitleştirildi.
+- **`studio/services/wizard_service.py`** — `_create_book_profile()` ve `_create_llm_config()` tamamen kaldırıldı. `_create_book_manifest()` artık pandoc/mermaid/outputs konfigürasyonlarını da içeriyor, kod dili algılama iyileştirildi.
+- **`generation/postprocess.py`**, **`production/*.py`** — Docstring'ler güncellendi.
+- **`book_projects/python-programlama-giris/book_profile.yaml`**, **`test_proje/book_profile.yaml`** — Silindi.
+
+#### 2. Export UI İyileştirmeleri
+
+Build/Export sekmesine export konfigürasyon kontrolleri eklendi:
+
+- **`export_service.py`** — `export_to_format()` artık opsiyonel `reference_doc`, `lua_filter`, `toc_depth` parametreleri alıyor. Çözüm sırası: parametre → manifest → varsayılan.
+- **`app.py`** — `POST /api/export/{fmt}` endpoint'i yeni parametreleri iletiliyor.
+- **`index.html`** — Build/Export sekmesine Referans DOCX, Lua Filter, TOC Derinliği input'ları içeren "Export Konfigurasyonu" kartı eklendi.
+- **`index.html`** — Yapılandırma sekmesine "Export" alt sekmesi eklendi (pandoc ayarları + output format checkbox'ları).
+- **`app.js`** — `populateConfigForm()`, `saveManifestConfig()`, `switchConfigTab()` export alanları için güncellendi. `loadExportConfig()` / `saveExportConfig()` helper'ları eklendi. `runExport()` artık UI kontrollerinden konfigürasyon okuyor.
+
+#### 3. CHAPTER_PRODUCTION.md
+
+6 aşamalı pipeline dokümantasyonu (SPEC → VALIDATE → SEED → NORMALIZE → ENRICH → ASSEMBLE) oluşturuldu.
+
+### Doğrulama
+
+```text
+uv run ruff check src/     -> PASS
+uv run pytest tests/ -q    -> 218 passed
+```
+
+---
+
+## 2026-05-07 Oturumu — Inline Chapter Title Editing + Pipeline Job Detail Tracking
+
+### Yapılan İşler
+
+#### 1. Bölüm Başlıklarında Inline Edit
+
+- **`app.js`** — `renderTable()` içinde başlık hücreleri `<span class="editable-title">` olarak render ediliyor. Çift tıklamada input'a dönüşüyor, Enter/blur kaydediyor (`PUT /api/chapters/{id}`), Escape iptal ediyor. Backend değişikliği gerekmedi — endpoint zaten `title` alanını destekliyordu.
+- **`styles.css`** — `.editable-title` (hover'da dashed underline) ve `.chapter-title-input` stilleri.
+
+#### 2. Pipeline Job Detail Paneli
+
+- **`jobs.py`** — Job veri yapısına `steps` listesi eklendi. `_run_pipeline()` içinde her adım başlangıcında `{name, status, started_at}`, bitişinde `{elapsed_s, prompt_file, output_file}` kaydediliyor. `_parse_iso()` yardımcısı eklendi.
+- **`app.js`** — `loadJobs()` job row'larını tıklanabilir hale getirdi. `toggleJobDetail()` genişleyen detay panelini açıp kapatıyor. `buildJobDetail()` şunları render ediyor: progress bar, parametreler (başlık/kavram), hata mesajı, adım tablosu (isim, durum, prompt dosyası, çıktı dosyası, süre), özet (kelime, enrichment sayısı, toplam süre), log yolu.
+- **`styles.css`** — `.job-detail-row`, `.job-steps-table` stilleri.
+
+### Doğrulama
+
+```text
+uv run ruff check src/     -> PASS
+uv run pytest tests/ -q    -> 218 passed
+```
+
+---
+
+## 2026-05-07 Oturumu — Git Repo Temizliği
+
+- Tüm branch'ler (`deepseek`, `copilot`, `feat/chapter-validator-profile-modes`) silindi.
+- Sadece `main` branch kaldı.
+- `main` force-push ile remote'a yansıtıldı.
+- Tüm kaynak kod `main` üzerinde commit'li.
+
+```text
+Branch: main (tek)
+Son commit: f11f41c
+Remote: origin/main
 ```
 
 ---
