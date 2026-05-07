@@ -1340,13 +1340,14 @@ document.addEventListener('DOMContentLoaded', init);
 var buildPanelInitialized = false;
 function initBuildPanel() {
   loadBuildTargets();
+  loadExportReadiness();
   if (!buildPanelInitialized) {
     buildPanelInitialized = true;
     fetch('/api/chapters').then(function(r){return r.json();}).then(function(chs){
-      ['extract-chapter','mermaid-chapter'].forEach(function(id){
+      ['extract-chapter','mermaid-chapter','code-validate-chapter'].forEach(function(id){
         var sel=document.getElementById(id);
         if(!sel) return;
-        sel.innerHTML='<option value="">Tum Bolumler</option>'+chs.map(function(ch){
+        sel.innerHTML='<option value="">'+(id==='code-validate-chapter'?'Bolum secin...':'Tum Bolumler')+'</option>'+chs.map(function(ch){
           return '<option value="'+ch.chapter_id+'">'+escHtml(ch.chapter_id)+'</option>';
         }).join('');
       });
@@ -1383,6 +1384,100 @@ async function loadBuildTargets() {
     }
   } catch(e) {
     el.innerHTML = '<div class="message error">Export hedefleri yuklenemedi: '+escHtml(e.message)+'</div>';
+  }
+}
+
+async function loadExportReadiness() {
+  var fmt = document.getElementById('readiness-fmt').value || 'docx';
+  var el = document.getElementById('readiness-result');
+  var badge = document.getElementById('readiness-badge');
+  if (!el) return;
+  el.innerHTML = '<span class="spinner"></span> Readiness kontrol ediliyor...';
+  if (badge) badge.textContent = '...';
+  try {
+    var r = await fetch('/api/export/readiness?fmt=' + encodeURIComponent(fmt));
+    var d = await r.json();
+    var statusColors = { ok: 'success', warning: 'warning', error: 'danger' };
+    var statusIcons = { ok: '✓', warning: '⚠', error: '✗' };
+    var sc = statusColors[d.status] || 'neutral';
+    var html = '<div class="message ' + sc + '" style="margin-bottom:.5rem">' +
+      (statusIcons[d.status] || '') + ' Export Readiness: <strong>' + d.status.toUpperCase() + '</strong>' +
+      (d.ready ? ' (hazir)' : ' (hazir degil)') + '</div>';
+    if (badge) {
+      badge.textContent = d.status.toUpperCase();
+      badge.className = 'badge tag ' + sc;
+    }
+    if (d.checks && d.checks.length) {
+      html += '<div class="checklist">';
+      for (var i = 0; i < d.checks.length; i++) {
+        var c = d.checks[i];
+        var cs = statusColors[c.status] || 'neutral';
+        html += '<div class="check-item"><span class="check-icon tag ' + cs + '">' +
+          (statusIcons[c.status] || '?') + '</span><span class="check-name">' +
+          escHtml(c.name) + '</span><span class="check-msg">' + escHtml(c.message) + '</span></div>';
+      }
+      html += '</div>';
+    }
+    if (d.errors && d.errors.length) {
+      html += '<div class="message error" style="margin-top:.25rem">' + d.errors.map(escHtml).join('<br>') + '</div>';
+    }
+    if (d.warnings && d.warnings.length) {
+      html += '<div class="message warning" style="margin-top:.25rem">' + d.warnings.map(escHtml).join('<br>') + '</div>';
+    }
+    el.innerHTML = html;
+  } catch (e) {
+    el.innerHTML = '<div class="message error">Readiness kontrolu basarisiz: ' + escHtml(e.message) + '</div>';
+  }
+}
+
+async function runCodeValidate() {
+  var cid = document.getElementById('code-validate-chapter').value;
+  var el = document.getElementById('code-validate-result');
+  if (!el) return;
+  if (!cid) { el.innerHTML = '<div class="message warning">Lutfen bir bolum secin.</div>'; return; }
+  el.innerHTML = '<span class="spinner"></span> Kod kontrol ediliyor...';
+  try {
+    var r = await fetch('/api/code/validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chapter_id: cid })
+    });
+    var d = await r.json();
+    if (d.error) { el.innerHTML = '<div class="message error">' + escHtml(d.error) + '</div>'; return; }
+    var statusColors = { ok: 'success', error: 'danger', empty: 'neutral', skipped: 'warning' };
+    var sc = statusColors[d.status] || 'neutral';
+    var html = '<div class="message ' + sc + '" style="margin-bottom:.5rem">' +
+      '<strong>Adapter:</strong> ' + escHtml(d.adapter || '-') +
+      ' &middot; <strong>Dil:</strong> ' + escHtml(d.language || '-') +
+      ' &middot; <strong>Blok:</strong> ' + (d.blocks || 0) +
+      ' &middot; <strong>Durum:</strong> <span class="tag ' + sc + '">' + (d.status || '-').toUpperCase() + '</span></div>';
+    if (d.summary) {
+      html += '<div class="summary-bar">' +
+        '<span class="tag success">OK: ' + (d.summary.ok || 0) + '</span> ' +
+        '<span class="tag danger">Error: ' + (d.summary.error || 0) + '</span> ' +
+        '<span class="tag warning">Skipped: ' + (d.summary.skipped || 0) + '</span> ' +
+        '<span class="tag neutral">Total: ' + (d.summary.total || 0) + '</span></div>';
+    }
+    if (d.results && d.results.length) {
+      var errors = d.results.filter(function (r) { return r.status === 'error'; });
+      if (errors.length) {
+        html += '<div style="margin-top:.5rem"><strong>Hatalar (' + errors.length + '):</strong></div>';
+        for (var i = 0; i < Math.min(errors.length, 5); i++) {
+          var errs = errors[i].errors || [];
+          html += '<div class="message error" style="margin-top:2px;font-size:.85rem">' +
+            '#' + errors[i].block + ': ' + escHtml(errs.join('; ') || 'derleme hatasi') + '</div>';
+        }
+      }
+      var skipped = d.results.filter(function (r) { return r.status === 'skipped'; });
+      if (skipped.length) {
+        html += '<div style="margin-top:.25rem;font-size:.85rem;color:var(--muted)">' +
+          skipped.length + ' blok atlandi (' +
+          skipped.map(function (s) { return s.reason || '?'; }).slice(0, 3).join(', ') + ')</div>';
+      }
+    }
+    el.innerHTML = html;
+  } catch (e) {
+    el.innerHTML = '<div class="message error">Kod kontrolu basarisiz: ' + escHtml(e.message) + '</div>';
   }
 }
 
@@ -1444,8 +1539,13 @@ async function runExport() {
   try {
     var r=await fetch('/api/export/'+fmt,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     var d=await r.json();
-    if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
-    el.innerHTML='<div class="message success">'+fmt.toUpperCase()+' export tamam: '+escHtml(d.path)+' ('+d.size_bytes+' bytes)</div>';
+    if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';
+      if(d.report_url){el.innerHTML+=' <a href="'+escHtml(d.report_url)+'" target="_blank" class="link-small">[Rapor]</a>';}
+      return;}
+    var links='';
+    if(d.output_url){links+=' <a href="'+escHtml(d.output_url)+'" target="_blank" class="link-small">[Ciktiyi ac]</a>';}
+    if(d.report_url){links+=' <a href="'+escHtml(d.report_url)+'" target="_blank" class="link-small">[Rapor]</a>';}
+    el.innerHTML='<div class="message success">'+fmt.toUpperCase()+' export tamam: '+escHtml(d.path)+' ('+d.size_bytes+' bytes)'+links+'</div>';
   } catch(e) { el.innerHTML='<div class="message error">'+e.message+'</div>'; }
 }
 

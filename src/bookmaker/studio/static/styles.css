@@ -187,4 +187,18 @@ tr:hover{background:#f9fafb}
 .job-steps-table { width: 100%; font-size: .88rem; border-collapse: collapse; }
 .job-steps-table th { font-size: .78rem; padding: 4px 8px; text-align: left; }
 .job-steps-table td { padding: 4px 8px; border-bottom: 1px solid var(--border); font-size: .85rem; }
+
+/* Export readiness checklist */
+.checklist { display: flex; flex-direction: column; gap: .3rem; margin-top: .25rem; }
+.check-item { display: flex; align-items: center; gap: .5rem; font-size: .9rem; padding: 2px 0; }
+.check-icon { min-width: 1.6rem; text-align: center; }
+.check-name { font-weight: 600; min-width: 8rem; }
+.check-msg { color: var(--muted); font-size: .88rem; }
+
+/* Code validation summary bar */
+.summary-bar { display: flex; gap: .5rem; align-items: center; margin-top: .25rem; }
+
+/* Export link styling */
+.link-small { font-size: .85rem; margin-left: .25rem; color: var(--primary); }
+.link-small:hover { text-decoration: underline; }
 .job-steps-table code { font-size: .8rem; background: var(--surface); padding: 1px 4px; border-radius: 3px; }

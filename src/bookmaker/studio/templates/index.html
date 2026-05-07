@@ -194,6 +194,37 @@
   </div>
 
   <div class="card">
+    <div class="card-header"><h2>Export Readiness</h2><span id="readiness-badge" class="badge">-</span></div>
+    <div class="card-body">
+      <p class="muted-copy">Export oncesi pandoc, referans dosyasi ve bolum durumlarini kontrol eder.</p>
+      <div class="inline-actions">
+        <select id="readiness-fmt">
+          <option value="docx">DOCX</option>
+          <option value="pdf">PDF</option>
+          <option value="epub">EPUB</option>
+          <option value="html">HTML</option>
+        </select>
+        <button class="btn outline" onclick="loadExportReadiness()">Kontrol Et</button>
+      </div>
+      <div id="readiness-result" class="result-box"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Kod Dogrulama</h2></div>
+    <div class="card-body">
+      <p class="muted-copy">Adapter tabanli kod derleme/syntax kontrolu yapar. Sonucu ok/error/skipped ozetiyle gosterir.</p>
+      <div class="inline-actions">
+        <select id="code-validate-chapter">
+          <option value="">Bolum secin...</option>
+        </select>
+        <button class="btn primary" onclick="runCodeValidate()">Kod Kontrol</button>
+      </div>
+      <div id="code-validate-result" class="result-box"></div>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-header"><h2>Kod Cikarma</h2></div>
     <div class="card-body">
       <p id="extract-description" class="muted-copy">Kod bloklarini profile gore ayiklayip exports/code/ altina kaydeder.</p>

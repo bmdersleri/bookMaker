@@ -92,7 +92,7 @@ bookMaker/
 │   └── llm/                      # LLM API client
 │       ├── config.py             # LLMConfig (reads llm_config.json)
 │       └── openai.py             # OpenAICompatibleClient
-├── tests/                        # Test suite (279 tests)
+├── tests/                        # Test suite (289 tests)
 │   ├── unit/
 │   │   ├── test_studio_app.py    # API endpoint tests
 │   │   └── test_studio_services.py
@@ -456,7 +456,7 @@ uv sync
 # Lint
 uv run ruff check src/
 
-# Test (223 passed)
+# Test (289 passed)
 uv run pytest tests/ -q --tb=short
 
 # Start Studio GUI

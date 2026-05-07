@@ -139,6 +139,51 @@ def test_index_page() -> None:
     assert 'id="wiz-book-type"' in resp.text
     assert 'id="wiz-chapter-count"' in resp.text
     assert 'onclick="nextWiz()"' in resp.text
+    # FAZ 6.6: export readiness, code validation, export link hooks
+    assert 'id="readiness-result"' in resp.text
+    assert 'id="readiness-badge"' in resp.text
+    assert 'id="code-validate-result"' in resp.text
+    assert 'id="code-validate-chapter"' in resp.text
+    assert 'onclick="loadExportReadiness()"' in resp.text
+    assert 'onclick="runCodeValidate()"' in resp.text
+
+
+def test_studio_template_contains_export_readiness_ui_hooks() -> None:
+    if app is None:
+        return
+    from fastapi.testclient import TestClient
+    client = TestClient(app)
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert 'id="readiness-result"' in resp.text
+    assert 'id="readiness-badge"' in resp.text
+    assert 'id="readiness-fmt"' in resp.text
+    assert 'onclick="loadExportReadiness()"' in resp.text
+
+
+def test_studio_template_contains_code_validation_summary_hooks() -> None:
+    if app is None:
+        return
+    from fastapi.testclient import TestClient
+    client = TestClient(app)
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert 'id="code-validate-result"' in resp.text
+    assert 'id="code-validate-chapter"' in resp.text
+    assert 'onclick="runCodeValidate()"' in resp.text
+
+
+def test_studio_template_contains_export_report_link_hooks() -> None:
+    if app is None:
+        return
+    from fastapi.testclient import TestClient
+    client = TestClient(app)
+    resp = client.get("/")
+    assert resp.status_code == 200
+    # Export result div exists (where links appear after export)
+    assert 'id="export-result"' in resp.text
+    # Export button triggers link rendering in runExport()
+    assert 'onclick="runExport()"' in resp.text
 
 
 def test_api_projects_uses_book_manifest(tmp_path) -> None:

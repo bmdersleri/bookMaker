@@ -49,7 +49,7 @@ bookmaker check book <kitap-dizini>      # CLI kalite kontrol
 | **Bolumler** | Tablo (sirala, filtrele, sayfala), drag-drop siralama, **basliklara cift tiklayip inline edit**, toplu silme, bolum ekleme wizard'i, bolum bazli Gor/ Kontrol/Build/Uret butonlari |
 | **Pipeline** | Manuel tetikleme, canli progress bar, **job detay paneli** (adim adim prompt→cikti eslesmesi + sure), iptal, job gecmisi |
 | **Kalite** | Kitap ozeti (skor/karar/hata/uyari), bolum kalite tablosu, kontrol modali, istatistikler, tam metin arama |
-| **Build/Export** | Export hedefleri, **readiness pre-check** (`/api/export/readiness`), referans DOCX / lua filter / TOC derinligi secimi, kod cikarma, Mermaid render, birlestirme, format export, yedekleme |
+| **Build/Export** | Export hedefleri, **readiness pre-check** (`/api/export/readiness`), **kod dogrulama** (adapter tabanli ok/error/skipped), referans DOCX / lua filter / TOC derinligi secimi, kod cikarma, Mermaid render, birlestirme, format export (output/report linkleriyle), yedekleme |
 | **Promptlar** | Varsayilan/bolum prompt editoru, dirty-state uyarisi, yukle/kaydet |
 | **Yapilandirma** | `book_manifest.yaml` full editor (Kitap Bilgisi, Uretim, Stil, Otomasyon, Export alt sekmeleri) |
 
@@ -166,7 +166,7 @@ bookmaker check chapter chapters/giris/content/draft.md --book-root book_project
 
 ```powershell
 uv run ruff check src/                      # lint
-uv run pytest tests/ -q --tb=short           # 279 passed
+uv run pytest tests/ -q --tb=short           # 289 passed
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
 ```
 
