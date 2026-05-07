@@ -118,10 +118,12 @@ uv run pytest tests/ -q --tb=short  # test (218 passed)
 |-------|------|
 | `SESSION.md` | Oturum gunlugu |
 | `CLAUDE.md` | Agent talimatlari |
-| `CHAPTER_PRODUCTION.md` | Pipeline dokumantasyonu |
-| `GUI_ROADMAP.md` | Studio GUI yol haritasi |
-| `MIGRATION.md` | project-based mimari gecis kaydi (tamamlandi) |
+| `CHAPTER_PRODUCTION.md` | 6 asamali pipeline dokumantasyonu |
+| `GUI_ROADMAP.md` | Studio GUI yol haritasi (Faz 1-6 tamam) |
 | `CHANGELOG.md` | Surum gecmisi |
+| `MIGRATION.md` | project-based mimari gecis kaydi (tamamlandi) |
+| `book_project_dir.md` | Kitap proje klasor standardi |
+| `docs/` | Tarihi tasarim ve planlama dokumanlari |
 
 ---
 

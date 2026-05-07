@@ -1,6 +1,10 @@
 # bookMaker Studio — GUI Gereksinim Manifesti
 
-> **Versiyon:** 2.0 | **Tarih:** 2026-05-04 | **Durum:** Onaylı — kodlamaya hazır
+> **TARIHI KAYIT (2026-05-04).** Bu dokuman GUI'nin ilk gereksinim manifestidir.
+> Aktif gelistirme takibi icin: `GUI_ROADMAP.md` (repo kökü).
+> Bircok ozellik (inline edit, pipeline detail, export kontrolleri) bu manifestte yoktur.
+
+**Versiyon:** 2.0 | **Tarih:** 2026-05-04 | **Durum:** Onaylı — kodlamaya hazır
 
 ---
 
