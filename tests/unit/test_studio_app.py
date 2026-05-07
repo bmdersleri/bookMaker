@@ -248,3 +248,60 @@ def test_api_chapters_reorder_route_precedes_dynamic_update(tmp_path) -> None:
         assert [chapter["chapter_id"] for chapter in chapters] == ["iki", "bir", "uc"]
     finally:
         studio_app._active_book = previous
+
+
+def test_api_prompt_endpoints_roundtrip(tmp_path) -> None:
+    if app is None:
+        return
+    from fastapi.testclient import TestClient
+
+    from bookmaker.studio import app as studio_app
+    from bookmaker.studio.services import wizard_service
+
+    result = wizard_service.create_book(
+        tmp_path,
+        {
+            "project_name": "prompt-demo",
+            "title": "Prompt Demo",
+            "author": "Test Yazar",
+            "chapters": ["giris"],
+        },
+    )
+    assert "error" not in result
+    project = tmp_path / "book_projects" / "prompt-demo"
+
+    previous = studio_app._active_book
+    studio_app._active_book = str(project)
+    try:
+        client = TestClient(app)
+
+        resp = client.get("/api/prompts/default/chapter")
+        assert resp.status_code == 200
+        assert resp.json()["path"].replace("\\", "/") == "prompts/default_chapter.md"
+
+        resp = client.put(
+            "/api/prompts/default/chapter",
+            json={"content": "Updated default chapter prompt"},
+        )
+        assert resp.status_code == 200
+        assert resp.json()["status"] == "ok"
+        assert (project / "prompts" / "default_chapter.md").read_text(
+            encoding="utf-8",
+        ) == "Updated default chapter prompt"
+
+        resp = client.get("/api/prompts/default/review")
+        assert resp.status_code == 200
+        assert resp.json()["path"].replace("\\", "/") == "prompts/default_review.md"
+
+        resp = client.put(
+            "/api/prompts/chapter/giris",
+            json={"content": "Updated chapter prompt"},
+        )
+        assert resp.status_code == 200
+        assert resp.json()["path"].replace("\\", "/") == "chapters/giris/prompt.md"
+
+        resp = client.get("/api/prompts/chapter/giris")
+        assert resp.status_code == 200
+        assert resp.json()["content"] == "Updated chapter prompt"
+    finally:
+        studio_app._active_book = previous

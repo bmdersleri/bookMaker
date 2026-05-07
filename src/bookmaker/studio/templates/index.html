@@ -173,12 +173,12 @@
     <div class="card-header"><h2>Promptlar</h2><span class="badge" id="prompt-path">-</span></div>
     <div class="card-body">
       <div class="filter-bar">
-        <select id="prompt-scope" onchange="updatePromptControls()">
+        <select id="prompt-scope" onchange="handlePromptSelectionChange()">
           <option value="default_chapter">Varsayılan Bölüm</option>
           <option value="default_review">Varsayılan Review</option>
           <option value="chapter">Bölüm Promptu</option>
         </select>
-        <select id="prompt-chapter" class="hidden"></select>
+        <select id="prompt-chapter" class="hidden" onchange="handlePromptSelectionChange()"></select>
         <button class="btn outline" onclick="loadSelectedPrompt()">Yükle</button>
         <button class="btn primary" id="prompt-save" onclick="saveSelectedPrompt()" disabled>Kaydet</button>
       </div>

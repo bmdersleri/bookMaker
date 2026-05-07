@@ -10,14 +10,14 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 
 ```text
 Aktif Faz       : MIGRATION.md - FAZ 5 Studio ve Servis Katmanı
-Son Oturum      : 2026-05-06 - Codex FAZ 5 Studio project-based wizard geçişi
+Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio prompt editörü
 Repo            : D:\bookMaker_clean
 Önceki Repo     : D:\bookMaker_Deepseek  # artık geliştirme için kullanılmamalı
 Branch          : feat/chapter-validator-profile-modes
 Base            : local main üzerindeki ad348a0 + origin/main üzerindeki 4e9a4e8
 Remote          : origin
-Son Kod Commit  : 1d07f32 Align Studio wizard with project manifests
-Durum           : FAZ 4 tamamlandı; FAZ 5 başladı, Studio GUI roadmap hazırlandı ve Playwright GUI test altyapısı kuruldu
+Son Kod Commit  : Complete Studio prompt editor workflow
+Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, Prompt Editörü dirty-state/API doğrulaması tamamlandı
 Dikkat          : Repo kökünde geçici *.ps1 dosyası varsa commit'e alınmamalı
 ```
 
@@ -871,6 +871,72 @@ Sonuç: 209 passed, 1 PytestCacheWarning
 
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
 Sonuç: skor 100, karar pass, hata 0, uyarı 0
+```
+
+### FAZ 5 / Studio GUI Aşama 4 - Prompt Editörü Dirty-state ve API Testleri
+
+Promptlar sekmesindeki mevcut yükle/kaydet akışı kullanılabilir hale getirildi
+ve kaydedilmemiş değişiklik davranışı netleştirildi.
+
+Yapılanlar:
+
+```text
+- Prompt scope veya bölüm seçimi değişirken kaydedilmemiş değişiklik varsa
+  kullanıcıdan onay alınıyor.
+- Promptlar sekmesinden başka sekmeye geçerken kaydedilmemiş değişiklik varsa
+  onay iptal edildiğinde kullanıcı Promptlar sekmesinde kalıyor.
+- Prompt path rozeti kirli durumda `(kaydedilmedi)` bilgisini gösteriyor.
+- Prompt kaydı sonrası path rozeti ve dirty state temizleniyor.
+- Studio API prompt endpointleri için roundtrip test eklendi:
+  GET/PUT /api/prompts/default/chapter
+  GET /api/prompts/default/review
+  PUT/GET /api/prompts/chapter/{alias}
+```
+
+Tarayıcı doğrulaması:
+
+```text
+URL: http://127.0.0.1:8765
+Browser plugin: mevcut değil; normal Playwright kullanıldı.
+Screenshot: F:\Temp\Temp\bookmaker-prompt-step4.png
+
+Playwright sonucu:
+- Promptlar sekmesi açıldı.
+- prompts/default_chapter.md yüklendi.
+- editör değiştirilince path rozetinde kaydedilmedi bilgisi göründü.
+- Bölümler sekmesine geçişte kaydedilmemiş değişiklik onayı çıktı.
+- onay iptal edilince Promptlar sekmesinde kalındı.
+- orijinal içerik aynı şekilde kaydedildi; Flutter prompt içeriği kalıcı
+  değiştirilmedi.
+- console errors/warnings: []
+```
+
+Doğrulama:
+
+```text
+node --check src/bookmaker/studio/static/app.js
+Sonuç: PASS
+
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/unit/test_studio_app.py tests/unit/test_studio_services.py -q --tb=short
+Sonuç: 37 passed, 1 PytestCacheWarning
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 213 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+
+git diff --check
+Sonuç: PASS
+```
+
+Commit:
+
+```text
+Complete Studio prompt editor workflow
 ```
 
 ---

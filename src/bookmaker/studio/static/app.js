@@ -427,6 +427,11 @@ async function showAllPipeline() { switchTab('pipeline'); await loadPipelineStat
 
 // =========== TABS / MODAL / HELPERS ===========
 function switchTab(name) {
+  var activeTab = document.querySelector('.tab-content.active');
+  if (activeTab && activeTab.id === 'tab-prompts' && name !== 'prompts' && !confirmPromptDiscard()) {
+    showPromptMessage('Kaydedilmemis degisiklik korunuyor.', 'warning');
+    return;
+  }
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   var at=document.querySelector('.tab[data-tab="'+name+'"]'); if(at) at.classList.add('active');
@@ -727,6 +732,7 @@ async function runSearch() {
 // =========== PROMPT PANEL ===========
 let currentPromptEndpoint = null;
 let promptDirty = false;
+let lastPromptSelection = null;
 
 function selectedPromptEndpoint() {
   var scope = document.getElementById('prompt-scope')?.value || 'default_chapter';
@@ -769,6 +775,38 @@ function updatePromptControls() {
   if (chapter) chapter.classList.toggle('hidden', scope !== 'chapter');
 }
 
+function snapshotPromptSelection() {
+  lastPromptSelection = {
+    scope: document.getElementById('prompt-scope')?.value || 'default_chapter',
+    chapter: document.getElementById('prompt-chapter')?.value || ''
+  };
+}
+
+function restorePromptSelection() {
+  if (!lastPromptSelection) return;
+  var scope = document.getElementById('prompt-scope');
+  var chapter = document.getElementById('prompt-chapter');
+  if (scope) scope.value = lastPromptSelection.scope;
+  if (chapter) chapter.value = lastPromptSelection.chapter;
+  updatePromptControls();
+}
+
+function confirmPromptDiscard() {
+  if (!promptDirty) return true;
+  return window.confirm('Kaydedilmemis prompt degisikligi var. Degisikligi kaybetmek istiyor musunuz?');
+}
+
+function handlePromptSelectionChange() {
+  if (!confirmPromptDiscard()) {
+    restorePromptSelection();
+    showPromptMessage('Kaydedilmemis degisiklik korunuyor.', 'warning');
+    return;
+  }
+  updatePromptControls();
+  snapshotPromptSelection();
+  loadSelectedPrompt(true);
+}
+
 function showPromptMessage(message, type) {
   var el = document.getElementById('prompt-message');
   if (!el) return;
@@ -781,15 +819,24 @@ function markPromptDirty() {
   promptDirty = true;
   var btn = document.getElementById('prompt-save');
   if (btn && currentPromptEndpoint) btn.disabled = false;
+  var path = document.getElementById('prompt-path');
+  if (path && !path.textContent.includes('kaydedilmedi')) {
+    path.textContent = (path.textContent || '-') + ' (kaydedilmedi)';
+  }
 }
 
-async function loadSelectedPrompt() {
+async function loadSelectedPrompt(skipDirtyCheck) {
   var endpoint = selectedPromptEndpoint();
   var editor = document.getElementById('prompt-editor');
   var path = document.getElementById('prompt-path');
   var save = document.getElementById('prompt-save');
   if (!endpoint || !editor) {
     showPromptMessage('Once bir bolum secin.', 'warning');
+    return;
+  }
+  if (!skipDirtyCheck && !confirmPromptDiscard()) {
+    showPromptMessage('Kaydedilmemis degisiklik korunuyor.', 'warning');
+    restorePromptSelection();
     return;
   }
   editor.disabled = true;
@@ -807,6 +854,7 @@ async function loadSelectedPrompt() {
     promptDirty = false;
     if (save) save.disabled = true;
     if (path) path.textContent = data.path || '-';
+    snapshotPromptSelection();
     showPromptMessage('Prompt yuklendi.', 'success');
   } catch(e) {
     showPromptMessage('Prompt yuklenemedi: ' + e.message, 'error');
@@ -840,6 +888,7 @@ async function saveSelectedPrompt() {
     if (document.getElementById('prompt-path')) {
       document.getElementById('prompt-path').textContent = data.path || '-';
     }
+    snapshotPromptSelection();
     showPromptMessage('Prompt kaydedildi.', 'success');
     showToast('Prompt kaydedildi', 'success');
   } catch(e) {
