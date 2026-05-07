@@ -88,7 +88,16 @@ def _fallback_content(key: str, chapter_title: str) -> str:
 
 
 class ChapterGenerator:
-    """Bolum ureticisi. Tek model (DeepSeek Chat) ile calisir.
+    """Bölüm üreticisi.
+
+    Tek modelli, manifest-tabanlı üretim orkestratörüdür.
+
+    Kanonik akış `generate_chapter_with_spec()` ve Studio pipeline üzerinden
+    yürür: `SPEC -> VALIDATE -> SEED -> NORMALIZE -> ENRICH -> ASSEMBLE`.
+    Bu 6 adım BookMaker'in referans üretim hattıdır.
+
+    `generate_chapter()` geriye uyumluluk için korunur ve basit/legacy
+    4-adımlı akışı izler: `SEED -> NORMALIZE -> ENRICH -> ASSEMBLE`.
 
     Kullanim:
         gen = ChapterGenerator("book_projects/java-temelleri")
@@ -99,11 +108,11 @@ class ChapterGenerator:
         )
 
     Uretim stratejileri:
-        generate_chapter()              -> Temel 4-asama (seed/norm/enrich/assemble)
-        generate_chapter_with_spec()    -> Spec-gudumlu (+ opsiyonel deepen)
+        generate_chapter()               -> Temel 4-asama (seed/norm/enrich/assemble)
+        generate_chapter_with_spec()     -> Spec-gudumlu (+ opsiyonel deepen)
         generate_chapter_with_spec_deep() -> Spec + deepen her zaman
-        generate_chapter_sectioned()    -> Parca bazli uretim
-        generate_chapter_two_pass()     -> Iki-gecisli (taslak + deepen)
+        generate_chapter_sectioned()     -> Parça bazlı, bölüm bölüm üretim
+        generate_chapter_two_pass()      -> Iki-gecisli (taslak + deepen)
     """
 
     def __init__(self, project_root: str | Path) -> None:
@@ -405,7 +414,7 @@ class ChapterGenerator:
         Tum ara ciktilari gen_dir altina kaydeder, sonuclari result'a yazar.
         Normalize edilmis metni dondurur.
         """
-        code_lang = self.config.primary_code_language
+        code_lang = self.code_language
 
         # STEP 0: SPEC
         print("\n--- ADIM 0: SPEC ---")
@@ -582,7 +591,7 @@ class ChapterGenerator:
                 f"- Kod örneklerinden sonra satır satır açıklama ekle\n\n"
                 f"YAZIM KURALLARI:\n"
                 f"- H2 = '{section_title}' başlığıyla başla\n"
-                f"- Gerekli kod örneklerini ```java bloklarında ver\n"
+                f"- Gerekli kod örneklerini ```{code_lang} bloklarında ver\n"
                 f"- Gerekli diyagramları ```mermaid bloklarında ver\n"
                 f"- Sadece bu alt bölümün içeriğini üret, diğer bölümlere girme\n"
                 f"- Sadece içeriğe odaklan, meta etiketi ekleme"

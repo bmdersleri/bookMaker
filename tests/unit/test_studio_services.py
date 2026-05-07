@@ -161,6 +161,28 @@ def test_quality_service_reads_alias_only_project_chapter(tmp_path):
     assert stats["word_distribution"][0]["chapter_id"] == "giris"
 
 
+def test_get_chapter_content_falls_back_to_draft(tmp_path):
+    root = _create_test_project(tmp_path)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: Draft Fallback\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    title: Giriş\n",
+        encoding="utf-8",
+    )
+    content_dir = root / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True, exist_ok=True)
+    (content_dir / "draft.md").write_text("# Giriş\n\nTaslak içerik.", encoding="utf-8")
+
+    from bookmaker.studio.services import quality_service
+
+    content = quality_service.get_chapter_content(root, "giris")
+
+    assert content["path"].replace("\\", "/") == "chapters/giris/content/draft.md"
+    assert "Taslak içerik." in content["full"]
+
+
 def test_quality_service_returns_book_quality_summary(tmp_path):
     from bookmaker.studio.services import quality_service, wizard_service
 
@@ -483,6 +505,38 @@ def test_quality_service_compile_code_uses_flutter_adapter(tmp_path):
     assert result["language"] == "dart"
     assert result["blocks"] == 1
     assert all(item["status"] == "skipped" for item in result["results"])
+
+
+def test_legacy_extract_code_blocks_is_deprecated_or_adapter_compatible(tmp_path):
+    import warnings
+
+    root = _create_test_project(tmp_path)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: Legacy Extract\n"
+        "  alias: legacy-extract\n"
+        "style:\n"
+        "  code_language: java\n"
+        "chapters:\n"
+        "  - alias: giris\n",
+        encoding="utf-8",
+    )
+    content_dir = root / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True, exist_ok=True)
+    (content_dir / "final.md").write_text(
+        "# Giriş\n\n```java\npublic class Demo {}\n```\n",
+        encoding="utf-8",
+    )
+
+    from bookmaker.studio.services import quality_service
+
+    with warnings.catch_warnings(record=True) as captured:
+        warnings.simplefilter("always")
+        result = quality_service.extract_code_blocks(root, "giris", "java")
+
+    assert result["chapter_id"] == "giris"
+    assert result["extracted"] == 1
+    assert any(item.category is DeprecationWarning for item in captured)
 
 
 def test_wizard_creates_project_based_book(tmp_path):

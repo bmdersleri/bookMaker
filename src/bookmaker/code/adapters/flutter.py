@@ -6,6 +6,13 @@ from bookmaker.code.adapters.base import CodeAdapter
 
 
 class FlutterCodeAdapter(CodeAdapter):
+    """Flutter/Dart adapter placeholder.
+
+    Şimdilik skip davranışı korunur. Bu, profile-aware hattın Flutter
+    projelerinde Java derlemesine düşmesini engelleyen güvenli ara basamaktır.
+    Sonraki adımda `dart analyze` ve `flutter test` yürütülecektir.
+    """
+
     name = "flutter"
     language = "dart"
     fence_languages = ("dart",)
@@ -20,4 +27,3 @@ class FlutterCodeAdapter(CodeAdapter):
             }
             for index, _ in enumerate(blocks)
         ]
-

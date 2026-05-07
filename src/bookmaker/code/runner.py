@@ -6,6 +6,7 @@ from bookmaker.code.adapters import (
     JavaCodeAdapter,
     PythonCodeAdapter,
     ReactCodeAdapter,
+    ReviewOnlyAdapter,
 )
 
 
@@ -35,4 +36,4 @@ def select_code_adapter(
         "ts",
     }:
         return ReactCodeAdapter()
-    return JavaCodeAdapter()
+    return ReviewOnlyAdapter()

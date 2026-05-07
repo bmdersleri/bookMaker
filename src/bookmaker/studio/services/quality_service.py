@@ -96,9 +96,18 @@ def get_chapter_content(project_root: str | Path, chapter_id: str) -> dict:
                 if _chapter_matches(ch, chapter_id)), None)
     if not src:
         return {"error": f"Bölüm bulunamadi: {chapter_id}"}
-    base = root / "chapters" / chapter_id / "approved"
-    candidates = [root / src, base / f"{chapter_id}_v001.md",
-                  base / f"{chapter_id}_v002.md", base / "v001.md"]
+    base = root / "chapters" / chapter_id
+    draft = base / "content" / "draft.md"
+    final = base / "content" / "final.md"
+    legacy_base = base / "approved"
+    candidates = [
+        root / src,
+        final,
+        draft,
+        legacy_base / f"{chapter_id}_v001.md",
+        legacy_base / f"{chapter_id}_v002.md",
+        legacy_base / "v001.md",
+    ]
     for p in candidates:
         if p.exists():
             text = p.read_text(encoding="utf-8")
@@ -338,7 +347,20 @@ def compile_code(project_root: str | Path, chapter_id: str) -> dict:
 
 def extract_code_blocks(project_root: str | Path, chapter_id: str,
                         language: str = "java") -> dict:
-    """Kod bloklarını ayıklayıp build/code/ altına .java dosyası olarak kaydeder."""
+    """Legacy kod çıkarma yardımı.
+
+    Yeni akışta `quality_service.compile_code()` profile-aware adapter
+    kullanır. Bu fonksiyon geriye uyumluluk için tutulur; mümkünse yeni
+    adapter hattını tercih edin.
+    """
+    import warnings
+
+    warnings.warn(
+        "quality_service.extract_code_blocks() legacy helper'dir; "
+        "compile_code() veya export_service.extract_code() tercih edin.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     root = Path(project_root).resolve()
     text_data = get_chapter_content(root, chapter_id)
     if "error" in text_data:
