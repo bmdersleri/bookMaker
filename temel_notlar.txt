@@ -1,2 +1,0 @@
-Java dosya işlemleri
-Satır satır yazma örneği
