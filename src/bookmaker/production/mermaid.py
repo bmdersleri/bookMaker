@@ -1,6 +1,6 @@
 """Mermaid şema → PNG render (mmdc CLI via PowerShell).
 
-Config kullanimi (book_profile.yaml -> BookConfig -> mermaid_mmdc_cmd):
+Config kullanimi (book_manifest.yaml -> BookConfig -> mermaid_mmdc_cmd):
     config = BookConfig(project_root)
     cmd = config.mermaid_mmdc_cmd  # ['pwsh.exe', '-NoProfile', '-Command', 'mmdc']
 """

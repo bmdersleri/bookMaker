@@ -1,4 +1,4 @@
-"""book_profile.yaml yükleyici — kitap anayasasını okur ve tüm araçlara sunar.
+"""book_manifest.yaml yükleyici — kitap anayasasını okur ve tüm araçlara sunar.
 
 Kullanim:
     config = BookConfig(project_root)
@@ -106,7 +106,8 @@ def _resolve_optional(path: str | Path | None, anchor: Path) -> Path | None:
 # ============================================================
 
 class BookConfig:
-    """Kitap yapilandirmasi — book_profile.yaml'den okunur.
+    """Kitap yapilandirmasi — book_manifest.yaml'den okunur
+    (book_profile.yaml geriye uyumlu fallback).
 
     Ornek:
         config = BookConfig(Path("book_projects/java-temelleri"))
@@ -127,14 +128,100 @@ class BookConfig:
     # ----------------------------------------------------------
 
     def _load(self) -> None:
-        profile = self._root / "book_profile.yaml"
-        if not profile.exists():
+        manifest_path = self._root / "book_manifest.yaml"
+        legacy_path = self._root / "book_profile.yaml"
+
+        if manifest_path.exists():
+            self._raw = self._manifest_to_raw(manifest_path)
+        elif legacy_path.exists():
+            with open(legacy_path, encoding="utf-8") as f:
+                self._raw = yaml.safe_load(f) or {}
+        else:
             raise ConfigError(
-                f"book_profile.yaml bulunamadi: {profile}\n"
-                f"Proje kokunde book_profile.yaml olmali."
+                f"Ne book_manifest.yaml ne de book_profile.yaml bulunamadi: "
+                f"{self._root}\n"
+                f"Proje kokunde book_manifest.yaml olmali."
             )
-        with open(profile, encoding="utf-8") as f:
-            self._raw = yaml.safe_load(f) or {}
+
+    @staticmethod
+    def _manifest_to_raw(manifest_path: Path) -> dict:
+        """book_manifest.yaml'i legacy book_profile.yaml dict formatina donusturur."""
+        from bookmaker.manifest.models import BookManifest
+
+        manifest = BookManifest.load(manifest_path)
+        book = manifest.book
+        style = manifest.style
+        chapters = manifest.chapters
+        pandoc = manifest.pandoc
+        mermaid = manifest.mermaid
+        outputs = manifest.outputs
+
+        raw: dict = {}
+
+        # book bolumu
+        raw["book"] = {
+            "book_id": book.alias or "",
+            "title": {"tr": book.title or ""},
+            "author": book.author or "",
+            "primary_code_language": style.code_language or "java",
+            "level": "beginner",
+            "domain": "programming",
+            "edition": str(book.edition or "1"),
+            "year": str(book.year or "2026"),
+        }
+
+        # language bolumu
+        raw["language"] = {
+            "primary_language": book.language or "tr",
+        }
+
+        # chapters bolumu
+        raw["chapters"] = [
+            {
+                "chapter_id": ch.effective_alias(),
+                "title": ch.title or ch.effective_alias(),
+                "file": ch.source or f"chapters/{ch.effective_alias()}/content/draft.md",
+                "status": ch.status or "planned",
+            }
+            for ch in chapters
+        ]
+
+        # pandoc bolumu (manifest veya defaults)
+        if pandoc:
+            raw["pandoc"] = {
+                "from_format": pandoc.from_format,
+                "filter": pandoc.filter,
+                "reference_doc": pandoc.reference_doc,
+                "toc": pandoc.toc,
+                "toc_depth": pandoc.toc_depth,
+                "toc_title": pandoc.toc_title,
+                "mermaid_image_dir": pandoc.mermaid_image_dir,
+                "mermaid_naming": pandoc.mermaid_naming,
+                "callout_icon_dir": pandoc.callout_icon_dir,
+                "pagebreak_marker": pandoc.pagebreak_marker,
+            }
+
+        # mermaid bolumu (manifest veya defaults)
+        if mermaid:
+            raw["mermaid"] = {
+                "renderer": mermaid.renderer,
+                "shell": mermaid.shell,
+                "shell_path": mermaid.shell_path,
+                "background": mermaid.background,
+                "output_format": mermaid.output_format,
+                "timeout_seconds": mermaid.timeout_seconds,
+            }
+
+        # outputs bolumu (manifest veya defaults)
+        if outputs:
+            raw["outputs"] = {
+                "docx": outputs.docx,
+                "pdf": outputs.pdf,
+                "epub": outputs.epub,
+                "html_site": outputs.html_site,
+            }
+
+        return raw
 
     def reload(self) -> None:
         """Dosyayi yeniden yukler (disardan degisiklik sonrasi)."""
@@ -241,7 +328,7 @@ class BookConfig:
 
     @property
     def chapter_order(self) -> list[str]:
-        """Oncelikle book_profile.yaml'daki siralamayi dene,
+        """Oncelikle manifest'teki siralamayi dene,
         bulamazsa varsayilan 23+4 sirasini kullan."""
         ids = self.chapter_ids
         return ids if ids else list(_DEFAULT_CHAPTER_ORDER)
@@ -540,10 +627,10 @@ def load_config(
     start: str | Path | None = None,
     book_name: str | None = None,
 ) -> BookConfig:
-    """book_profile.yaml'i bulur ve BookConfig dondurur.
+    """book_manifest.yaml'i bulur ve BookConfig dondurur.
 
     Sirasiyla:
-    1. Verilen start dizininden itibaren book_profile.yaml ara
+    1. Verilen start dizininden itibaren book_manifest.yaml ara
     2. book_name belirtilmisse automation_root/book_projects/<name>/ dene
     3. Hala bulunamazsa ConfigError firlat
 
@@ -562,7 +649,7 @@ def load_config(
     root = find_project_root(start, book_name or "java-temelleri")
     if root is None:
         raise ConfigError(
-            "book_profile.yaml bulunamadi. Bir kitap projesinde "
+            "book_manifest.yaml bulunamadi. Bir kitap projesinde "
             "oldugunuzdan emin olun veya --path ile belirtin."
         )
     return BookConfig(root)

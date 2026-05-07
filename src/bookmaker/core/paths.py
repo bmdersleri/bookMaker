@@ -22,12 +22,14 @@ def find_project_root(
     start: str | Path | None = None,
     book_name: str | None = None,
 ) -> Path | None:
-    """Legacy helper: find a book project containing book_profile.yaml."""
+    """Find a book project containing book_manifest.yaml (or book_profile.yaml)."""
     current = Path(start or Path.cwd()).resolve()
     if current.is_file():
         current = current.parent
 
     for candidate in [current, *current.parents]:
+        if (candidate / "book_manifest.yaml").exists():
+            return candidate
         if (candidate / "book_profile.yaml").exists():
             return candidate
 
@@ -35,6 +37,8 @@ def find_project_root(
         automation_root = find_automation_root(current)
         if automation_root is not None:
             project = automation_root / "book_projects" / book_name
+            if (project / "book_manifest.yaml").exists():
+                return project
             if (project / "book_profile.yaml").exists():
                 return project
 

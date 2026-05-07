@@ -107,12 +107,50 @@ def assemble_book(project_root: str | Path,
 
 
 def export_to_format(project_root: str | Path, fmt: str,
-                     chapter_ids: list[str] | None = None) -> dict:
+                     chapter_ids: list[str] | None = None,
+                     reference_doc: str | None = None,
+                     lua_filter: str | None = None,
+                     toc_depth: int | None = None) -> dict:
     """Birleştirilmiş kitabı hedef formata dönüştürür.
 
     fmt: "docx", "pdf", "epub", "html"
+    reference_doc: Referans DOCX yolu (None = manifest veya varsayilan)
+    lua_filter: Lua filter yolu (None = manifest veya varsayilan)
+    toc_depth: TOC derinligi (None = manifest veya varsayilan 2)
     """
     root = Path(project_root).resolve()
+
+    # Manifest'ten varsayilanlari oku
+    mgr = ManifestManager(root)
+    manifest = mgr.load_or_generate()
+    pandoc_cfg = manifest.pandoc
+
+    # Parametreleri cozumle: verilen > manifest > varsayilan
+    ref_doc = reference_doc
+    if ref_doc is None and pandoc_cfg:
+        ref_doc = pandoc_cfg.reference_doc
+    if ref_doc:
+        ref_path = (root / ref_doc).resolve()
+        if not ref_path.exists():
+            ref_path = None
+    else:
+        ref_path = None
+
+    lua = lua_filter
+    if lua is None and pandoc_cfg:
+        lua = pandoc_cfg.filter
+    if lua:
+        lua_path = (root / lua).resolve()
+        if not lua_path.exists():
+            lua_path = None
+    else:
+        lua_path = None
+
+    depth = toc_depth
+    if depth is None and pandoc_cfg:
+        depth = pandoc_cfg.toc_depth
+    if depth is None:
+        depth = 2
 
     # Önce birleştir
     assembled = assemble_book(root, chapter_ids)
@@ -139,13 +177,14 @@ def export_to_format(project_root: str | Path, fmt: str,
         "-f", "markdown+tex_math_single_backslash",
         "-t", pandoc_fmt,
         "-o", str(out_path),
-        "--toc", "--toc-depth=2",
+        "--toc", f"--toc-depth={depth}",
     ]
 
-    # DOCX için referans şablon
-    ref_docx = root / "exports" / "reference.docx"
-    if fmt == "docx" and ref_docx.exists():
-        cmd.extend(["--reference-doc", str(ref_docx)])
+    if ref_path and ref_path.exists():
+        cmd.extend(["--reference-doc", str(ref_path)])
+
+    if lua_path and lua_path.exists():
+        cmd.extend(["--lua-filter", str(lua_path)])
 
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)

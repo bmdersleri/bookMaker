@@ -18,12 +18,6 @@ class ManifestManager:
     def manifest_path(self) -> Path:
         return self.root / "book_manifest.yaml"
 
-    def profile_path(self) -> Path:
-        return self.root / "book_profile.yaml"
-
-    def architecture_path(self) -> Path:
-        return self.root / "book_architecture.yaml"
-
     def exists(self) -> bool:
         return self.manifest_path().exists()
 
@@ -38,43 +32,10 @@ class ManifestManager:
         return p
 
     def load_or_generate(self) -> BookManifest:
-        """Manifest varsa yükle, yoksa book_profile + architecture'dan oluştur."""
+        """Manifest varsa yukle, yoksa bos BookManifest doner."""
         if self.exists():
             return self.load()
-
-        manifest = BookManifest()
-        profile_p = self.profile_path()
-        arch_p = self.architecture_path()
-
-        if profile_p.exists():
-            from bookmaker.models.book import BookProfile
-
-            profile = BookProfile.from_yaml(profile_p)
-            manifest.book.title = profile.title
-            manifest.book.author = profile.author
-            manifest.book.lang = profile.language
-            manifest.book.automation_profile = profile.quality_profile
-
-        if arch_p.exists():
-            from bookmaker.models.book import BookArchitecture
-
-            arch = BookArchitecture.from_yaml(arch_p)
-            for i, ch in enumerate(arch.chapters, 1):
-                manifest.chapters.append(
-                    type(
-                        "",
-                        (),
-                        {
-                            "order": ch.order,
-                            "chapter_id": ch.chapter_id,
-                            "title": ch.title,
-                            "source": f"chapters/{ch.chapter_id}.md",
-                            "github_slug": ch.chapter_id,
-                        },
-                    )()
-                )
-
-        return manifest
+        return BookManifest()
 
     def validate(self) -> list[str]:
         """Manifest doğrulama — sorun listesi döndürür."""

@@ -222,6 +222,26 @@
   </div>
 
   <div class="card">
+    <div class="card-header"><h2>Export Konfigurasyonu</h2></div>
+    <div class="card-body">
+      <div class="config-form" style="grid-template-columns:1fr 1fr;gap:.75rem">
+        <div class="form-group">
+          <label>Referans DOCX</label>
+          <input type="text" id="export-ref-docx" placeholder="build/reference.docx" onchange="saveExportConfig()">
+        </div>
+        <div class="form-group">
+          <label>Lua Filter</label>
+          <input type="text" id="export-lua-filter" placeholder="build/styles.lua" onchange="saveExportConfig()">
+        </div>
+        <div class="form-group">
+          <label>TOC Derinligi (1-6)</label>
+          <input type="number" id="export-toc-depth" min="1" max="6" value="2" onchange="saveExportConfig()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-header"><h2>Kitap Birlestirme ve Export</h2></div>
     <div class="card-body">
       <p class="muted-copy">Tum bolumleri exports/md altinda birlestir ve formatlari exports/docx, exports/pdf, exports/epub veya exports/html altina aktar.</p>
@@ -276,6 +296,7 @@
         <button class="tab config-sub" data-sub="production" onclick="switchConfigTab('production')">Uretim</button>
         <button class="tab config-sub" data-sub="style" onclick="switchConfigTab('style')">Stil</button>
         <button class="tab config-sub" data-sub="automation" onclick="switchConfigTab('automation')">Otomasyon</button>
+        <button class="tab config-sub" data-sub="export" onclick="switchConfigTab('export')">Export</button>
       </div>
 
       <!-- Book Info -->
@@ -313,6 +334,21 @@
         <div class="form-group"><label>Screenshot/bolum</label><input type="number" id="cfg-min-screenshots" min="0"></div>
         <div class="form-group"><label>QR Politikasi</label><select id="cfg-qr-policy"><option value="none">Yok</option><option value="source">Source</option><option value="page">Page</option><option value="single">Single</option><option value="dual">Dual</option></select></div>
         <div class="form-group"><label><input type="checkbox" id="cfg-github-export"> GitHub Export</label></div>
+      </div>
+
+      <!-- Export / Pandoc -->
+      <div id="cfg-panel-export" class="config-form hidden" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>Referans DOCX</label><input type="text" id="cfg-ref-docx" placeholder="build/reference.docx"></div>
+        <div class="form-group"><label>Lua Filter</label><input type="text" id="cfg-lua-filter" placeholder="build/styles.lua"></div>
+        <div class="form-group"><label>TOC Derinligi</label><input type="number" id="cfg-toc-depth" min="1" max="6" value="2"></div>
+        <div class="form-group"><label>TOC Basligi</label><input type="text" id="cfg-toc-title" placeholder="Icindekiler"></div>
+        <div class="form-group"><label>Mermaid Resim Dizini</label><input type="text" id="cfg-mermaid-dir" placeholder="build/mermaid_images"></div>
+        <div class="form-group"><label>Sayfa Sonu Isareti</label><input type="text" id="cfg-pagebreak" placeholder="\\newpage"></div>
+        <hr style="grid-column:1/-1;margin:4px 0">
+        <div class="form-group"><label><input type="checkbox" id="cfg-output-docx" checked> DOCX</label></div>
+        <div class="form-group"><label><input type="checkbox" id="cfg-output-pdf"> PDF</label></div>
+        <div class="form-group"><label><input type="checkbox" id="cfg-output-epub"> EPUB</label></div>
+        <div class="form-group"><label><input type="checkbox" id="cfg-output-html"> HTML Site</label></div>
       </div>
 
       <div style="margin-top:1rem;display:flex;gap:8px;align-items:center">

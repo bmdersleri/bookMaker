@@ -389,7 +389,15 @@ if FastAPI is not None:
     @app.post("/api/export/{fmt}")
     async def api_export(fmt: str, data: dict | None = None) -> dict:
         chs = (data.get("chapter_ids") if data else None) or None
-        return export_service.export_to_format(get_active_book(), fmt, chs)
+        ref = (data.get("reference_doc") if data else None) or None
+        lua = (data.get("lua_filter") if data else None) or None
+        toc = (data.get("toc_depth") if data else None) or None
+        if toc is not None:
+            toc = int(toc)
+        return export_service.export_to_format(
+            get_active_book(), fmt, chs,
+            reference_doc=ref, lua_filter=lua, toc_depth=toc,
+        )
 
     @app.post("/api/render/mermaid")
     async def api_render_mermaid(data: dict | None = None) -> dict:

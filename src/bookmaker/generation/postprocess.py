@@ -113,7 +113,7 @@ def normalize_headings(text: str) -> str:
 # ============================================================
 
 def build_front_matter(chapter_id: str, title: str, config: BookConfig | None = None) -> str:
-    """book_profile.yaml'daki bilgileri kullanarak YAML front matter olusturur.
+    """Manifest'teki bilgileri kullanarak YAML front matter olusturur.
 
     Args:
         chapter_id: Bolum kimligi (orn. bolum-16)

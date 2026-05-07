@@ -1,5 +1,5 @@
 """Production pipeline — Mermaid, QR, DOCX export.
-book_profile.yaml -> BookConfig ile yapilandirilir."""
+book_manifest.yaml -> BookConfig ile yapilandirilir."""
 
 from __future__ import annotations
 

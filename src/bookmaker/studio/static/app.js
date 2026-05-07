@@ -55,6 +55,22 @@ function populateConfigForm(d) {
   document.getElementById('cfg-min-screenshots').value = a.minimum_screenshots_per_chapter || 0;
   document.getElementById('cfg-qr-policy').value = a.qr_policy || 'none';
   document.getElementById('cfg-github-export').checked = a.github_code_export === true;
+
+  var pd = d.pandoc || {};
+  document.getElementById('cfg-ref-docx').value = pd.reference_doc || '';
+  document.getElementById('cfg-lua-filter').value = pd.filter || '';
+  document.getElementById('cfg-toc-depth').value = pd.toc_depth || 2;
+  document.getElementById('cfg-toc-title').value = pd.toc_title || 'Icindekiler';
+  document.getElementById('cfg-mermaid-dir').value = pd.mermaid_image_dir || '';
+  document.getElementById('cfg-pagebreak').value = pd.pagebreak_marker || '';
+
+  var o = d.outputs || {};
+  document.getElementById('cfg-output-docx').checked = o.docx !== false;
+  document.getElementById('cfg-output-pdf').checked = o.pdf === true;
+  document.getElementById('cfg-output-epub').checked = o.epub === true;
+  document.getElementById('cfg-output-html').checked = o.html_site === true;
+
+  loadExportConfig();
 }
 
 async function saveManifestConfig() {
@@ -87,21 +103,54 @@ async function saveManifestConfig() {
   manifestData.automation.qr_policy = document.getElementById('cfg-qr-policy').value;
   manifestData.automation.github_code_export = document.getElementById('cfg-github-export').checked;
 
+  manifestData.pandoc = manifestData.pandoc || {};
+  manifestData.pandoc.reference_doc = document.getElementById('cfg-ref-docx').value || null;
+  manifestData.pandoc.filter = document.getElementById('cfg-lua-filter').value || null;
+  manifestData.pandoc.toc_depth = parseInt(document.getElementById('cfg-toc-depth').value) || 2;
+  manifestData.pandoc.toc_title = document.getElementById('cfg-toc-title').value || null;
+  manifestData.pandoc.mermaid_image_dir = document.getElementById('cfg-mermaid-dir').value || null;
+  manifestData.pandoc.pagebreak_marker = document.getElementById('cfg-pagebreak').value || null;
+
+  manifestData.outputs = manifestData.outputs || {};
+  manifestData.outputs.docx = document.getElementById('cfg-output-docx').checked;
+  manifestData.outputs.pdf = document.getElementById('cfg-output-pdf').checked;
+  manifestData.outputs.epub = document.getElementById('cfg-output-epub').checked;
+  manifestData.outputs.html_site = document.getElementById('cfg-output-html').checked;
+
   try {
     var r = await fetch('/api/manifest', { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(manifestData) });
     var d = await r.json();
     if (d.error) { document.getElementById('cfg-status').textContent = 'Hata: '+d.error; return; }
     document.getElementById('cfg-status').textContent = 'Kaydedildi ✓';
     setTimeout(function(){ document.getElementById('cfg-status').textContent = ''; }, 2000);
+    loadExportConfig();
   } catch(e) { document.getElementById('cfg-status').textContent = 'Kaydedilemedi: '+e.message; }
 }
 
 function switchConfigTab(name) {
   document.querySelectorAll('.config-sub').forEach(function(t){ t.classList.remove('active'); });
   document.querySelector('.config-sub[data-sub="'+name+'"]').classList.add('active');
-  var panels = { book: 'cfg-panel-book', production: 'cfg-panel-production', style: 'cfg-panel-style', automation: 'cfg-panel-automation' };
+  var panels = { book: 'cfg-panel-book', production: 'cfg-panel-production', style: 'cfg-panel-style', automation: 'cfg-panel-automation', export: 'cfg-panel-export' };
   Object.values(panels).forEach(function(id){ document.getElementById(id).classList.add('hidden'); });
   document.getElementById(panels[name]).classList.remove('hidden');
+}
+
+function loadExportConfig() {
+  var pd = (manifestData && manifestData.pandoc) ? manifestData.pandoc : {};
+  var refEl = document.getElementById('export-ref-docx');
+  var luaEl = document.getElementById('export-lua-filter');
+  var tocEl = document.getElementById('export-toc-depth');
+  if (refEl) refEl.value = pd.reference_doc || '';
+  if (luaEl) luaEl.value = pd.filter || '';
+  if (tocEl) tocEl.value = pd.toc_depth || 2;
+}
+
+function saveExportConfig() {
+  if (!manifestData) return;
+  manifestData.pandoc = manifestData.pandoc || {};
+  manifestData.pandoc.reference_doc = document.getElementById('export-ref-docx').value || null;
+  manifestData.pandoc.filter = document.getElementById('export-lua-filter').value || null;
+  manifestData.pandoc.toc_depth = parseInt(document.getElementById('export-toc-depth').value) || 2;
 }
 
 // =========== CHAPTER WIZARD ===========
@@ -1253,8 +1302,13 @@ async function runExport() {
   var fmt=document.getElementById('export-format').value;
   var el=document.getElementById('export-result');
   el.innerHTML='<span class="spinner"></span> Export ediliyor ('+fmt+')...';
+  var body = {
+    reference_doc: document.getElementById('export-ref-docx').value || null,
+    lua_filter: document.getElementById('export-lua-filter').value || null,
+    toc_depth: parseInt(document.getElementById('export-toc-depth').value) || null
+  };
   try {
-    var r=await fetch('/api/export/'+fmt,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
+    var r=await fetch('/api/export/'+fmt,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     var d=await r.json();
     if(d.error){el.innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
     el.innerHTML='<div class="message success">'+fmt.toUpperCase()+' export tamam: '+escHtml(d.path)+' ('+d.size_bytes+' bytes)</div>';

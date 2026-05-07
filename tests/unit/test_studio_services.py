@@ -481,7 +481,7 @@ def test_wizard_creates_project_based_book(tmp_path):
     assert (project / "chapters" / "giris" / "prompt.md").exists()
     assert (project / "chapters" / "giris" / "content" / "draft.md").exists()
     assert (project / "chapters" / "giris" / "content" / "final.md").exists()
-    assert (project / "book_profile.yaml").exists()
+    assert not (project / "book_profile.yaml").exists()
     assert not (project / "book_architecture.yaml").exists()
     assert not (project / "chapters" / "giris" / "approved").exists()
 

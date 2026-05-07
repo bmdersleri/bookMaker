@@ -109,12 +109,44 @@ class BookChapterRef(BaseModel):
 ManifestChapter = BookChapterRef
 
 
+class PandocConfig(BaseModel):
+    from_format: str = "markdown+tex_math_single_backslash"
+    filter: str = "build/styles_revised_v17.lua"
+    reference_doc: str = "build/referenceV17_java_temelleri.docx"
+    toc: bool = True
+    toc_depth: int = 2
+    toc_title: str = "Icindekiler"
+    mermaid_image_dir: str = "build/mermaid_images"
+    mermaid_naming: str = "diagram_%03d.png"
+    callout_icon_dir: str = "build/callout_icons"
+    pagebreak_marker: str = "\\newpage"
+
+
+class MermaidConfig(BaseModel):
+    renderer: str = "mmdc"
+    shell: str = "pwsh"
+    shell_path: str = "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+    background: str = "white"
+    output_format: str = "png"
+    timeout_seconds: int = 30
+
+
+class OutputsConfig(BaseModel):
+    docx: bool = True
+    pdf: bool = False
+    epub: bool = False
+    html_site: bool = False
+
+
 class BookManifest(BaseModel):
     book: BookInfo = Field(default_factory=BookInfo)
     production: ProductionConfig = Field(default_factory=ProductionConfig)
     style: StyleConfig = Field(default_factory=StyleConfig)
     technical_profile: TechnicalProfile | None = None
     automation: AutomationConfig = Field(default_factory=AutomationConfig)
+    pandoc: PandocConfig | None = None
+    mermaid: MermaidConfig | None = None
+    outputs: OutputsConfig | None = None
     chapters: list[BookChapterRef] = Field(default_factory=list)
 
     @classmethod

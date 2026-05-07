@@ -1,5 +1,5 @@
 """Pandoc + Mermaid ile Markdown → DOCX donusumu.
-book_profile.yaml -> BookConfig ile yapilandirilir:
+book_manifest.yaml -> BookConfig ile yapilandirilir:
   - Referans DOCX (referenceV17_java_temelleri.docx)
   - Lua filter (styles_revised_v17.lua)
   - Mermaid PNG yollari
