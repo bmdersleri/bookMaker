@@ -29,3 +29,11 @@
 - [ ] Commit mesaji anlamli
 - [ ] Push tamamlandi
 - [ ] GitHub Actions gecti
+
+## 5. Toolchain
+
+- [ ] `bookmaker check toolchain` calistirildi
+- [ ] Pandoc mevcut
+- [ ] Node/npm mevcut
+- [ ] Java gerekiyorsa JDK mevcut
+- [ ] Flutter kitap calisilacaksa Dart/Flutter mevcut

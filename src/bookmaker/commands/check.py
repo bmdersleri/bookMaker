@@ -243,3 +243,44 @@ def check_book_command(
 
     if effective_report.error_count > 0:
         raise typer.Exit(1)
+
+
+def check_toolchain_command(
+    json_output: Annotated[
+        bool, typer.Option("--json", help="JSON ciktisi")
+    ] = False,
+) -> None:
+    """Gelistirme araclarinin kurulu olup olmadigini kontrol eder."""
+    from bookmaker.core.toolchain import check_toolchain
+
+    result = check_toolchain()
+
+    if json_output:
+        import json as _json
+        console.print(_json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        console.print()
+        console.print("[bold cyan]bookMaker Toolchain[/bold cyan]")
+        console.print()
+
+        for key, info in result["tools"].items():
+            available = info["available"]
+            version = info.get("version") or "-"
+            if available:
+                console.print(f"  [green]✓[/green] {key} {version}")
+            else:
+                console.print(f"  [yellow]⚠[/yellow] {key} bulunamadi")
+
+        console.print()
+        status = result["status"]
+        color = "green" if status == "ok" else "yellow" if status == "warning" else "red"
+        console.print(f"Status: [{color}]{status}[/{color}]")
+
+        if result["errors"]:
+            for err in result["errors"]:
+                console.print(f"  [red]HATA:[/red] {err}")
+        if result["warnings"]:
+            for warn in result["warnings"]:
+                console.print(f"  [yellow]UYARI:[/yellow] {warn}")
+
+    raise typer.Exit(0 if result["status"] != "error" else 1)

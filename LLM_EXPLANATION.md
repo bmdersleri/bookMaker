@@ -530,7 +530,7 @@ python -m py_compile src/bookMaker/generation/prompts.py
 The repository includes GitHub Actions CI for linting and testing on every push and PR:
 
 - Ruff lint (`src/` and `tests/`)
-- Pytest test suite (294 tests)
+- Pytest test suite (304 tests)
 - Prompt validation
 - Sample Flutter book project quality check
 - Python 3.12 / 3.13 matrix
@@ -543,3 +543,25 @@ uv run pytest tests/ -q --tb=short
 ```
 
 Release readiness is tracked in `RELEASE_CHECKLIST.md`.
+
+---
+
+## 17. Development Environment and Toolchain
+
+The project supports local development and devcontainer/Codespaces-based
+workflows. `.devcontainer/` provides a ready-to-use Dockerfile and
+devcontainer.json.
+
+Core tools: Python 3.12+, uv, Pandoc, Node.js.
+Optional tools: Java JDK, Dart/Flutter, Mermaid CLI.
+
+Check toolchain readiness:
+
+```powershell
+bookmaker check toolchain        # human-readable
+bookmaker check toolchain --json # JSON output
+```
+
+The `src/bookmaker/core/toolchain.py` module provides `check_toolchain()`
+which checks availability and version of all dev tools. Critical tools
+(python, uv) produce errors if missing; all others produce warnings.

@@ -1,0 +1,30 @@
+{
+  "name": "bookMaker Dev",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "ms-python.debugpy",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "editor.formatOnSave": true,
+        "ruff.enable": true
+      }
+    }
+  },
+  "postCreateCommand": "uv sync || true",
+  "forwardPorts": [8765],
+  "portsAttributes": {
+    "8765": {
+      "label": "bookMaker Studio",
+      "onAutoForward": "notify"
+    }
+  }
+}

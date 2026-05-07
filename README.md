@@ -36,7 +36,33 @@ uv sync
 ```powershell
 uv run python -m bookmaker.studio.app    # GUI (http://localhost:8765)
 bookmaker check book <kitap-dizini>      # CLI kalite kontrol
+bookmaker check toolchain                # Gelistirme araci kontrolu
 ```
+
+---
+
+## Development Environment
+
+Onerilen gelistirme ortami:
+
+- Python 3.12+
+- uv
+- Pandoc
+- Node.js + npm
+- Opsiyonel: Java JDK
+- Opsiyonel: Dart/Flutter
+- Opsiyonel: Mermaid CLI (`mmdc`)
+
+Yerel kontrol:
+
+```powershell
+uv sync
+uv run ruff check src/ tests/
+uv run pytest tests/ -q --tb=short
+```
+
+Devcontainer/Codespaces kullaniliyorsa port `8765` otomatik forward edilir.
+`.devcontainer/` altinda hazir Dockerfile ve devcontainer.json mevcuttur.
 
 ---
 
@@ -166,7 +192,7 @@ bookmaker check chapter chapters/giris/content/draft.md --book-root book_project
 
 ```powershell
 uv run ruff check src/                      # lint
-uv run pytest tests/ -q --tb=short           # 294 passed
+uv run pytest tests/ -q --tb=short           # 304 passed
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
 ```
 
