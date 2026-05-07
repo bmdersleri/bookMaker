@@ -19,6 +19,14 @@ production:
     max_tokens: 4000
   generation_mode: chapter_based
   approval_required: true
+  screenshots:
+    enabled: true
+    python_timeout: 15
+    react_timeout: 10
+    viewport_width: 1280
+    viewport_height: 720
+    scale: 2
+    terminal_theme: dark
 style:
   target_audience: Flutter ile mobil uygulama geliştirmeyi öğrenmek isteyen üniversite
     öğrencileri ve başlangıç-orta seviye geliştiriciler

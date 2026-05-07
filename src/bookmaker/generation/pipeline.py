@@ -26,6 +26,7 @@ from bookmaker.generation.postprocess import (
     extract_sections,
     insert_section,
     normalize_with_mermaid,
+    process_screenshots,
     reassemble_from_sections,
 )
 from bookmaker.generation.prompts import (
@@ -407,6 +408,22 @@ class ChapterGenerator:
         revisions_dir = content_dir / "revisions"
         content_dir.mkdir(parents=True, exist_ok=True)
         revisions_dir.mkdir(parents=True, exist_ok=True)
+
+        # Screenshot isleme (ASSEMBLE sonrasi)
+        manifest = None
+        manifest_path = self.root / "book_manifest.yaml"
+        if manifest_path.exists():
+            try:
+                from bookmaker.manifest.models import BookManifest
+                manifest = BookManifest.load(manifest_path)
+            except Exception:
+                pass
+        text = process_screenshots(
+            text=text,
+            chapter_alias=chapter_id,
+            chapter_content_dir=content_dir,
+            manifest=manifest,
+        )
 
         draft_path = content_dir / "draft.md"
         draft_path.write_text(text, encoding="utf-8")

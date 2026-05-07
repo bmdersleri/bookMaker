@@ -614,6 +614,42 @@ def normalize_with_mermaid(
 
 
 # ============================================================
+# SCREENSHOT ENGINE WRAPPER
+# ============================================================
+
+
+def process_screenshots(
+    text: str,
+    chapter_alias: str,
+    chapter_content_dir: Path,
+    manifest=None,
+) -> str:
+    """Markdown icindeki isaretlenmis kod bloklarini (python plot,
+    python console, jsx screenshot) ekran goruntusune donusturur.
+    Playwright kurulu degilse sessizce gecer.
+    """
+    from bookmaker.production.screenshot_engine import ScreenshotEngine
+
+    screenshots_cfg = {}
+    if manifest is not None:
+        try:
+            screenshots_cfg = manifest.production.screenshots.model_dump()
+        except AttributeError:
+            pass
+
+    engine = ScreenshotEngine.from_manifest(screenshots_cfg)
+    if not engine.config.enabled:
+        return text
+
+    result = engine.process_markdown(
+        md_content=text,
+        assets_dir=chapter_content_dir / "assets",
+        chapter_alias=chapter_alias,
+    )
+    return result.output_md
+
+
+# ============================================================
 # H2 BÖLÜM AYIKLAMA — Teorik derinleştirme için
 # ============================================================
 

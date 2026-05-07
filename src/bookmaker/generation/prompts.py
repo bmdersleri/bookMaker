@@ -33,6 +33,14 @@ Mermaid diyagramları (isteğe bağlı, uygun yerlerde kullan):
 - Sadece flowchart değil, uygun yerlerde sequence diagram veya class diagram da kullan
 - Diyagramın altında 1-2 cümlelik açıklama olsun
 
+Ekran görüntüsü alınacak kod blokları (Python ve React kitapları için):
+- Grafik veya çizim üretiyorsan kod bloğunu şöyle işaretle:
+  ```python plot   → matplotlib/plotly/seaborn grafikleri için
+  ```python console → terminal çıktısı göstermek istediğinde
+- React kitabı için:
+  ```jsx screenshot → render görüntüsü alınacak bileşenler için
+- Bu işaretli bloklar otomatik olarak PNG'ye dönüştürülür.
+
 Kod yazma kuralların:
 - Değişken isimleri anlamlı ve Türkçe okunabilir olsun (notDegeri, ogrenciListesi gibi)
 - Her kod bloğunda en az 3 satır açıklayıcı yorum olsun

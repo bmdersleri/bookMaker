@@ -44,6 +44,16 @@ class BookInfo(BaseModel):
     automation_profile: str | None = None
 
 
+class ScreenshotsConfig(BaseModel):
+    enabled: bool = True
+    python_timeout: int = 15
+    react_timeout: int = 10
+    viewport_width: int = 1280
+    viewport_height: int = 720
+    scale: int = 2
+    terminal_theme: str = "dark"
+
+
 class ProductionConfig(BaseModel):
     producer_model: str = "deepseek-chat"
     observer_model: str = "deepseek-chat"
@@ -61,6 +71,7 @@ class ProductionConfig(BaseModel):
     )
     generation_mode: str = "chapter_based"
     approval_required: bool = True
+    screenshots: ScreenshotsConfig = ScreenshotsConfig()
 
 
 class StyleConfig(BaseModel):
