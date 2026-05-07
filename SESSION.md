@@ -10,14 +10,14 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 
 ```text
 Aktif Faz       : MIGRATION.md - FAZ 5 Studio ve Servis Katmanı
-Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio prompt editörü
+Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio kalite paneli
 Repo            : D:\bookMaker_clean
 Önceki Repo     : D:\bookMaker_Deepseek  # artık geliştirme için kullanılmamalı
 Branch          : feat/chapter-validator-profile-modes
 Base            : local main üzerindeki ad348a0 + origin/main üzerindeki 4e9a4e8
 Remote          : origin
-Son Kod Commit  : Complete Studio prompt editor workflow
-Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, Prompt Editörü dirty-state/API doğrulaması tamamlandı
+Son Kod Commit  : Enhance Studio quality panel
+Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, Kalite Paneli Flutter kitapla güçlendirildi
 Dikkat          : Repo kökünde geçici *.ps1 dosyası varsa commit'e alınmamalı
 ```
 
@@ -939,6 +939,82 @@ Commit:
 Complete Studio prompt editor workflow
 ```
 
+### FAZ 5 / Studio GUI Aşama 5 - Kalite Paneli Flutter Kitap
+
+Kalite sekmesi `bookmaker check book` sonucuna yakın kitap düzeyi görünüm ve
+bölüm bazlı kontrol akışı verecek şekilde güçlendirildi.
+
+Yapılanlar:
+
+```text
+- quality_service.get_book_quality_report() eklendi.
+- Yeni /api/quality/book endpointi kitap düzeyi validate_book() sonucunu döndürüyor.
+- /api/check/{chapter_id} ve /api/quality/report manifest profilini kullanarak
+  bölüm validator'ını çalıştırıyor.
+- Bölüm kalite payload'ına report_path, report_exists ve ilk issue detayları eklendi.
+- Kalite sekmesinde kitap özeti, karar/skor/hata/uyarı/bölüm sayısı ve rapor yolu
+  görünür hale getirildi.
+- Bölüm kalite tablosuna rapor yolu ve doğrudan Kontrol butonu eklendi.
+- Kontrol modalı artık rapor yolunu ve issue listesini gösteriyor.
+- sortQuality() eksik helper'ı eklendi.
+```
+
+Yeni test kapsamı:
+
+```text
+- quality_service.get_book_quality_report() tmp project-based kitapta 100/pass döner.
+- /api/quality/book endpointi kitap özeti ve bölüm listesi döner.
+- /api/check/giris response'u report_path ve issues alanlarını içerir.
+- index HTML kalite kitap özeti ve sortable bölüm başlığı sözleşmesini içerir.
+```
+
+Tarayıcı doğrulaması:
+
+```text
+URL: http://127.0.0.1:8765
+Browser plugin: mevcut değil; normal Playwright kullanıldı.
+Screenshot: C:\Users\ismai\AppData\Local\Temp\bookmaker-quality-step5.png
+
+Playwright sonucu:
+- Kalite sekmesi açıldı.
+- kitap özeti: 100 / pass / hata 0 / uyarı 0 / 16 bölüm
+- kalite tablosu: 16 satır
+- ilk satır: giris / 100 / pass / rapor logs\reviews\chapters\giris_quality_report.json
+- Kontrol modalı: giris 100 PASS, hata 0, uyarı 0, sorun listesi boş
+- console errors/warnings: []
+```
+
+Doğrulama:
+
+```text
+node --check src/bookmaker/studio/static/app.js
+Sonuç: PASS
+
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/unit/test_studio_app.py tests/unit/test_studio_services.py -q --tb=short
+Sonuç: 39 passed, 1 PytestCacheWarning
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 215 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+
+git diff --check
+Sonuç: PASS
+```
+
+Not:
+
+```text
+- Studio server yeni kodu almak için yeniden başlatıldı.
+- build/studio_config.json runtime config olarak Flutter kitap projesini gösteriyor;
+  commit'e alınmıyor.
+- Playwright geçici scriptleri .tmp altında oluşturuldu ve doğrulama sonrası silindi.
+```
+
 ---
 
 ## Alternatif Sonraki Hedefler
@@ -946,13 +1022,12 @@ Complete Studio prompt editor workflow
 FAZ 5 devam hedefleri:
 
 ```text
-1. Studio generation/job worker'ın build/generation varsayımlarını project-based logs/content yapısına taşı.
-2. quality_service/build_service/export_service içinde kalan legacy approved/build path varsayımlarını ayıkla.
-3. Studio UI prompt endpoint entegrasyonunu görünür düzenleme akışına bağla.
-4. observer_service'i review üretimi ve logs/reviews yazımı için genişlet.
-5. manifest_service facade kullanımını azaltıp app.py route'larını servis sınırlarına göre sadeleştir.
-6. Profile bilgisini pipeline_state.yaml içine yazmak gerekip gerekmediğini değerlendir.
-7. CODE_META language alanı ile profile test mode uyumluluğunu ayrı warning/error olarak ekle.
+1. FAZ 5 / Aşama 6: Build/Export panelini project-based exports/logs yollarına taşı.
+2. Studio generation/job worker'ın build/generation varsayımlarını project-based logs/content yapısına taşı.
+3. observer_service'i review üretimi ve logs/reviews yazımı için genişlet.
+4. manifest_service facade kullanımını azaltıp app.py route'larını servis sınırlarına göre sadeleştir.
+5. Profile bilgisini pipeline_state.yaml içine yazmak gerekip gerekmediğini değerlendir.
+6. CODE_META language alanı ile profile test mode uyumluluğunu ayrı warning/error olarak ekle.
 ```
 
 ---
@@ -1003,13 +1078,13 @@ book check -> 100/pass
 ## Yeni Oturum İçin Kısa Özet
 
 ```text
-BookMaker project-based architecture sonrası FAZ 4 validator refactor üzerinde devam ediyoruz.
+BookMaker project-based architecture sonrası FAZ 5 Studio GUI üzerinde devam ediyoruz.
 Repo: D:\bookMaker_clean
 Branch: feat/chapter-validator-profile-modes
-Son commit: 056a63d Apply profile-aware test mode validation
+Son commit: Complete Studio prompt editor workflow
 FAZ 4 güncel commit: 59b99ed Resolve validator profile from project manifest
 Skill/plugin commit: 30c0cd0 Add BookMaker Codex skills and plugins
-FAZ 5 güncel commit: 1d07f32 Align Studio wizard with project manifests
+FAZ 5 güncel commit: Enhance Studio quality panel
 
 Tamamlananlar:
 - Ruff cleanup
@@ -1019,13 +1094,15 @@ Tamamlananlar:
 - manifest tabanlı explicit profile taşıma
 - Codex skill/plugin dosyaları
 - Studio wizard/project selector project-based manifest yapıya taşındı
-- test kapsamı: 207 passed
+- Studio sekmeleri, Flutter dashboard, bölüm sıralama, wizard, prompt editörü tamamlandı
+- Studio kalite paneli kitap düzeyi 100/pass özeti ve bölüm kontrol modalı ile güçlendirildi
+- test kapsamı: 215 passed
 - Flutter kitap validasyonu: 100/pass
 
 Sıradaki:
-- FAZ 5 devam: Studio generation/job worker path varsayımlarını project-based yapıya taşı
-- FAZ 5 devam: quality/build/export servislerindeki legacy path varsayımlarını azalt
-- FAZ 5 devam: prompt/review UI akışlarını servis endpoint'lerine bağla
+- FAZ 5 / Aşama 6: Build/Export panelini project-based exports/logs yollarına taşı
+- FAZ 5 / Aşama 7: Studio generation/job worker path varsayımlarını project-based yapıya taşı
+- FAZ 5 / Aşama 8: Studio görsel ergonomisini sıkılaştır
 ```
 
 ---

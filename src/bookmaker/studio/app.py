@@ -290,6 +290,10 @@ if FastAPI is not None:
     async def api_quality_report() -> list[dict]:
         return quality_service.get_quality_report(get_active_book())
 
+    @app.get("/api/quality/book")
+    async def api_quality_book() -> dict:
+        return quality_service.get_book_quality_report(get_active_book())
+
     @app.get("/api/quality/report/{chapter_id}")
     async def api_quality_report_one(chapter_id: str) -> dict:
         result = quality_service.get_quality_report(

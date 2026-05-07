@@ -161,6 +161,32 @@ def test_quality_service_reads_alias_only_project_chapter(tmp_path):
     assert stats["word_distribution"][0]["chapter_id"] == "giris"
 
 
+def test_quality_service_returns_book_quality_summary(tmp_path):
+    from bookmaker.studio.services import quality_service, wizard_service
+
+    result = wizard_service.create_book(
+        tmp_path,
+        {
+            "project_name": "quality-demo",
+            "title": "Quality Demo",
+            "author": "Test Yazar",
+            "chapters": ["giris", "kurulum"],
+        },
+    )
+    assert "error" not in result
+    root = tmp_path / "book_projects" / "quality-demo"
+
+    report = quality_service.get_book_quality_report(root)
+
+    assert report["chapter_id"] == "book"
+    assert report["score"] == 100
+    assert report["decision"] == "pass"
+    assert report["report_path"].replace("\\", "/") == "logs/reviews/book_quality_report.json"
+    assert [chapter["chapter_id"] for chapter in report["chapters"]] == ["giris", "kurulum"]
+    assert all(chapter["report_path"].endswith("_quality_report.json")
+               for chapter in report["chapters"])
+
+
 def test_prompt_service_roundtrip(tmp_path):
     root = _create_test_project(tmp_path)
     from bookmaker.studio.services import chapter_service, prompt_service

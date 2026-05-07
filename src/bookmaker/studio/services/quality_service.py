@@ -6,8 +6,10 @@ import re
 import subprocess
 from pathlib import Path
 
+from bookmaker.chapter.book_validator import validate_book
 from bookmaker.chapter.parser import parse
 from bookmaker.chapter.scoring import make_report
+from bookmaker.chapter.validation_modes import resolve_validation_profile_from_manifest
 from bookmaker.chapter.validator import validate
 
 
@@ -24,12 +26,50 @@ def _chapter_source(chapter) -> str:
     return chapter.source or f"chapters/{alias}/content/final.md"
 
 
+def _report_path(chapter_id: str | None = None) -> str:
+    if chapter_id:
+        return str(
+            Path("logs") / "reviews" / "chapters" / f"{chapter_id}_quality_report.json"
+        )
+    return str(Path("logs") / "reviews" / "book_quality_report.json")
+
+
+def _issue_rows(report, limit: int = 25) -> list[dict]:
+    rows = []
+    for issue in report.issues[:limit]:
+        rows.append({
+            "severity": issue.severity.value,
+            "category": issue.category,
+            "message": issue.message,
+            "file": issue.location.file,
+            "line": issue.location.line,
+        })
+    return rows
+
+
+def _chapter_report_payload(root: Path, chapter_id: str, report) -> dict:
+    report_path = _report_path(chapter_id)
+    return {
+        "chapter_id": chapter_id,
+        "score": report.score,
+        "decision": report.decision.value,
+        "errors": report.error_count,
+        "warnings": report.warning_count,
+        "info_count": sum(1 for issue in report.issues if issue.severity.value == "info"),
+        "total_issues": report.error_count + report.warning_count,
+        "report_path": report_path,
+        "report_exists": (root / report_path).exists(),
+        "issues": _issue_rows(report),
+    }
+
+
 def validate_chapter(project_root: str | Path, chapter_id: str) -> dict:
     """Bölümü valide eder."""
     root = Path(project_root).resolve()
     from bookmaker.manifest.manager import ManifestManager
     mgr = ManifestManager(root)
     manifest = mgr.load_or_generate()
+    profile = resolve_validation_profile_from_manifest(manifest)
     src = next((_chapter_source(ch) for ch in manifest.chapters
                 if _chapter_matches(ch, chapter_id)), None)
     if not src:
@@ -39,14 +79,9 @@ def validate_chapter(project_root: str | Path, chapter_id: str) -> dict:
         return {"error": f"Dosya bulunamadi: {p}"}
     try:
         parsed = parse(p)
-        issues = validate(parsed)
+        issues = validate(parsed, profile=profile)
         report = make_report(chapter_id, issues)
-        return {"chapter_id": chapter_id, "score": report.score,
-                "decision": report.decision.value,
-                "errors": report.error_count,
-                "warnings": report.warning_count,
-                "info_count": report.info_count,
-                "total_issues": report.error_count + report.warning_count}
+        return _chapter_report_payload(root, chapter_id, report)
     except Exception as e:
         return {"error": f"Validasyon hatasi: {str(e)[:200]}"}
 
@@ -82,6 +117,7 @@ def get_quality_report(project_root: str | Path,
     root = Path(project_root).resolve()
     mgr = ManifestManager(root)
     manifest = mgr.load_or_generate()
+    profile = resolve_validation_profile_from_manifest(manifest)
 
     chapters_to_check = []
     if chapter_id:
@@ -103,20 +139,50 @@ def get_quality_report(project_root: str | Path,
             continue
         try:
             parsed = parse(p)
-            issues = validate(parsed)
+            issues = validate(parsed, profile=profile)
             report = make_report(cid, issues)
-            results.append({"chapter_id": cid, "score": report.score,
-                            "decision": report.decision.value,
-                            "errors": report.error_count,
-                            "warnings": report.warning_count,
-                            "info_count": report.info_count,
-                            "total_issues": report.error_count + report.warning_count})
+            results.append(_chapter_report_payload(root, cid, report))
         except Exception as e:
             results.append({"chapter_id": cid, "error": str(e)[:100],
                             "score": 0})
     if chapter_id and results:
         return results[0]
     return results
+
+
+def get_book_quality_report(project_root: str | Path) -> dict:
+    """Kitap seviyesinde validate_book sonucunu Studio icin ozetler."""
+    root = Path(project_root).resolve()
+    result = validate_book(root)
+    report = result.report
+    report_path = _report_path()
+    chapters = []
+    for alias in result.chapter_order:
+        chapter_report = result.chapter_reports.get(alias)
+        if chapter_report is None:
+            chapters.append({
+                "chapter_id": alias,
+                "score": 0,
+                "decision": "missing",
+                "errors": 0,
+                "warnings": 0,
+                "report_path": _report_path(alias),
+                "report_exists": False,
+            })
+            continue
+        chapters.append(_chapter_report_payload(root, alias, chapter_report))
+    return {
+        "chapter_id": "book",
+        "score": report.score,
+        "decision": report.decision.value,
+        "errors": report.error_count,
+        "warnings": report.warning_count,
+        "total_issues": report.error_count + report.warning_count,
+        "report_path": report_path,
+        "report_exists": (root / report_path).exists(),
+        "issues": _issue_rows(report),
+        "chapters": chapters,
+    }
 
 
 def get_book_stats(project_root: str | Path) -> dict:

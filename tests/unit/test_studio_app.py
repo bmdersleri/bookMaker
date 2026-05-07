@@ -156,6 +156,8 @@ def test_index_page() -> None:
     assert 'data-tab="prompts"' in resp.text
     assert 'id="stat-screenshot"' in resp.text
     assert 'id="stat-qr"' in resp.text
+    assert 'id="quality-book-summary"' in resp.text
+    assert "sortQuality('chapter_id')" in resp.text
     assert 'id="toast-container"' in resp.text
     assert 'id="wiz-author"' in resp.text
     assert 'id="wiz-book-type"' in resp.text
@@ -303,5 +305,47 @@ def test_api_prompt_endpoints_roundtrip(tmp_path) -> None:
         resp = client.get("/api/prompts/chapter/giris")
         assert resp.status_code == 200
         assert resp.json()["content"] == "Updated chapter prompt"
+    finally:
+        studio_app._active_book = previous
+
+
+def test_api_quality_book_summary(tmp_path) -> None:
+    if app is None:
+        return
+    from fastapi.testclient import TestClient
+
+    from bookmaker.studio import app as studio_app
+    from bookmaker.studio.services import wizard_service
+
+    result = wizard_service.create_book(
+        tmp_path,
+        {
+            "project_name": "quality-api-demo",
+            "title": "Quality API Demo",
+            "author": "Test Yazar",
+            "chapters": ["giris"],
+        },
+    )
+    assert "error" not in result
+    project = tmp_path / "book_projects" / "quality-api-demo"
+
+    previous = studio_app._active_book
+    studio_app._active_book = str(project)
+    try:
+        client = TestClient(app)
+        resp = client.get("/api/quality/book")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["score"] == 100
+        assert data["decision"] == "pass"
+        assert data["chapters"][0]["chapter_id"] == "giris"
+        assert data["report_path"].replace("\\", "/") == "logs/reviews/book_quality_report.json"
+
+        resp = client.get("/api/check/giris")
+        assert resp.status_code == 200
+        chapter = resp.json()
+        assert chapter["chapter_id"] == "giris"
+        assert "report_path" in chapter
+        assert "issues" in chapter
     finally:
         studio_app._active_book = previous

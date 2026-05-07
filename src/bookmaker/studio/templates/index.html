@@ -269,15 +269,17 @@
   <div class="card">
     <div class="card-header"><h2>Kalite Raporu</h2><span class="badge" id="quality-score-avg">-</span></div>
     <div class="card-body">
+      <div id="quality-book-summary" style="margin-bottom:1rem"></div>
       <div id="quality-loading" class="loading"><span class="spinner"></span> Yukleniyor...</div>
       <div style="overflow-x:auto">
         <table id="quality-table" class="hidden">
           <thead><tr>
-            <th>Bolum</th>
+            <th onclick="sortQuality('chapter_id')" style="cursor:pointer">Bolum</th>
             <th onclick="sortQuality('score')" style="cursor:pointer">Skor</th>
             <th onclick="sortQuality('decision')" style="cursor:pointer">Karar</th>
             <th onclick="sortQuality('errors')" style="cursor:pointer">Hata</th>
             <th onclick="sortQuality('warnings')" style="cursor:pointer">Uyari</th>
+            <th>Rapor</th>
             <th>Islem</th>
           </tr></thead>
           <tbody id="quality-body"></tbody>

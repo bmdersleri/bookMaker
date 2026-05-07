@@ -267,12 +267,24 @@ async function checkChapter(id) {
   try {
     const r=await fetch('/api/check/'+id); const d=await r.json();
     if(d.error){document.getElementById('modal-body').innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
-    const dc=d.decision==='pass'?'success':d.decision==='fail'?'danger':'warning';
+    const dc=decisionBadgeClass(d.decision);
+    var issueHtml = '';
+    if (d.issues && d.issues.length) {
+      issueHtml = '<div class="quality-issues"><h4>Ilk sorunlar</h4>' + d.issues.map(function(issue){
+        var loc = issue.file ? '<code>'+escHtml(issue.file)+(issue.line ? ':'+issue.line : '')+'</code>' : '-';
+        return '<div class="quality-issue-row"><span class="tag '+(issue.severity==='error'?'danger':'warning')+'">'+escHtml(issue.severity)+'</span>'+
+          '<div><strong>'+escHtml(issue.category)+'</strong><p>'+escHtml(issue.message)+'</p><small>'+loc+'</small></div></div>';
+      }).join('') + '</div>';
+    } else {
+      issueHtml = '<div class="message success">Bolum sorun listesi bos.</div>';
+    }
     document.getElementById('modal-body').innerHTML='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem">'+
       '<div class="stat-card"><div class="num">'+d.score+'</div><div class="lbl">Skor</div></div>'+
       '<div class="stat-card"><div class="num"><span class="tag '+dc+'">'+d.decision.toUpperCase()+'</span></div><div class="lbl">Karar</div></div>'+
       '<div class="stat-card"><div class="num" style="color:var(--danger)">'+d.errors+'</div><div class="lbl">Hata</div></div>'+
       '<div class="stat-card"><div class="num" style="color:var(--warning)">'+d.warnings+'</div><div class="lbl">Uyari</div></div></div>'+
+      '<div class="quality-report-path"><span class="tag neutral">Rapor</span> <code>'+escHtml(d.report_path||'-')+'</code></div>'+
+      issueHtml+
       '<button class="btn outline" onclick="closeModal()">Kapat</button>';
   } catch(e) { document.getElementById('modal-body').innerHTML='<div class="message error">Hata: '+e.message+'</div>'; }
 }
@@ -634,34 +646,92 @@ function showToast(msg,type) {
 
 // =========== QUALITY PANEL ===========
 let qualityData = [];
+let bookQualityData = null;
 let qualitySortKey = 'score', qualitySortDir = 'desc';
 
 async function loadQualityTab() {
+  await loadBookQualityReport();
   await loadQualityReport();
   await loadStats();
   await populateSearchChapters();
 }
+async function loadBookQualityReport() {
+  try {
+    const r = await fetch('/api/quality/book');
+    bookQualityData = await r.json();
+    renderBookQualitySummary(bookQualityData);
+  } catch(e) {
+    var el = document.getElementById('quality-book-summary');
+    if (el) el.innerHTML = '<div class="message error">Kitap kalite ozeti yuklenemedi: '+escHtml(e.message)+'</div>';
+  }
+}
+function renderBookQualitySummary(d) {
+  var el = document.getElementById('quality-book-summary');
+  if (!el) return;
+  if (!d || d.error) {
+    el.innerHTML = '<div class="message error">'+escHtml((d && d.error) || 'Kitap kalite ozeti alinamadi')+'</div>';
+    return;
+  }
+  var dc = decisionBadgeClass(d.decision);
+  el.innerHTML = '<div class="stats compact-stats">'+
+    '<div class="stat-card"><div class="num">'+d.score+'</div><div class="lbl">Kitap Skoru</div></div>'+
+    '<div class="stat-card"><div class="num"><span class="tag '+dc+'">'+escHtml(d.decision)+'</span></div><div class="lbl">Karar</div></div>'+
+    '<div class="stat-card"><div class="num" style="color:var(--danger)">'+(d.errors||0)+'</div><div class="lbl">Hata</div></div>'+
+    '<div class="stat-card"><div class="num" style="color:var(--warning)">'+(d.warnings||0)+'</div><div class="lbl">Uyari</div></div>'+
+    '<div class="stat-card"><div class="num">'+(d.chapters ? d.chapters.length : 0)+'</div><div class="lbl">Bolum</div></div>'+
+    '</div><div class="quality-report-path"><span class="tag neutral">Rapor</span> <code>'+escHtml(d.report_path || '-')+'</code></div>';
+  var badge = document.getElementById('quality-score-avg');
+  if (badge) badge.textContent = 'Kitap: ' + d.score + ' / ' + d.decision;
+}
 async function loadQualityReport() {
   const tb=document.getElementById('quality-body');
   if(!tb) return;
+  document.getElementById('quality-loading')?.classList.remove('hidden');
   try {
     const r=await fetch('/api/quality/report'); qualityData=await r.json();
-    const sorted=[...qualityData].sort((a,b)=>(b.score||0)-(a.score||0));
-    tb.innerHTML=sorted.map(function(d){
-      if(d.error) return '<tr><td colspan="6"><span class="tag danger">'+escHtml(d.error)+'</span></td></tr>';
-      var dc=d.decision==='pass'?'success':d.decision==='fail'?'danger':'warning';
-      return '<tr><td><code>'+escHtml(d.chapter_id)+'</code></td><td><span class="tag '+scoreBadgeClass(d.score)+'">'+d.score+'</span></td>'+
-        '<td><span class="tag '+dc+'">'+d.decision+'</span></td><td>'+(d.errors||0)+'</td><td>'+(d.warnings||0)+'</td>'+
-        '<td><button class="btn btn-sm outline" onclick="viewChapter(\''+d.chapter_id+'\')">Gor</button></td></tr>';
-    }).join('');
+    renderQualityRows();
     document.getElementById('quality-table')?.classList.remove('hidden');
     document.getElementById('quality-loading')?.classList.add('hidden');
     var scores=qualityData.filter(function(d){return d.score!==undefined&&!d.error;});
-    if(scores.length){
+    if(scores.length && !bookQualityData){
       var sum=scores.reduce(function(s,d){return s+d.score;},0);
       document.getElementById('quality-score-avg').textContent='Ort: '+Math.round(sum/scores.length);
     }
-  } catch(e){}
+  } catch(e){
+    tb.innerHTML = '<tr><td colspan="7"><span class="tag danger">Yuklenemedi: '+escHtml(e.message)+'</span></td></tr>';
+    document.getElementById('quality-loading')?.classList.add('hidden');
+  }
+}
+function renderQualityRows() {
+  const tb = document.getElementById('quality-body');
+  if (!tb) return;
+  const sorted = [...qualityData].sort(function(a,b) {
+    var va = a[qualitySortKey], vb = b[qualitySortKey];
+    if (qualitySortKey === 'score' || qualitySortKey === 'errors' || qualitySortKey === 'warnings') {
+      va = va || 0; vb = vb || 0;
+    } else {
+      va = (va || '').toString().toLowerCase();
+      vb = (vb || '').toString().toLowerCase();
+    }
+    if (va < vb) return qualitySortDir === 'asc' ? -1 : 1;
+    if (va > vb) return qualitySortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  tb.innerHTML = sorted.map(function(d){
+    if(d.error) return '<tr><td colspan="7"><span class="tag danger">'+escHtml(d.error)+'</span></td></tr>';
+    var dc=decisionBadgeClass(d.decision);
+    var exists=d.report_exists?'success':'neutral';
+    return '<tr><td><code>'+escHtml(d.chapter_id)+'</code></td><td><span class="tag '+scoreBadgeClass(d.score)+'">'+d.score+'</span></td>'+
+      '<td><span class="tag '+dc+'">'+escHtml(d.decision||'-')+'</span></td><td>'+(d.errors||0)+'</td><td>'+(d.warnings||0)+'</td>'+
+      '<td><span class="tag '+exists+'">'+escHtml(d.report_path||'-')+'</span></td>'+
+      '<td><div class="action-group"><button class="btn btn-sm outline" onclick="viewChapter(\''+d.chapter_id+'\')">Gor</button>'+
+      '<button class="btn btn-sm primary" onclick="checkChapter(\''+d.chapter_id+'\')">Kontrol</button></div></td></tr>';
+  }).join('');
+}
+function sortQuality(key) {
+  if (qualitySortKey === key) qualitySortDir = qualitySortDir === 'asc' ? 'desc' : 'asc';
+  else { qualitySortKey = key; qualitySortDir = key === 'chapter_id' ? 'asc' : 'desc'; }
+  renderQualityRows();
 }
 async function loadStats() {
   try {
