@@ -1,8 +1,8 @@
 # FAULT.md — bookMaker Kitap Üretimi Hata ve Problem Kaydı
 
-**Proje:** bookMaker (Java'nın Temelleri Kitap Üretimi)  
-**Tarih:** 2026-05-04  
-**Branch:** deepseek  
+> **TARIHI KAYIT.** Tum hatalar cozuldu. Eski batch uretim altyapisi ve deepseek branch donemine aittir.
+
+**Proje:** bookMaker | **Tarih:** 2026-05-04 | **Branch:** deepseek (tarihi)
 **Durum:** Güncel — 2 kritik + 2 önemli hata çözüldü, 2 orta seviye açık
 
 ---

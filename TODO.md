@@ -1,67 +1,48 @@
 # bookMaker -- Yapilacaklar
 
-> **Strateji:** Kartopu stratejisi -- kucuk basla, katman katman buyut.
-> **Model:** DeepSeek Chat (tek model).
+> **Model:** DeepSeek Chat (tek model) | **Branch:** main | **Test:** 218 passed
 
 ---
 
 ## Tamamlananlar
 
-- [x] `book_profile.yaml` -- Kapsamli kitap anayasasi
-- [x] `core/config.py` -- BookConfig okuyucu modul
-- [x] `production/mermaid.py` -- mmdc CLI entegrasyonu
-- [x] `production/pandoc.py` -- Pandoc DOCX export
-- [x] `production/pipeline.py` -- Full production pipeline
-- [x] `commands/production.py` -- CLI komutlari
-- [x] `pipeline_state.yaml` -- Pipeline durum takibi
-- [x] `generation/prompts.py` -- Prompt sablonlari
-- [x] `generation/postprocess.py` -- Normalizasyon (heading fix, front matter, kod/mermaid)
-- [x] `generation/pipeline.py` -- 4 asamali pipeline + 5 uretim stratejisi
-- [x] `llm/config.py` -- LLM config yonetimi (tek model)
-- [x] `llm_config.json` -- DeepSeek API yapilandirmasi
-- [x] `generation/clean_text.py` -- TextCleaner (0 token, regex bazli)
-- [x] `generation/mermaid_validator.py` -- MermaidValidator (syntax + auto-fix + compile + fallback, 0 token)
-- [x] `openai.py` -- Retry + streaming + auto-resume mekanizmasi
-- [x] **deepen theory pipeline** -- H2 bazinda teorik derinlestirme (genisletilmis prompt, +%50-100 icerik)
-- [x] **tools/ temizligi** -- 94 -> 30 script, fix/check/verify/migration archive'e tasindi
-- [x] **docstring/kod temizligi** -- Dual model referanslari, guncel olmayan yorumlar
-- [x] **pipeline kod tekrari azaltma** -- `_spec_seed_normalize()` helper metodu cikarildi
+- [x] `book_manifest.yaml` tek konfigurasyon kaynagi (book_profile.yaml kaldirildi)
+- [x] 6 asamali pipeline: SPEC → VALIDATE → SEED → NORMALIZE → ENRICH → ASSEMBLE
+- [x] Multi-language destegi (Java, Python, Dart/Flutter, generic)
+- [x] Studio GUI: 6 sekme, wizard, inline chapter edit, pipeline detail tracking
+- [x] Export UI: referans DOCX, lua filter, TOC depth kontrolleri
+- [x] Split-panel markdown editor (live preview + save)
+- [x] Chapter validator: parser, semantic checks, scoring, profile-aware test modes
+- [x] Profile-aware validation (Java, Flutter/Dart, Generic profilleri)
+- [x] DeepSeek Chat entegrasyonu (retry, streaming, auto-resume)
+- [x] 6 paralel enrichment: ozet, sozluk, soru, alistirma, hata, kopru
+- [x] Production pipeline: Mermaid→PNG, Pandoc DOCX/PDF/EPUB/HTML
+- [x] Kalite kontrol: book check + chapter check + quality reports
+- [x] Repo temizligi: tek main branch, gereksiz branch'ler silindi
 
 ---
 
-## Oncelikli (Hemen)
+## Kisa Vadeli
 
-- [ ] **`mermaid_validator.py` entegrasyonu** -- MermaidValidator `generate_chapter()`'a eklenecek
-- [ ] **Gercek LLM ile test uretimi** -- `ChapterGenerator.generate_chapter()` calistir, token olc
+- [ ] **GUI_ROADMAP.md Faz 7** — coklu kitap, kullanici rolleri, reader mode, Docker/PWA
+- [ ] **Dokumantasyon revizyonu** — docs/ altindaki eski dosyalari guncelle veya arsivle
+- [ ] **PDF ciktisi** — pandoc xelatex entegrasyonu
+- [ ] **Otomatik screenshot** — Flutter/Dart kitaplar icin headless screenshot
 
 ---
 
 ## Orta Vadeli
 
-- [ ] **ChapterTemplate** -- Template tabanli validasyon (sample_chapter.md yapisi)
-- [ ] **bolum-02 baslik duzeltme** -- Front matter'da `title: "bolum-02"` -> gercek baslik
-- [ ] **PDF ciktisi** -- `outputs.pdf: true`, pandoc xelatex
-- [ ] **Paralel chapter generation** -- `generate_all_chapters()` ile 27 bolum
+- [ ] **Paralel chapter generation** — birden fazla bolumu ayni anda uretme
+- [ ] **GitHub Actions CI** — otomatik test + lint + build
+- [ ] **Template tabanli validasyon** — chapter_spec.md ile otomatik kontrol
+- [ ] **Docker imaji** — tek komutla calisan bookMaker ortami
 
 ---
 
-## Dusuk Oncelikli / Iyilestirme
+## Dusuk Oncelikli
 
-- [ ] **README.md guncelleme** -- Yeni mimariyi yansit
-- [ ] **GitHub Actions** -- DOCX build adimini guncelle
-- [ ] **Bloke bolumler** -- bolum-14, 18, 21 icerik revizyonu
-- [ ] **Studio Faz 1 kalanlar** -- app.js/styles.css ayristirma, /static/ mount
-
----
-
-## Ilerleme
-
-| Alan | Toplam | Bitmis | % |
-|---|---|---|---|
-| Config & Anayasa | 4 | 4 | 100% |
-| Production Build | 2 | 2 | 100% |
-| LLM Generation | 8 | 7 | 88% |
-| Test & Validasyon | 3 | 1 | 33% |
-| CI/CD & Dokumantasyon | 2 | 0 | 0% |
-| Kod Kalitesi | 3 | 3 | 100% |
-| **Toplam** | **22** | **17** | **77%** |
+- [ ] **Reader mode** — salt okunur web kitap goruntuleyici
+- [ ] **Multi-user rolleri** — editor, yazar, reviewer
+- [ ] **Bildirimler** — pipeline tamamlaninca desktop/email bildirimi
+- [ ] **PWA** — offline calisabilen Studio GUI

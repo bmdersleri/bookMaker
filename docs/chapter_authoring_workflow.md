@@ -1,6 +1,9 @@
 # Chapter Authoring Workflow v0.1
 
-Bu belge, `bookMaker` icinde tek bir bolumun fikir/tohum asamasindan `chapter_spec.md` ile uyumlu onayli Markdown bolumune nasil donusecegini tanimlar.
+> **TARIHI KAYIT (2026-05-03).** Book_profile/book_architecture tabanli eski workflow.
+> Guncel pipeline: SPEC → VALIDATE → SEED → NORMALIZE → ENRICH → ASSEMBLE (bkz. `CHAPTER_PRODUCTION.md`).
+
+Bu belge, `bookMaker` icinde tek bir bolumun nasil uretilecegini tanimlar.
 
 Ana tasarim kararlari:
 

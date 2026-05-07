@@ -1,8 +1,12 @@
 # Migration: Project-Based Architecture
 
-**Branch:** `feat/project-based-architecture`  
-**Başlangıç tarihi:** 2026-05-06  
-**Hedef:** Framework ile kitap projesini tamamen ayırmak. Framework = motor, kitap projesi = içerik, manifest, prompt, runtime state, log ve export alanı.
+> **DURUM: TAMAMLANDI (2026-05-07)**
+> FAZ 1-5 tamamlandi, book_profile.yaml kaldirildi, book_manifest.yaml tek kaynak.
+> Bu dosya tarihi kayit olarak saklanmaktadir. Guncel durum icin `SESSION.md` ve `README.md`.
+
+**Branch:** `main` (eskiden `feat/project-based-architecture`)  
+**Başlangıç tarihi:** 2026-05-06 | **Tamamlanma:** 2026-05-07  
+**Hedef:** Framework ile kitap projesini tamamen ayırmak.
 
 ---
 

@@ -7,7 +7,7 @@
 ### 1.1 Ortam
 
 ```powershell
-cd D:\bookMaker_Deepseek
+cd D:\bookMaker_clean
 .\.venv\Scripts\python.exe -m bookmaker --help
 ```
 

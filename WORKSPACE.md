@@ -5,13 +5,14 @@ Bu dosya mevcut Windows/PowerShell calisma ortaminda kullanilabilecek araclari, 
 ## Sistem
 
 ```text
-Calisma dizini: D:\bookMaker_Deepseek
+Calisma dizini: D:\bookMaker_clean
 Isletim sistemi: Windows
 Shell: PowerShell 7 (ZORUNLU)
 PowerShell surumu: 7.6.1
 PS7 Yolu: C:\Program Files\PowerShell\7\pwsh.exe
 PS5.1: Kullanilmayacak
 Timezone: Europe/Istanbul
+Git branch: main (tek)
 ```
 
 ## ⚠️ ZORUNLU: PowerShell 7 Kullanimi

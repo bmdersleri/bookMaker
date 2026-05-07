@@ -89,14 +89,14 @@ GET    /api/chapters?status=approved&sort=score&page=1&per=20
 ```
 
 ### Kontrol Listesi
-- [ ] Durum dropdown'ı ile filtreleme çalışıyor
-- [ ] Sütun başlıkları tıklanınca sıralama yapıyor (↕)
-- [ ] Bölümler sürükle-bırak ile yeniden sıralanabiliyor
-- [ ] Yeni bölüm eklenebiliyor
-- [ ] Bölüm silinebiliyor (onay modal'ı ile)
-- [ ] Sayfalama çalışıyor (>20 bölüm varsa)
-- [ ] Toplu işlem butonları (seçili bölümlere üret/build/onayla)
-- [ ] Manifest otomatik güncelleniyor
+- [x] Durum dropdown'ı ile filtreleme çalışıyor
+- [x] Sütun başlıkları tıklanınca sıralama yapıyor (↕)
+- [x] Bölümler sürükle-bırak ile yeniden sıralanabiliyor
+- [x] Yeni bölüm eklenebiliyor
+- [x] Bölüm silinebiliyor (onay modal'ı ile)
+- [x] Sayfalama çalışıyor (>20 bölüm varsa)
+- [x] Toplu işlem butonları (seçili bölümlere üret/build/onayla)
+- [x] Manifest otomatik güncelleniyor
 
 ---
 
@@ -129,14 +129,14 @@ GET    /api/jobs                   # İş listesi
 ```
 
 ### Kontrol Listesi
-- [ ] 6 enrich tipi checkbox ile seçilebiliyor
-- [ ] Sıcaklık slider'ı çalışıyor (0.0-1.5, varsayılan 0.7)
-- [ ] Pipeline iptal edilebiliyor (WS kapanır, job durumu güncellenir)
-- [ ] LLM prompt paneli: Gönderilen prompt ve alınan yanıt görüntüleniyor
-- [ ] Toast bildirimleri 3 seviyede çalışıyor (auto-dismiss)
-- [ ] İş geçmişi tablosu listeleniyor
-- [ ] İş log'u görüntüleniyor
-- [ ] Fallback stratejisi aktif (SPEC/ENRICH hatalarında)
+- [x] 6 enrich tipi checkbox ile seçilebiliyor
+- [x] Sıcaklık slider'ı çalışıyor (0.0-1.5, varsayılan 0.7)
+- [x] Pipeline iptal edilebiliyor (WS kapanır, job durumu güncellenir)
+- [x] LLM prompt paneli: Gönderilen prompt ve alınan yanıt görüntüleniyor
+- [x] Toast bildirimleri 3 seviyede çalışıyor (auto-dismiss)
+- [x] İş geçmişi tablosu listeleniyor
+- [x] İş log'u görüntüleniyor
+- [x] Fallback stratejisi aktif (SPEC/ENRICH hatalarında)
 
 ---
 
@@ -168,12 +168,12 @@ GET    /api/search?q=...&regex=true # Tam metin arama
 ```
 
 ### Kontrol Listesi
-- [ ] 5. sekme görünür ve çalışıyor
-- [ ] Skor tablosu tüm bölümleri listeliyor, sıralanabiliyor
-- [ ] Hata/uyarı listesi kategorilere ayrılmış, filtrelenebiliyor
-- [ ] `javac` ile kod derleme çalışıyor, sonuçlar gösteriliyor
-- [ ] Kitap istatistikleri doğru (toplam kelime, kod, diyagram, okuma süresi)
-- [ ] Bar chart (kelime dağılımı) CSS ile render ediliyor
+- [x] 5. sekme görünür ve çalışıyor
+- [x] Skor tablosu tüm bölümleri listeliyor, sıralanabiliyor
+- [x] Hata/uyarı listesi kategorilere ayrılmış, filtrelenebiliyor
+- [x] `javac` ile kod derleme çalışıyor, sonuçlar gösteriliyor
+- [x] Kitap istatistikleri doğru (toplam kelime, kod, diyagram, okuma süresi)
+- [x] Bar chart (kelime dağılımı) CSS ile render ediliyor
 
 ---
 
@@ -202,12 +202,12 @@ POST   /api/wizard/plan             # LLM ile bölüm planı öner
 ```
 
 ### Kontrol Listesi
-- [ ] Wizard modal açılıyor (header'dan "Yeni Kitap" butonu)
-- [ ] 5 adım Next/Back ile ilerliyor
-- [ ] Her adım valide ediliyor
-- [ ] LLM bölüm planı başarıyla oluşturuluyor
-- [ ] Kitap projesi dizinde oluşturuluyor
-- [ ] Manifest/state/config dosyaları yazılıyor
+- [x] Wizard modal açılıyor (header'dan "Yeni Kitap" butonu)
+- [x] 3 adım Next/Back ile ilerliyor
+- [x] Her adım valide ediliyor
+- [x] LLM bölüm planı başarıyla oluşturuluyor
+- [x] Kitap projesi dizinde oluşturuluyor
+- [x] Manifest/state/config dosyaları yazılıyor
 
 ---
 

@@ -1,6 +1,9 @@
 # bookMaker Coding Plan
 
-Bu belge, kodlamaya baslamadan once kilitlenen teknik kararları, mimari taslagi, modül sinirlarini, veri modellerini, CLI/GUI yaklasimini ve ilk MVP uygulama sirasini tanimlar.
+> **TARIHI KAYIT (2026-05-03).** Ilk kodlama planidir. BookProfile/BookArchitecture modelleri,
+> SQLite semasi ve workspace yapisi gecersizdir. Guncel mimari: `book_manifest.yaml` tek kaynak.
+
+Bu belge, kodlamaya baslamadan once kilitlenen teknik kararları tanimlar.
 
 Bu dosya kod yazimina baslarken ana referans kabul edilecektir. `todo.md` urun hedeflerini, `chapter_spec.md` bolum Markdown sozlesmesini, `chapter_authoring_workflow.md` bolum yazim akisini, `resume.md` ise oturumlar arasi kisa hafizayi tutar. `coding_plan.md` bunlari uygulama mimarisine cevirir.
 

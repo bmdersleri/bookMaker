@@ -1,6 +1,43 @@
 # Changelog
 
-## [0.1.0] — Unreleased (deepseek branch)
+## [0.2.0] — 2026-05-07 (main branch)
+
+### Added
+- Inline editable chapter titles (double-click to edit, Enter/blur save, Escape cancel)
+- Pipeline job detail panel (expandable per-step prompt→output mapping, timing, progress)
+- Export UI controls: reference DOCX, lua filter, TOC depth in Build/Export tab
+- Export sub-tab in Yapilandirma with full pandoc/output settings
+- `PandocConfig`, `MermaidConfig`, `OutputsConfig` models in BookManifest
+- Per-step tracking in pipeline jobs (prompt_file, output_file, elapsed_s)
+- Split-panel markdown editor in chapter view (left: textarea, right: live preview)
+- Chapter creation wizard (+ Bolum Ekle button, bulk delete)
+- CHAPTER_PRODUCTION.md documenting the 6-stage pipeline
+
+### Changed
+- **book_profile.yaml eliminated** — BookConfig reads from book_manifest.yaml
+- Single global llm_config.json (per-book LLM config removed from GUI)
+- BookManifest extended with pandoc/mermaid/outputs optional sections
+- Wizard creates book_manifest.yaml with full pandoc/defaults (no book_profile.yaml)
+- ManifestManager simplified (profile_path, architecture_path, load_or_generate cleaned)
+- All prompt builders parameterized with dynamic code_language (no hardcoded Java)
+- Chapter view replaced with split-panel editor (save via POST /api/view/{id}/save)
+- All book_manifest.yaml fields editable via Yapilandirma tab in GUI
+
+### Removed
+- Per-book LLM configuration tab and endpoints
+- book_profile.yaml dependency (all config in book_manifest.yaml)
+- _create_book_profile() and _create_llm_config() from wizard
+- ManifestManager.profile_path() and architecture_path()
+
+### Fixed
+- Hardcoded Java references in all prompt builders (spec, seed, validation)
+- Worker thread root-fixation bug (captured root at server startup)
+- Markdown table rendering in preview panel (line-by-line state machine)
+- Template ID conflicts in modal (document.importNode with <template> tags)
+
+---
+
+## [0.1.0] — 2026-05-04 (deepseek branch)
 
 ### Added
 - 4-stage chapter generation pipeline: Spec → Seed → Normalize → Enrich → Assemble

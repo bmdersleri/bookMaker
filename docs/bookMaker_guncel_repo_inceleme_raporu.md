@@ -1,8 +1,9 @@
 # bookMaker Güncel Repo İnceleme ve Geliştirme Önerileri
 
-**Rapor tarihi:** 5 Mayıs 2026  
-**İncelenen repo:** `https://github.com/bmdersleri/bookMaker`  
-**İnceleme yöntemi:** Public GitHub görünümü, repo kök dizini, commit geçmişi, ana dokümantasyon dosyaları, örnek bölüm, validator betiği ve build raporları incelenmiştir. Repo yerel olarak klonlanıp çalıştırılmamıştır; değerlendirme GitHub’da görünen güncel dosyalar üzerinden yapılmıştır.
+> **TARIHI RAPOR (5 Mayis 2026).** Incelenen commit: `ce3f213` (baslangic).
+> Onerilerin cogu gerceklesti. Studio "acele edilmemeli" uyarisi gecersiz — GUI su an 6 sekme ile calisiyor.
+
+**Rapor tarihi:** 5 Mayıs 2026 | **Incenenen repo:** `https://github.com/bmdersleri/bookMaker`
 
 > Not: GitHub’da erişebildiğim güncel durumda son commit `ce3f213` / `baslangic` / 3 Mayıs 2026 olarak görünmektedir. Repo toplam 2 commit göstermektedir. Daha yeni bir push yaptıysanız ancak GitHub public görünümüne yansımadıysa, rapor erişilebilen son duruma göre hazırlanmıştır.
 

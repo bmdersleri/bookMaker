@@ -5,9 +5,9 @@ bookMaker is an LLM-assisted, author-controlled, quality-gated Turkish academic/
 
 ## Repository
 - Repo: `https://github.com/bmdersleri/bookMaker`
-- Branch: `deepseek` (main branch: `main`)
+- Branch: `main` (tek branch)
 - Git user: Ismail Kirbas
-- Book content lives in `book_projects/java-temelleri/` (separate repo)
+- Book content lives in `book_projects/` (ornek: `flutter-ile-mobil-uygulama-gelistirme/`, `python-programlama-giris/`)
 
 ## Architecture
 ```
@@ -19,10 +19,13 @@ src/bookmaker/
 │   ├── spec.py               # Spec generation + validation
 │   ├── postprocess.py        # Normalize, deepen, assemble, insert
 │   └── clean_text.py         # TextCleaner (regex, 0 token)
-├── chapter/                  # Parser, validator, scoring
+├── chapter/                  # Parser, validator, scoring, validation_modes
 ├── production/               # Mermaid, Pandoc, QR, pipeline
+├── manifest/                 # BookManifest, PipelineState, BookChapterRef modelleri
 ├── studio/                   # FastAPI GUI (localhost:8765)
-└── llm/                      # DeepSeek API client
+│   └── services/             # book, chapter, prompt, export, wizard, etc.
+├── llm/                      # DeepSeek API client
+└── core/                     # BookConfig, paths, errors
 ```
 
 ## Core Rules
@@ -41,10 +44,12 @@ src/bookmaker/
 | Spec prompts | `src/bookmaker/generation/spec.py` |
 | Pipeline | `src/bookmaker/generation/pipeline.py` |
 | Postprocess | `src/bookmaker/generation/postprocess.py` |
-| Validation script | `tools/validate_prompt_changes.py` |
-| Pipeline test | `tools/test_pipeline_full.py` |
-| Book project | `book_projects/java-temelleri/` |
-| Build output | `book_projects/java-temelleri/build/` |
+| BookManifest model | `src/bookmaker/manifest/models.py` |
+| BookConfig | `src/bookmaker/core/config.py` |
+| Studio GUI | `src/bookmaker/studio/app.py` |
+| Pipeline jobs | `src/bookmaker/studio/jobs.py` |
+| Book projects | `book_projects/` |
+| Flutter kitap | `book_projects/flutter-ile-mobil-uygulama-gelistirme/` |
 
 ## Environment
 - Python 3.14.4 venv at `.venv/`, managed with uv 0.11.9
@@ -77,10 +82,11 @@ git push origin deepseek
 ```
 
 ## Current Focus
-- Prompt engineering for chapter generation pipeline
-- 4-stage pipeline: Spec → Seed → Normalize → Enrich → Assemble
+- 6-stage pipeline: SPEC → VALIDATE → SEED → NORMALIZE → ENRICH → ASSEMBLE
+- Multi-language prompt engineering (Java, Python, Dart/Flutter, generic)
+- Studio GUI improvements (inline editing, pipeline tracking, export controls)
+- book_manifest.yaml as single configuration source (book_profile.yaml eliminated)
 - 6-step pedagogical depth chain: TANIM → NEDEN → NASIL → NE ZAMAN → ALTERNATİF → HATA
-- Enrichment: parallel LLM calls for özet/sözlük/soru/alıştırma/hata/köprü
 
 ## Project Skills
 See `.claude/skills/` for detailed workflows:

@@ -1,8 +1,10 @@
 # MASTER_PLAN
 
-Bu dosya `bookMaker` yazılımının tüm geliştirme aşamalarını, her aşamada yapılacak işleri, üretilecek çıktıları ve kabul kriterlerini tanımlar.
+> **TARIHI KAYIT (2026-05-03).** Bu dokuman projenin ilk tasarim asamasini yansitir.
+> `book_profile.yaml` ve `book_architecture.yaml` referanslari gecersizdir.
+> Guncel durum: `SESSION.md`, `README.md`, `CHAPTER_PRODUCTION.md`.
 
-> **Oturum takibi için:** `session.md` — aktif faz, tamamlananlar, sıradaki görevler.
+Bu dosya `bookMaker` yazılımının tüm geliştirme aşamalarını tanımlar.
 > Bu dosyadaki `[ ]` kutucukları görev tamamlandığında `[x]` olarak işaretlenir.
 
 Kaynak dokümanlar: `coding_plan.md`, `todo.md`, `chapter_spec.md`, `chapter_authoring_workflow.md`.

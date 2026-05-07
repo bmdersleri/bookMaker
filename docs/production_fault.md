@@ -1,8 +1,8 @@
 # PRODUCTION_FAULT.md — Production Pipeline Hata ve Problem Kaydı
 
-**Proje:** bookMaker (Java'nın Temelleri Kitap Üretimi)  
-**Tarih:** 2026-05-04  
-**Branch:** deepseek  
+> **TARIHI KAYIT.** Tum sorunlar cozuldu. Eski `tools/book_pdf_v3.py`, `book_production.py` script'leri ve deepseek branch donemine aittir.
+
+**Proje:** bookMaker | **Tarih:** 2026-05-04 | **Branch:** deepseek (tarihi)
 **Durum:** Güncel — PDF çıktısı başarılı (339 sayfa), 4 açık hata, 10 çözülmüş hata
 
 ---
