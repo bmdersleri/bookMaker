@@ -8,6 +8,19 @@ import json
 import os
 from pathlib import Path
 
+# .env dosyasini modul yuklenirken oku
+try:
+    from dotenv import load_dotenv
+
+    _cwd = Path.cwd().resolve()
+    for _parent in [_cwd, *_cwd.parents]:
+        _env = _parent / ".env"
+        if _env.exists():
+            load_dotenv(_env, override=False)
+            break
+except ImportError:
+    pass
+
 _CONFIG_FILE = "llm_config.json"
 
 

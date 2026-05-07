@@ -31,15 +31,17 @@ from pathlib import Path
 
 
 def _load_dotenv() -> None:
-    """Proje kokundeki .env dosyasini yukler."""
+    """Proje kokundeki .env dosyasini yukler (cwd'den yukari arar)."""
     try:
         from dotenv import load_dotenv as _load
 
-        # Proje kokunu bul: src/bookmaker/core/app_config.py -> proje koku
-        current = Path(__file__).resolve().parent.parent.parent.parent
-        env_path = current / ".env"
-        if env_path.exists():
-            _load(env_path, override=False)  # override=False: env var .env'den once gelir
+        # cwd'den yukari dogru .env ara
+        current = Path.cwd().resolve()
+        for parent in [current, *current.parents]:
+            env_path = parent / ".env"
+            if env_path.exists():
+                _load(env_path, override=False)
+                return
     except ImportError:
         pass
 
@@ -118,16 +120,15 @@ class AppConfig:
     # ----------------------------------------------------------
     mermaid_timeout: int = field(default_factory=lambda: _env_int("MERMAID_TIMEOUT", 30))
 
-    def __post_init__(self) -> None:
-        _load_dotenv()
-        # .env yuklendikten sonra tekrar oku (.env override etmesin diye)
-        # burada sadece .env'de olup env var'da olmayanlari al
-
     @property
     def is_configured(self) -> bool:
         """LLM API yapilandirmasi tamam mi?"""
         return bool(self.llm_api_key)
 
+
+# .env dosyasini modul yuklenirken hemen oku
+# (field default_factory'ler oncesinde calismasi lazim)
+_load_dotenv()
 
 # Singleton instance
 config = AppConfig()
