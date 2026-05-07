@@ -48,13 +48,13 @@ def _create_test_project(tmp_path: Path) -> Path:
 
 
 # ================================================================
-# MANIFEST SERVICE TESTS
+# BOOK, CHAPTER & PIPELINE SERVICE TESTS
 # ================================================================
 
 def test_manifest_get_project_info(tmp_path):
     root = _create_test_project(tmp_path)
-    from bookmaker.studio.services import manifest_service
-    info = manifest_service.get_project_info(root)
+    from bookmaker.studio.services import book_service
+    info = book_service.get_project_info(root)
     assert info["title"] == "Test Kitap"
     assert info["chapters"] == 0
     assert "stage" in info
@@ -62,9 +62,9 @@ def test_manifest_get_project_info(tmp_path):
 
 def test_manifest_load_manifest_returns_model(tmp_path):
     root = _create_test_project(tmp_path)
-    from bookmaker.studio.services import manifest_service
+    from bookmaker.studio.services import book_service
 
-    manifest = manifest_service.load_manifest(root)
+    manifest = book_service.load_manifest(root)
 
     assert manifest.book.title == "Test Kitap"
 
@@ -206,56 +206,56 @@ def test_prompt_service_roundtrip(tmp_path):
 
 def test_manifest_add_and_remove_chapter(tmp_path):
     root = _create_test_project(tmp_path)
-    from bookmaker.studio.services import manifest_service
+    from bookmaker.studio.services import chapter_service
 
-    r = manifest_service.add_chapter(root, "bolum-01", "Test Bolum", 1)
+    r = chapter_service.add_chapter(root, "bolum-01", "Test Bolum", 1)
     assert r.get("chapter_id") == "bolum-01"
 
-    chapters = manifest_service.get_chapter_list(root)
+    chapters = chapter_service.get_chapter_list(root)
     assert len(chapters) == 1
     assert chapters[0]["title"] == "Test Bolum"
 
-    r = manifest_service.remove_chapter(root, "bolum-01")
+    r = chapter_service.remove_chapter(root, "bolum-01")
     assert r.get("deleted") is True
 
-    chapters = manifest_service.get_chapter_list(root)
+    chapters = chapter_service.get_chapter_list(root)
     assert len(chapters) == 0
 
 
 def test_manifest_reorder_chapters(tmp_path):
     root = _create_test_project(tmp_path)
-    from bookmaker.studio.services import manifest_service
+    from bookmaker.studio.services import chapter_service
 
-    manifest_service.add_chapter(root, "bolum-01", "Bir", 1)
-    manifest_service.add_chapter(root, "bolum-02", "Iki", 2)
-    manifest_service.add_chapter(root, "bolum-03", "Uc", 3)
+    chapter_service.add_chapter(root, "bolum-01", "Bir", 1)
+    chapter_service.add_chapter(root, "bolum-02", "Iki", 2)
+    chapter_service.add_chapter(root, "bolum-03", "Uc", 3)
 
-    r = manifest_service.reorder_chapters(
+    r = chapter_service.reorder_chapters(
         root, ["bolum-03", "bolum-01", "bolum-02"])
     assert r["reordered"]
     assert r["count"] == 3
 
-    chapters = manifest_service.get_chapter_list(root)
+    chapters = chapter_service.get_chapter_list(root)
     assert chapters[0]["chapter_id"] == "bolum-03"
 
 
 def test_manifest_update_chapter(tmp_path):
     root = _create_test_project(tmp_path)
-    from bookmaker.studio.services import manifest_service
+    from bookmaker.studio.services import chapter_service
 
-    manifest_service.add_chapter(root, "bolum-01", "Eski Baslik", 1)
-    r = manifest_service.update_chapter(
+    chapter_service.add_chapter(root, "bolum-01", "Eski Baslik", 1)
+    r = chapter_service.update_chapter(
         root, "bolum-01", {"title": "Yeni Baslik"})
     assert r.get("updated") is True
 
-    chapters = manifest_service.get_chapter_list(root)
+    chapters = chapter_service.get_chapter_list(root)
     assert chapters[0]["title"] == "Yeni Baslik"
 
 
 def test_manifest_get_pipeline_state(tmp_path):
     root = _create_test_project(tmp_path)
-    from bookmaker.studio.services import manifest_service
-    state = manifest_service.get_pipeline_state(root)
+    from bookmaker.studio.services import pipeline_service
+    state = pipeline_service.get_pipeline_state(root)
     assert "pipeline_id" in state
     assert "current_stage" in state
 
@@ -308,9 +308,9 @@ def test_pipeline_get_generator_no_llm(tmp_path):
 
 def test_pipeline_get_chapter_info(tmp_path):
     root = _create_test_project(tmp_path)
-    from bookmaker.studio.services import manifest_service, pipeline_service
+    from bookmaker.studio.services import chapter_service, pipeline_service
 
-    manifest_service.add_chapter(root, "bolum-01", "Test", 1)
+    chapter_service.add_chapter(root, "bolum-01", "Test", 1)
     info = pipeline_service.get_chapter_info(root, "bolum-01")
     assert info is not None
     assert info["chapter_id"] == "bolum-01"
@@ -481,7 +481,7 @@ def test_wizard_creates_project_based_book(tmp_path):
     assert (project / "chapters" / "giris" / "prompt.md").exists()
     assert (project / "chapters" / "giris" / "content" / "draft.md").exists()
     assert (project / "chapters" / "giris" / "content" / "final.md").exists()
-    assert not (project / "book_profile.yaml").exists()
+    assert (project / "book_profile.yaml").exists()
     assert not (project / "book_architecture.yaml").exists()
     assert not (project / "chapters" / "giris" / "approved").exists()
 

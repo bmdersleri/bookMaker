@@ -12,7 +12,7 @@ from __future__ import annotations
 # Çok kısa, çok net. LLM'in nasıl bir yazar olduğunu tanımlar.
 # ============================================================
 
-SYSTEM_AUTHOR = """Sen, Türkçe programlama kitabı yazan kıdemli bir teknik yazarsın.
+_SYSTEM_AUTHOR_JAVA = """Sen, Türkçe programlama kitabı yazan kıdemli bir teknik yazarsın.
 
 Yazı dilin:
 - Akademik ama sade: Karmaşık kavramları basit örneklerle açıklarsın
@@ -40,7 +40,20 @@ Kod yazma kuralların:
 - Aynı bölümdeki kod örnekleri birbiriyle bağlantılı olsun, sonraki öncekini temel alsın
 
 Günlük hayattan analoji zorunludur: her ana kavram için en az 1 somut benzetme yap.
-Tarihsel bağlam: Önemli kavramların Java'nın hangi sürümünde geldiğini ve neden eklendiğini belirt."""
+Tarihsel bağlam: Önemli kavramların {Code_Lang}'nın hangi sürümünde geldiğini ve neden eklendiğini belirt."""
+
+# Backward-compatible default (Java)
+SYSTEM_AUTHOR = _SYSTEM_AUTHOR_JAVA.replace("{Code_Lang}", "Java")
+
+
+def build_system_author(code_language: str = "java") -> str:
+    """code_language'e göre sistem prompt'u üretir (Java varsayılan)."""
+    lang = code_language or "java"
+    lang_cap = lang.capitalize()
+    return (_SYSTEM_AUTHOR_JAVA
+            .replace("{Code_Lang}", lang_cap)
+            .replace("Java kodu", f"{lang_cap} kodu")
+            .replace("Java'ya", f"{lang_cap}'a"))
 
 
 # ============================================================

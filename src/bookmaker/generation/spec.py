@@ -6,7 +6,7 @@ Bu sayede kod blokları, diyagramlar, sözlük gibi yapılar garantilenmiş olur
 
 from __future__ import annotations
 
-from bookmaker.generation.prompts import SYSTEM_AUTHOR
+from bookmaker.generation.prompts import SYSTEM_AUTHOR, build_system_author
 
 # ============================================================
 # SPEC PROMPT
@@ -17,10 +17,12 @@ def build_spec_prompt(
     concepts: list[str],
     book_context: str = "",
     chapter_no: int | None = None,
+    code_language: str = "java",
 ) -> str:
     """LLM'e bölüm spesifikasyonu üretmesi için prompt."""
     concepts_str = "\n".join(f"  - {c}" for c in concepts)
     no_str = f"Bölüm {chapter_no}: " if chapter_no else ""
+    lang = code_language or "java"
 
     return f"""## Görev: Bölüm Spesifikasyonu Hazırla
 
@@ -44,7 +46,7 @@ Aşağıdaki başlıklarla bir PLAN hazırla. SADECE PLAN, kod veya diyagram YAZ
    - Hangi kavramı gösteriyor?
    - Dosya adı ne olacak?
    - Kod kaç satır olacak? (tahmini)
-   - Hangi Java özelliklerini kullanacak?
+   - Hangi {lang.capitalize()} özelliklerini kullanacak?
    KOD BLOĞU YAZMA! Sadece tarif et.
 
 3. **DİYAGRAMLAR** — Uygunsa diyagram planla:
@@ -65,12 +67,13 @@ Aşağıdaki başlıklarla bir PLAN hazırla. SADECE PLAN, kod veya diyagram YAZ
 
 8. **TABLOLAR** — Gerekliyse hangi verilerin karşılaştırılacağını belirt
 
-KESIN KURAL: Bu bir PLAN'dır. ```java veya ```mermaid BLOĞU YAZMAK YASAKTIR.
+KESIN KURAL: Bu bir PLAN'dır. ```{lang} veya ```mermaid BLOĞU YAZMAK YASAKTIR.
 Sadece ne yapılacağını TARIF ET. Kodun ve diyagramın kendisini sonraki aşamada yazacağız."""
 
 
-def build_spec_validation_prompt(spec: str, chapter_title: str) -> str:
+def build_spec_validation_prompt(spec: str, chapter_title: str, code_language: str = "java") -> str:
     """LLM'e spesifikasyonu doğrulatması için prompt."""
+    lang = code_language or "java"
     return f"""## Görev: Spesifikasyonu Doğrula
 
 **Bölüm:** {chapter_title}
@@ -82,7 +85,7 @@ Aşağıdaki spesifikasyonu kontrol et:
 ---
 Kontrol et:
 1. Tüm kavramlar kapsanmış mı?
-2. PLAN formatına uygun mu? (```java veya ```mermaid bloğu OLMAMALI, sadece tarif olmalı)
+2. PLAN formatına uygun mu? (```{lang} veya ```mermaid bloğu OLMAMALI, sadece tarif olmalı)
 3. Eksik bölüm var mı?
 4. Değerlendirme soruları ve alıştırmalar planlanmış mı?
 
@@ -91,12 +94,13 @@ Cevabını şu formatta ver:
 - Eksik varsa: "REVISION: [eksikler listesi]" """
 
 
-def build_seed_from_spec_prompt(spec: str, chapter_title: str) -> str:
+def build_seed_from_spec_prompt(spec: str, chapter_title: str, code_language: str = "java") -> str:
     """Spesifikasyona dayalı seed generation prompt'u."""
-    # Spec'i kisalt: sadece ilk 5000 karakter yeterli (plan formatinda)
     spec_short = spec[:5000]
     if len(spec) > 5000:
         spec_short += "\n\n... (planin devami var, tum maddeleri isle)"
+    lang = code_language or "java"
+    lang_cap = lang.capitalize()
 
     return f"""## Görev: Spesifikasyona Göre Bölüm Üret
 
@@ -113,7 +117,7 @@ Spesifikasyon bir PLANDIR, içindeki tariflere göre kodları ve diyagramları S
 Her kavramı şu 6 adımla işle (sırayla):
 1. TANIM — Kavramı 1-2 net cümleyle tanımla
 2. NEDEN VAR? — Hangi problemi çözer?
-3. NASIL KULLANILIR? — Çalışan Java kodu ile göster, sonra kodu satır satır açıkla
+3. NASIL KULLANILIR? — Çalışan {lang_cap} kodu ile göster, sonra kodu satır satır açıkla
 4. NE ZAMAN TERCİH EDİLİR? — Hangi senaryoda bu, hangi senaryoda alternatifi?
 5. ALTERNATİFLERİ — Benzer kavramlarla karşılaştırma tablosu yap
 6. YAYGIN HATALAR — Bu kavramla ilgili en sık hatayı ve çözümünü belirt
@@ -123,7 +127,7 @@ Toplam bölüm uzunluğu 6000-8000 kelime arası olsun.
 
 Yazım kuralları:
 - H1 = bölüm başlığı, H2 = ana bölümler, H3 = alt bölümler
-- Kod yazmaya uygun H2/H3 altında ```java örneği ver
+- Kod yazmaya uygun H2/H3 altında ```{lang} örneği ver
   (Kod ZORUNLU DEĞİL: yol haritası, öğrenme çıktıları, ön bilgi,
    özet, sözlük, sorular, rubrik, kaynaklar, köprü)
 - Değişken isimleri anlamlı Türkçe, her kodda 3+ yorum satırı, // Çıktı: ... gösterimi
@@ -139,24 +143,30 @@ Yazım kuralları:
 # ============================================================
 
 def generate_spec(client, chapter_title: str, concepts: list[str],
-                  book_context: str = "", chapter_no: int | None = None) -> str:
+                  book_context: str = "", chapter_no: int | None = None,
+                  code_language: str = "java") -> str:
     """LLM'e bölüm spesifikasyonu ürettirir."""
-    user = build_spec_prompt(chapter_title, concepts, book_context, chapter_no)
+    user = build_spec_prompt(chapter_title, concepts, book_context, chapter_no,
+                             code_language=code_language)
+    system = build_system_author(code_language) if code_language != "java" else SYSTEM_AUTHOR
     print(f"  [SPEC] {chapter_title} planı hazırlanıyor...")
-    spec = client.generate_text(SYSTEM_AUTHOR, user)
+    spec = client.generate_text(system, user)
     print(f"  [SPEC] {len(spec.split())} kelime, {len(spec)} karakter")
     return spec
 
 
-def validate_spec(client, spec: str, chapter_title: str) -> dict:
+def validate_spec(client, spec: str, chapter_title: str,
+                  code_language: str = "java") -> dict:
     """LLM'e spesifikasyonu doğrulatır.
 
     Returns:
         {"status": "PASS"|"REVISION", "notes": "...", "response": "..."}
     """
-    user = build_spec_validation_prompt(spec, chapter_title)
+    user = build_spec_validation_prompt(spec, chapter_title,
+                                        code_language=code_language)
+    system = build_system_author(code_language) if code_language != "java" else SYSTEM_AUTHOR
     print("  [VALIDATE] Spesifikasyon kontrol ediliyor...")
-    result = client.generate_text(SYSTEM_AUTHOR, user)
+    result = client.generate_text(system, user)
     status = "PASS" if "PASS" in result.upper() else "REVISION"
     print(f"  [VALIDATE] {status}, {len(result.split())} kelime")
     return {"status": status, "notes": result, "response": result}

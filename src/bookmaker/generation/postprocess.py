@@ -142,7 +142,8 @@ def build_front_matter(chapter_id: str, title: str, config: BookConfig | None = 
     # Config'ten degerleri al (yoksa varsayilan)
     author = config.author if config else "Ismail Kirbas"
     year = config.year if config else 2026
-    subtitle = f'"{config.title}"' if config else "\"Java'nin Temelleri\""
+    subtitle = f'"{config.title}"' if config else '"Kitap"'
+    project_alias = config.book_id if config else "kitap"
 
     return f"""---
 title: "{title}"
@@ -155,7 +156,7 @@ toc: true
 toc-depth: 3
 numbersections: true
 repo: bmdersleri
-project-alias: javanintemelleri
+project-alias: {project_alias}
 chapter-alias: {chapter_id}
 chapter_id: {chapter_id}
 chapter_type: core

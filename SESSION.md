@@ -9,21 +9,106 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 ## ŞU AN
 
 ```text
-Aktif Faz       : MIGRATION.md - FAZ 5 Studio ve Servis Katmanı
-Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio görsel ergonomi
+Aktif Faz       : MIGRATION.md - FAZ 5 Studio ve Servis Katmanı (TAMAMLANDI)
+Son Oturum      : 2026-05-07 - FAZ 5 kalan 5 adım tamamlandı
 Repo            : D:\bookMaker_clean
 Önceki Repo     : D:\bookMaker_Deepseek  # artık geliştirme için kullanılmamalı
 Branch          : feat/chapter-validator-profile-modes
 Base            : local main üzerindeki ad348a0 + origin/main üzerindeki 4e9a4e8
 Remote          : origin
-Son Kod Commit  : Tighten Studio visual ergonomics
-Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, görsel ergonomi pass'i doğrulandı
+Son Kod Commit  : FAZ 5 kapanış — observer, manifest temizliği, pipeline profili, CODE_META uyumu
+Durum           : FAZ 4 + FAZ 5 tamamlandı; sıradaki FAZ 7 ileri seviye (v2.0) veya kullanıcı yönlendirmesi
 Dikkat          : Repo kökünde geçici *.ps1 dosyası varsa commit'e alınmamalı
 ```
 
 ---
 
-## 2026-05-06 Oturumu - FAZ 4 Chapter Validator Profile Mode Refactor
+## 2026-05-07 Oturumu — FAZ 5 Kalan İşlerin Tamamlanması
+
+### Başlangıç Durumu
+
+- Hook path'leri eski repoya (`D:/bookMaker_Deepseek`) işaret ediyordu, düzeltildi.
+- 221 test, book check 100/pass, ruff clean.
+
+### Yapılan İşler
+
+#### 1. Hook Error'ları Düzeltildi
+
+`.claude/settings.json` içindeki 4 hook yolu `D:/bookMaker_Deepseek` → `D:/bookMaker_clean` olarak güncellendi:
+- statusLine, SessionStart, Stop, PreToolUse (Bash matcher)
+
+#### 2. FAZ 5 / Aşama 9 — Flutter Kabul Senaryosu
+
+Playwright ile 13 maddelik end-to-end kabul testi çalıştırıldı:
+- Tüm sekmeler (Bölümler, Pipeline, Kalite, Build/Export, Promptlar, Yapılandırma)
+- API endpoints (active-book, quality/book)
+- Sonuç: 13/13 PASS
+
+#### 3. FAZ 5 — observer_service Review Genişletmesi
+
+`src/bookmaker/studio/services/observer_service.py` genişletildi:
+
+Yeni fonksiyonlar:
+- `generate_observer_review()` — Observer LLM ile bölüm taslağını manifest + review prompt ile değerlendirir, `logs/reviews/<alias>_observer_review.md/.json` yazar
+- `list_observer_reviews()` — Bölüm/tüm review kayıtlarını listeler
+- `get_observer_review()` — En son observer review'i tam metin döndürür
+- `compare_observer_vs_validator()` — Observer bulgularını rule-based validator sonuçlarıyla karşılaştırır
+
+Yeni endpoint'ler (`app.py`):
+- `GET /api/observer/reviews`
+- `GET /api/observer/review/{chapter_id}`
+- `POST /api/observer/review/{chapter_id}`
+- `GET /api/observer/compare/{chapter_id}`
+
+#### 4. FAZ 5 — manifest_service Facade Temizliği
+
+- `src/bookmaker/studio/services/manifest_service.py` kaldırıldı (sadece wrapper'dı, production kodda kullanılmıyordu)
+- `tests/unit/test_studio_services.py` testleri `book_service`, `chapter_service`, `pipeline_service` doğrudan kullanacak şekilde güncellendi
+- `app.py` import'larından manifest_service çıkarıldı (zaten import edilmiyordu)
+
+#### 5. FAZ 5 — pipeline_state.yaml Profil Değerlendirmesi
+
+Değerlendirme sonucu: Profile zaten `book_manifest.yaml`'de tekil kaynak olarak mevcut. Ancak pipeline worker'ların manifest yüklemeden profile erişebilmesi için:
+- `ProductionContext` modeline `profile: str = ""` alanı eklendi
+- Wizard yeni proje oluştururken `resolve_validation_profile_from_manifest()` ile profile çözüp `pipeline_state.yaml`'a yazıyor
+
+#### 6. FAZ 5 — CODE_META language/profile Uyumluluğu
+
+`validation_modes.py`:
+- `PROFILE_LANGUAGES` eklendi: profile → beklenen kod dilleri
+  - java → {java}
+  - flutter → {dart, kotlin, swift, java, objective-c} (mobil diller)
+  - generic → {} (kısıtlama yok)
+- `is_language_compatible_with_profile(language, profile)` helper'ı eklendi
+
+`validator.py`:
+- `_validate_code_meta` içinde yeni `code.language_profile_mismatch` WARNING kategorisi
+- `intentional_mismatch: true` ile bastırılabilir
+- Sadece explicit profile verildiğinde tetiklenir (None profil/legacy path fallback değil)
+
+### Doğrulama Sonuçları
+
+```text
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 221 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+
+git diff --check
+Sonuç: PASS
+```
+
+### Sıradaki Hedef
+
+```text
+FAZ 5 tamamlandı. Sıradaki:
+- GUI_ROADMAP.md FAZ 7: İleri Seviye (v2.0) — çoklu kitap, kullanıcı rolleri, reader modu, bildirimler, Docker/PWA
+- Veya kullanıcı yönlendirmesiyle yeni işler
+```
 
 ### Başlangıç Durumu
 

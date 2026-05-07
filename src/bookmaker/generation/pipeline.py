@@ -38,6 +38,7 @@ from bookmaker.generation.prompts import (
     build_enrich_questions_prompt,
     build_enrich_summary_prompt,
     build_seed_prompt,
+    build_system_author,
 )
 from bookmaker.generation.spec import (
     build_seed_from_spec_prompt,
@@ -126,6 +127,15 @@ class ChapterGenerator:
         self.client = OpenAICompatibleClient(
             **base, timeout=120, api_log_dir=api_log_dir)
 
+    @property
+    def code_language(self) -> str:
+        return self.config.primary_code_language if self.config else "java"
+
+    @property
+    def system_prompt(self) -> str:
+        lang = self.code_language
+        return build_system_author(lang) if lang != "java" else SYSTEM_AUTHOR
+
     def is_ready(self) -> bool:
         return bool(self.config and self.llm_config.is_configured() and self.client)
 
@@ -145,7 +155,7 @@ class ChapterGenerator:
         model = self.llm_config.model
         print(f"  [SEED:{model}] {chapter_title}...")
         t0 = time.time()
-        raw = self.client.generate_text_with_resume(SYSTEM_AUTHOR, user_prompt)
+        raw = self.client.generate_text_with_resume(self.system_prompt, user_prompt)
         elapsed = time.time() - t0
         print(f"  [SEED] {len(raw.split())} kelime, {elapsed:.1f}s")
         return raw
@@ -254,7 +264,7 @@ class ChapterGenerator:
 
     def _call_enrich(self, user_prompt: str) -> tuple[str, float]:
         t0 = time.time()
-        c = self.client.generate_text(SYSTEM_AUTHOR, user_prompt)
+        c = self.client.generate_text(self.system_prompt, user_prompt)
         return c.strip(), time.time() - t0
 
     def _fallback_all(self, enrich_types, chapter_title):
@@ -383,31 +393,38 @@ class ChapterGenerator:
         Tum ara ciktilari gen_dir altina kaydeder, sonuclari result'a yazar.
         Normalize edilmis metni dondurur.
         """
+        code_lang = self.config.primary_code_language
+
         # STEP 0: SPEC
         print("\n--- ADIM 0: SPEC ---")
         spec = generate_spec(self.client, title, concepts,
-                             f"Hedef: {self.config.audience}", chapter_no)
+                             f"Hedef: {self.config.audience}", chapter_no,
+                             code_language=code_lang)
         self._save(gen_dir / "step0_spec.md", spec)
         self._save(gen_dir / "prompt0_spec.txt",
                    build_spec_prompt(title, concepts,
-                       f"Hedef: {self.config.audience}", chapter_no))
+                       f"Hedef: {self.config.audience}", chapter_no,
+                       code_language=code_lang))
         result["spec"] = spec
 
         # STEP 0.5: VALIDATE
         print("\n--- ADIM 0.5: DOGRULAMA ---")
-        validation = validate_spec(self.client, spec, title)
+        validation = validate_spec(self.client, spec, title,
+                                   code_language=code_lang)
         self._save(gen_dir / "step0_validation.md", validation["notes"])
         self._save(gen_dir / "prompt0_validation.txt",
-                   build_spec_validation_prompt(spec, title))
+                   build_spec_validation_prompt(spec, title,
+                                               code_language=code_lang))
         result["validation"] = validation
 
         # STEP 1: SEED
         print("\n--- ADIM 1: SEED ---")
-        seed_prompt = build_seed_from_spec_prompt(spec, title)
+        seed_prompt = build_seed_from_spec_prompt(spec, title,
+                                                  code_language=code_lang)
         self._save(gen_dir / "prompt1_seed.txt", seed_prompt)
         seed_start = time.time()
         raw = self.client.generate_text_with_resume(
-            SYSTEM_AUTHOR, seed_prompt,
+            self.system_prompt, seed_prompt,
             output_path=str(gen_dir / "step1_seed_stream.md"))
         result["seed_time"] = round(time.time() - seed_start, 1)
         self._save(gen_dir / "step1_seed.md", raw)
@@ -496,11 +513,13 @@ class ChapterGenerator:
         gen_dir.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
         result = {"chapter_id": chapter_id, "title": title, "sections": {}}
+        code_lang = self.config.primary_code_language
 
         # --- STEP 0: SPEC ---
         print("\n--- ADIM 0: SPEC (Parçali) ---")
         spec = generate_spec(self.client, title, concepts,
-                             f"Hedef: {self.config.audience}", chapter_no)
+                             f"Hedef: {self.config.audience}", chapter_no,
+                             code_language=code_lang)
         self._save(gen_dir / "step0_spec.md", spec)
         result["spec"] = spec
 
@@ -560,7 +579,7 @@ class ChapterGenerator:
             t_part = time.time()
             try:
                 part_text = self.client.generate_text_with_resume(
-                    SYSTEM_AUTHOR, section_prompt, max_tokens=8192
+                    self.system_prompt, section_prompt, max_tokens=8192
                 )
                 elapsed = time.time() - t_part
                 wc = len(part_text.split())
@@ -646,7 +665,7 @@ class ChapterGenerator:
         # Bölüm zaten uzunsa daha fazla token iste
         est_tokens = min(8192, max(4096, len(section_content) // 2))
         return self.client.generate_text_with_resume(
-            SYSTEM_AUTHOR, prompt, max_tokens=est_tokens
+            self.system_prompt, prompt, max_tokens=est_tokens
         )
 
     def _deepen_sections(
@@ -701,21 +720,24 @@ class ChapterGenerator:
         gen_dir.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
         result = {"chapter_id": chapter_id, "title": title, "mode": "two_pass"}
+        code_lang = self.config.primary_code_language
 
         # --- GECIS 1: HIZLI TASLAK ---
         print("\n=== GECIS 1: HIZLI TASLAK ===")
         # Spec ile outline al
         spec = generate_spec(self.client, title, concepts,
-                             f"Hedef: {self.config.audience}", chapter_no)
+                             f"Hedef: {self.config.audience}", chapter_no,
+                             code_language=code_lang)
         self._save(gen_dir / "pass1_spec.md", spec)
 
-        seed_prompt = build_seed_from_spec_prompt(spec, title)
+        seed_prompt = build_seed_from_spec_prompt(spec, title,
+                                                  code_language=code_lang)
         self._save(gen_dir / "pass1_prompt.txt", seed_prompt)
 
         t_draft = time.time()
         # İlk geçiş: hızlı, kısa taslak
         draft = self.client.generate_text_with_resume(
-            SYSTEM_AUTHOR, seed_prompt,
+            self.system_prompt, seed_prompt,
             max_tokens=4096,  # Kısa taslak için düşük limit
             output_path=str(gen_dir / "pass1_draft_stream.md"),
         )

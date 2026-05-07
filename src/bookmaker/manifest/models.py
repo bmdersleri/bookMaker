@@ -247,6 +247,7 @@ class ProductionContext(BaseModel):
     observer_model: str = "deepseek-chat"
     generation_mode: str = "chapter_based"
     approval_required: bool = True
+    profile: str = ""
     default_input_policy: InputPolicy = Field(default_factory=InputPolicy)
     review_policy: ReviewPolicy = Field(default_factory=ReviewPolicy)
 

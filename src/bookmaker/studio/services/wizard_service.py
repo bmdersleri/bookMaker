@@ -64,9 +64,11 @@ def create_book(project_root: str | Path, data: dict) -> dict:
             chapter_count,
             appendix_count,
         )
-        chapter_aliases = [chapter["alias"] for chapter in chapters]
 
+        _create_book_profile(book_dir, data, chapters)
         _create_book_manifest(book_dir, data, chapters)
+
+        chapter_aliases = [chapter["alias"] for chapter in chapters]
         _create_pipeline_state(book_dir, chapter_aliases)
         _create_llm_config(book_dir, data)
         _create_chapter_workspaces(book_dir, chapters)
@@ -106,6 +108,69 @@ def _create_directory_structure(book_dir: Path, data: dict) -> None:
     ]
     for d in dirs:
         d.mkdir(parents=True, exist_ok=True)
+
+
+def _create_book_profile(book_dir: Path, data: dict, chapters: list[dict[str, str]]) -> None:
+    """book_profile.yaml oluşturur — ChapterGenerator ve legacy araçlar için gerekli.
+
+    ChapterGenerator is_ready() kontrolünde book_profile.yaml arar.
+    Wizard kitaplarında bu dosya yoksa pipeline işleri başarısız olur.
+    """
+    from datetime import datetime
+
+    project_name = book_dir.name
+    audience_map = {
+        "universite_1": "Universite 1. sinif ogrencileri",
+        "universite_2": "Universite 2. sinif ogrencileri",
+        "lise": "Lise ogrencileri",
+        "yeni_baslayan": "Programlamaya yeni baslayanlar",
+        "profesyonel": "Profesyonel yazilimcilar",
+    }
+    audience_key = data.get("audience", "universite_1")
+    audience_tr = audience_map.get(audience_key, audience_key)
+
+    code_lang = data.get("code_language", "") or ""
+    if not code_lang:
+        name_lower = project_name.casefold()
+        if "java" in name_lower:
+            code_lang = "java"
+        elif "flutter" in name_lower or "dart" in name_lower:
+            code_lang = "dart"
+        elif "python" in name_lower:
+            code_lang = "python"
+        else:
+            code_lang = "java"
+
+    profile: dict = {
+        "book": {
+            "book_id": project_name,
+            "title": {"tr": data.get("title", project_name)},
+            "author": data.get("author", ""),
+            "primary_code_language": code_lang,
+            "level": "beginner",
+            "domain": "programming",
+            "audience": {"tr": audience_tr},
+            "edition": "1",
+            "year": datetime.now().year,
+        },
+        "language": {
+            "primary_language": data.get("language", "tr"),
+        },
+        "chapters": [
+            {
+                "chapter_id": ch["alias"],
+                "title": ch["title"],
+                "status": "planned",
+                "order": i + 1,
+            }
+            for i, ch in enumerate(chapters)
+        ],
+    }
+
+    profile_path = book_dir / "book_profile.yaml"
+    with profile_path.open("w", encoding="utf-8") as handle:
+        _yaml.dump(profile, handle)
+    print(f"  [WIZARD] book_profile.yaml olusturuldu: {profile_path}")
 
 
 def _normalize_chapters(
@@ -180,10 +245,13 @@ def _create_book_manifest(book_dir: Path, data: dict, chapters: list[dict[str, s
 
 def _create_pipeline_state(book_dir: Path, chapters: list[str]) -> None:
     """pipeline_state.yaml oluşturur."""
+    from bookmaker.chapter.validation_modes import resolve_validation_profile_from_manifest
+
     manifest = BookManifest.load(book_dir / "book_manifest.yaml")
     state = PipelineState.init_from_book_manifest(manifest, created_at=now_iso())
     state.current_stage = "authoring"
     state.pipeline.global_state = "authoring"
+    state.production_context.profile = resolve_validation_profile_from_manifest(manifest)
     state.save(book_dir / "pipeline_state.yaml")
 
 

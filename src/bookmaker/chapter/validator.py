@@ -10,6 +10,7 @@ from bookmaker.chapter.validation_modes import (
     QR_POLICIES,
     VALIDATION_MODES,
     is_allowed_test_mode_for_profile,
+    is_language_compatible_with_profile,
 )
 from bookmaker.core.ids import new_issue_id
 from bookmaker.models.quality import Issue, IssueLocation, Severity
@@ -279,6 +280,21 @@ def _validate_code_meta(
                     file,
                     block.line,
                 )
+
+        # CODE_META language ile profil uyum kontrolü
+        if language and profile is not None:
+            if not is_language_compatible_with_profile(language, profile):
+                intentional = _bool_value(data.get("intentional_mismatch")) is True
+                if not intentional:
+                    _add(
+                        issues,
+                        "warning",
+                        "code.language_profile_mismatch",
+                        f"CODE_META dili ({language}) profil ({profile}) ile uyumsuz. "
+                        "Bilerek yapıldıysa intentional_mismatch: true ekleyin.",
+                        file,
+                        block.line,
+                    )
 
         kind = data.get("kind", "")
         if kind and kind not in CODE_KINDS:

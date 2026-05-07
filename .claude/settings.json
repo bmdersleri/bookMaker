@@ -1,7 +1,7 @@
 {
   "statusLine": {
     "type": "command",
-    "command": "sh 'D:/bookMaker_Deepseek/.claude/statusline-command.sh'"
+    "command": "sh 'D:/bookMaker_clean/.claude/statusline-command.sh'"
   },
   "hooks": {
     "SessionStart": [
@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh 'D:/bookMaker_Deepseek/.claude/hooks/session-start.sh'"
+            "command": "sh 'D:/bookMaker_clean/.claude/hooks/session-start.sh'"
           }
         ]
       }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh 'D:/bookMaker_Deepseek/.claude/hooks/session-stop.sh'"
+            "command": "sh 'D:/bookMaker_clean/.claude/hooks/session-stop.sh'"
           }
         ]
       }
@@ -30,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh 'D:/bookMaker_Deepseek/.claude/hooks/pre-commit-validate.sh'"
+            "command": "sh 'D:/bookMaker_clean/.claude/hooks/pre-commit-validate.sh'"
           }
         ]
       }

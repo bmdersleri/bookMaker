@@ -204,6 +204,7 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
         build_enrich_glossary_prompt,
         build_enrich_questions_prompt,
         build_enrich_summary_prompt,
+        build_system_author,
     )
     from bookmaker.generation.spec import (
         build_seed_from_spec_prompt,
@@ -226,6 +227,7 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     GEN_DIR.mkdir(parents=True, exist_ok=True)
     t_all = time.time()
     model = gen.llm_config.model
+    code_lang = gen.config.primary_code_language if gen.config else "java"
 
     def progress(step_name: str, status: str, detail: str = "") -> None:
         steps = {
@@ -243,18 +245,21 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     progress("spec", "running")
     t0 = time.time()
     spec = generate_spec(gen.client, title, concepts,
-                          f"Hedef: {model}", params.get("chapter_no"))
+                          f"Hedef: {model}", params.get("chapter_no"),
+                          code_language=code_lang)
     progress("spec", "done", f"{len(spec.split())} kel, {time.time()-t0:.1f}s")
     (GEN_DIR / "step0_spec.md").write_text(spec, encoding="utf-8")
     (GEN_DIR / "prompt0_spec.txt").write_text(
         build_spec_prompt(title, concepts, f"Hedef: {model}",
-                          params.get("chapter_no")), encoding="utf-8")
+                          params.get("chapter_no"), code_language=code_lang),
+        encoding="utf-8")
 
     # STEP 2: VALIDATE
     progress("validate", "running")
     t0 = time.time()
     try:
-        validation = validate_spec(gen.client, spec, title)
+        validation = validate_spec(gen.client, spec, title,
+                                   code_language=code_lang)
         vnotes = validation.get("notes", "") if isinstance(validation, dict) else str(validation)
         validate_status = validation.get("status", "?") if isinstance(validation, dict) else "OK"
         progress("validate", "done", f"{validate_status}, {time.time() - t0:.1f}s")
@@ -266,9 +271,10 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     # STEP 3: SEED
     progress("seed", "running")
     t0 = time.time()
-    sd = build_seed_from_spec_prompt(spec, title)
+    sd = build_seed_from_spec_prompt(spec, title, code_language=code_lang)
     (GEN_DIR / "prompt1_seed.txt").write_text(sd, encoding="utf-8")
-    seed_raw = gen.client.generate_text_with_resume(SYSTEM_AUTHOR, sd)
+    system_prompt = build_system_author(code_lang) if code_lang != "java" else SYSTEM_AUTHOR
+    seed_raw = gen.client.generate_text_with_resume(system_prompt, sd)
     progress("seed", "done", f"{len(seed_raw.split())} kel, {time.time()-t0:.1f}s")
     (GEN_DIR / "step1_seed.md").write_text(seed_raw, encoding="utf-8")
 
@@ -309,7 +315,7 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
                   if nargs == 4
                   else builder(chapter_title=title, headings=headings,
                                context=context))
-            fmap[pool.submit(gen.client.generate_text, SYSTEM_AUTHOR, up)] = etype
+            fmap[pool.submit(gen.client.generate_text, system_prompt, up)] = etype
 
         for fut in concurrent.futures.as_completed(fmap):
             etype = fmap[fut]

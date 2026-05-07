@@ -97,6 +97,14 @@ PROFILE_TEST_MODES: dict[str, frozenset[str]] = {
     "generic": NON_EXECUTION_TEST_MODES,
 }
 
+# Profile → beklenen kod dili eşlemeleri (CODE_META language/profile uyumu için)
+PROFILE_LANGUAGES: dict[str, frozenset[str]] = {
+    "java": frozenset({"java"}),
+    "flutter": frozenset({"dart", "kotlin", "swift", "java", "objective-c"}),
+    # flutter profili mobil uygulama geliştirme; çoklu dil normal
+    "generic": frozenset(),
+}
+
 
 def normalize_profile(profile: str | None) -> str:
     """Profil adını dahili kanonik profile dönüştürür.
@@ -199,3 +207,20 @@ def is_known_qr_policy(value: str | None) -> bool:
 def is_known_code_kind(value: str | None) -> bool:
     """CODE_META kind değerinin bilinen bir tür olup olmadığını döndürür."""
     return not value or value in CODE_KINDS
+
+
+def is_language_compatible_with_profile(language: str | None, profile: str | None) -> bool:
+    """CODE_META language ile profil uyumlu mu?
+
+    Profil None veya generic ise her dil kabul edilir.
+    Profil java ise yalnızca java kabul edilir.
+    Profil flutter ise mobil diller (dart, kotlin, swift, java, objective-c) kabul edilir.
+    PROFILE_LANGUAGES içinde boş küme (generic) → kısıtlama yok.
+    """
+    if not language or not profile:
+        return True
+    normalized = normalize_profile(profile)
+    allowed = PROFILE_LANGUAGES.get(normalized)
+    if allowed is None or len(allowed) == 0:
+        return True  # kısıtlama yok
+    return language.strip().lower() in allowed

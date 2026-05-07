@@ -20,6 +20,7 @@ from bookmaker.studio.services import (
     export_service,
     generation_service,
     llm_service,
+    observer_service,
     pipeline_service,
     prompt_service,
     quality_service,
@@ -321,6 +322,29 @@ if FastAPI is not None:
     async def api_code_validate(data: dict) -> dict:
         return quality_service.compile_code(
             get_active_book(), data.get("chapter_id", ""))
+
+    # ================================================================
+    # Observer Reviews
+    # ================================================================
+    @app.get("/api/observer/reviews")
+    async def api_observer_reviews(chapter: str | None = None) -> list[dict]:
+        return observer_service.list_observer_reviews(
+            get_active_book(), chapter)
+
+    @app.get("/api/observer/review/{chapter_id}")
+    async def api_observer_review_get(chapter_id: str) -> dict:
+        return observer_service.get_observer_review(
+            get_active_book(), chapter_id)
+
+    @app.post("/api/observer/review/{chapter_id}")
+    async def api_observer_review_generate(chapter_id: str) -> dict:
+        return observer_service.generate_observer_review(
+            get_active_book(), chapter_id, save_report=True)
+
+    @app.get("/api/observer/compare/{chapter_id}")
+    async def api_observer_compare(chapter_id: str) -> dict:
+        return observer_service.compare_observer_vs_validator(
+            get_active_book(), chapter_id)
 
     # ================================================================
     # Build & Export
