@@ -87,6 +87,11 @@ PROFILE_ALIASES: dict[str, str] = {
     "flutter_mobile": "flutter",
     "flutter-ile-mobil-uygulama-gelistirme": "flutter",
     "dart": "flutter",
+    "python": "python",
+    "python-programlama-giris": "python",
+    "react": "react",
+    "react-native": "react",
+    "javascript": "react",
     "generic": "generic",
     "default": "generic",
 }
@@ -94,6 +99,8 @@ PROFILE_ALIASES: dict[str, str] = {
 PROFILE_TEST_MODES: dict[str, frozenset[str]] = {
     "java": JAVA_TEST_MODES | NON_EXECUTION_TEST_MODES,
     "flutter": DART_FLUTTER_TEST_MODES | NON_EXECUTION_TEST_MODES,
+    "python": NON_EXECUTION_TEST_MODES,
+    "react": NON_EXECUTION_TEST_MODES,
     "generic": NON_EXECUTION_TEST_MODES,
 }
 
@@ -101,7 +108,8 @@ PROFILE_TEST_MODES: dict[str, frozenset[str]] = {
 PROFILE_LANGUAGES: dict[str, frozenset[str]] = {
     "java": frozenset({"java"}),
     "flutter": frozenset({"dart", "kotlin", "swift", "java", "objective-c"}),
-    # flutter profili mobil uygulama geliştirme; çoklu dil normal
+    "python": frozenset({"python"}),
+    "react": frozenset({"javascript", "js", "jsx", "tsx", "typescript", "ts"}),
     "generic": frozenset(),
 }
 

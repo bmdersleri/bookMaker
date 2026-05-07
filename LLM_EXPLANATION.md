@@ -53,6 +53,17 @@ bookMaker/
 │   │   ├── validator.py         # validate(), validate_book() — profile-aware
 │   │   ├── validation_modes.py  # Profile-based test mode constants
 │   │   └── parser.py            # Markdown parser
+│   ├── code/                     # Profile-aware code adapters
+│   │   ├── runner.py             # select_code_adapter() — profile/language dispatch
+│   │   ├── extractor.py          # extract_fenced_blocks() — markdown code extraction
+│   │   ├── models.py             # CodeBlock, CodeTestResult dataclasses
+│   │   ├── report.py             # summarize_test_results() — post-run summary
+│   │   └── adapters/
+│   │       ├── base.py           # CodeAdapter (ABC) + ReviewOnlyAdapter
+│   │       ├── java.py           # JavaCodeAdapter — javac compilation
+│   │       ├── flutter.py        # FlutterCodeAdapter — dart analyze (placeholder)
+│   │       ├── python.py         # PythonCodeAdapter — py_compile syntax check
+│   │       └── react.py          # ReactCodeAdapter — node --check syntax check
 │   ├── production/              # Export pipeline
 │   │   ├── pandoc.py            # Pandoc DOCX/PDF/EPUB/HTML conversion
 │   │   ├── mermaid.py           # Mermaid → PNG (mmdc CLI)
@@ -81,7 +92,7 @@ bookMaker/
 │   └── llm/                      # LLM API client
 │       ├── config.py             # LLMConfig (reads llm_config.json)
 │       └── openai.py             # OpenAICompatibleClient
-├── tests/                        # Test suite (218 tests)
+├── tests/                        # Test suite (269 tests)
 │   ├── unit/
 │   │   ├── test_studio_app.py    # API endpoint tests
 │   │   └── test_studio_services.py
@@ -364,6 +375,29 @@ bookmaker check chapter chapters/giris/content/draft.md
 bookmaker check book ... --json --verbose
 ```
 
+### Code Adapter Architecture (`code/adapters/`)
+
+Profile-aware code adapters provide language-specific code block compilation/verification. The adapter is selected via `select_code_adapter(profile, code_language)` in `code/runner.py` and used by `quality_service.compile_code()`.
+
+| Profile | Adapter | Tools | Status |
+|---------|---------|-------|--------|
+| Java | `JavaCodeAdapter` | `javac` | Active — full compilation |
+| Flutter | `FlutterCodeAdapter` | `dart analyze` | Placeholder — skips safely |
+| Python | `PythonCodeAdapter` | `python -m py_compile` | Active — syntax check |
+| React | `ReactCodeAdapter` | `node --check` | Active — JS syntax check |
+| Generic | `ReviewOnlyAdapter` | — | Active — manual review |
+
+Each adapter inherits from `CodeAdapter` (ABC) and implements:
+- `extract_blocks(text) → list[str]` — extract fenced code blocks from markdown
+- `run_tests(blocks, workdir) → list[dict]` — write to temp files and execute language tool
+
+The dispatch rules in `select_code_adapter()`:
+1. `profile="flutter"` or `code_language="dart"` → `FlutterCodeAdapter`
+2. `profile="java"` or `code_language="java"` → `JavaCodeAdapter`
+3. `profile="python"` or `code_language="python"` → `PythonCodeAdapter`
+4. `code_language` in {javascript, js, jsx, tsx, typescript, ts} → `ReactCodeAdapter`
+5. Otherwise → `ReviewOnlyAdapter`
+
 ---
 
 ## 10. Production / Export
@@ -454,6 +488,14 @@ python -m py_compile src/bookMaker/generation/prompts.py
 | `src/bookmaker/studio/services/export_service.py` | assemble_book(), export_to_format(), render_mermaid() |
 | `src/bookmaker/chapter/validator.py` | Chapter validation with profile-aware test mode checking |
 | `src/bookmaker/chapter/validation_modes.py` | Profile constants, test mode helpers |
+| `src/bookmaker/code/runner.py` | select_code_adapter() — profile/language to adapter dispatch |
+| `src/bookmaker/code/adapters/base.py` | CodeAdapter (ABC) + ReviewOnlyAdapter |
+| `src/bookmaker/code/adapters/java.py` | JavaCodeAdapter — javac compilation |
+| `src/bookmaker/code/adapters/flutter.py` | FlutterCodeAdapter — dart analyze (placeholder) |
+| `src/bookmaker/code/adapters/python.py` | PythonCodeAdapter — py_compile syntax check |
+| `src/bookmaker/code/adapters/react.py` | ReactCodeAdapter — node --check syntax check |
+| `src/bookmaker/code/extractor.py` | extract_fenced_blocks() — regex code block extraction |
+| `src/bookmaker/code/report.py` | summarize_test_results() — compile/skip/error counts |
 | `src/bookmaker/llm/openai.py` | OpenAICompatibleClient with retry + auto-resume |
 
 ---
@@ -461,7 +503,7 @@ python -m py_compile src/bookMaker/generation/prompts.py
 ## 14. Current Project State (2026-05-07)
 
 - **Phase:** FAZ 4 + FAZ 5 complete; post-migration cleanup done
-- **Tests:** 223 passed, ruff clean
+- **Tests:** 269 passed, ruff clean
 - **Branch:** `main` (single branch, all others deleted)
 - **GUI:** 6 tabs functional, inline editing, pipeline detail tracking, export controls
 - **Configuration:** `book_manifest.yaml` as single source, `book_profile.yaml` legacy fallback only

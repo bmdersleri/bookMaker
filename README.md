@@ -119,6 +119,36 @@ Detayli dokumantasyon: [`CHAPTER_PRODUCTION.md`](CHAPTER_PRODUCTION.md)
 
 ---
 
+## Kod Dogrulama ve Adapter Mimarisi
+
+`src/bookmaker/code/adapters/` altinda profil-tabanli kod dogrulama adapter'lari bulunur. Her adapter kendi dilinin arac zincirini kullanarak kod bloklarini kontrol eder:
+
+| Profil | Adapter | Dil | Arac |
+|--------|---------|-----|------|
+| Java | `JavaCodeAdapter` | Java | `javac` |
+| Flutter | `FlutterCodeAdapter` | Dart | `dart analyze` (hazirlik) |
+| Python | `PythonCodeAdapter` | Python | `python -m py_compile` |
+| React | `ReactCodeAdapter` | JS/TS/JSX/TSX | `node --check` |
+| Diger | `ReviewOnlyAdapter` | Herhangi | Manuel inceleme |
+
+Adapter secimi `code/runner.py` icindeki `select_code_adapter(profile, code_language)` ile yapilir. `quality_service.compile_code()` adapter secimini otomatik olarak manifest profilinden yapar.
+
+```text
+src/bookmaker/code/
+├── adapters/
+│   ├── base.py        # CodeAdapter (ABC) + ReviewOnlyAdapter
+│   ├── java.py        # javac derleme + hata ayiklamasi
+│   ├── flutter.py     # Dart/Flutter (placeholder, guvenli skip)
+│   ├── python.py      # py_compile syntax kontrolu
+│   └── react.py       # node --check syntax kontrolu
+├── extractor.py       # extract_fenced_blocks() — Markdown'dan kod blogu cikarma
+├── models.py          # CodeBlock, CodeTestResult dataclass'lari
+├── report.py          # summarize_test_results() — sonuc ozeti
+└── runner.py          # select_code_adapter() — profil/dil cozumu
+```
+
+---
+
 ## CLI Kullanim
 
 ```powershell
@@ -136,7 +166,7 @@ bookmaker check chapter chapters/giris/content/draft.md --book-root book_project
 
 ```powershell
 uv run ruff check src/                      # lint
-uv run pytest tests/ -q --tb=short           # 223 passed
+uv run pytest tests/ -q --tb=short           # 269 passed
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
 ```
 

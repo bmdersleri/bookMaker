@@ -81,6 +81,9 @@ def test_manifest_resolver_detects_framework_alias() -> None:
 
 
 def test_manifest_resolver_handles_unknown_manifest_safely() -> None:
-    manifest = {"book": {"alias": "react-web"}, "style": {"framework": "react"}}
+    manifest = {
+        "book": {"alias": "unknown-framework-book"},
+        "style": {"framework": "some-unknown-framework"},
+    }
 
     assert resolve_validation_profile_from_manifest(manifest) is None
