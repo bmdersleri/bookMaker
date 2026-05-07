@@ -402,6 +402,18 @@ if FastAPI is not None:
     async def api_export_targets() -> dict:
         return export_service.get_export_targets(get_active_book())
 
+    @app.get("/api/export/readiness")
+    async def api_export_readiness(
+        fmt: str = "docx",
+        chapter: str | None = None,
+    ) -> dict:
+        chapter_ids = [chapter] if chapter else None
+        return export_service.get_export_readiness(
+            get_active_book(),
+            fmt=fmt,
+            chapter_ids=chapter_ids,
+        )
+
     @app.post("/api/extract/{chapter_id}")
     async def api_extract(chapter_id: str,
                           data: dict | None = None) -> dict:

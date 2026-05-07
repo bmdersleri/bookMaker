@@ -31,6 +31,14 @@ def test_export_uses_manifest_from_format_and_toc_settings(tmp_path: Path, monke
     captured: dict[str, list[str]] = {}
 
     def fake_run(cmd, capture_output, text, timeout):  # noqa: ANN001
+        if "--version" in cmd:
+            class VersionResult:
+                returncode = 0
+                stdout = "pandoc 3.x"
+                stderr = ""
+
+            return VersionResult()
+
         captured["cmd"] = cmd
         out_index = cmd.index("-o") + 1
         Path(cmd[out_index]).write_text("dummy docx", encoding="utf-8")

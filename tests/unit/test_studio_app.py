@@ -357,6 +357,12 @@ def test_export_targets_and_output_serving_are_project_based(tmp_path) -> None:
         assert data["code_language"] == "dart"
         assert data["targets"]["markdown"].replace("\\", "/") == "exports/md"
 
+        resp = client.get("/api/export/readiness?fmt=docx")
+        assert resp.status_code == 200
+        readiness = resp.json()
+        assert readiness["format"] == "docx"
+        assert "ready" in readiness
+
         resp = client.get("/output/exports/md/sample.md")
         assert resp.status_code == 200
         assert resp.text.strip() == "# Sample"

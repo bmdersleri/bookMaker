@@ -306,7 +306,8 @@ Key endpoint groups:
 - `/api/search` — Full-text search
 - `/api/build/{id}` — Build DOCX for chapter
 - `/api/assemble` — Merge all chapters
-- `/api/export/{fmt}` — Export to format (docx/pdf/epub/html)
+- `/api/export/readiness` — Export preflight (manifest/chapter/pandoc readiness)
+- `/api/export/{fmt}` — Export to format (docx/pdf/epub/html, readiness check zorunlu)
 - `/api/extract/code` — Extract code blocks
 - `/api/render/mermaid` — Render Mermaid to PNG
 - `/api/backup` / `/api/restore` — Backup/restore project
@@ -378,6 +379,11 @@ export_to_format(root, "docx",
 ```
 
 Resolution order: parameter → `book_manifest.yaml` pandoc config → hardcoded defaults.
+
+Before pandoc conversion, export flow runs readiness checks and writes a report to:
+- `logs/production/export_<timestamp>.json`
+
+Report contains readiness snapshot, export command/result, and failure reason (if any).
 
 ### Pandoc Command Builder (`production/pandoc.py`)
 ```python

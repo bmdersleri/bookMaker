@@ -9,6 +9,8 @@ from datetime import datetime
 from pathlib import Path
 
 from bookmaker.manifest.manager import ManifestManager
+from bookmaker.production.export_report import write_export_report
+from bookmaker.production.readiness import check_export_readiness
 
 
 def _chapter_alias(chapter) -> str:
@@ -62,6 +64,16 @@ def get_export_targets(project_root: str | Path) -> dict:
         "code_language": language,
         "targets": targets,
     }
+
+
+def get_export_readiness(
+    project_root: str | Path,
+    fmt: str = "docx",
+    chapter_ids: list[str] | None = None,
+) -> dict:
+    """Return export readiness details for Studio preflight checks."""
+    root = Path(project_root).resolve()
+    return check_export_readiness(root, fmt=fmt, chapter_ids=chapter_ids)
 
 
 def assemble_book(project_root: str | Path,
@@ -153,9 +165,39 @@ def export_to_format(project_root: str | Path, fmt: str,
         depth = 2
     toc_enabled = pandoc_cfg.toc if pandoc_cfg is not None else True
 
+    readiness = check_export_readiness(root, fmt=fmt, chapter_ids=chapter_ids)
+    if not readiness["ready"]:
+        result = {
+            "error": "Export readiness check basarisiz.",
+            "readiness": readiness,
+        }
+        report_path = write_export_report(
+            root,
+            {
+                "status": "failed",
+                "format": fmt,
+                "reason": "readiness",
+                "readiness": readiness,
+                "result": result,
+            },
+        )
+        result["report_path"] = report_path
+        return result
+
     # Önce birleştir
     assembled = assemble_book(root, chapter_ids)
     if "error" in assembled:
+        report_path = write_export_report(
+            root,
+            {
+                "status": "failed",
+                "format": fmt,
+                "reason": "assemble",
+                "readiness": readiness,
+                "result": assembled,
+            },
+        )
+        assembled["report_path"] = report_path
         return assembled
 
     md_path = root / assembled["path"]
@@ -167,7 +209,21 @@ def export_to_format(project_root: str | Path, fmt: str,
     }
 
     if fmt not in fmt_map:
-        return {"error": f"Desteklenmeyen format: {fmt}. docx/pdf/epub/html desteklenir."}
+        result = {
+            "error": f"Desteklenmeyen format: {fmt}. docx/pdf/epub/html desteklenir.",
+        }
+        report_path = write_export_report(
+            root,
+            {
+                "status": "failed",
+                "format": fmt,
+                "reason": "unsupported_format",
+                "readiness": readiness,
+                "result": result,
+            },
+        )
+        result["report_path"] = report_path
+        return result
 
     pandoc_fmt, ext, target_dir = fmt_map[fmt]
     out_dir = _output_dir(root, target_dir)
@@ -198,19 +254,72 @@ def export_to_format(project_root: str | Path, fmt: str,
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
         if result.returncode != 0:
-            return {"error": f"Pandoc hatasi: {result.stderr[:300]}",
-                    "command": " ".join(cmd)}
+            payload = {
+                "error": f"Pandoc hatasi: {result.stderr[:300]}",
+                "command": " ".join(cmd),
+            }
+            report_path = write_export_report(
+                root,
+                {
+                    "status": "failed",
+                    "format": fmt,
+                    "reason": "pandoc_error",
+                    "readiness": readiness,
+                    "assembled": assembled,
+                    "result": payload,
+                },
+            )
+            payload["report_path"] = report_path
+            return payload
 
-        return {
+        payload = {
             "format": fmt,
             "path": str(out_path.relative_to(root)),
             "size_bytes": out_path.stat().st_size,
             "cmd": " ".join(cmd),
         }
+        report_path = write_export_report(
+            root,
+            {
+                "status": "success",
+                "format": fmt,
+                "readiness": readiness,
+                "assembled": assembled,
+                "result": payload,
+            },
+        )
+        payload["report_path"] = report_path
+        return payload
     except FileNotFoundError:
-        return {"error": "pandoc bulunamadi. Pandoc kurulu oldugundan emin olun."}
+        payload = {"error": "pandoc bulunamadi. Pandoc kurulu oldugundan emin olun."}
+        report_path = write_export_report(
+            root,
+            {
+                "status": "failed",
+                "format": fmt,
+                "reason": "pandoc_missing",
+                "readiness": readiness,
+                "assembled": assembled,
+                "result": payload,
+            },
+        )
+        payload["report_path"] = report_path
+        return payload
     except subprocess.TimeoutExpired:
-        return {"error": "Pandoc zamani asimi (120s)."}
+        payload = {"error": "Pandoc zamani asimi (120s)."}
+        report_path = write_export_report(
+            root,
+            {
+                "status": "failed",
+                "format": fmt,
+                "reason": "pandoc_timeout",
+                "readiness": readiness,
+                "assembled": assembled,
+                "result": payload,
+            },
+        )
+        payload["report_path"] = report_path
+        return payload
 
 
 def render_mermaid(project_root: str | Path,

@@ -49,7 +49,7 @@ bookmaker check book <kitap-dizini>      # CLI kalite kontrol
 | **Bolumler** | Tablo (sirala, filtrele, sayfala), drag-drop siralama, **basliklara cift tiklayip inline edit**, toplu silme, bolum ekleme wizard'i, bolum bazli Gor/ Kontrol/Build/Uret butonlari |
 | **Pipeline** | Manuel tetikleme, canli progress bar, **job detay paneli** (adim adim prompt→cikti eslesmesi + sure), iptal, job gecmisi |
 | **Kalite** | Kitap ozeti (skor/karar/hata/uyari), bolum kalite tablosu, kontrol modali, istatistikler, tam metin arama |
-| **Build/Export** | Export hedefleri, **referans DOCX / lua filter / TOC derinligi** secimi, kod cikarma, Mermaid render, birlestirme, format export, yedekleme |
+| **Build/Export** | Export hedefleri, **readiness pre-check** (`/api/export/readiness`), referans DOCX / lua filter / TOC derinligi secimi, kod cikarma, Mermaid render, birlestirme, format export, yedekleme |
 | **Promptlar** | Varsayilan/bolum prompt editoru, dirty-state uyarisi, yukle/kaydet |
 | **Yapilandirma** | `book_manifest.yaml` full editor (Kitap Bilgisi, Uretim, Stil, Otomasyon, Export alt sekmeleri) |
 
@@ -80,6 +80,7 @@ Her kitap `book_projects/` altinda bagimsiz bir dizindir:
 │   └── md/
 └── logs/                       # Runtime loglar
     ├── production/             # Pipeline adim ciktilari (job bazli)
+    │   └── export_<ts>.json    # Export readiness + sonuc raporu
     ├── errors/
     └── reviews/                # Kalite review raporlari
 ```

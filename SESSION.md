@@ -44,6 +44,39 @@ book check: 100/pass, 0 hata, 0 uyarı
 
 ---
 
+## 2026-05-07 Oturumu — FAZ 6.3 Export Readiness + Export Report
+
+### Yapılan İşler
+
+- `src/bookmaker/production/readiness.py` eklendi.
+  - Export öncesi manifest/chapter/pandoc preflight kontrolü.
+  - `final_required_for_export` kuralı `pipeline_state.yaml` quality gate alanından okunuyor (fallback: `True`).
+  - Bölüm kaynak çözümleme sırası: manifest source → `content/final.md` → `content/draft.md` → legacy `approved/`.
+- `src/bookmaker/production/export_report.py` eklendi.
+  - Export sonuçları `logs/production/export_<timestamp>.json` dosyasına yazılıyor.
+- `src/bookmaker/studio/services/export_service.py`
+  - `get_export_readiness()` eklendi.
+  - `export_to_format()` içine export öncesi readiness check bağlandı.
+  - Readiness/assemble/pandoc hata ve başarı durumlarının tamamında export report yazımı eklendi.
+- `src/bookmaker/studio/app.py`
+  - Yeni endpoint: `GET /api/export/readiness`.
+- Testler:
+  - `tests/test_export_readiness.py` eklendi.
+  - `tests/test_manifest_driven_export.py` eklendi.
+  - `tests/unit/test_export_service_manifest.py` readiness ile uyumlu hale getirildi.
+  - `tests/unit/test_studio_app.py` içine `/api/export/readiness` endpoint kontrolü eklendi.
+- Dokümantasyon:
+  - `README.md` ve `LLM_EXPLANATION.md` export readiness + export report davranışıyla güncellendi.
+
+### Doğrulama
+
+```text
+uv run ruff check src/   -> PASS
+uv run pytest tests/ -q --tb=short -> 231 passed, 1 warning
+```
+
+---
+
 ## 2026-05-07 Oturumu — FAZ 5 Kalan İşlerin Tamamlanması
 
 ### Başlangıç Durumu
