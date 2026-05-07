@@ -311,7 +311,7 @@ function renderTable() {
         '<span class="drag-handle" title="Surukle-birak">&#x22EE;&#x22EE;</span>'+
       '</div></td>'+
       '<td><code>'+escHtml(ch.chapter_id)+'</code></td>'+
-      '<td>'+escHtml(ch.title)+'</td>'+
+      '<td><span class="editable-title" data-id="'+ch.chapter_id+'" title="Cift tikla: duzenle">'+escHtml(ch.title)+'</span></td>'+
       '<td><span class="tag '+sc+'">'+ch.current_step+'</span></td>'+
       '<td>'+content+'</td>'+
       '<td><span class="tag '+ss+'">'+ch.score+'</span></td>'+
@@ -428,21 +428,155 @@ async function loadChapters() {
 }
 
 // JOBS
+var expandedJobId = null;
+
 async function loadJobs() {
   try {
     const r=await fetch('/api/jobs'); const jobs=await r.json();
     const tb=document.getElementById('jobs-body'); if(!tb) return;
     if(!jobs.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#999">Henuz is yok</td></tr>'; return; }
+    var prevExpanded = expandedJobId;
+    expandedJobId = null;
     tb.innerHTML=jobs.slice(0,10).map(function(j){
       var summary = j.summary || {};
       var output = summary.draft_path || summary.path || summary.log_path || '-';
-      return '<tr><td><code>'+j.id.slice(0,8)+'</code></td><td>'+escHtml(j.chapter_id)+'</td><td>'+escHtml(j.step)+'</td>'+
+      var progress = j.progress || {};
+      var pct = progress.total ? Math.round((progress.done || 0) / progress.total * 100) : 0;
+      var mainRow = '<tr class="job-row" data-job-id="'+j.id+'" style="cursor:pointer" onclick="toggleJobDetail(\''+j.id+'\')">'+
+        '<td><code>'+j.id.slice(0,8)+'</code></td>'+
+        '<td>'+escHtml(j.chapter_id)+'</td>'+
+        '<td>'+escHtml(progress.current || j.step)+'</td>'+
         '<td><span class="tag '+jobStatusClass(j.status)+'">'+escHtml(j.status)+'</span></td>'+
-        '<td><code>'+escHtml(output)+'</code></td><td>'+(j.elapsed_s?j.elapsed_s+'s':'-')+'</td></tr>';
+        '<td><code>'+escHtml(output)+'</code></td>'+
+        '<td>'+(j.elapsed_s?j.elapsed_s+'s':'-')+'</td></tr>';
+      var detailRow = '<tr class="job-detail-row hidden" data-job-detail="'+j.id+'"><td colspan="6">'+
+        buildJobDetail(j, progress, pct, summary)+'</td></tr>';
+      return mainRow + detailRow;
     }).join('');
+    if (prevExpanded) {
+      var detailEl = document.querySelector('[data-job-detail="'+prevExpanded+'"]');
+      if (detailEl) { detailEl.classList.remove('hidden'); expandedJobId = prevExpanded; }
+    }
   } catch(e) {}
 }
+
+function toggleJobDetail(jobId) {
+  var detailEl = document.querySelector('[data-job-detail="'+jobId+'"]');
+  if (!detailEl) return;
+  if (expandedJobId === jobId) {
+    detailEl.classList.add('hidden'); expandedJobId = null;
+  } else {
+    if (expandedJobId) {
+      var prev = document.querySelector('[data-job-detail="'+expandedJobId+'"]');
+      if (prev) prev.classList.add('hidden');
+    }
+    detailEl.classList.remove('hidden'); expandedJobId = jobId;
+  }
+}
+
+function buildJobDetail(j, progress, pct, summary) {
+  var steps = j.steps || [];
+  var html = '<div style="padding:.5rem 0">';
+
+  // Progress bar
+  html += '<div class="gen-progress" style="margin-bottom:.75rem">'+
+    '<span style="font-size:.9rem;font-weight:600">'+escHtml(progress.current || '-')+'</span>'+
+    '<div class="bar"><div class="bar-fill" style="width:'+pct+'%"></div></div>'+
+    '<span style="font-size:.85rem;color:var(--muted)">'+(progress.done||0)+'/'+(progress.total||6)+'</span></div>';
+
+  // Params
+  var params = j.params || {};
+  if (params.title || params.concepts) {
+    html += '<div style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">'+
+      '<strong>Baslik:</strong> '+escHtml(params.title||'-')+
+      ' &middot; <strong>Kavram:</strong> '+escHtml((params.concepts||[]).join(', ').slice(0,120)||'-')+'</div>';
+  }
+
+  // Error
+  if (j.error) {
+    html += '<div class="message error" style="font-size:.85rem;margin-bottom:.5rem">'+escHtml(j.error)+'</div>';
+  }
+
+  // Steps table
+  if (steps.length > 0) {
+    html += '<table class="job-steps-table"><thead><tr>'+
+      '<th>Adim</th><th>Durum</th><th>Prompt</th><th>Cikti</th><th>Sure</th></tr></thead><tbody>';
+    for (var i=0; i<steps.length; i++) {
+      var s = steps[i];
+      var sc = s.status === 'done' ? 'success' : s.status === 'running' ? 'info' : 'neutral';
+      var promptCell = s.prompt_file ? '<code title="'+escHtml(s.prompt_file)+'">'+escHtml(s.prompt_file.split('/').pop())+'</code>' : '-';
+      var outputCell = s.output_file ? '<code title="'+escHtml(s.output_file)+'">'+escHtml(s.output_file.split('/').pop()||s.output_file)+'</code>' : '-';
+      html += '<tr>'+
+        '<td>'+escHtml(s.name)+'</td>'+
+        '<td><span class="tag '+sc+'">'+escHtml(s.status)+'</span></td>'+
+        '<td>'+promptCell+'</td>'+
+        '<td>'+outputCell+'</td>'+
+        '<td>'+(s.elapsed_s ? s.elapsed_s+'s' : '-')+'</td></tr>';
+    }
+    html += '</tbody></table>';
+  } else if (j.status === 'queued') {
+    html += '<div style="color:var(--muted);font-size:.9rem">Kuyrukta bekliyor...</div>';
+  }
+
+  // Summary
+  if (summary.words) {
+    html += '<div style="margin-top:.5rem;font-size:.85rem;color:var(--muted)">'+
+      '<strong>'+summary.words+'</strong> kelime &middot; '+
+      '<strong>'+summary.enriched_count+'</strong> enrichment &middot; '+
+      '<strong>'+summary.elapsed_s+'s</strong> toplam</div>';
+  }
+
+  // Log path
+  if (summary.log_path) {
+    html += '<div style="margin-top:.25rem;font-size:.8rem;color:var(--muted)">log: <code>'+escHtml(summary.log_path)+'</code></div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
 function jobStatusClass(s) { return {'queued':'neutral','running':'info','done':'success','error':'danger','cancelled':'warning'}[s]||'neutral'; }
+
+// INLINE TITLE EDIT
+function startInlineEdit(span) {
+  if (span.querySelector('input')) return; // already editing
+  var id = span.getAttribute('data-id');
+  var oldTitle = span.textContent;
+  span.style.display = 'none';
+  var input = document.createElement('input');
+  input.type = 'text'; input.value = oldTitle; input.className = 'chapter-title-input';
+  input.onblur = function(){ finishInlineEdit(span, input, id, oldTitle); };
+  input.onkeydown = function(e){
+    if (e.key === 'Enter') { e.preventDefault(); finishInlineEdit(span, input, id, oldTitle); }
+    if (e.key === 'Escape') { e.preventDefault(); cancelInlineEdit(span, input, oldTitle); }
+  };
+  span.parentElement.insertBefore(input, span.nextSibling);
+  input.focus(); input.select();
+}
+
+async function finishInlineEdit(span, input, id, oldTitle) {
+  var newTitle = input.value.trim();
+  if (!newTitle || newTitle === oldTitle) { cancelInlineEdit(span, input, oldTitle); return; }
+  try {
+    var r = await fetch('/api/chapters/' + encodeURIComponent(id), {
+      method: 'PUT', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({title: newTitle})
+    });
+    var d = await r.json();
+    if (d.error) { showToast(d.error, 'error'); cancelInlineEdit(span, input, oldTitle); return; }
+    // Update local state
+    for (var i = 0; i < chapters.length; i++) {
+      if (chapters[i].chapter_id === id) { chapters[i].title = newTitle; break; }
+    }
+    span.textContent = newTitle;
+    input.remove(); span.style.display = '';
+    showToast('Baslik guncellendi', 'success');
+  } catch(e) { showToast('Kaydedilemedi: ' + e.message, 'error'); cancelInlineEdit(span, input, oldTitle); }
+}
+
+function cancelInlineEdit(span, input, oldTitle) {
+  input.remove(); span.style.display = '';
+}
 
 // CHAPTER ACTIONS
 var currentChapterId = null;

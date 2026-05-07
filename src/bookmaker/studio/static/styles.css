@@ -174,3 +174,17 @@ tr:hover{background:#f9fafb}
   .filter-bar .result-count{margin-left:0;width:100%}
   .modal{width:94%;max-height:88vh}
 }
+
+/* Inline editable chapter title */
+.editable-title { cursor: pointer; border-bottom: 1px dashed transparent; padding: 2px 4px; border-radius: 3px; display: inline-block; max-width: 100%; }
+.editable-title:hover { border-bottom-color: var(--muted); background: #f9fafb; }
+.chapter-title-input { font-size: .92rem; padding: 2px 4px; border: 1px solid var(--primary); border-radius: 3px; width: 100%; font-family: inherit; box-sizing: border-box; }
+
+/* Job detail row */
+.job-row:hover { background: #f0f4f8; }
+.job-detail-row.hidden { display: none; }
+.job-detail-row td { background: #f9fafb; padding: 1rem; border-top: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
+.job-steps-table { width: 100%; font-size: .88rem; border-collapse: collapse; }
+.job-steps-table th { font-size: .78rem; padding: 4px 8px; text-align: left; }
+.job-steps-table td { padding: 4px 8px; border-bottom: 1px solid var(--border); font-size: .85rem; }
+.job-steps-table code { font-size: .8rem; background: var(--surface); padding: 1px 4px; border-radius: 3px; }

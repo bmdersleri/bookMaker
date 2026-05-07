@@ -24,6 +24,15 @@ def _rel(root: Path, path: Path) -> str:
     return str(path.resolve().relative_to(root.resolve()))
 
 
+def _parse_iso(ts: str) -> float:
+    """Parse ISO timestamp to epoch float for elapsed calculation."""
+    from datetime import datetime as _dt
+    try:
+        return _dt.fromisoformat(ts).timestamp()
+    except Exception:
+        return 0.0
+
+
 def _jobs_dir(root: Path) -> Path:
     return root / "logs" / "studio_jobs"
 
@@ -75,6 +84,7 @@ def create_job(step: str, chapter_id: str,
         "finished_at": None, "elapsed_s": None,
         "progress": {"current": "", "done": 0, "total": 6, "log": []},
         "summary": {}, "error": None,
+        "steps": [],
     }
     with _LOCK:
         _JOBS[job_id] = job
@@ -229,17 +239,41 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     model = gen.llm_config.model
     code_lang = gen.config.primary_code_language if gen.config else "java"
 
-    def progress(step_name: str, status: str, detail: str = "") -> None:
-        steps = {
+    def progress(step_name: str, status: str, detail: str = "",
+                 prompt_file: str = "", output_file: str = "") -> None:
+        step_order = {
             "spec": 1, "validate": 2, "seed": 3,
             "normalize": 4, "enrich": 5, "assemble": 6,
         }
-        order = steps.get(step_name, 0)
+        order = step_order.get(step_name, 0)
         update_job(job_id, progress={
             "current": step_name, "done": order - 1, "total": 6,
             "log": [],  # preserved by update_job merge behavior
         })
         append_log(job_id, f"[{status}] {step_name}: {detail}".rstrip(": "))
+
+        # Steps tracking for UI detail panel
+        job = get_job(job_id)
+        if job and status == "running":
+            job["steps"].append({
+                "name": step_name, "status": "running",
+                "started_at": _now(), "elapsed_s": None,
+                "prompt_file": "", "output_file": "",
+            })
+        elif job and status == "done" and job["steps"]:
+            for s in reversed(job["steps"]):
+                if s["name"] == step_name and s["status"] == "running":
+                    s["status"] = "done"
+                    started = s.get("started_at")
+                    s["elapsed_s"] = (
+                        round(time.time() - _parse_iso(started), 1)
+                        if started else None
+                    )
+                    if prompt_file:
+                        s["prompt_file"] = prompt_file
+                    if output_file:
+                        s["output_file"] = output_file
+                    break
 
     # STEP 1: SPEC
     progress("spec", "running")
@@ -247,12 +281,14 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     spec = generate_spec(gen.client, title, concepts,
                           f"Hedef: {model}", params.get("chapter_no"),
                           code_language=code_lang)
-    progress("spec", "done", f"{len(spec.split())} kel, {time.time()-t0:.1f}s")
     (GEN_DIR / "step0_spec.md").write_text(spec, encoding="utf-8")
     (GEN_DIR / "prompt0_spec.txt").write_text(
         build_spec_prompt(title, concepts, f"Hedef: {model}",
                           params.get("chapter_no"), code_language=code_lang),
         encoding="utf-8")
+    progress("spec", "done", f"{len(spec.split())} kel, {time.time()-t0:.1f}s",
+             prompt_file=_rel(root, GEN_DIR / "prompt0_spec.txt"),
+             output_file=_rel(root, GEN_DIR / "step0_spec.md"))
 
     # STEP 2: VALIDATE
     progress("validate", "running")
@@ -262,8 +298,9 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
                                    code_language=code_lang)
         vnotes = validation.get("notes", "") if isinstance(validation, dict) else str(validation)
         validate_status = validation.get("status", "?") if isinstance(validation, dict) else "OK"
-        progress("validate", "done", f"{validate_status}, {time.time() - t0:.1f}s")
         (GEN_DIR / "step0_validation.md").write_text(str(vnotes), encoding="utf-8")
+        progress("validate", "done", f"{validate_status}, {time.time() - t0:.1f}s",
+                 output_file=_rel(root, GEN_DIR / "step0_validation.md"))
     except Exception as e:
         progress("validate", "done", f"atlandi: {e}")
         vnotes = str(e)
@@ -275,15 +312,18 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     (GEN_DIR / "prompt1_seed.txt").write_text(sd, encoding="utf-8")
     system_prompt = build_system_author(code_lang) if code_lang != "java" else SYSTEM_AUTHOR
     seed_raw = gen.client.generate_text_with_resume(system_prompt, sd)
-    progress("seed", "done", f"{len(seed_raw.split())} kel, {time.time()-t0:.1f}s")
     (GEN_DIR / "step1_seed.md").write_text(seed_raw, encoding="utf-8")
+    progress("seed", "done", f"{len(seed_raw.split())} kel, {time.time()-t0:.1f}s",
+             prompt_file=_rel(root, GEN_DIR / "prompt1_seed.txt"),
+             output_file=_rel(root, GEN_DIR / "step1_seed.md"))
 
     # STEP 4: NORMALIZE
     progress("normalize", "running")
     t0 = time.time()
     normalized = normalize(seed_raw, chapter_id, title, gen.config)
-    progress("normalize", "done", f"{len(normalized.split())} kel, {time.time()-t0:.1f}s")
     (GEN_DIR / "step2_normalized.md").write_text(normalized, encoding="utf-8")
+    progress("normalize", "done", f"{len(normalized.split())} kel, {time.time()-t0:.1f}s",
+             output_file=_rel(root, GEN_DIR / "step2_normalized.md"))
 
     # STEP 5: ENRICH (parallel)
     progress("enrich", "running")
@@ -331,8 +371,15 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
             except Exception as e:
                 append_log(job_id, f"  enrich/{etype}: HATA - {e}")
 
+    enrich_files = []
+    for etype in enrich_parts:
+        fkey = {"ozet": "summary", "sozluk": "glossary",
+                "soru": "questions", "alistirma": "exercises",
+                "hata": "errors", "kopru": "bridge"}.get(etype, etype)
+        enrich_files.append(_rel(root, GEN_DIR / f"step3_enrich_{fkey}.md"))
     enrich_status = f"{len(enrich_parts)}/{len(pending_types)} tamam, {time.time() - t0:.1f}s"
-    progress("enrich", "done", enrich_status)
+    progress("enrich", "done", enrich_status,
+             output_file=", ".join(e for e in enrich_files))
 
     # STEP 6: ASSEMBLE
     progress("assemble", "running")
@@ -358,13 +405,12 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
                               turkish_terms=["köprü", "kopru"])
 
     final = normalize(text, chapter_id, title, gen.config)
-    progress("assemble", "done", f"{len(final.split())} kel, {time.time()-t0:.1f}s")
-
-    # Save runtime artifacts and project draft content.
     (GEN_DIR / "step4_final.md").write_text(final, encoding="utf-8")
     draft_path = _draft_path(root, chapter_id)
     draft_path.parent.mkdir(parents=True, exist_ok=True)
     draft_path.write_text(final, encoding="utf-8")
+    progress("assemble", "done", f"{len(final.split())} kel, {time.time()-t0:.1f}s",
+             output_file=_rel(root, GEN_DIR / "step4_final.md"))
     total_elapsed = round(time.time() - t_all, 1)
     (GEN_DIR / "metrics.json").write_text(
         json.dumps({"chapter": chapter_id, "words": len(final.split()),
