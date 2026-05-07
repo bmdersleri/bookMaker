@@ -9,15 +9,58 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 ## ŞU AN
 
 ```text
-Aktif Faz       : Screenshot Engine Entegrasyonu tamamlandı; sırada kullanıcı yönlendirmesiyle yeni iş
-Son Oturum      : 2026-05-07 - Screenshot engine entegrasyonu (377 test, ruff clean)
+Aktif Faz       : Mermaid Renderer Hardening tamamlandı; sırada kullanıcı yönlendirmesiyle yeni iş
+Son Oturum      : 2026-05-07 - Mermaid renderer sağlamlaştırma (381 test, ruff clean)
 Repo            : D:\bookMaker_clean
 Branch          : main  (tek branch)
 Remote          : origin
-Son Kod Commit  : d4a0b5b Integrate screenshot engine with Playwright-based code rendering
-Durum           : Screenshot motoru (3 strateji: python plot/console, react), Playwright ana bağımlılığa taşındı
-Test            : 377 passed, ruff clean
+Son Kod Commit  : 865262e Harden Mermaid renderer configuration and caching
+Durum           : Cache key genişletildi, timeout manifestten okunuyor, temp temizliği finally'de, mutable default düzeltildi
+Test            : 381 passed, ruff clean
 ```
+
+---
+
+## 2026-05-07 Oturumu — Mermaid Renderer Hardening
+
+### Yapılan İşler
+
+- `src/bookmaker/production/mermaid_renderer.py` — 4 düzeltme:
+  1. **Cache key genişletildi**: `MermaidRenderConfig.cache_fingerprint()` eklendi — theme, scale, background, width, theme_overrides alanlarını JSON özetleyip `_cache_key()`'e besliyor. width/theme_overrides değişince cache invalidate oluyor.
+  2. **Timeout manifestten okunuyor**: `MermaidRenderConfig.timeout_seconds` alanı eklendi, `from_manifest()` içinde `manifest_mermaid.get("timeout_seconds", 30)` ile okunuyor. `_render_single()` sabit `30` yerine `self.config.timeout_seconds` kullanıyor.
+  3. **Temp dosya temizliği**: `src_path` değişkeni `None` ile başlatılıp `finally` bloğunda `unlink(missing_ok=True)` yapılıyor. TimeoutExpired veya beklenmeyen hata durumunda da `.mmd` dosyası temizleniyor.
+  4. **Timeout hata mesajı dinamik**: `"mmdc 30 saniye içinde..."` → `f"mmdc {self.config.timeout_seconds} saniye içinde..."` 
+- `src/bookmaker/manifest/models.py` — `MermaidConfig.theme_overrides: dict = {}` → `Field(default_factory=dict)` mutable default düzeltildi
+- `src/bookmaker/__init__.py` — `__version__ = "0.2.0"`
+- `pyproject.toml` — `version = "0.2.0"`
+- `tests/production/test_mermaid_renderer.py` — 4 yeni test + 2 mevcut test güncellemesi:
+  - `test_cache_key_changes_when_width_changes`
+  - `test_cache_key_changes_when_theme_overrides_change`
+  - `test_timeout_value_passed_to_subprocess`
+  - `test_timeout_error_message_is_dynamic`
+- `tests/cli/test_cli_smoke.py` — sürüm beklentisi `0.1.0` → `0.2.0`
+- `tests/unit/test_core.py` — sürüm beklentisi `0.1.0` → `0.2.0`
+
+### Doğrulama
+
+```text
+uv run ruff check src/ tests/   -> All checks passed!
+uv run pytest tests/ -q --tb=short  -> 381 passed
+uv run bookmaker check toolchain --json  -> status: ok
+```
+
+### Commit
+
+```text
+865262e Harden Mermaid renderer configuration and caching
+8 files changed, 111 insertions(+), 19 deletions(-)
+```
+
+### Mimari Notlar
+
+- `cache_fingerprint()` sadece görsel çıktıyı etkileyen alanları içerir (timeout hariç).
+- `_cache_key()` imzası `(mermaid_src, config_fingerprint)` olarak değişti; tüm çağrı noktaları (`process_markdown`, `render_string`) `self.config.cache_fingerprint()` kullanıyor.
+- Temp dosya temizliği artık `finally` garantisinde; önceki kod normal akışta `src_path.unlink()` sonrası exception handling yapıyordu, timeout durumunda dosya kalabiliyordu.
 
 ---
 
@@ -720,6 +763,7 @@ Commit:
 ## Mevcut Commit Zinciri
 
 ```text
+865262e Harden Mermaid renderer configuration and caching
 d4a0b5b Integrate screenshot engine with Playwright-based code rendering
 541b886 Integrate Mermaid theme engine with profile-based PNG rendering
 516b9cb Add reproducible dev environment and toolchain checks
@@ -751,7 +795,10 @@ uv run ruff check src/ tests/
 Sonuç: PASS
 
 uv run pytest tests/ -q --tb=short
-Sonuç: 377 passed
+Sonuç: 381 passed
+
+uv run bookmaker check toolchain --json
+Sonuç: status: ok, tüm araçlar mevcut
 
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
 Sonuç: skor 100, karar pass, hata 0, uyarı 0
@@ -789,7 +836,7 @@ Repo kökünde geçici `.ps1` dosyaları kaldıysa silinmelidir.
 ## Sıradaki Teknik Hedef
 
 ```text
-Mermaid tema motoru entegrasyonu tamamlandı.
+Mermaid renderer hardening tamamlandı.
 Kullanıcı yönlendirmesiyle yeni iş bekleniyor.
 ```
 
@@ -830,7 +877,7 @@ Beklenen:
 ```text
 git status --short -> sadece untracked geçici dosyalar (faz_*.md vb.)
 ruff -> PASS
-pytest -> 340 passed
+pytest -> 381 passed
 book check -> 100/pass
 ```
 
@@ -859,7 +906,7 @@ book check -> 100/pass
 BookMaker — LLM destekli akademik/teknik kitap üretim framework'ü.
 Repo: D:\bookMaker_clean
 Branch: main (tek branch)
-Son commit: 541b886 Integrate Mermaid theme engine with profile-based PNG rendering
+Son commit: 865262e Harden Mermaid renderer configuration and caching
 
 Tamamlananlar (son dönem):
 - FAZ 4: Profile-aware validator, manifest tabanlı profil çözümü
@@ -869,11 +916,15 @@ Tamamlananlar (son dönem):
 - FAZ 6.7: E2E smoke testler, CI güçlendirme, release checklist
 - FAZ 6.8: Devcontainer/Codespaces, toolchain check modülü, CLI komutu
 - Mermaid tema motoru entegrasyonu (5 profil teması, mmdc PNG renderer)
+- Screenshot engine entegrasyonu (3 strateji: python plot/console, react)
+- Mermaid renderer hardening (cache key genişletme, timeout, temp temizliği, mutable default)
 
 Güncel durum:
-- test kapsamı: 340 passed
+- Sürüm: 0.2.0
+- test kapsamı: 381 passed
 - ruff: clean (src/ + tests/)
 - Flutter kitap validasyonu: 100/pass
+- toolchain: ok
 
 Sıradaki:
 - Kullanıcı yönlendirmesiyle yeni iş
