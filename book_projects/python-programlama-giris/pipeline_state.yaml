@@ -1,0 +1,134 @@
+book_id: python-programlama-giris
+current_stage: authoring
+pipeline:
+  schema_version: '1.0'
+  book_alias: python-programlama-giris
+  current_version: v001
+  global_state: authoring
+  created_at: '2026-05-07T07:08:32+03:00'
+  updated_at: '2026-05-07T07:08:32+03:00'
+  active_chapter: bolum-01
+  next_action: İlk taslak için chapters/bolum-01/prompt.md kullanılacak.
+production_context:
+  producer_model: deepseek-chat
+  observer_model: deepseek-chat
+  generation_mode: chapter_based
+  approval_required: true
+  default_input_policy:
+    use_book_manifest: true
+    use_chapter_manifest: true
+    use_chapter_prompt_if_exists: true
+    fallback_to_default_chapter_prompt: true
+  review_policy:
+    observer_review_required: true
+    fallback_to_default_review_prompt: true
+    minimum_quality_score_for_approval: 85
+quality_gates:
+  per_chapter:
+    manifest_exists: true
+    draft_required: true
+    review_required_before_final: true
+    final_required_for_export: true
+    unresolved_placeholders_allowed: false
+    code_meta_required_for_extractable_code: true
+    screenshot_marker_required: true
+  book_level:
+    chapter_order_from_book_manifest: true
+    chapter_alias_references_only: true
+    no_framework_files_inside_project: true
+    exports_stay_inside_project: true
+chapters:
+- alias: bolum-01
+  order: 1
+  status:
+    state: pending
+    draft_generated: false
+    review_completed: false
+    revision_required: false
+    final_approved: false
+    exported: false
+    issues: []
+    suggestions: []
+  automation:
+    code_extraction_done: false
+    code_tests_done: false
+    screenshots_done: false
+    qr_generation_done: false
+    github_links_patched: false
+- alias: bolum-02
+  order: 2
+  status:
+    state: pending
+    draft_generated: false
+    review_completed: false
+    revision_required: false
+    final_approved: false
+    exported: false
+    issues: []
+    suggestions: []
+  automation:
+    code_extraction_done: false
+    code_tests_done: false
+    screenshots_done: false
+    qr_generation_done: false
+    github_links_patched: false
+- alias: bolum-03
+  order: 3
+  status:
+    state: pending
+    draft_generated: false
+    review_completed: false
+    revision_required: false
+    final_approved: false
+    exported: false
+    issues: []
+    suggestions: []
+  automation:
+    code_extraction_done: false
+    code_tests_done: false
+    screenshots_done: false
+    qr_generation_done: false
+    github_links_patched: false
+- alias: bolum-04
+  order: 4
+  status:
+    state: pending
+    draft_generated: false
+    review_completed: false
+    revision_required: false
+    final_approved: false
+    exported: false
+    issues: []
+    suggestions: []
+  automation:
+    code_extraction_done: false
+    code_tests_done: false
+    screenshots_done: false
+    qr_generation_done: false
+    github_links_patched: false
+- alias: bolum-05
+  order: 5
+  status:
+    state: pending
+    draft_generated: false
+    review_completed: false
+    revision_required: false
+    final_approved: false
+    exported: false
+    issues: []
+    suggestions: []
+  automation:
+    code_extraction_done: false
+    code_tests_done: false
+    screenshots_done: false
+    qr_generation_done: false
+    github_links_patched: false
+export_state:
+  merged_markdown_generated: false
+  docx_generated: false
+  pdf_generated: false
+  included_chapters: []
+history:
+- at: '2026-05-07T07:08:32+03:00'
+  event: pipeline_initialized
+  note: pipeline_state.yaml book_manifest.yaml üzerinden oluşturuldu.

@@ -1,0 +1,3 @@
+İşte **"Python'a Giriş ve Kurulum"** bölümü için 3-5 cümlelik özet:
+
+Bu bölümde, Python programlama dilinin ne olduğu, tarihçesi ve neden bu kadar popüler hale geldiği anlatılmaktadır. Python geliştirme ortamının (JDK benzeri bir yapı olarak düşünülebilir) kurulumu adım adım gösterilmiş, ardından ilk Python programı olan "Merhaba, Dünya!" yazdırılmıştır. `print()` fonksiyonu ailesi detaylandırılmış, REPL (etkileşimli çalışma ortamı) ile hızlı denemeler yapmanın yolları keşfedilmiştir. Sözdizimi kuralları ve yorum satırlarının kullanımı öğrenilerek, öğrenciler temel düzeyde Python kodu yazmaya hazır hale gelmiştir.

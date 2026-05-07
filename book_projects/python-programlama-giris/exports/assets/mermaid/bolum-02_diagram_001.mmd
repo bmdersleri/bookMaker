@@ -1,0 +1,17 @@
+flowchart TD
+    A[Kullanıcı Girdisi\n(string)] --> B{int() dönüşümü}
+    B -->|Sayısal mı?| C{float() dönüşümü}
+    B -->|Değil| D[ValueError]
+    C -->|Ondalıklı mı?| E{bool() dönüşümü}
+    C -->|Değil| F[Başarılı int]
+    E -->|Boş mu?| G[False]
+    E -->|Değil| H[True]
+    D --> I[Hata Yönetimi\n(try-except)]
+    F --> J[Matematiksel İşlemler]
+    G --> K[Mantıksal Kontroller]
+    H --> K
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style D fill:#ff6b6b,stroke:#333,stroke-width:2px
+    style F fill:#51cf66,stroke:#333,stroke-width:2px
+    style I fill:#ffd43b,stroke:#333,stroke-width:2px

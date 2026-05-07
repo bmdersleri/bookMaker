@@ -1,0 +1,15 @@
+chapter:
+  title: bolum-05
+  alias: bolum-05
+  order: 5
+  references: []
+scope:
+  topics:
+  - bolum-05
+  objectives: []
+  exclusions: []
+structure:
+  sections: []
+automation:
+  validation_modes:
+  - review_only

@@ -1,0 +1,15 @@
+chapter:
+  title: bolum-04
+  alias: bolum-04
+  order: 4
+  references: []
+scope:
+  topics:
+  - bolum-04
+  objectives: []
+  exclusions: []
+structure:
+  sections: []
+automation:
+  validation_modes:
+  - review_only

@@ -1,0 +1,15 @@
+chapter:
+  title: Test Bolum
+  alias: test-bolum
+  order: 6
+  references: []
+scope:
+  topics:
+  - Test Bolum
+  objectives: []
+  exclusions: []
+structure:
+  sections: []
+automation:
+  validation_modes:
+  - review_only

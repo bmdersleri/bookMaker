@@ -1,0 +1,3 @@
+## Bir Sonraki Bölüme Köprü
+
+Bu bölümde öğrendiğiniz değişkenler, veri tipleri ve tip dönüşümleri, Java programlamanın yapı taşlarını oluşturuyor. Artık programınızın hafızada nasıl veri tuttuğunu, bu verileri kullanıcıdan nasıl alacağınızı ve farklı türler arasında nasıl geçiş yapacağınızı biliyorsunuz. **Bir sonraki bölümde**, bu temel bilgileri kullanarak programlarımıza karar verme yeteneği kazandıracak **kontrol akışı (if-else, switch) ve döngüler (for, while)** konularına geçeceğiz; böylece değişkenlerinizin değerine göre farklı yollar izleyen, tekrarlayan işlemleri otomatikleştiren akıllı programlar yazmaya başlayacaksınız.

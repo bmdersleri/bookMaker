@@ -1,0 +1,15 @@
+chapter:
+  title: bolum-03
+  alias: bolum-03
+  order: 3
+  references: []
+scope:
+  topics:
+  - bolum-03
+  objectives: []
+  exclusions: []
+structure:
+  sections: []
+automation:
+  validation_modes:
+  - review_only
