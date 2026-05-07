@@ -5,16 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>bookMaker Studio</title>
 <link rel="stylesheet" href="/static/styles.css">
-<style>
-.drag-handle{cursor:grab;color:#999;font-size:1.1rem;user-select:none;width:30px}
-.drag-handle:active{cursor:grabbing}
-.chapter-row td{padding:.45rem .5rem;vertical-align:middle}
-.filter-bar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
-.filter-bar select,.filter-bar input{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem}
-.filter-bar .result-count{font-size:1rem;color:var(--muted);margin-left:auto}
-.bulk-bar{display:flex;gap:6px;align-items:center;padding:.5rem 0;font-size:1rem;color:var(--muted)}
-.bulk-bar .btn{font-size:.95rem}
-</style>
 </head>
 <body>
 
@@ -41,7 +31,7 @@
 </div>
 
 <!-- Actions -->
-<div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+<div class="toolbar">
   <button class="btn outline" onclick="refreshAll()">🔄 Yenile</button>
   <button class="btn outline" onclick="showLlmConfig()">⚙️ LLM Ayarları</button>
   <button class="btn outline" onclick="showAllPipeline()">📊 Pipeline Durumu</button>
@@ -91,7 +81,7 @@
 
       <div id="chapter-loading" class="loading"><span class="spinner"></span> Yukleniyor...</div>
       <div id="chapter-error" class="error hidden"></div>
-      <div style="overflow-x:auto">
+      <div class="table-scroll">
         <table id="chapter-table" class="hidden">
           <thead>
             <tr>
@@ -109,7 +99,7 @@
           <tbody id="chapter-body"></tbody>
         </table>
       </div>
-      <div id="pagination" style="display:flex;gap:4px;justify-content:center;margin-top:1rem"></div>
+      <div id="pagination" class="inline-actions" style="justify-content:center;margin-top:1rem"></div>
     </div>
   </div>
 </div>
@@ -119,7 +109,7 @@
   <div class="card">
     <div class="card-header"><h2>Pipeline Kontrol</h2></div>
     <div class="card-body">
-      <p style="font-size:1rem;color:var(--muted);margin-bottom:1rem">SPEC → VALIDATE → SEED → NORMALIZE → ENRICH → ASSEMBLE</p>
+      <p class="muted-copy">SPEC → VALIDATE → SEED → NORMALIZE → ENRICH → ASSEMBLE</p>
       <div class="config-form">
         <div class="form-group"><label>Bölüm ID</label><input type="text" id="gen-chapter-id" placeholder="bolum-XX" value="bolum-04"></div>
         <div class="form-group"><label>Başlık</label><input type="text" id="gen-title" placeholder="Bölüm başlığı"></div>
@@ -131,8 +121,8 @@
           <span id="gen-step">Hazirlaniyor...</span>
           <div class="bar"><div class="bar-fill" id="gen-bar" style="width:0%"></div></div>
         </div>
-        <pre id="gen-result" style="font-size:1rem;background:#f3f4f6;padding:.8rem;border-radius:6px;max-height:200px;overflow-y:auto"></pre>
-        <pre id="gen-log" style="font-size:1rem;background:#1e293b;color:#e2e8f0;padding:.8rem;border-radius:6px;max-height:200px;overflow-y:auto;margin-top:.5rem"></pre>
+        <pre id="gen-result" class="code-panel"></pre>
+        <pre id="gen-log" class="code-panel dark" style="margin-top:.5rem"></pre>
         <div id="gen-prompt-panel" class="hidden" style="margin-top:.5rem;display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
           <div><strong style="font-size:1rem">Prompt:</strong><pre id="gen-prompt-text" style="font-size:.95rem;background:#fef3c7;padding:.6rem;border-radius:4px;max-height:200px;overflow-y:auto"></pre></div>
           <div><strong style="font-size:1rem">Response:</strong><pre id="gen-response-text" style="font-size:.95rem;background:#d1fae5;padding:.6rem;border-radius:4px;max-height:200px;overflow-y:auto"></pre></div>
@@ -144,13 +134,13 @@
   <div class="card">
     <div class="card-header"><h2>Pipeline State</h2></div>
     <div class="card-body">
-      <pre id="pipeline-state-view" style="font-size:1rem;background:#f3f4f6;padding:.8rem;border-radius:6px;max-height:300px;overflow-y:auto">Yukleniyor...</pre>
+      <pre id="pipeline-state-view" class="code-panel">Yukleniyor...</pre>
     </div>
   </div>
   <div class="card">
     <div class="card-header"><h2>Job Listesi</h2><span class="badge">logs/studio_jobs</span></div>
     <div class="card-body">
-      <div style="overflow-x:auto">
+      <div class="table-scroll">
         <table>
           <thead>
             <tr>
@@ -205,11 +195,9 @@
         <button class="btn primary" id="prompt-save" onclick="saveSelectedPrompt()" disabled>Kaydet</button>
       </div>
       <div id="prompt-message" class="message info hidden"></div>
-      <textarea id="prompt-editor" rows="18" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:.95rem;font-family:Consolas,monospace;line-height:1.45" oninput="markPromptDirty()" placeholder="Prompt yükleniyor..."></textarea>
+      <textarea id="prompt-editor" class="prompt-editor" rows="18" oninput="markPromptDirty()" placeholder="Prompt yükleniyor..."></textarea>
     </div>
   </div>
-</div>
-
 </div>
 
 <div class="tab-content" id="tab-build">
@@ -225,38 +213,38 @@
   <div class="card">
     <div class="card-header"><h2>Kod Cikarma</h2></div>
     <div class="card-body">
-      <p id="extract-description" style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Kod bloklarini profile gore ayiklayip exports/code/ altina kaydeder.</p>
-      <div style="display:flex;gap:8px;align-items:center">
-        <select id="extract-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem;min-width:120px">
+      <p id="extract-description" class="muted-copy">Kod bloklarini profile gore ayiklayip exports/code/ altina kaydeder.</p>
+      <div class="inline-actions">
+        <select id="extract-chapter">
           <option value="">Tum Bolumler</option>
         </select>
         <button class="btn primary" onclick="runExtractCode()">Kod Cikar</button>
       </div>
-      <div id="extract-result" style="margin-top:.5rem;font-size:1rem"></div>
+      <div id="extract-result" class="result-box"></div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header"><h2>Diyagram Render (Mermaid -> PNG)</h2></div>
     <div class="card-body">
-      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Mermaid semalarini mmdc ile PNG goruntuye donusturur.</p>
-      <div style="display:flex;gap:8px;align-items:center">
-        <select id="mermaid-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem;min-width:120px">
+      <p class="muted-copy">Mermaid semalarini mmdc ile PNG goruntuye donusturur.</p>
+      <div class="inline-actions">
+        <select id="mermaid-chapter">
           <option value="">Tum Bolumler</option>
         </select>
         <button class="btn primary" onclick="runRenderMermaid()">PNG Render</button>
       </div>
-      <div id="mermaid-result" style="margin-top:.5rem;font-size:1rem"></div>
+      <div id="mermaid-result" class="result-box"></div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header"><h2>Kitap Birlestirme ve Export</h2></div>
     <div class="card-body">
-      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Tum bolumleri exports/md altinda birlestir ve formatlari exports/docx, exports/pdf, exports/epub veya exports/html altina aktar.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <p class="muted-copy">Tum bolumleri exports/md altinda birlestir ve formatlari exports/docx, exports/pdf, exports/epub veya exports/html altina aktar.</p>
+      <div class="inline-actions">
         <button class="btn outline" onclick="runAssemble()">Birlestir (.md)</button>
-        <select id="export-format" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem">
+        <select id="export-format">
           <option value="docx">DOCX</option>
           <option value="pdf">PDF</option>
           <option value="epub">EPUB</option>
@@ -264,33 +252,33 @@
         </select>
         <button class="btn primary" onclick="runExport()">Export Et</button>
       </div>
-      <div id="export-result" style="margin-top:.5rem;font-size:1rem"></div>
+      <div id="export-result" class="result-box"></div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header"><h2>Yedekleme</h2></div>
     <div class="card-body">
-      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Projenin .zip yedegini olusturur veya yedekten geri yukler.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <p class="muted-copy">Projenin .zip yedegini olusturur veya yedekten geri yukler.</p>
+      <div class="inline-actions">
         <button class="btn primary" onclick="runBackup()">Yedek Olustur</button>
         <span style="color:var(--muted);margin:0 4px">|</span>
-        <input type="text" id="restore-path" placeholder="backup_...zip yolu" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem;min-width:220px">
+        <input type="text" id="restore-path" placeholder="backup_...zip yolu" style="min-width:220px">
         <button class="btn outline" onclick="runRestore()">Geri Yukle</button>
       </div>
-      <div id="backup-result" style="margin-top:.5rem;font-size:1rem"></div>
+      <div id="backup-result" class="result-box"></div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header"><h2>İndeks & Glossary</h2></div>
     <div class="card-body">
-      <p style="font-size:1rem;color:var(--muted);margin-bottom:.5rem">Tum basliklardan indeks ve kod terimlerinden glossary olusturur.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <p class="muted-copy">Tum basliklardan indeks ve kod terimlerinden glossary olusturur.</p>
+      <div class="inline-actions">
         <button class="btn primary" onclick="runIndex()">Indeks Olustur</button>
         <button class="btn outline" onclick="runGlossary()">Glossary Olustur</button>
       </div>
-      <div id="index-result" style="margin-top:.5rem;font-size:1rem"></div>
+      <div id="index-result" class="result-box"></div>
     </div>
   </div>
 </div>
@@ -300,9 +288,9 @@
   <div class="card">
     <div class="card-header"><h2>Kalite Raporu</h2><span class="badge" id="quality-score-avg">-</span></div>
     <div class="card-body">
-      <div id="quality-book-summary" style="margin-bottom:1rem"></div>
+      <div id="quality-book-summary" class="quality-summary"></div>
       <div id="quality-loading" class="loading"><span class="spinner"></span> Yukleniyor...</div>
-      <div style="overflow-x:auto">
+      <div class="table-scroll">
         <table id="quality-table" class="hidden">
           <thead><tr>
             <th onclick="sortQuality('chapter_id')" style="cursor:pointer">Bolum</th>
@@ -323,7 +311,7 @@
   <div class="card">
     <div class="card-header"><h2>Kitap Istatistikleri</h2></div>
     <div class="card-body">
-      <div id="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem">
+      <div id="stats-grid" class="stats-grid">
         <div class="stat-card"><div class="num" id="stat-total-words">-</div><div class="lbl">Toplam Kelime</div></div>
         <div class="stat-card"><div class="num" id="stat-total-code">-</div><div class="lbl">Kod Blogu</div></div>
         <div class="stat-card"><div class="num" id="stat-total-mermaid">-</div><div class="lbl">Diyagram</div></div>
@@ -331,7 +319,7 @@
         <div class="stat-card"><div class="num" id="stat-chapter-count">-</div><div class="lbl">Bolum</div></div>
         <div class="stat-card"><div class="num" id="stat-avg-words">-</div><div class="lbl">Ort. Kelime</div></div>
       </div>
-      <div id="word-distribution" style="margin-top:1rem"></div>
+      <div id="word-distribution" class="result-box"></div>
     </div>
   </div>
 
@@ -339,17 +327,19 @@
   <div class="card">
     <div class="card-header"><h2>Tam Metin Arama</h2></div>
     <div class="card-body">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <input type="text" id="search-query" placeholder="Arama kelimesi..." style="min-width:200px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem">
-        <select id="search-chapter" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:1rem">
+      <div class="inline-actions">
+        <input type="text" id="search-query" placeholder="Arama kelimesi..." style="min-width:200px">
+        <select id="search-chapter">
           <option value="">Tum Bolumler</option>
         </select>
         <label style="font-size:1rem"><input type="checkbox" id="search-regex"> Regex</label>
         <button class="btn primary" onclick="runSearch()">Ara</button>
       </div>
-      <div id="search-results" style="margin-top:.5rem;font-size:1rem"></div>
+      <div id="search-results" class="result-box"></div>
     </div>
   </div>
+</div>
+
 </div>
 
 <div id="toast-container" class="toast-container"></div>
