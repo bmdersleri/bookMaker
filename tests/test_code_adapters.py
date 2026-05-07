@@ -186,6 +186,30 @@ def test_java_adapter_no_public_class_skipped(tmp_path: Path) -> None:
     assert "Sınıf adı bulunamadi" == results[0]["reason"]
 
 
+def test_java_adapter_timeout_handled(tmp_path: Path, monkeypatch) -> None:
+    import subprocess
+
+    from bookmaker.code.adapters.java import JavaCodeAdapter
+
+    def fake_which(cmd):
+        if cmd == "javac":
+            return "/fake/javac"
+        return None
+
+    def fake_run(cmd, **kwargs):
+        raise subprocess.TimeoutExpired(cmd, 30)
+
+    monkeypatch.setattr("bookmaker.code.adapters.java.shutil.which", fake_which)
+    monkeypatch.setattr("bookmaker.code.adapters.java.subprocess.run", fake_run)
+
+    adapter = JavaCodeAdapter()
+    results = adapter.run_tests([_JAVA_VALID], tmp_path)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "error"
+    assert "timed out" in results[0]["errors"][0]
+
+
 def test_java_adapter_compile_error(tmp_path: Path, monkeypatch) -> None:
     from bookmaker.code.adapters.java import JavaCodeAdapter
 
@@ -238,6 +262,24 @@ def test_python_adapter_run_tests_valid_code(tmp_path: Path, monkeypatch) -> Non
     assert len(results) == 1
     assert results[0]["status"] == "ok"
     assert "py_compile" in results[0]["command"][2]
+
+
+def test_python_adapter_run_tests_timeout(tmp_path: Path, monkeypatch) -> None:
+    import subprocess
+
+    from bookmaker.code.adapters.python import PythonCodeAdapter
+
+    def fake_run(cmd, **kwargs):
+        raise subprocess.TimeoutExpired(cmd, 30)
+
+    monkeypatch.setattr("bookmaker.code.adapters.python.subprocess.run", fake_run)
+
+    adapter = PythonCodeAdapter()
+    results = adapter.run_tests([_PY_VALID], tmp_path)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "error"
+    assert "timed out" in results[0]["errors"][0]
 
 
 def test_python_adapter_run_tests_syntax_error(tmp_path: Path, monkeypatch) -> None:
@@ -297,9 +339,7 @@ def test_react_adapter_javascript_syntax_ok(tmp_path: Path, monkeypatch) -> None
     from bookmaker.code.adapters.react import ReactCodeAdapter
 
     def fake_which(cmd):
-        if cmd == "node":
-            return "/fake/node"
-        return None
+        return "/fake/node" if cmd == "node" else None
 
     def fake_run(cmd, **kwargs):
         class Result:
@@ -312,7 +352,8 @@ def test_react_adapter_javascript_syntax_ok(tmp_path: Path, monkeypatch) -> None
     monkeypatch.setattr("bookmaker.code.adapters.react.subprocess.run", fake_run)
 
     adapter = ReactCodeAdapter()
-    results = adapter.run_tests([_JS_VALID], tmp_path)
+    tagged = [("javascript", _JS_VALID)]
+    results = adapter.run_tests(tagged, tmp_path)
 
     assert len(results) == 1
     assert results[0]["status"] == "ok"
@@ -322,9 +363,7 @@ def test_react_adapter_javascript_syntax_error(tmp_path: Path, monkeypatch) -> N
     from bookmaker.code.adapters.react import ReactCodeAdapter
 
     def fake_which(cmd):
-        if cmd == "node":
-            return "/fake/node"
-        return None
+        return "/fake/node" if cmd == "node" else None
 
     err = "SyntaxError: Unexpected token ';'\n"
 
@@ -339,11 +378,36 @@ def test_react_adapter_javascript_syntax_error(tmp_path: Path, monkeypatch) -> N
     monkeypatch.setattr("bookmaker.code.adapters.react.subprocess.run", fake_run)
 
     adapter = ReactCodeAdapter()
-    results = adapter.run_tests([_JS_INVALID], tmp_path)
+    tagged = [("javascript", _JS_INVALID)]
+    results = adapter.run_tests(tagged, tmp_path)
 
     assert len(results) == 1
     assert results[0]["status"] == "error"
     assert results[0]["errors"][0] == err.strip()
+
+
+def test_react_adapter_skips_typescript_safely(tmp_path: Path) -> None:
+    from bookmaker.code.adapters.react import ReactCodeAdapter
+
+    adapter = ReactCodeAdapter()
+    tagged = [("typescript", "const x: number = 1;\n")]
+    results = adapter.run_tests(tagged, tmp_path)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "skipped"
+    assert "typescript" in results[0]["reason"]
+
+
+def test_react_adapter_skips_tsx_safely(tmp_path: Path) -> None:
+    from bookmaker.code.adapters.react import ReactCodeAdapter
+
+    adapter = ReactCodeAdapter()
+    tagged = [("tsx", "const App = () => <div>Hello</div>;\n")]
+    results = adapter.run_tests(tagged, tmp_path)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "skipped"
+    assert "tsx" in results[0]["reason"]
 
 
 def test_react_adapter_no_node_fallback(tmp_path: Path, monkeypatch) -> None:
@@ -352,7 +416,8 @@ def test_react_adapter_no_node_fallback(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr("bookmaker.code.adapters.react.shutil.which", lambda cmd: None)
 
     adapter = ReactCodeAdapter()
-    results = adapter.run_tests([_JS_VALID], tmp_path)
+    tagged = [("javascript", _JS_VALID)]
+    results = adapter.run_tests(tagged, tmp_path)
 
     assert len(results) == 1
     assert results[0]["status"] == "skipped"
@@ -378,25 +443,159 @@ def test_react_adapter_multiple_blocks(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr("bookmaker.code.adapters.react.subprocess.run", fake_run)
 
     adapter = ReactCodeAdapter()
-    results = adapter.run_tests([_JS_VALID, _JS_INVALID, _JS_VALID], tmp_path)
+    tagged = [
+        ("javascript", _JS_VALID),
+        ("javascript", _JS_INVALID),
+        ("javascript", _JS_VALID),
+    ]
+    results = adapter.run_tests(tagged, tmp_path)
 
     assert len(results) == 3
     assert [r["status"] for r in results] == ["ok", "error", "ok"]
+
+
+def test_react_adapter_extract_returns_tagged() -> None:
+    from bookmaker.code.adapters.react import ReactCodeAdapter
+
+    md = "```javascript\nconst x = 1;\n```\n```typescript\nconst y: number = 2;\n```\n"
+    adapter = ReactCodeAdapter()
+    blocks = adapter.extract_blocks(md)
+
+    assert len(blocks) == 2
+    assert blocks[0] == ("javascript", "const x = 1;\n")
+    assert blocks[1] == ("typescript", "const y: number = 2;\n")
+
+
+def test_react_adapter_timeout_handled(tmp_path: Path, monkeypatch) -> None:
+    import subprocess
+
+    from bookmaker.code.adapters.react import ReactCodeAdapter
+
+    def fake_which(cmd):
+        return "/fake/node" if cmd == "node" else None
+
+    def fake_run(cmd, **kwargs):
+        raise subprocess.TimeoutExpired(cmd, 30)
+
+    monkeypatch.setattr("bookmaker.code.adapters.react.shutil.which", fake_which)
+    monkeypatch.setattr("bookmaker.code.adapters.react.subprocess.run", fake_run)
+
+    adapter = ReactCodeAdapter()
+    tagged = [("javascript", _JS_VALID)]
+    results = adapter.run_tests(tagged, tmp_path)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "error"
+    assert "timed out" in results[0]["errors"][0]
 
 
 # ---------------------------------------------------------------------------
 # FlutterCodeAdapter (placeholder) tests
 # ---------------------------------------------------------------------------
 
-def test_flutter_adapter_skipped_placeholder(tmp_path: Path) -> None:
+def test_flutter_adapter_skips_when_dart_missing(tmp_path: Path, monkeypatch) -> None:
     from bookmaker.code.adapters.flutter import FlutterCodeAdapter
+
+    monkeypatch.setattr("bookmaker.code.adapters.flutter.shutil.which", lambda cmd: None)
 
     adapter = FlutterCodeAdapter()
     results = adapter.run_tests(["void main() { print('hello'); }"], tmp_path)
 
     assert len(results) == 1
     assert results[0]["status"] == "skipped"
-    assert "flutter_adapter_ready_but_not_executed" == results[0]["reason"]
+    assert "dart_bulunamadi" == results[0]["reason"]
+
+
+def test_flutter_adapter_skips_when_pubspec_found(tmp_path: Path, monkeypatch) -> None:
+    from bookmaker.code.adapters.flutter import FlutterCodeAdapter
+
+    monkeypatch.setattr(
+        "bookmaker.code.adapters.flutter.shutil.which",
+        lambda cmd: "/fake/dart" if cmd == "dart" else None,
+    )
+    (tmp_path / "pubspec.yaml").write_text("name: test_flutter\n")
+
+    adapter = FlutterCodeAdapter()
+    results = adapter.run_tests(["void main() {}"], tmp_path)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "skipped"
+    assert "flutter_widget_pubspec_found" == results[0]["reason"]
+
+
+def test_flutter_adapter_runs_dart_analyze_for_standalone_dart(
+    tmp_path: Path, monkeypatch,
+) -> None:
+    from bookmaker.code.adapters.flutter import FlutterCodeAdapter
+
+    def fake_which(cmd):
+        return "/fake/dart" if cmd == "dart" else None
+
+    def fake_run(cmd, **kwargs):
+        class Result:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+        return Result()
+
+    monkeypatch.setattr("bookmaker.code.adapters.flutter.shutil.which", fake_which)
+    monkeypatch.setattr("bookmaker.code.adapters.flutter.subprocess.run", fake_run)
+
+    sub_dir = tmp_path / "sub"
+    sub_dir.mkdir()
+    adapter = FlutterCodeAdapter()
+    results = adapter.run_tests(["void main() { print('hello'); }"], sub_dir)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "ok"
+    assert "dart" in results[0]["command"][0]
+    assert "analyze" in results[0]["command"][1]
+
+
+def test_flutter_adapter_dart_analyze_error(tmp_path: Path, monkeypatch) -> None:
+    from bookmaker.code.adapters.flutter import FlutterCodeAdapter
+
+    def fake_which(cmd):
+        return "/fake/dart" if cmd == "dart" else None
+
+    def fake_run(cmd, **kwargs):
+        class Result:
+            returncode = 2
+            stdout = ""
+            stderr = "error: Expected ';' after this.\n"
+        return Result()
+
+    monkeypatch.setattr("bookmaker.code.adapters.flutter.shutil.which", fake_which)
+    monkeypatch.setattr("bookmaker.code.adapters.flutter.subprocess.run", fake_run)
+
+    adapter = FlutterCodeAdapter()
+    results = adapter.run_tests(["void main() { print('hello') }"], tmp_path)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "error"
+    assert results[0]["errors"]
+
+
+def test_flutter_adapter_timeout_handled(tmp_path: Path, monkeypatch) -> None:
+    import subprocess
+
+    from bookmaker.code.adapters.flutter import FlutterCodeAdapter
+
+    def fake_which(cmd):
+        return "/fake/dart" if cmd == "dart" else None
+
+    def fake_run(cmd, **kwargs):
+        raise subprocess.TimeoutExpired(cmd, 60)
+
+    monkeypatch.setattr("bookmaker.code.adapters.flutter.shutil.which", fake_which)
+    monkeypatch.setattr("bookmaker.code.adapters.flutter.subprocess.run", fake_run)
+
+    adapter = FlutterCodeAdapter()
+    results = adapter.run_tests(["void main() {}"], tmp_path)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "error"
+    assert "timed out" in results[0]["errors"][0]
 
 
 # ---------------------------------------------------------------------------
@@ -464,7 +663,8 @@ def test_react_adapter_extract_multiple_languages() -> None:
     blocks = adapter.extract_blocks(_MD_WITH_CODE)
 
     assert len(blocks) == 1
-    assert "const x = 1;" in blocks[0]
+    assert blocks[0][0] == "javascript"
+    assert "const x = 1;" in blocks[0][1]
 
 
 def test_extract_blocks_no_matches() -> None:

@@ -585,7 +585,8 @@ def test_quality_service_compile_code_uses_flutter_adapter(tmp_path):
     assert result["adapter"] == "flutter"
     assert result["language"] == "dart"
     assert result["blocks"] == 1
-    assert all(item["status"] == "skipped" for item in result["results"])
+    # Flutter adapter now attempts dart analyze; status depends on tool availability
+    assert result["failed"] == 0
 
 
 def test_legacy_extract_code_blocks_is_deprecated_or_adapter_compatible(tmp_path):

@@ -48,13 +48,26 @@ class JavaCodeAdapter(CodeAdapter):
                 )
                 continue
 
-            proc = subprocess.run(
-                [javac, str(fpath)],
-                capture_output=True,
-                text=True,
-                timeout=30,
-                cwd=str(workdir),
-            )
+            try:
+                proc = subprocess.run(
+                    [javac, str(fpath)],
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                    cwd=str(workdir),
+                )
+            except subprocess.TimeoutExpired:
+                results.append(
+                    {
+                        "block": index,
+                        "status": "error",
+                        "class_name": class_name,
+                        "errors": ["javac timed out after 30s"],
+                        "command": [javac, str(fpath)],
+                    }
+                )
+                continue
+
             if proc.returncode == 0:
                 results.append(
                     {

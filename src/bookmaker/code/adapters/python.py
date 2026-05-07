@@ -17,13 +17,22 @@ class PythonCodeAdapter(CodeAdapter):
         for index, block in enumerate(blocks, start=1):
             fpath = workdir / f"block_{index:03d}.py"
             fpath.write_text(block, encoding="utf-8")
-            proc = subprocess.run(
-                [sys.executable, "-m", "py_compile", str(fpath)],
-                capture_output=True,
-                text=True,
-                timeout=30,
-                cwd=str(workdir),
-            )
+            try:
+                proc = subprocess.run(
+                    [sys.executable, "-m", "py_compile", str(fpath)],
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                    cwd=str(workdir),
+                )
+            except subprocess.TimeoutExpired:
+                results.append({
+                    "block": index,
+                    "status": "error",
+                    "errors": ["py_compile timed out after 30s"],
+                    "command": [sys.executable, "-m", "py_compile", str(fpath)],
+                })
+                continue
             if proc.returncode == 0:
                 results.append(
                     {

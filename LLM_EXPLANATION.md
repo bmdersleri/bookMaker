@@ -63,7 +63,7 @@ bookMaker/
 │   │       ├── java.py           # JavaCodeAdapter — javac compilation
 │   │       ├── flutter.py        # FlutterCodeAdapter — dart analyze (placeholder)
 │   │       ├── python.py         # PythonCodeAdapter — py_compile syntax check
-│   │       └── react.py          # ReactCodeAdapter — node --check syntax check
+│   │       └── react.py          # ReactCodeAdapter — node --check (JS) + review-only skip (TS/JSX)
 │   ├── production/              # Export pipeline
 │   │   ├── pandoc.py            # Pandoc DOCX/PDF/EPUB/HTML conversion
 │   │   ├── mermaid.py           # Mermaid → PNG (mmdc CLI)
@@ -92,7 +92,7 @@ bookMaker/
 │   └── llm/                      # LLM API client
 │       ├── config.py             # LLMConfig (reads llm_config.json)
 │       └── openai.py             # OpenAICompatibleClient
-├── tests/                        # Test suite (269 tests)
+├── tests/                        # Test suite (279 tests)
 │   ├── unit/
 │   │   ├── test_studio_app.py    # API endpoint tests
 │   │   └── test_studio_services.py
@@ -384,7 +384,7 @@ Profile-aware code adapters provide language-specific code block compilation/ver
 | Java | `JavaCodeAdapter` | `javac` | Active — full compilation |
 | Flutter | `FlutterCodeAdapter` | `dart analyze` | Placeholder — skips safely |
 | Python | `PythonCodeAdapter` | `python -m py_compile` | Active — syntax check |
-| React | `ReactCodeAdapter` | `node --check` | Active — JS syntax check |
+| React | `ReactCodeAdapter` | `node --check` (JS), review-only (TS/JSX) | Active — JS syntax, safe skip for typed/JSX |
 | Generic | `ReviewOnlyAdapter` | — | Active — manual review |
 
 Each adapter inherits from `CodeAdapter` (ABC) and implements:
@@ -395,7 +395,7 @@ The dispatch rules in `select_code_adapter()`:
 1. `profile="flutter"` or `code_language="dart"` → `FlutterCodeAdapter`
 2. `profile="java"` or `code_language="java"` → `JavaCodeAdapter`
 3. `profile="python"` or `code_language="python"` → `PythonCodeAdapter`
-4. `code_language` in {javascript, js, jsx, tsx, typescript, ts} → `ReactCodeAdapter`
+4. `code_language` in {javascript, js, jsx, tsx, typescript, ts} → `ReactCodeAdapter` (JS blocks → `node --check`, TS/JSX blocks → review_only skip)
 5. Otherwise → `ReviewOnlyAdapter`
 
 ---
@@ -493,7 +493,7 @@ python -m py_compile src/bookMaker/generation/prompts.py
 | `src/bookmaker/code/adapters/java.py` | JavaCodeAdapter — javac compilation |
 | `src/bookmaker/code/adapters/flutter.py` | FlutterCodeAdapter — dart analyze (placeholder) |
 | `src/bookmaker/code/adapters/python.py` | PythonCodeAdapter — py_compile syntax check |
-| `src/bookmaker/code/adapters/react.py` | ReactCodeAdapter — node --check syntax check |
+| `src/bookmaker/code/adapters/react.py` | ReactCodeAdapter — node --check (JS) + review-only skip (TS/JSX) |
 | `src/bookmaker/code/extractor.py` | extract_fenced_blocks() — regex code block extraction |
 | `src/bookmaker/code/report.py` | summarize_test_results() — compile/skip/error counts |
 | `src/bookmaker/llm/openai.py` | OpenAICompatibleClient with retry + auto-resume |
@@ -503,7 +503,7 @@ python -m py_compile src/bookMaker/generation/prompts.py
 ## 14. Current Project State (2026-05-07)
 
 - **Phase:** FAZ 4 + FAZ 5 complete; post-migration cleanup done
-- **Tests:** 269 passed, ruff clean
+- **Tests:** 279 passed, ruff clean
 - **Branch:** `main` (single branch, all others deleted)
 - **GUI:** 6 tabs functional, inline editing, pipeline detail tracking, export controls
 - **Configuration:** `book_manifest.yaml` as single source, `book_profile.yaml` legacy fallback only

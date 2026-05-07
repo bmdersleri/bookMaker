@@ -128,7 +128,7 @@ Detayli dokumantasyon: [`CHAPTER_PRODUCTION.md`](CHAPTER_PRODUCTION.md)
 | Java | `JavaCodeAdapter` | Java | `javac` |
 | Flutter | `FlutterCodeAdapter` | Dart | `dart analyze` (hazirlik) |
 | Python | `PythonCodeAdapter` | Python | `python -m py_compile` |
-| React | `ReactCodeAdapter` | JS/TS/JSX/TSX | `node --check` |
+| React | `ReactCodeAdapter` | JS | `node --check` (TS/JSX/TSX → review-only skip) |
 | Diger | `ReviewOnlyAdapter` | Herhangi | Manuel inceleme |
 
 Adapter secimi `code/runner.py` icindeki `select_code_adapter(profile, code_language)` ile yapilir. `quality_service.compile_code()` adapter secimini otomatik olarak manifest profilinden yapar.
@@ -140,7 +140,7 @@ src/bookmaker/code/
 │   ├── java.py        # javac derleme + hata ayiklamasi
 │   ├── flutter.py     # Dart/Flutter (placeholder, guvenli skip)
 │   ├── python.py      # py_compile syntax kontrolu
-│   └── react.py       # node --check syntax kontrolu
+│   └── react.py       # node --check (JS) + review-only (TS/JSX)
 ├── extractor.py       # extract_fenced_blocks() — Markdown'dan kod blogu cikarma
 ├── models.py          # CodeBlock, CodeTestResult dataclass'lari
 ├── report.py          # summarize_test_results() — sonuc ozeti
@@ -166,7 +166,7 @@ bookmaker check chapter chapters/giris/content/draft.md --book-root book_project
 
 ```powershell
 uv run ruff check src/                      # lint
-uv run pytest tests/ -q --tb=short           # 269 passed
+uv run pytest tests/ -q --tb=short           # 279 passed
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
 ```
 
