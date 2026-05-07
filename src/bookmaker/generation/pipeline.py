@@ -1,18 +1,18 @@
 """Bolum uretim pipeline'i.
 Tek model (DeepSeek Chat).
 
-Asama 1 — SEEDING:       LLM serbest bolum icerigi uretir
-Asama 2 — NORMALIZATION:  Python kodu (0 token)
-Asama 3 — ENRICHMENT:     LLM (paralel) eksik bolumleri doldurur
-Asama 4 — ASSEMBLY:       Python kodu (0 token)
-Opsiyonel — SPEC:         LLM oncesi planlama (spec -> validate)
-Opsiyonel — DEEPEN:       H2 bazinda teorik derinlestirme
+Kanonik akış:
+SPEC -> VALIDATE -> SEED -> NORMALIZE -> ENRICH -> ASSEMBLE
+
+Üretim çıktıları proje kökündeki ``chapters/<alias>/content`` altında tutulur.
+Ara çıktı günlükleri ``logs/production/`` altına yazılır.
 """
 
 from __future__ import annotations
 
 import concurrent.futures
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -126,6 +126,11 @@ class ChapterGenerator:
         api_log_dir = str(self.root / "build")
         self.client = OpenAICompatibleClient(
             **base, timeout=120, api_log_dir=api_log_dir)
+
+    def _production_run_dir(self, chapter_id: str, variant: str | None = None) -> Path:
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        suffix = f"_{variant}" if variant else ""
+        return self.root / "logs" / "production" / f"{chapter_id}{suffix}_{stamp}"
 
     @property
     def code_language(self) -> str:
@@ -372,11 +377,18 @@ class ChapterGenerator:
         return result
 
     def _save_chapter(self, chapter_id: str, text: str) -> Path:
-        d = self.root / "chapters" / chapter_id / "approved"
-        d.mkdir(parents=True, exist_ok=True)
-        p = d / f"{chapter_id}_v001.md"
-        p.write_text(text, encoding="utf-8")
-        return p
+        content_dir = self.root / "chapters" / chapter_id / "content"
+        revisions_dir = content_dir / "revisions"
+        content_dir.mkdir(parents=True, exist_ok=True)
+        revisions_dir.mkdir(parents=True, exist_ok=True)
+
+        draft_path = content_dir / "draft.md"
+        draft_path.write_text(text, encoding="utf-8")
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        revision_path = revisions_dir / f"draft_{timestamp}.md"
+        revision_path.write_text(text, encoding="utf-8")
+        return draft_path
 
 
 
@@ -446,9 +458,9 @@ class ChapterGenerator:
     ):
         """Spec -> Validate -> Seed -> Normalize -> [Deepen] -> Enrich -> Assemble.
 
-        Her asamanin ciktisi build/generation/ altina kaydedilir.
+        Her asamanin ciktisi logs/production/ altina kaydedilir.
         """
-        gen_dir = self.root / "build" / "generation"
+        gen_dir = self._production_run_dir(chapter_id)
         gen_dir.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
         result = {"chapter_id": chapter_id, "title": title, "steps": {}}
@@ -509,7 +521,7 @@ class ChapterGenerator:
         - Kalite kontrolü parça bazında yapılabilir
         - max_tokens limiti sorunu yok
         """
-        gen_dir = self.root / "build" / "generation" / f"{chapter_id}_sections"
+        gen_dir = self._production_run_dir(chapter_id, "sections")
         gen_dir.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
         result = {"chapter_id": chapter_id, "title": title, "sections": {}}
@@ -716,7 +728,7 @@ class ChapterGenerator:
 
         Bu yöntem en yüksek kaliteyi üretir, ancak en çok token harcar.
         """
-        gen_dir = self.root / "build" / "generation" / f"{chapter_id}_twopass"
+        gen_dir = self._production_run_dir(chapter_id, "twopass")
         gen_dir.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
         result = {"chapter_id": chapter_id, "title": title, "mode": "two_pass"}
@@ -808,7 +820,7 @@ class ChapterGenerator:
 
         Standart spec pipeline'ina deepen pass eklenmis hali.
         """
-        gen_dir = self.root / "build" / "generation" / f"{chapter_id}_deep"
+        gen_dir = self._production_run_dir(chapter_id, "deep")
         gen_dir.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
         result = {"chapter_id": chapter_id, "title": title, "mode": "spec_deep"}

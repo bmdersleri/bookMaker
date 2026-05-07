@@ -22,7 +22,11 @@ def find_project_root(
     start: str | Path | None = None,
     book_name: str | None = None,
 ) -> Path | None:
-    """Find a book project containing book_manifest.yaml (or book_profile.yaml)."""
+    """Find a book project containing book_manifest.yaml.
+
+    Legacy projects that still carry book_profile.yaml are accepted as a
+    fallback so older workspaces remain readable.
+    """
     current = Path(start or Path.cwd()).resolve()
     if current.is_file():
         current = current.parent

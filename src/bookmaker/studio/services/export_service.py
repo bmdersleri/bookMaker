@@ -151,6 +151,7 @@ def export_to_format(project_root: str | Path, fmt: str,
         depth = pandoc_cfg.toc_depth
     if depth is None:
         depth = 2
+    toc_enabled = pandoc_cfg.toc if pandoc_cfg is not None else True
 
     # Önce birleştir
     assembled = assemble_book(root, chapter_ids)
@@ -172,13 +173,21 @@ def export_to_format(project_root: str | Path, fmt: str,
     out_dir = _output_dir(root, target_dir)
     out_path = out_dir / f"kitap{ext}"
 
+    from_format = "markdown+tex_math_single_backslash"
+    if pandoc_cfg and pandoc_cfg.from_format:
+        from_format = pandoc_cfg.from_format
+
     cmd = [
         "pandoc", str(md_path),
-        "-f", "markdown+tex_math_single_backslash",
+        "-f", from_format,
         "-t", pandoc_fmt,
         "-o", str(out_path),
-        "--toc", f"--toc-depth={depth}",
     ]
+
+    if toc_enabled:
+        cmd.extend(["--toc", f"--toc-depth={depth}"])
+        if pandoc_cfg and pandoc_cfg.toc_title:
+            cmd.extend(["--metadata", f"toc-title:{pandoc_cfg.toc_title}"])
 
     if ref_path and ref_path.exists():
         cmd.extend(["--reference-doc", str(ref_path)])

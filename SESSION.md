@@ -9,14 +9,37 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 ## ŞU AN
 
 ```text
-Aktif Faz       : FAZ 5 tamamlandı; book_profile.yaml eliminasyonu + GUI iyileştirmeleri yapıldı
-Son Oturum      : 2026-05-07 - book_profile eliminasyonu, export UI, inline edit, pipeline tracking, repo temizliği
+Aktif Faz       : SUGGEST.md kritik düzeltmeleri tamamlandı; adapter/export/pipeline hizası yapıldı
+Son Oturum      : 2026-05-07 - SUGGEST.md kritik düzeltmeleri, adapter katmanı, export/pipeline hizası
 Repo            : D:\bookMaker_clean
 Branch          : main  (tek branch, diğerleri silindi)
 Remote          : origin
-Son Kod Commit  : f11f41c — inline chapter title editing + pipeline job detail tracking
-Durum           : FAZ 4 + FAZ 5 tamam; book_profile.yaml kaldırıldı; GUI'de inline edit + pipeline detay paneli var
-Test            : 218 passed, ruff clean
+Son Kod Commit  : yerel değişiklikler (henüz commitlenmedi)
+Durum           : path/export/quality uyumu, profile-aware adapter katmanı ve docs güncellendi
+Test            : 223 passed, ruff clean
+```
+
+---
+
+## 2026-05-07 Oturumu — SUGGEST.md Kritik Düzeltmeleri
+
+### Yapılan İşler
+
+- `LLMConfig.ambos_configured` backward-compatible hale getirildi.
+- `BookConfig.exports_dir` proje kökündeki `exports/` klasörüne taşındı.
+- `quality_service` içindeki chapter-id payload bug'ı düzeltildi.
+- `generation/pipeline.py` draft/revision kaydını `chapters/<alias>/content/` yapısına taşıdı.
+- `export_service` Pandoc `from_format` ve TOC ayarlarını manifestten okumaya başladı.
+- Studio CORS varsayılanı local originlerle sınırlandı; `BOOKMAKER_STUDIO_TOKEN` middleware desteği eklendi.
+- Java merkezli kod kontrolü profile-aware adapter katmanına bağlandı.
+- README ve `LLM_EXPLANATION.md` legacy `book_profile.yaml` fallback durumuyla ve Python sürüm aralığıyla hizalandı.
+
+### Doğrulama
+
+```text
+ruff: PASS
+pytest: 223 passed
+book check: 100/pass, 0 hata, 0 uyarı
 ```
 
 ---

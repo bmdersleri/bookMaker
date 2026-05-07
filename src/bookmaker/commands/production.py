@@ -91,7 +91,7 @@ def render_mermaid(
         raise typer.Exit(1)
 
     config = _resolve_config(path=path)
-    out_dir = config.mermaid_dir if config else Path("build") / "assets" / "mermaid"
+    out_dir = config.mermaid_dir if config else Path("exports") / "assets" / "mermaid"
     results = render_from_file(path, out_dir, config=config)
 
     passed = sum(1 for r in results if r["status"] == "passed")
@@ -112,7 +112,7 @@ def export_to_docx(
         raise typer.Exit(1)
 
     config = _resolve_config(path=path)
-    out_dir = config.exports_dir if config else Path("build") / "exports"
+    out_dir = config.exports_dir if config else Path("exports")
     out = out_dir / f"{path.stem}.docx"
     result = export_docx(path, out, config=config)
 

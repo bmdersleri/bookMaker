@@ -8,7 +8,7 @@ This document provides a complete, self-contained explanation of the bookMaker p
 
 **bookMaker** is an LLM-assisted, author-controlled, quality-gated academic/technical book authoring studio. It automates the production of structured, pedagogically sound textbooks using DeepSeek Chat as the LLM backend.
 
-- **Language:** Python 3.14.4
+- **Language:** Python 3.14.x development environment; minimum supported Python 3.12
 - **Package name:** `bookmaker`
 - **CLI command:** `bookmaker`
 - **Package manager:** uv
@@ -127,7 +127,7 @@ Each book is an independent directory under `book_projects/`:
     └── reviews/                  # Quality review reports
 ```
 
-**Key rule:** `book_manifest.yaml` is the SINGLE configuration source. The legacy `book_profile.yaml` has been eliminated entirely.
+**Key rule:** `book_manifest.yaml` is the SINGLE configuration source. `book_profile.yaml` is kept only as a read-only legacy fallback for older projects and must not be created by new tooling.
 
 ---
 
@@ -394,7 +394,7 @@ Uses `mmdc` CLI via PowerShell to convert Mermaid diagrams to PNG.
 
 ## 11. Key Design Decisions
 
-1. **Single config source:** `book_manifest.yaml` — `book_profile.yaml` eliminated
+1. **Single config source:** `book_manifest.yaml` — `book_profile.yaml` legacy fallback only
 2. **Single LLM model:** DeepSeek Chat (no dual-model complexity)
 3. **Single global LLM config:** `llm_config.json` at repo root (no per-book config)
 4. **Manifest-based project discovery:** `find_project_root()` looks for `book_manifest.yaml`
@@ -416,7 +416,7 @@ uv sync
 # Lint
 uv run ruff check src/
 
-# Test (218 passed)
+# Test (223 passed)
 uv run pytest tests/ -q --tb=short
 
 # Start Studio GUI
@@ -455,10 +455,10 @@ python -m py_compile src/bookMaker/generation/prompts.py
 ## 14. Current Project State (2026-05-07)
 
 - **Phase:** FAZ 4 + FAZ 5 complete; post-migration cleanup done
-- **Tests:** 218 passed, ruff clean
+- **Tests:** 223 passed, ruff clean
 - **Branch:** `main` (single branch, all others deleted)
 - **GUI:** 6 tabs functional, inline editing, pipeline detail tracking, export controls
-- **Configuration:** `book_manifest.yaml` as single source, `book_profile.yaml` eliminated
+- **Configuration:** `book_manifest.yaml` as single source, `book_profile.yaml` legacy fallback only
 - **Multi-language:** Java, Python, Dart/Flutter, generic profiles supported
 - **Book projects:** Flutter (16 chapters) and Python (5 chapters) sample projects present
 - **Next:** FAZ 7 (multi-book, user roles, reader mode, Docker/PWA)

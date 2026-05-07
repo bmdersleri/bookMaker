@@ -454,6 +454,37 @@ def test_export_service_uses_project_exports_and_alias_sources(tmp_path):
     assert extracted["output_dir"].replace("\\", "/") == "exports/code/dart"
 
 
+def test_quality_service_compile_code_uses_flutter_adapter(tmp_path):
+    root = _create_test_project(tmp_path)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: Flutter Demo\n"
+        "  alias: flutter-demo\n"
+        "style:\n"
+        "  code_language: dart\n"
+        "  framework: flutter\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    title: Giriş\n",
+        encoding="utf-8",
+    )
+    content_dir = root / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True, exist_ok=True)
+    (content_dir / "final.md").write_text(
+        "# Giriş\n\n```dart\nvoid main() {}\n```\n",
+        encoding="utf-8",
+    )
+
+    from bookmaker.studio.services import quality_service
+
+    result = quality_service.compile_code(root, "giris")
+
+    assert result["adapter"] == "flutter"
+    assert result["language"] == "dart"
+    assert result["blocks"] == 1
+    assert all(item["status"] == "skipped" for item in result["results"])
+
+
 def test_wizard_creates_project_based_book(tmp_path):
     from bookmaker.manifest.models import BookManifest, PipelineState
     from bookmaker.studio.services import wizard_service

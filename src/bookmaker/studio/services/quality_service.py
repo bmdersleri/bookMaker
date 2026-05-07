@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-import subprocess
 from pathlib import Path
 
 from bookmaker.chapter.book_validator import validate_book
@@ -11,6 +10,7 @@ from bookmaker.chapter.parser import parse
 from bookmaker.chapter.scoring import make_report
 from bookmaker.chapter.validation_modes import resolve_validation_profile_from_manifest
 from bookmaker.chapter.validator import validate
+from bookmaker.code.runner import select_code_adapter
 
 
 def _chapter_alias(chapter) -> str:
@@ -130,7 +130,7 @@ def get_quality_report(project_root: str | Path,
         src = next((_chapter_source(ch) for ch in manifest.chapters
                     if _chapter_matches(ch, cid)), None)
         if not src:
-            results.append({chapter_id: cid, "error": "Bulunamadi"})
+            results.append({"chapter_id": cid, "error": "Bulunamadi"})
             continue
         p = root / src
         if not p.exists():
@@ -283,11 +283,19 @@ def search_content(project_root: str | Path, query: str,
 
 
 def compile_code(project_root: str | Path, chapter_id: str) -> dict:
-    """Kod bloklarını javac ile derler."""
+    """Kod bloklarını profile-aware adapter ile işler."""
     from bookmaker.manifest.manager import ManifestManager
     root = Path(project_root).resolve()
     mgr = ManifestManager(root)
     manifest = mgr.load_or_generate()
+    profile = resolve_validation_profile_from_manifest(manifest)
+    code_language = (manifest.style.code_language or "").strip().lower()
+    if (
+        not code_language
+        and (manifest.style.framework or "").strip().lower() == "flutter"
+    ):
+        code_language = "dart"
+    adapter = select_code_adapter(profile, code_language=code_language or None)
     src = next((_chapter_source(ch) for ch in manifest.chapters
                 if _chapter_matches(ch, chapter_id)), None)
     if not src:
@@ -297,61 +305,35 @@ def compile_code(project_root: str | Path, chapter_id: str) -> dict:
         return {"error": f"Dosya bulunamadi: {p}"}
 
     text = p.read_text(encoding="utf-8")
-    java_blocks = re.findall(r'```java\n(.*?)```', text, re.DOTALL)
-    if not java_blocks:
-        return {"chapter_id": chapter_id, "blocks": 0,
-                "compiled": 0, "errors": []}
+    blocks = adapter.extract_blocks(text)
+    if not blocks:
+        return {
+            "chapter_id": chapter_id,
+            "adapter": adapter.name,
+            "language": adapter.language,
+            "blocks": 0,
+            "compiled": 0,
+            "failed": 0,
+            "results": [],
+        }
 
     # Geçici dizine yaz
-    tmp_dir = root / "build" / "code_check" / chapter_id
+    tmp_dir = root / "build" / "code_check" / chapter_id / adapter.name
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
-    results = []
-    for i, block in enumerate(java_blocks):
-        # Sınıf adını bul
-        class_match = re.search(r'public\s+class\s+(\w+)', block)
-        if not class_match:
-            results.append({"block": i + 1, "status": "skipped",
-                            "reason": "Sınıf adı bulunamadi",
-                            "class_name": "unknown"})
-            continue
-        class_name = class_match.group(1)
-        fname = f"{class_name}.java"
-        fpath = tmp_dir / fname
-        fpath.write_text(block, encoding="utf-8")
-
-        # Javac ile derle
-        try:
-            proc = subprocess.run(
-                ["javac", str(fpath)],
-                capture_output=True, text=True,
-                timeout=30, cwd=str(tmp_dir))
-            if proc.returncode == 0:
-                results.append({"block": i + 1, "status": "ok",
-                                "class_name": class_name})
-            else:
-                # Hata satırlarını parse et
-                error_lines = [
-                    line.strip() for line in proc.stderr.splitlines() if line.strip()
-                ][:5]
-                results.append({"block": i + 1, "status": "error",
-                                "class_name": class_name,
-                                "errors": error_lines})
-        except FileNotFoundError:
-            results.append({"block": i + 1, "status": "skipped",
-                            "reason": "javac bulunamadi",
-                            "class_name": class_name})
-        except subprocess.TimeoutExpired:
-            results.append({"block": i + 1, "status": "error",
-                            "class_name": class_name,
-                            "errors": ["Derleme zamani asimi (30s)"]})
-
-    compiled = sum(1 for r in results if r["status"] == "ok")
+    results = adapter.run_tests(blocks, tmp_dir)
+    compiled = sum(1 for r in results if r.get("status") == "ok")
     errors = [r for r in results if r["status"] == "error"]
 
-    return {"chapter_id": chapter_id, "blocks": len(java_blocks),
-            "compiled": compiled, "failed": len(errors),
-            "results": results}
+    return {
+        "chapter_id": chapter_id,
+        "adapter": adapter.name,
+        "language": adapter.language,
+        "blocks": len(blocks),
+        "compiled": compiled,
+        "failed": len(errors),
+        "results": results,
+    }
 
 
 def extract_code_blocks(project_root: str | Path, chapter_id: str,

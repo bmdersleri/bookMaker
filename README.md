@@ -85,10 +85,12 @@ Her kitap `book_projects/` altinda bagimsiz bir dizindir:
 ```
 
 **Kurallar:**
-- `book_manifest.yaml` tek konfigurasyon kaynagidir (`book_profile.yaml` kaldirildi)
+- `book_manifest.yaml` tek konfigurasyon kaynagidir; `book_profile.yaml` sadece legacy okuma fallback'idir
 - Bolum sirasi `book_manifest.yaml > chapters` listesinden alinir
 - Dosya yollari YAML'de tekrarlanmaz — alias'tan convention ile turetilir
 - `pipeline_state.yaml` runtime durumu tutar, framework tarafindan yonetilir
+
+**Desteklenen Python sürümü:** en az 3.12, geliştirme ortamında 3.14.x kullanılır.
 
 ---
 
@@ -133,7 +135,7 @@ bookmaker check chapter chapters/giris/content/draft.md --book-root book_project
 
 ```powershell
 uv run ruff check src/                      # lint
-uv run pytest tests/ -q --tb=short           # 218 passed
+uv run pytest tests/ -q --tb=short           # 223 passed
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
 ```
 

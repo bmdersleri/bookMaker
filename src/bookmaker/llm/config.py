@@ -129,5 +129,5 @@ class LLMConfig:
 
     @property
     def ambos_configured(self) -> bool:
-        """Hem seed hem enrich modeli ayarli mi?"""
-        return bool(self.seed_model and self.enrich_model)
+        """Backward-compatible alias for the old dual-model check."""
+        return self.is_configured()

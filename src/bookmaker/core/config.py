@@ -379,7 +379,7 @@ class BookConfig:
 
     @property
     def exports_dir(self) -> Path:
-        return self.build_dir / "exports"
+        return self._root / "exports"
 
     @property
     def merged_path(self) -> Path:

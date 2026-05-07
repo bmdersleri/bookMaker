@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 try:
-    from fastapi import FastAPI
+    from fastapi import FastAPI, Request
     from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import FileResponse, HTMLResponse
+    from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
     from fastapi.staticfiles import StaticFiles
 except ImportError:
     FastAPI = None  # type: ignore
@@ -34,6 +35,20 @@ app: FastAPI | None = None
 # ================================================================
 _active_book: str | None = None
 _CONFIG_FILE = "build/studio_config.json"
+
+
+def _allowed_origins() -> list[str]:
+    raw = os.environ.get("BOOKMAKER_STUDIO_ORIGINS", "").strip()
+    if raw:
+        origins = [item.strip() for item in raw.split(",") if item.strip()]
+        if origins:
+            return origins
+    return ["http://127.0.0.1:8765", "http://localhost:8765"]
+
+
+def _studio_token() -> str | None:
+    token = os.environ.get("BOOKMAKER_STUDIO_TOKEN", "").strip()
+    return token or None
 
 
 def _manifest_book_info(project_root: Path) -> dict[str, str]:
@@ -109,8 +124,21 @@ if FastAPI is not None:
     _static = _root / "static"
     _templates = _root / "templates"
 
-    app.add_middleware(CORSMiddleware, allow_origins=["*"],
+    app.add_middleware(CORSMiddleware, allow_origins=_allowed_origins(),
                        allow_methods=["*"], allow_headers=["*"])
+
+    @app.middleware("http")
+    async def enforce_studio_token(request: Request, call_next):
+        token = _studio_token()
+        is_mutating = request.method not in {"GET", "HEAD", "OPTIONS"}
+        if token and is_mutating and request.url.path.startswith("/api/"):
+            header = request.headers.get("X-BookMaker-Token", "")
+            if header != token:
+                return JSONResponse(
+                    {"error": "Studio token gerekli"},
+                    status_code=401,
+                )
+        return await call_next(request)
     _static.mkdir(exist_ok=True)
     app.mount("/static", StaticFiles(directory=str(_static)), name="static")
 
