@@ -210,6 +210,10 @@ class BookConfig:
                 "background": mermaid.background,
                 "output_format": mermaid.output_format,
                 "timeout_seconds": mermaid.timeout_seconds,
+                "theme": mermaid.theme,
+                "scale": mermaid.scale,
+                "width": mermaid.width,
+                "theme_overrides": mermaid.theme_overrides,
             }
 
         # outputs bolumu (manifest veya defaults)

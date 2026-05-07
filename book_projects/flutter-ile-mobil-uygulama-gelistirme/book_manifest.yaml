@@ -59,6 +59,11 @@ automation:
   qr_policy: dual
   github_code_export: true
   manual_asset_override: true
+mermaid:
+  theme: flutter
+  scale: 2
+  background: white
+  width: 900
 chapters:
 - alias: giris
 - alias: dart-temelleri

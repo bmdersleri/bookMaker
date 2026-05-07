@@ -5,6 +5,7 @@ Tüm format işlemleri Python kodu ile yapılır."""
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 from bookmaker.core.config import BookConfig
 from bookmaker.generation.clean_text import TextCleaner
@@ -562,6 +563,54 @@ def normalize(
     text = _normalize_code_blocks(text)
     text = _cleanup_whitespace(text)
     return text.strip() + "\n"
+
+
+# ============================================================
+# MERMAID RENDER WRAPPER
+# ============================================================
+
+
+def normalize_with_mermaid(
+    text: str,
+    chapter_alias: str,
+    chapter_content_dir: Path,
+    manifest=None,
+    chapter_id: str = "",
+    title: str = "",
+    config: BookConfig | None = None,
+) -> str:
+    """normalize() islemini uygular, ardindan mermaid bloklarini
+    temali PNG'ye donusturur ve Markdown referanslarini gunceller.
+    mmdc kurulu degilse sessizce mevcut normalize() sonucunu doner.
+    """
+    import shutil
+
+    from bookmaker.production.mermaid_renderer import (
+        MermaidRenderConfig,
+        MermaidRenderer,
+    )
+
+    normalized = normalize(text, chapter_id, title, config)
+
+    if shutil.which("mmdc") is None:
+        return normalized
+
+    mermaid_cfg = {}
+    if manifest is not None:
+        try:
+            mermaid_cfg = manifest.mermaid.model_dump()
+        except AttributeError:
+            pass
+
+    cfg = MermaidRenderConfig.from_manifest(mermaid_cfg)
+    renderer = MermaidRenderer(cfg)
+
+    result = renderer.process_markdown(
+        md_content=normalized,
+        assets_dir=chapter_content_dir / "assets",
+        chapter_alias=chapter_alias,
+    )
+    return result.output_md
 
 
 # ============================================================

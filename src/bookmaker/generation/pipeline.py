@@ -25,7 +25,7 @@ from bookmaker.generation.postprocess import (
     extract_h2_sections,
     extract_sections,
     insert_section,
-    normalize,
+    normalize_with_mermaid,
     reassemble_from_sections,
 )
 from bookmaker.generation.prompts import (
@@ -180,8 +180,25 @@ class ChapterGenerator:
 
     def normalize_chapter(self, raw_text: str, chapter_id: str,
                           title: str) -> str:
-        """Ham LLM ciktisini normalize eder."""
-        return normalize(raw_text, chapter_id, title, self.config)
+        """Ham LLM ciktisini normalize eder, mermaid bloklarini PNG'ye donusturur."""
+        content_dir = self.root / "chapters" / chapter_id / "content"
+        manifest = None
+        manifest_path = self.root / "book_manifest.yaml"
+        if manifest_path.exists():
+            try:
+                from bookmaker.manifest.models import BookManifest
+                manifest = BookManifest.load(manifest_path)
+            except Exception:
+                pass
+        return normalize_with_mermaid(
+            text=raw_text,
+            chapter_alias=chapter_id,
+            chapter_content_dir=content_dir,
+            manifest=manifest,
+            chapter_id=chapter_id,
+            title=title,
+            config=self.config,
+        )
 
     # ----------------------------------------------------------
     # ASAMA 3: ENRICHMENT (Flash model, paralel)

@@ -129,6 +129,10 @@ class MermaidConfig(BaseModel):
     background: str = "white"
     output_format: str = "png"
     timeout_seconds: int = 30
+    theme: str = "default"
+    scale: int = 2
+    width: int = 900
+    theme_overrides: dict = {}
 
 
 class OutputsConfig(BaseModel):
