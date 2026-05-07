@@ -6,7 +6,11 @@ Bu sayede kod blokları, diyagramlar, sözlük gibi yapılar garantilenmiş olur
 
 from __future__ import annotations
 
+import logging
+
 from bookmaker.generation.prompts import SYSTEM_AUTHOR, build_system_author
+
+logger = logging.getLogger(__name__)
 
 # ============================================================
 # SPEC PROMPT
@@ -145,18 +149,42 @@ Yazım kuralları:
 def generate_spec(client, chapter_title: str, concepts: list[str],
                   book_context: str = "", chapter_no: int | None = None,
                   code_language: str = "java") -> str:
+    """LLM'e bölüm spesifikasyonu ürettirir.
+
+    Args:
+        client: OpenAICompatibleClient instance
+        chapter_title: Bölüm başlığı
+        concepts: Kapsanacak kavram listesi
+        book_context: Kitap bağlamı (hedef kitle vb.)
+        chapter_no: Bölüm numarası (None = numarasız)
+        code_language: Kod dili (java, python, dart vb.)
+
+    Returns:
+        Spesifikasyon metni (Markdown formatında)
+    """
     """LLM'e bölüm spesifikasyonu ürettirir."""
     user = build_spec_prompt(chapter_title, concepts, book_context, chapter_no,
                              code_language=code_language)
     system = build_system_author(code_language) if code_language != "java" else SYSTEM_AUTHOR
-    print(f"  [SPEC] {chapter_title} planı hazırlanıyor...")
+    logger.info("SPEC: %s plani hazirlaniyor...", chapter_title)
     spec = client.generate_text(system, user)
-    print(f"  [SPEC] {len(spec.split())} kelime, {len(spec)} karakter")
+    logger.info("SPEC: %s kelime, %s karakter", len(spec.split()), len(spec))
     return spec
 
 
 def validate_spec(client, spec: str, chapter_title: str,
-                  code_language: str = "java") -> dict:
+                  code_language: str = "java") -> dict[str, str]:
+    """LLM'e spesifikasyonu doğrulatır.
+
+    Args:
+        client: OpenAICompatibleClient instance
+        spec: Doğrulanacak spesifikasyon metni
+        chapter_title: Bölüm başlığı
+        code_language: Kod dili
+
+    Returns:
+        {"status": "PASS"|"REVISION", "notes": "...", "response": "..."}
+    """
     """LLM'e spesifikasyonu doğrulatır.
 
     Returns:
@@ -165,8 +193,8 @@ def validate_spec(client, spec: str, chapter_title: str,
     user = build_spec_validation_prompt(spec, chapter_title,
                                         code_language=code_language)
     system = build_system_author(code_language) if code_language != "java" else SYSTEM_AUTHOR
-    print("  [VALIDATE] Spesifikasyon kontrol ediliyor...")
+    logger.info("VALIDATE: Spesifikasyon kontrol ediliyor...")
     result = client.generate_text(system, user)
     status = "PASS" if "PASS" in result.upper() else "REVISION"
-    print(f"  [VALIDATE] {status}, {len(result.split())} kelime")
+    logger.info("VALIDATE: %s, %s kelime", status, len(result.split()))
     return {"status": status, "notes": result, "response": result}

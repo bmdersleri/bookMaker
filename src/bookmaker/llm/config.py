@@ -78,10 +78,17 @@ class LLMConfig:
 
     @property
     def api_key(self) -> str:
-        key = self._data.get("api_key", "")
+        # Oncelik sirasi:
+        # 1. BOOKMAKER_LLM_API_KEY env var (en guvenli)
+        # 2. Provider-spesifik env var (LLM_API_KEY_DEEPSEEK)
+        # 3. Generic env var (LLM_API_KEY)
+        # 4. llm_config.json dosyasindaki deger (geriye uyumlu)
+        key = os.environ.get("BOOKMAKER_LLM_API_KEY", "")
         if not key:
             key = os.environ.get(f"LLM_API_KEY_{self.provider.upper()}", "")
             key = key or os.environ.get("LLM_API_KEY", "")
+        if not key:
+            key = self._data.get("api_key", "")
         return key
 
     @api_key.setter

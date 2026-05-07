@@ -8,11 +8,14 @@ book_manifest.yaml -> BookConfig ile yapilandirilir:
 
 from __future__ import annotations
 
+import logging
 import re
 import subprocess
 from pathlib import Path
 
 from bookmaker.core.config import BookConfig, load_config
+
+logger = logging.getLogger(__name__)
 
 
 def pandoc_available() -> bool:
@@ -149,7 +152,7 @@ def export_docx(
         )
         passed = sum(1 for r in mermaid_results if r["status"] == "passed")
         if passed > 0:
-            print(f"    Mermaid: {passed}/{len(mermaid_results)} PNG render edildi")
+            logger.info("Mermaid: %s/%s PNG render edildi", passed, len(mermaid_results))
 
     # Pandoc'u markdown dizininde calistir (goreceli yollarla)
     cwd = markdown_path.parent.resolve()
@@ -160,11 +163,11 @@ def export_docx(
 
     if reference_doc and reference_doc.exists():
         cmd.extend(["--reference-doc", str(reference_doc.resolve())])
-        print(f"    Referans DOCX: {reference_doc.name}")
+        logger.info("Referans DOCX: %s", reference_doc.name)
 
     if lua_filter and lua_filter.exists():
         cmd.extend(["--lua-filter", str(lua_filter.resolve())])
-        print(f"    Lua filter:    {lua_filter.name}")
+        logger.info("Lua filter: %s", lua_filter.name)
 
     if toc:
         cmd.append("--toc")
@@ -214,12 +217,12 @@ def export_all_chapters(
     results = {}
     chapter_ids = config.chapter_order_approved()
 
-    print(f"\nToplu DOCX uretimi: {len(chapter_ids)} bolum\n")
+    logger.info("Toplu DOCX uretimi: %s bolum", len(chapter_ids))
 
     for cid in chapter_ids:
         md = config.chapter_path(cid)
         if not md:
-            print(f"  SKIP {cid}: dosya bulunamadi")
+            logger.warning("SKIP %s: dosya bulunamadi", cid)
             continue
 
         out = output_dir / f"{cid}.docx"
@@ -235,11 +238,11 @@ def export_all_chapters(
                              if r["status"] == "passed")
             mermaid_total = len(result.get("mermaid_results", []))
             mermaid_str = f", mermaid {mermaid_ok}/{mermaid_total}" if mermaid_total > 0 else ""
-            print(f"  OK {cid}: {kb:.0f}KB ({elapsed:.1f}s){mermaid_str}")
+            logger.info("OK %s: %.0fKB (%.1fs)%s", cid, kb, elapsed, mermaid_str)
         else:
-            print(f"  FAIL {cid}: {result.get('error', '')[:80]}")
+            logger.error("FAIL %s: %s", cid, result.get("error", "")[:80])
 
         results[cid] = result
 
-    print(f"\nToplam: {len(chapter_ids)} bolum islendi.")
+    logger.info("Toplam: %s bolum islendi.", len(chapter_ids))
     return results

@@ -11,6 +11,7 @@ Retry + exponential backoff + jitter ile timeout/dayaniklilik stratejisi:
 
 from __future__ import annotations
 
+import logging
 import random
 import time
 from typing import Any
@@ -18,6 +19,8 @@ from typing import Any
 import requests
 
 from bookmaker.llm.base import LLMClient
+
+logger = logging.getLogger(__name__)
 
 
 class OpenAICompatibleClient(LLMClient):
@@ -108,7 +111,7 @@ class OpenAICompatibleClient(LLMClient):
         try:
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(log, f, indent=2, ensure_ascii=False)
-            print(f"  [API-LOG] {fname} kaydedildi", flush=True)
+            logger.debug("API-LOG: %s kaydedildi", fname)
         except Exception:
             pass
 
@@ -160,9 +163,10 @@ class OpenAICompatibleClient(LLMClient):
                     last_error = f"API server error {resp.status_code}"
                     if attempt < self.max_retries:
                         delay = self._backoff_delay(attempt)
-                        print(f"  [RETRY {attempt+1}/{self.max_retries}] "
-                              f"{last_error} — {delay:.1f}s sonra tekrar...",
-                              flush=True)
+                        logger.warning(
+                            "RETRY %s/%s: %s — %.1fs sonra tekrar...",
+                            attempt + 1, self.max_retries, last_error, delay
+                        )
                         time.sleep(delay)
                         continue
                     self._save_api_response("error_5xx", payload, None, last_error, attempt)
@@ -182,11 +186,11 @@ class OpenAICompatibleClient(LLMClient):
                 # Yanıt kesilmiş mi kontrol et
                 if finish_reason == "length":
                     completion_tokens = usage.get("completion_tokens", 0)
-                    print(f"  [WARN] TRUNCATION: API response max_tokens "
-                          f"({payload['max_tokens']}) limitinde kesildi! "
-                          f"finish_reason={finish_reason}, "
-                          f"completion_tokens={completion_tokens}",
-                          flush=True)
+                    logger.warning(
+                        "TRUNCATION: API response max_tokens (%s) limitinde kesildi! "
+                        "finish_reason=%s, completion_tokens=%s",
+                        payload["max_tokens"], finish_reason, completion_tokens
+                    )
 
                 response_info = {
                     "content": content,
@@ -209,9 +213,10 @@ class OpenAICompatibleClient(LLMClient):
 
             if attempt < self.max_retries:
                 delay = self._backoff_delay(attempt)
-                print(f"  [RETRY {attempt+1}/{self.max_retries}] "
-                      f"{last_error} — {delay:.1f}s sonra tekrar...",
-                      flush=True)
+                logger.warning(
+                    "RETRY %s/%s: %s — %.1fs sonra tekrar...",
+                    attempt + 1, self.max_retries, last_error, delay
+                )
                 time.sleep(delay)
             else:
                 return {
@@ -319,9 +324,10 @@ class OpenAICompatibleClient(LLMClient):
                     last_error = f"API server error {resp.status_code}"
                     if attempt < self.max_retries:
                         delay = self._backoff_delay(attempt)
-                        print(f"  [STREAM RETRY {attempt+1}/{self.max_retries}] "
-                              f"{last_error} — {delay:.1f}s sonra...",
-                              flush=True)
+                        logger.warning(
+                            "STREAM RETRY %s/%s: %s — %.1fs sonra...",
+                            attempt + 1, self.max_retries, last_error, delay
+                        )
                         time.sleep(delay)
                         continue
                     yield {
@@ -343,9 +349,10 @@ class OpenAICompatibleClient(LLMClient):
 
             if attempt < self.max_retries:
                 delay = self._backoff_delay(attempt)
-                print(f"  [STREAM RETRY {attempt+1}/{self.max_retries}] "
-                      f"{last_error} — {delay:.1f}s sonra...",
-                      flush=True)
+                logger.warning(
+                    "STREAM RETRY %s/%s: %s — %.1fs sonra...",
+                    attempt + 1, self.max_retries, last_error, delay
+                )
                 time.sleep(delay)
             else:
                 yield {
@@ -395,15 +402,19 @@ class OpenAICompatibleClient(LLMClient):
 
                 finish = chunk.get("finish_reason", "")
                 if finish == "length":
-                    print(f"  [WARN] STREAM TRUNCATION: {len(accumulated)} karakterde kesildi",
-                          flush=True)
+                    logger.warning(
+                        "STREAM TRUNCATION: %s karakterde kesildi",
+                        len(accumulated)
+                    )
         finally:
             if file_handle:
                 file_handle.close()
 
         if accumulated:
-            print(f"  [STREAM] {len(accumulated.split())} kelime, "
-                  f"{len(accumulated)} karakter", flush=True)
+            logger.info(
+                "STREAM: %s kelime, %s karakter",
+                len(accumulated.split()), len(accumulated)
+            )
         return accumulated
 
     def test_connection(self) -> dict:
@@ -436,10 +447,12 @@ class OpenAICompatibleClient(LLMClient):
         # Truncation kontrolü
         finish_reason = result.get("finish_reason", "")
         if finish_reason == "length":
-            print(f"  [WARN] GENERATE_TEXT TRUNCATION: Yanıt kesildi! "
-                  f"Daha yüksek max_tokens değeri gerekebilir. "
-                  f"Mevcut content uzunluğu: {len(result.get('content', ''))} karakter",
-                  flush=True)
+            logger.warning(
+                "GENERATE_TEXT TRUNCATION: Yanıt kesildi! "
+                "Daha yüksek max_tokens değeri gerekebilir. "
+                "Mevcut content uzunluğu: %s karakter",
+                len(result.get("content", ""))
+            )
 
         return result.get("content", "")
 
@@ -480,9 +493,10 @@ class OpenAICompatibleClient(LLMClient):
 
         while finish_reason == "length" and total_continues < max_continues:
             total_continues += 1
-            print(f"  [RESUME {total_continues}/{max_continues}] "
-                  f"Yanit {len(content)} karakterde kesildi, devam ediliyor...",
-                  flush=True)
+            logger.info(
+                "RESUME %s/%s: Yanit %s karakterde kesildi, devam ediliyor...",
+                total_continues, max_continues, len(content)
+            )
 
             # Son 1500 karakteri context olarak al
             tail = content[-1500:] if len(content) > 1500 else content
@@ -531,7 +545,7 @@ class OpenAICompatibleClient(LLMClient):
 
             result = self.chat(continue_messages, **kwargs)
             if result.get("error"):
-                print(f"  [RESUME] Hata: {result['error']}", flush=True)
+                logger.error("RESUME: Hata: %s", result["error"])
                 break
 
             continuation = result.get("content", "")
@@ -542,7 +556,9 @@ class OpenAICompatibleClient(LLMClient):
                 content = content + "\n\n" + continuation
 
         if total_continues > 0:
-            print(f"  [RESUME] {total_continues} devam ile tamamlandi. "
-                  f"Toplam: {len(content)} karakter", flush=True)
+            logger.info(
+                "RESUME: %s devam ile tamamlandi. Toplam: %s karakter",
+                total_continues, len(content)
+            )
 
         return content

@@ -47,6 +47,24 @@ book_projects/dummy-kitap/
 book_projects/java-temelleri/
 book_projects/test-wizard/
 
+# IDE ve editor config (local only)
+.vtcode/
+vtcode.toml
+
+# Session ve debug dosyalari
+_diagnosis.json
+_remaining_errors.json
+
+# Plugin/agent frameworks (local session)
+.codex/
+.continue/
+.agents/
+.plugins/
+
+# UV cache
+.uv-cache/
+
+
 # Yerel Studio başlatıcıları
 run_studio.ps1
 

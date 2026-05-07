@@ -11,6 +11,7 @@ Ara çıktı günlükleri ``logs/production/`` altına yazılır.
 from __future__ import annotations
 
 import concurrent.futures
+import logging
 import time
 from datetime import datetime
 from pathlib import Path
@@ -50,6 +51,8 @@ from bookmaker.generation.spec import (
 )
 from bookmaker.llm.config import LLMConfig
 from bookmaker.llm.openai import OpenAICompatibleClient
+
+logger = logging.getLogger(__name__)
 
 
 def _fallback_content(key: str, chapter_title: str) -> str:
@@ -168,11 +171,11 @@ class ChapterGenerator:
             chapter_title=chapter_title, concepts=concepts,
             outline=outline, chapter_no=chapter_no)
         model = self.llm_config.model
-        print(f"  [SEED:{model}] {chapter_title}...")
+        logger.info("SEED:%s: %s...", model, chapter_title)
         t0 = time.time()
         raw = self.client.generate_text_with_resume(self.system_prompt, user_prompt)
         elapsed = time.time() - t0
-        print(f"  [SEED] {len(raw.split())} kelime, {elapsed:.1f}s")
+        logger.info("SEED: %s kelime, %.1fs", len(raw.split()), elapsed)
         return raw
 
     # ----------------------------------------------------------
@@ -215,7 +218,7 @@ class ChapterGenerator:
                save_dir: Path | None = None) -> dict[str, str]:
         """Eksik bolumleri LLM ile paralel doldurur."""
         if not self.client:
-            print("  [WARN] Enrich client yok, fallback kullaniliyor.")
+            logger.warning("Enrich client yok, fallback kullaniliyor.")
             return self._fallback_all(enrich_types, chapter_title)
 
         missing = self.detect_missing(normalized_text)
@@ -254,11 +257,11 @@ class ChapterGenerator:
                    and m["key"] in enrich_types
                    and m["key"] in type_map]
         if not pending:
-            print("  [ENRICH] Eksik yok, atlaniyor.")
+            logger.info("ENRICH: Eksik yok, atlaniyor.")
             return {}
 
         model = self.llm_config.model
-        print(f"  [ENRICH:{model}] {len(pending)} eksik, paralel...")
+        logger.info("ENRICH:%s: %s eksik, paralel...", model, len(pending))
         enriched, start = {}, time.time()
 
         with concurrent.futures.ThreadPoolExecutor(
@@ -286,12 +289,12 @@ class ChapterGenerator:
                 try:
                     c, e = fut.result()
                     enriched[key] = c
-                    print(f"    [{key}] {len(c.split())} kel, {e:.1f}s")
+                    logger.info("[%s] %s kel, %.1fs", key, len(c.split()), e)
                 except Exception as ex:
-                    print(f"    [{key}] HATA: {ex}")
+                    logger.error("[%s] HATA: %s", key, ex)
                     enriched[key] = _fallback_content(key, chapter_title)
 
-        print(f"  [ENRICH] {len(enriched)} bolum, {time.time()-start:.1f}s")
+        logger.info("ENRICH: %s bolum, %.1fs", len(enriched), time.time() - start)
         return enriched
 
     def _call_enrich(self, user_prompt: str) -> tuple[str, float]:
@@ -394,13 +397,15 @@ class ChapterGenerator:
                 pipe.paste_draft(chapter_id, final)
                 pipe.advance(chapter_id, "full_text_pasted")
             except Exception as e:
-                print(f"  [WARN] Pipeline kaydi: {e}")
+                logger.warning("Pipeline kaydi: %s", e)
 
         result["total_time"] = round(sum(result["timings"].values()), 1)
         wc = len(final.split())
-        print(f"\n  {chapter_id}: {wc} kel, {result['total_time']}s"
-              f"\n  Model: {result['model']}"
-              f"\n  Eksik: {len(result['missing'])} -> {len(enriched)} dolduruldu")
+        logger.info(
+            "%s: %s kel, %.1fs | Model: %s | Eksik: %s -> %s dolduruldu",
+            chapter_id, wc, result["total_time"], result["model"],
+            len(result["missing"]), len(enriched)
+        )
         return result
 
     def _save_chapter(self, chapter_id: str, text: str) -> Path:
@@ -451,7 +456,7 @@ class ChapterGenerator:
         code_lang = self.code_language
 
         # STEP 0: SPEC
-        print("\n--- ADIM 0: SPEC ---")
+        logger.info("--- ADIM 0: SPEC ---")
         spec = generate_spec(self.client, title, concepts,
                              f"Hedef: {self.config.audience}", chapter_no,
                              code_language=code_lang)
@@ -463,7 +468,7 @@ class ChapterGenerator:
         result["spec"] = spec
 
         # STEP 0.5: VALIDATE
-        print("\n--- ADIM 0.5: DOGRULAMA ---")
+        logger.info("--- ADIM 0.5: DOGRULAMA ---")
         validation = validate_spec(self.client, spec, title,
                                    code_language=code_lang)
         self._save(gen_dir / "step0_validation.md", validation["notes"])
@@ -473,7 +478,7 @@ class ChapterGenerator:
         result["validation"] = validation
 
         # STEP 1: SEED
-        print("\n--- ADIM 1: SEED ---")
+        logger.info("--- ADIM 1: SEED ---")
         seed_prompt = build_seed_from_spec_prompt(spec, title,
                                                   code_language=code_lang)
         self._save(gen_dir / "prompt1_seed.txt", seed_prompt)
@@ -483,7 +488,7 @@ class ChapterGenerator:
             output_path=str(gen_dir / "step1_seed_stream.md"))
         result["seed_time"] = round(time.time() - seed_start, 1)
         self._save(gen_dir / "step1_seed.md", raw)
-        print(f"  [SEED] {len(raw.split())} kelime, {result['seed_time']}s")
+        logger.info("SEED: %s kelime, %ss", len(raw.split()), result["seed_time"])
 
         # STEP 2: NORMALIZE
         norm = self.normalize_chapter(raw, chapter_id, title)
@@ -542,8 +547,7 @@ class ChapterGenerator:
                    f'"seed_time":{result.get("seed_time",0)},'
                    f'"deepen_time":{result.get("deepen_time",0)},'
                    f'"model":"{self.llm_config.model}"}}')
-        print(f"\n  DONE {chapter_id}: {wc} kelime, {tt}s"
-              f"\n  Dosyalar: {gen_dir}")
+        logger.info("DONE %s: %s kelime, %ss | Dosyalar: %s", chapter_id, wc, tt, gen_dir)
         return result
 
     def generate_chapter_sectioned(
@@ -571,7 +575,7 @@ class ChapterGenerator:
         code_lang = self.config.primary_code_language
 
         # --- STEP 0: SPEC ---
-        print("\n--- ADIM 0: SPEC (Parçali) ---")
+        logger.info("--- ADIM 0: SPEC (Parçali) ---")
         spec = generate_spec(self.client, title, concepts,
                              f"Hedef: {self.config.audience}", chapter_no,
                              code_language=code_lang)
@@ -597,17 +601,17 @@ class ChapterGenerator:
                     break
 
         if len(sections) < 2:
-            print("  [SECTIONED] Yetersiz bölüm başlığı, normal moda geçiliyor...")
+            logger.warning("SECTIONED: Yetersiz bölüm başlığı, normal moda geçiliyor...")
             return self.generate_chapter_with_spec(
                 chapter_id, title, concepts, chapter_no, save=save)
 
-        print(f"  [SECTIONED] {len(sections)} parça: {', '.join(sections[:5])}...")
+        logger.info("SECTIONED: %s parça: %s...", len(sections), ", ".join(sections[:5]))
 
         # --- STEP 1: Her parçayı ayrı üret ---
         all_parts = []
         for i, section_title in enumerate(sections):
             part_id = f"part_{i+1:02d}"
-            print(f"\n--- ADIM 1.{i+1}: {part_id} — {section_title} ---")
+            logger.info("--- ADIM 1.%s: %s — %s ---", i + 1, part_id, section_title)
 
             # Bu parça için özel prompt (teorik derinlik optimizasyonlu)
             section_prompt = (
@@ -638,7 +642,7 @@ class ChapterGenerator:
                 )
                 elapsed = time.time() - t_part
                 wc = len(part_text.split())
-                print(f"  [PART {part_id}] {wc} kelime, {elapsed:.1f}s")
+                logger.info("PART %s: %s kelime, %.1fs", part_id, wc, elapsed)
 
                 self._save(gen_dir / f"{part_id}_{section_title[:30]}.md", part_text)
                 all_parts.append(part_text)
@@ -648,11 +652,11 @@ class ChapterGenerator:
                     "time": round(elapsed, 1),
                 }
             except Exception as e:
-                print(f"  [PART {part_id}] HATA: {e}")
+                logger.error("PART %s: HATA: %s", part_id, e)
                 result["sections"][part_id] = {"title": section_title, "error": str(e)}
 
         # --- STEP 2: Parçaları birleştir ---
-        print("\n--- ADIM 2: BIRLESTIRME ---")
+        logger.info("--- ADIM 2: BIRLESTIRME ---")
         combined = f"# {title}\n\n"
         for i, part in enumerate(all_parts):
             # İlk parçada H1 başlığı var, sonrakilerde yoksa ekle
@@ -663,12 +667,12 @@ class ChapterGenerator:
         self._save(gen_dir / "combined_raw.md", combined)
 
         # --- STEP 3: Normalize ---
-        print("\n--- ADIM 3: NORMALIZASYON ---")
+        logger.info("--- ADIM 3: NORMALIZASYON ---")
         normalized = self.normalize_chapter(combined, chapter_id, title)
         self._save(gen_dir / "combined_normalized.md", normalized)
 
         # --- STEP 4: ENRICH ---
-        print("\n--- ADIM 4: ENRICHMENT ---")
+        logger.info("--- ADIM 4: ENRICHMENT ---")
         missing = self.detect_missing(normalized)
         enriched = self.enrich(normalized, title, concepts=concepts) if missing else {}
         for k, v in enriched.items():
@@ -692,8 +696,8 @@ class ChapterGenerator:
                    f'{{"chapter":"{chapter_id}","words":{wc},"time":{tt},'
                    f'"sections":{len(all_parts)},'
                    f'"model":"{self.llm_config.model}"}}')
-        print(f"\n  DONE {chapter_id}: {wc} kelime, {tt}s ({len(all_parts)} parca)")
-        print(f"  Dosyalar: {gen_dir}")
+        logger.info("DONE %s: %s kelime, %ss (%s parca) | Dosyalar: %s",
+                    chapter_id, wc, tt, len(all_parts), gen_dir)
         return result
 
     def _save(self, path, content):
@@ -702,7 +706,7 @@ class ChapterGenerator:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(str(content), encoding="utf-8")
         except Exception as e:
-            print(f"  [WARN] [SAVE ERROR] {path}: {e}", flush=True)
+            logger.warning("SAVE ERROR: %s: %s", path, e)
 
     # ----------------------------------------------------------
     # DERINLESTIRME (DEEPEN) PASS — Cozum B
@@ -731,11 +735,11 @@ class ChapterGenerator:
         Her H2 bölümünü ayrı LLM çağrısıyla genişletir,
         kod bloklarını korur, sadece açıklamaları derinleştirir.
         """
-        print("\n--- ADIM 3.5: TEORIK DERINLESTIRME ---")
+        logger.info("--- ADIM 3.5: TEORIK DERINLESTIRME ---")
         t0 = time.time()
 
         sections = extract_h2_sections(text)
-        print(f"  [DEEPEN] {len(sections)} H2 bolumu bulundu")
+        logger.info("DEEPEN: %s H2 bolumu bulundu", len(sections))
 
         deepened = deepen_theory(
             sections=sections,
@@ -749,7 +753,7 @@ class ChapterGenerator:
         old_wc = len(text.split())
         new_wc = len(result.split())
         growth = round((new_wc - old_wc) / max(1, old_wc) * 100)
-        print(f"  [DEEPEN] {old_wc} → {new_wc} kelime (+%{growth}), {elapsed:.1f}s")
+        logger.info("DEEPEN: %s → %s kelime (+%%%s), %.1fs", old_wc, new_wc, growth, elapsed)
 
         self._save(gen_dir / "step3_5_deepened.md", result)
         return result
@@ -778,7 +782,7 @@ class ChapterGenerator:
         code_lang = self.config.primary_code_language
 
         # --- GECIS 1: HIZLI TASLAK ---
-        print("\n=== GECIS 1: HIZLI TASLAK ===")
+        logger.info("=== GECIS 1: HIZLI TASLAK ===")
         # Spec ile outline al
         spec = generate_spec(self.client, title, concepts,
                              f"Hedef: {self.config.audience}", chapter_no,
@@ -798,11 +802,11 @@ class ChapterGenerator:
         )
         result["draft_time"] = round(time.time() - t_draft, 1)
         wc_draft = len(draft.split())
-        print(f"  [TASLAK] {wc_draft} kelime, {result['draft_time']}s")
+        logger.info("TASLAK: %s kelime, %ss", wc_draft, result["draft_time"])
         self._save(gen_dir / "pass1_draft.md", draft)
 
         # --- GECIS 2: DERINLESTIR ---
-        print("\n=== GECIS 2: BOLUM BOLUM GENISLET ===")
+        logger.info("=== GECIS 2: BOLUM BOLUM GENISLET ===")
         # Önce normalize et
         normalized = self.normalize_chapter(draft, chapter_id, title)
         self._save(gen_dir / "pass2_before_deepen.md", normalized)
@@ -817,7 +821,7 @@ class ChapterGenerator:
         self._save(gen_dir / "pass2_deepened.md", deepened)
 
         # --- ENRICHMENT ---
-        print("\n--- ENRICHMENT ---")
+        logger.info("--- ENRICHMENT ---")
         missing = self.detect_missing(deepened)
         enriched = {}
         if missing:
@@ -847,8 +851,8 @@ class ChapterGenerator:
                    f'"deepen_time":{result.get("deepen_time",0)},'
                    f'"total_time":{tt},'
                    f'"model":"{self.llm_config.model}"}}')
-        print(f"\n  DONE {chapter_id}: {wc_draft} → {wc_final} kelime, {tt}s")
-        print(f"  Dosyalar: {gen_dir}")
+        logger.info("DONE %s: %s → %s kelime, %ss | Dosyalar: %s",
+                    chapter_id, wc_draft, wc_final, tt, gen_dir)
         return result
 
     # ----------------------------------------------------------
@@ -899,8 +903,8 @@ class ChapterGenerator:
                    f'{{"chapter":"{chapter_id}","mode":"spec_deep",'
                    f'"words":{wc},"total_time":{tt},'
                    f'"model":"{self.llm_config.model}"}}')
-        print(f"\n  DONE {chapter_id} (deep): {wc} kelime, {tt}s"
-              f"\n  Dosyalar: {gen_dir}")
+        logger.info("DONE %s (deep): %s kelime, %ss | Dosyalar: %s",
+                    chapter_id, wc, tt, gen_dir)
         return result
 
 

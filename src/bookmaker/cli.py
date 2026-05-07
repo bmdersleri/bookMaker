@@ -1,3 +1,5 @@
+"""bookMaker CLI entry point — Typer tabanli komut satiri arayuzu."""
+
 import typer
 
 from bookmaker import __version__
@@ -15,6 +17,7 @@ from bookmaker.commands.llm_commands import llm_app as llm_typer
 from bookmaker.commands.manifest import manifest_app as manifest_typer
 from bookmaker.commands.production import production_app as production_typer
 from bookmaker.commands.studio import studio_app as studio_typer
+from bookmaker.utils.logging import setup_logging
 
 app = typer.Typer(
     name="bookmaker",
@@ -50,6 +53,8 @@ def main(
     ctx: typer.Context,
     version: bool = typer.Option(False, "--version", "-v", help="Versiyon goster."),
 ) -> None:
+    """bookMaker — akademik ve teknik kitap uretim studyosu CLI."""
+    setup_logging()
     if version:
         typer.echo(f"bookmaker {__version__}")
         raise typer.Exit()
