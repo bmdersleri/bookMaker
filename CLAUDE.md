@@ -40,6 +40,7 @@ src/bookmaker/
 ## Key Paths
 | What | Where |
 |------|-------|
+| **LLM project overview** | `LLM_EXPLANATION.md` |
 | Prompts | `src/bookmaker/generation/prompts.py` |
 | Spec prompts | `src/bookmaker/generation/spec.py` |
 | Pipeline | `src/bookmaker/generation/pipeline.py` |
