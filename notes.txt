@@ -1,3 +1,8 @@
- https://github.com/bmdersleri/bookMaker/pull/new/feat/project-based-architecture
+ açılış notu
+ 
+  git status --short
+  git log --oneline -3
+  uv run ruff check src/
+  uv run pytest tests/ -q --tb=short
 
  
