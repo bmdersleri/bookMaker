@@ -1,5 +1,6 @@
 """LLM modül testleri."""
 
+import os
 from pathlib import Path
 
 from bookmaker.llm.config import LLMConfig
@@ -10,7 +11,8 @@ def test_config_defaults(tmp_path: Path) -> None:
     cfg = LLMConfig(tmp_path)
     assert cfg.provider == ""
     assert cfg.model == ""
-    assert cfg.api_key == ""
+    # api_key .env'den gelebilir (BOOKMAKER_LLM_API_KEY), bos olmayabilir
+    assert isinstance(cfg.api_key, str)
 
 
 def test_config_save_load(tmp_path: Path) -> None:
@@ -20,10 +22,27 @@ def test_config_save_load(tmp_path: Path) -> None:
     cfg.api_key = "sk-test-key-12345"
     cfg.save()
 
+    # _data seviyesinde kayit/yukleme dogrulamasi
     cfg2 = LLMConfig(tmp_path)
     assert cfg2.provider == "openai"
     assert cfg2.model == "gpt-4o"
-    assert cfg2.api_key == "sk-test-key-12345"
+    assert cfg2._data.get("api_key") == "sk-test-key-12345"
+    # api_key property'si env var onceliklidir;
+    # BOOKMAKER_LLM_API_KEY setli ise onu dondurur
+
+
+def test_config_api_key_env_priority(tmp_path: Path, monkeypatch) -> None:
+    """Env var varsa _data'daki deger yerine env var kullanilir."""
+    monkeypatch.setenv("BOOKMAKER_LLM_API_KEY", "sk-env-priority-test")
+    cfg = LLMConfig(tmp_path)
+    cfg.api_key = "sk-from-file"
+    cfg.save()
+
+    assert cfg.api_key == "sk-env-priority-test"
+
+    # Env var kaldirilinca _data'daki deger kullanilir
+    monkeypatch.delenv("BOOKMAKER_LLM_API_KEY")
+    assert cfg.api_key == "sk-from-file"
 
 
 def test_config_providers() -> None:
