@@ -10,14 +10,14 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 
 ```text
 Aktif Faz       : MIGRATION.md - FAZ 5 Studio ve Servis Katmanı
-Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio Pipeline job path uyumu
+Son Oturum      : 2026-05-07 - Codex FAZ 5 Studio görsel ergonomi
 Repo            : D:\bookMaker_clean
 Önceki Repo     : D:\bookMaker_Deepseek  # artık geliştirme için kullanılmamalı
 Branch          : feat/chapter-validator-profile-modes
 Base            : local main üzerindeki ad348a0 + origin/main üzerindeki 4e9a4e8
 Remote          : origin
-Son Kod Commit  : Align Studio Pipeline jobs with project logs
-Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, Pipeline job/generation yolları project-based logs/content yapısına taşındı
+Son Kod Commit  : Tighten Studio visual ergonomics
+Durum           : FAZ 4 tamamlandı; FAZ 5 Studio GUI devam ediyor, görsel ergonomi pass'i doğrulandı
 Dikkat          : Repo kökünde geçici *.ps1 dosyası varsa commit'e alınmamalı
 ```
 
@@ -1167,6 +1167,71 @@ git diff --check
 Sonuç: PASS
 ```
 
+### FAZ 5 / Studio GUI Aşama 8 - Görsel Ergonomi
+
+Studio arayüzü operasyonel kullanım için daha sıkı, okunur ve responsive hale
+getirildi.
+
+Yapılanlar:
+
+```text
+- Kalite ve Build/Export tab panelleri ana container içine taşındı; tab
+  değişiminde genişlik/boşluk kuralları artık diğer panellerle aynı.
+- Inline tablo/toolbar/editor stilleri ortak CSS sınıflarına taşındı:
+  toolbar, inline-actions, table-scroll, code-panel, prompt-editor.
+- Kart, stat, tab ve tablo yoğunluğu sıkılaştırıldı; büyük uppercase başlıklar
+  daha sakin panel başlıklarına dönüştürüldü.
+- Tek koyu lacivert ağırlıklı palet yerine teal/amber vurgu dengesi ve
+  açık surface rengi eklendi.
+- Dar ekranlarda toolbar/form aksiyonları tam genişlik davranıyor; geniş
+  tablolar yatay scroll ile taşıyor.
+- Prompt editörü için stabil min-height/max-height/overflow davranışı eklendi.
+```
+
+Tarayıcı doğrulaması:
+
+```text
+URL: http://127.0.0.1:8766
+Browser plugin: mevcut değil; normal Playwright kullanıldı.
+Screenshot:
+  C:\Users\ismai\AppData\Local\Temp\bookmaker-ergonomics-quality-desktop.png
+  C:\Users\ismai\AppData\Local\Temp\bookmaker-ergonomics-build-desktop.png
+  C:\Users\ismai\AppData\Local\Temp\bookmaker-ergonomics-quality-mobile.png
+  C:\Users\ismai\AppData\Local\Temp\bookmaker-ergonomics-build-mobile.png
+
+Playwright sonucu:
+- page title: bookMaker Studio
+- not blank: true
+- Kalite sekmesi: 16 satır, Kitap: 100 / pass
+- Build/Export sekmesi: 6 export hedef kartı
+- Prompt editor yüksekliği: 460px ve stabil
+- desktop panel genişliği: 1296px, ana shell içinde
+- mobile panel genişliği: 358px, yatay taşma tablo içinde sınırlı
+- console errors/warnings: []
+```
+
+Doğrulama:
+
+```text
+node --check src/bookmaker/studio/static/app.js
+Sonuç: PASS
+
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/unit/test_studio_app.py tests/unit/test_studio_services.py -q --tb=short
+Sonuç: 45 passed, 1 PytestCacheWarning
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 221 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+
+git diff --check
+Sonuç: PASS
+```
+
 ---
 
 ## Alternatif Sonraki Hedefler
@@ -1233,10 +1298,10 @@ book check -> 100/pass
 BookMaker project-based architecture sonrası FAZ 5 Studio GUI üzerinde devam ediyoruz.
 Repo: D:\bookMaker_clean
 Branch: feat/chapter-validator-profile-modes
-Son commit: Align Studio Pipeline jobs with project logs
+Son commit: Tighten Studio visual ergonomics
 FAZ 4 güncel commit: 59b99ed Resolve validator profile from project manifest
 Skill/plugin commit: 30c0cd0 Add BookMaker Codex skills and plugins
-FAZ 5 güncel commit: Align Studio Pipeline jobs with project logs
+FAZ 5 güncel commit: Tighten Studio visual ergonomics
 
 Tamamlananlar:
 - Ruff cleanup
@@ -1250,12 +1315,13 @@ Tamamlananlar:
 - Studio kalite paneli kitap düzeyi 100/pass özeti ve bölüm kontrol modalı ile güçlendirildi
 - Studio Build/Export paneli project-based exports hedeflerine taşındı
 - Studio Pipeline/job worker logs/production, logs/studio_jobs ve content/draft.md yollarına taşındı
+- Studio görsel ergonomisi, container hizası ve responsive yoğunluğu sıkılaştırıldı
 - test kapsamı: 221 passed
 - Flutter kitap validasyonu: 100/pass
 
 Sıradaki:
-- FAZ 5 / Aşama 8: Studio görsel ergonomisini sıkılaştır
 - FAZ 5 / Aşama 9: Flutter kabul senaryosunu tamamla
+- observer_service review üretimi ve logs/reviews yazımı
 ```
 
 ---
