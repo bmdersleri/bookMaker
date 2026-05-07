@@ -709,6 +709,58 @@ uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme 
 Sonuç: skor 100, karar pass, hata 0, uyarı 0
 ```
 
+### FAZ 5 / Studio GUI - Bölüm Sıralama Kontrolleri
+
+Bölümler sekmesinde bölüm sıralaması yukarı/aşağı taşınabilir ve kalıcı
+kaydedilebilir hale getirildi.
+
+Yapılanlar:
+
+```text
+- Bölüm tablosuna görünür yukarı/aşağı taşıma butonları eklendi.
+- Mevcut drag/drop kayıt akışı tüm bölüm listesini kaydedecek şekilde düzeltildi.
+- Ortak persistChapterOrder() akışı `/api/chapters/reorder` endpointini kullanıyor.
+- FastAPI route sırası düzeltildi:
+  `/api/chapters/reorder` artık `/api/chapters/{chapter_id}` dinamik route'una
+  düşmüyor.
+- Route regresyonunu yakalayan API testi eklendi.
+```
+
+Tarayıcı doğrulaması:
+
+```text
+URL: http://127.0.0.1:8765
+Browser plugin: mevcut değil; normal Playwright kullanıldı.
+Screenshot: C:\Users\ismai\AppData\Local\Temp\bookmaker-reorder-step.png
+
+Playwright sonucu:
+- ilk bölüm `giris`, ikinci bölüm `dart-temelleri`
+- `giris` aşağı taşındı
+- API sırası değişti ve kaydedildi
+- reload sonrası yeni sıra korundu
+- test sonunda orijinal Flutter kitap sırası geri yüklendi
+- console errors/warnings: []
+```
+
+Doğrulama:
+
+```text
+node --check src/bookmaker/studio/static/app.js
+Sonuç: PASS
+
+uv run ruff check src/ tests/
+Sonuç: PASS
+
+uv run pytest tests/unit/test_studio_app.py tests/unit/test_studio_services.py -q --tb=short
+Sonuç: 36 passed, 1 PytestCacheWarning
+
+uv run pytest tests/ -q --tb=short
+Sonuç: 212 passed, 1 PytestCacheWarning
+
+uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json --verbose
+Sonuç: skor 100, karar pass, hata 0, uyarı 0
+```
+
 ### FAZ 5 / Studio GUI Aşama 3 - Flutter Dashboard ve Alias-aware İçerik
 
 Flutter kitap dashboard'ı gerçek project-based sinyalleri daha görünür hale

@@ -214,3 +214,37 @@ def test_api_projects_uses_book_manifest(tmp_path) -> None:
         assert active["title"] == "Flutter Demo"
     finally:
         studio_app._active_book = previous
+
+
+def test_api_chapters_reorder_route_precedes_dynamic_update(tmp_path) -> None:
+    if app is None:
+        return
+    from fastapi.testclient import TestClient
+
+    from bookmaker.studio import app as studio_app
+    from bookmaker.studio.services import wizard_service
+
+    result = wizard_service.create_book(
+        tmp_path,
+        {
+            "project_name": "reorder-demo",
+            "title": "Reorder Demo",
+            "author": "Test Yazar",
+            "chapters": ["bir", "iki", "uc"],
+        },
+    )
+    assert "error" not in result
+    project = tmp_path / "book_projects" / "reorder-demo"
+
+    previous = studio_app._active_book
+    studio_app._active_book = str(project)
+    try:
+        client = TestClient(app)
+        resp = client.put("/api/chapters/reorder", json={"chapter_ids": ["iki", "bir", "uc"]})
+        assert resp.status_code == 200
+        assert resp.json()["reordered"] is True
+
+        chapters = client.get("/api/chapters").json()
+        assert [chapter["chapter_id"] for chapter in chapters] == ["iki", "bir", "uc"]
+    finally:
+        studio_app._active_book = previous

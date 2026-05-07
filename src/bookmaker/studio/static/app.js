@@ -113,11 +113,18 @@ function renderTable() {
     const sc = stepBadgeClass(ch.current_step), ss = scoreBadgeClass(ch.score);
     const dc = decisionBadgeClass(ch.decision);
     const sel = selectedIds.has(ch.chapter_id) ? 'checked' : '';
+    const globalIndex = chapters.findIndex(item => item.chapter_id === ch.chapter_id);
+    const isFirst = globalIndex <= 0;
+    const isLast = globalIndex === chapters.length - 1;
     const content = '<span class="tag '+(ch.draft_exists?'info':'neutral')+'">draft</span> '+
       '<span class="tag '+(ch.final_exists?'success':'neutral')+'">final</span>';
     return '<tr draggable="true" data-id="'+ch.chapter_id+'" class="chapter-row">'+
       '<td><input type="checkbox" class="chk-select" data-id="'+ch.chapter_id+'" '+sel+' onchange="toggleSelect(\''+ch.chapter_id+'\',this.checked)"></td>'+
-      '<td class="drag-handle" title="Surukle-birak">&#x22EE;&#x22EE;</td>'+
+      '<td><div class="action-group reorder-group">'+
+        '<button class="btn btn-sm outline" title="Yukari tasi" '+(isFirst?'disabled':'')+' onclick="moveChapter(\''+ch.chapter_id+'\',-1)">↑</button>'+
+        '<button class="btn btn-sm outline" title="Asagi tasi" '+(isLast?'disabled':'')+' onclick="moveChapter(\''+ch.chapter_id+'\',1)">↓</button>'+
+        '<span class="drag-handle" title="Surukle-birak">&#x22EE;&#x22EE;</span>'+
+      '</div></td>'+
       '<td><code>'+escHtml(ch.chapter_id)+'</code></td>'+
       '<td>'+escHtml(ch.title)+'</td>'+
       '<td><span class="tag '+sc+'">'+ch.current_step+'</span></td>'+
@@ -155,17 +162,49 @@ let dragSrcId = null;
 function handleDragStart(e) { dragSrcId=this.dataset.id; this.style.opacity='0.5'; e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',dragSrcId); }
 function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect='move'; this.style.borderTop='2px solid #3a3a6e'; }
 function handleDragEnd() { this.style.opacity='1'; document.querySelectorAll('.chapter-row').forEach(r=>r.style.borderTop=''); }
+function applyChapterOrder(ids) {
+  const byId = new Map(chapters.map(ch => [ch.chapter_id, ch]));
+  chapters = ids.map(id => byId.get(id)).filter(Boolean);
+  chapters.forEach((ch, index) => { ch.order = index + 1; });
+  sortKey = 'order';
+  sortDir = 'asc';
+  applyFilters();
+}
+async function persistChapterOrder(ids) {
+  const r = await fetch('/api/chapters/reorder',{
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({chapter_ids:ids})
+  });
+  const d = await r.json();
+  if(!d.reordered) throw new Error(d.error || 'Siralama kaydedilemedi');
+  showToast('Siralama kaydedildi','success');
+  await loadChapters();
+}
+async function moveChapter(id, direction) {
+  const ids = chapters.map(ch => ch.chapter_id);
+  const index = ids.indexOf(id);
+  const target = index + direction;
+  if(index === -1 || target < 0 || target >= ids.length) return;
+  ids.splice(index, 1);
+  ids.splice(target, 0, id);
+  applyChapterOrder(ids);
+  try { await persistChapterOrder(ids); }
+  catch(e) { showToast(e.message, 'error'); await loadChapters(); }
+}
 function handleDrop(e) {
   e.preventDefault();
   document.querySelectorAll('.chapter-row').forEach(r=>r.style.borderTop='');
   if (!dragSrcId || dragSrcId===this.dataset.id) return;
-  const ids=filteredChapters.map(ch=>ch.chapter_id);
+  const ids=chapters.map(ch=>ch.chapter_id);
   const si=ids.indexOf(dragSrcId), ti=ids.indexOf(this.dataset.id);
   if (si===-1||ti===-1) return;
   ids.splice(si,1); ids.splice(ti,0,dragSrcId);
-  fetch('/api/chapters/reorder',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({chapter_ids:ids})})
-    .then(r=>r.json()).then(d=>{if(d.reordered){showToast('Siralama guncellendi','success');refreshAll();}})
-    .catch(()=>showToast('Siralama kaydedilemedi','error'));
+  applyChapterOrder(ids);
+  persistChapterOrder(ids).catch(function(e){
+    showToast(e.message, 'error');
+    loadChapters();
+  });
 }
 
 // PAGINATION

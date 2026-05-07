@@ -207,6 +207,11 @@ if FastAPI is not None:
             get_active_book(), data.get("chapter_id", ""),
             data.get("title", ""), data.get("order"))
 
+    @app.put("/api/chapters/reorder")
+    async def api_chapter_reorder(data: dict) -> dict:
+        return chapter_service.reorder_chapters(
+            get_active_book(), data.get("chapter_ids", []))
+
     @app.put("/api/chapters/{chapter_id}")
     async def api_chapter_update(chapter_id: str, data: dict) -> dict:
         return chapter_service.update_chapter(
@@ -216,11 +221,6 @@ if FastAPI is not None:
     async def api_chapter_delete(chapter_id: str) -> dict:
         return chapter_service.remove_chapter(
             get_active_book(), chapter_id)
-
-    @app.put("/api/chapters/reorder")
-    async def api_chapter_reorder(data: dict) -> dict:
-        return chapter_service.reorder_chapters(
-            get_active_book(), data.get("chapter_ids", []))
 
     # ================================================================
     # Prompts

@@ -55,6 +55,8 @@ tr:hover{background:#f9fafb}
 
 /* Layout */
 .action-group{display:flex;gap:4px;flex-wrap:wrap}
+.reorder-group{align-items:center;flex-wrap:nowrap}
+.reorder-group .btn{width:28px;height:28px;justify-content:center;padding:0}
 .spinner{display:inline-block;width:18px;height:18px;border:2px solid #ccc;border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading{text-align:center;padding:2.5rem;color:var(--muted);font-size:1.1rem}
