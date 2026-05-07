@@ -64,9 +64,20 @@ bookMaker/
 │   │       ├── flutter.py        # FlutterCodeAdapter — dart analyze (placeholder)
 │   │       ├── python.py         # PythonCodeAdapter — py_compile syntax check
 │   │       └── react.py          # ReactCodeAdapter — node --check (JS) + review-only skip (TS/JSX)
-│   ├── production/              # Export pipeline
+│   ├── production/              # Export + visual engines
 │   │   ├── pandoc.py            # Pandoc DOCX/PDF/EPUB/HTML conversion
-│   │   ├── mermaid.py           # Mermaid → PNG (mmdc CLI)
+│   │   ├── mermaid.py           # Mermaid → PNG (mmdc CLI, legacy)
+│   │   ├── readiness.py         # Export preflight checks
+│   │   ├── export_report.py     # Export result logging
+│   │   ├── mermaid_theme.py     # Profile-based Mermaid themes (5 profiles)
+│   │   ├── mermaid_renderer.py  # mmdc PNG renderer with cache
+│   │   ├── themes/              # 5 JSON theme files
+│   │   ├── screenshot_engine.py # Tagged block screenshot engine
+│   │   ├── screenshot_strategies/
+│   │   │   ├── base.py          # ScreenshotStrategy (ABC) + ScreenshotConfig
+│   │   │   ├── python_plot.py   # matplotlib/plotly → PNG
+│   │   │   ├── python_console.py # Terminal output → PNG
+│   │   │   └── react_component.py # React/JSX → headless Chromium PNG
 │   │   └── pipeline.py          # Full production pipeline
 │   ├── studio/                  # FastAPI GUI (localhost:8765)
 │   │   ├── app.py               # FastAPI app with all routes
@@ -92,12 +103,18 @@ bookMaker/
 │   └── llm/                      # LLM API client
 │       ├── config.py             # LLMConfig (reads llm_config.json)
 │       └── openai.py             # OpenAICompatibleClient
-├── tests/                        # Test suite (289 tests)
+├── tests/                        # Test suite (377 tests)
 │   ├── unit/
 │   │   ├── test_studio_app.py    # API endpoint tests
 │   │   └── test_studio_services.py
+│   ├── production/
+│   │   ├── test_mermaid_renderer.py     # 36 mermaid theme + renderer tests
+│   │   └── test_screenshot_engine.py   # 37 screenshot engine tests
 │   ├── test_chapter_validation_modes.py
-│   └── test_chapter_validator_profile_modes.py
+│   ├── test_chapter_validator_profile_modes.py
+│   ├── test_e2e_smoke.py         # End-to-end smoke tests
+│   ├── test_export_readiness.py
+│   └── test_toolchain.py         # Toolchain readiness tests
 ├── book_projects/                # Book projects (content, not framework)
 │   ├── flutter-ile-mobil-uygulama-gelistirme/
 │   └── python-programlama-giris/
@@ -154,7 +171,7 @@ class BookManifest(BaseModel):
     technical_profile: TechnicalProfile | None
     automation: AutomationConfig      # code_meta_required, screenshot_required, qr_policy, github_code_export
     pandoc: PandocConfig | None       # from_format, filter, reference_doc, toc, toc_depth, toc_title
-    mermaid: MermaidConfig | None     # renderer, background, timeout_seconds
+    mermaid: MermaidConfig | None     # theme, scale, width, background, theme_overrides
     outputs: OutputsConfig | None     # docx, pdf, epub, html_site
     chapters: list[BookChapterRef]    # alias, order, chapter_id, title, source, status
 ```
@@ -210,8 +227,10 @@ Writing rules: H1=chapter title, H2=main sections, H3=subsections, code in ``` `
 **Output:** `logs/production/{job_id}/step1_seed.md`
 **Prompt saved to:** `logs/production/{job_id}/prompt1_seed.txt`
 
-### Stage 4: NORMALIZE (Cleanup + Front Matter)
-**File:** `generation/postprocess.py` — `normalize()`
+### Stage 4: NORMALIZE (Cleanup + Front Matter + Mermaid)
+**File:** `generation/postprocess.py` — `normalize()`, `normalize_with_mermaid()`
+
+`normalize_with_mermaid()` wraps `normalize()` and then processes mermaid blocks to PNG via `MermaidRenderer` (if mmdc is installed). Returns normalized text unchanged if mmdc is not available.
 
 0-token operations: TextCleaner (quotes, whitespace), heading hierarchy fix, YAML front matter insertion, excess whitespace cleanup.
 
@@ -247,8 +266,10 @@ chapter_id: chapter-01
 
 **Outputs:** `logs/production/{job_id}/step3_enrich_{summary,glossary,questions,exercises,errors,bridge}.md`
 
-### Stage 6: ASSEMBLE (Assembly)
-**File:** `generation/postprocess.py` — `insert_section()`, `extract_sections()`
+### Stage 6: ASSEMBLE (Assembly + Screenshots)
+**File:** `generation/postprocess.py` — `insert_section()`, `process_screenshots()`
+
+Final `normalize()` pass. Screenshot processing runs in `_save_chapter()` via `process_screenshots()` — tagged code blocks (`python plot`, `python console`, `jsx screenshot`) are rendered to PNG via Playwright (if installed).
 
 Enrichment outputs are inserted into the normalized text. Insertion order (at end of chapter): Exercises → Questions → Glossary → Summary → Errors → Bridge. `insert_section()` matches Turkish variations (özet/özet, sözlük/sozluk, alıştırma/alistirma).
 
@@ -427,8 +448,72 @@ config.pandoc_cmd(input_path, output_path, toc=True)
 #    '--toc', '--toc-depth', '2']
 ```
 
-### Mermaid Render (`production/mermaid.py`)
-Uses `mmdc` CLI via PowerShell to convert Mermaid diagrams to PNG.
+### Mermaid Theme Engine (`production/mermaid_theme.py`, `mermaid_renderer.py`)
+
+Profile-based Mermaid diagram rendering integrated into the NORMALIZE pipeline stage via `normalize_with_mermaid()` (postprocess.py). If `mmdc` is not installed, returns the normalized text unchanged.
+
+**Theme Manager** (`mermaid_theme.py`):
+- 5 profile themes: flutter, java, python, react, default
+- Each theme is a JSON file under `production/themes/`
+- `MermaidTheme.load(name)` loads a theme, falls back to `default.json`
+- `MermaidThemeManager.for_profile(profile, overrides)` resolves profile → theme
+- `theme.merge(overrides)` applies `themeVariables` from manifest without mutating original
+- `theme.config_file()` context manager creates temp JSON for mmdc `--configFile`
+
+**Renderer** (`mermaid_renderer.py`):
+- `MermaidRenderer(config)` — main class, checks mmdc availability
+- `process_markdown(md_content, assets_dir, chapter_alias)` — finds `mermaid` blocks, renders to PNG, updates markdown references
+- `MermaidRenderConfig.from_manifest(dict)` — loads config from book_manifest.yaml
+- Idempotent: MD5 hash + theme name = cache key, stored in `.mermaid_cache.json`
+- Failed renders keep original block with HTML comment, don't break the pipeline
+
+**Manifest config:**
+```yaml
+mermaid:
+  theme: flutter         # default | flutter | java | python | react
+  scale: 2               # 1=normal, 2=retina
+  background: white      # white | transparent
+  width: 900             # diagram width in px
+  theme_overrides:       # optional fine-tuning
+    themeVariables:
+      fontSize: "16px"
+```
+
+### Screenshot Engine (`production/screenshot_engine.py`, `screenshot_strategies/`)
+
+Playwright-based screenshot rendering for tagged code blocks. Runs after ASSEMBLE in `_save_chapter()` via `process_screenshots()` wrapper (postprocess.py). If Playwright is not installed, returns text unchanged.
+
+**Three strategies:**
+
+| Strategy | Fence syntax | What it does |
+|----------|-------------|--------------|
+| `PythonPlotStrategy` | `python plot` | Replaces `plt.show()`/`fig.show()` with `savefig`/`write_image`, runs via `sys.executable`, returns PNG |
+| `PythonConsoleStrategy` | `python console` | Runs code in subprocess, captures stdout/stderr, renders dark/light terminal HTML, screenshots via Playwright |
+| `ReactComponentStrategy` | `jsx screenshot` | Injects component into CDN React+Babel HTML template, opens in headless Chromium, waits for render, screenshots `#root` |
+
+**Key design:**
+- All Playwright imports are lazy (`try/except ImportError` inside capture methods)
+- `_TAGGED_BLOCK_RE` regex only matches blocks with explicit hints (`python plot`, `python console`, `jsx screenshot`) — plain `python` blocks are untouched
+- Cache key = MD5(code + hint), stored in `.screenshot_cache.json`
+- Failed renders keep original block with `<!-- SCREENSHOT HATASI -->` comment
+
+**SEED prompt instruction:** The SEED prompt template teaches the LLM to use tagged fence syntax:
+- `python plot` → matplotlib/plotly/seaborn graphs
+- `python console` → terminal output display
+- `jsx screenshot` → React component render
+
+**Manifest config:**
+```yaml
+production:
+  screenshots:
+    enabled: true
+    python_timeout: 15
+    react_timeout: 10
+    viewport_width: 1280
+    viewport_height: 720
+    scale: 2
+    terminal_theme: dark     # dark | light
+```
 
 ---
 
@@ -456,7 +541,7 @@ uv sync
 # Lint
 uv run ruff check src/
 
-# Test (289 passed)
+# Test (377 passed)
 uv run pytest tests/ -q --tb=short
 
 # Start Studio GUI
@@ -552,8 +637,8 @@ The project supports local development and devcontainer/Codespaces-based
 workflows. `.devcontainer/` provides a ready-to-use Dockerfile and
 devcontainer.json.
 
-Core tools: Python 3.12+, uv, Pandoc, Node.js.
-Optional tools: Java JDK, Dart/Flutter, Mermaid CLI.
+Core tools: Python 3.12+, uv, Pandoc, Node.js, Playwright (headless Chromium).
+Optional tools: Java JDK, Dart/Flutter, Mermaid CLI (mmdc).
 
 Check toolchain readiness:
 

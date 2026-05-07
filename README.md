@@ -175,6 +175,67 @@ src/bookmaker/code/
 
 ---
 
+## Gorsel Motorlar: Mermaid ve Screenshot
+
+Pipeline, iki gorsel uretim motoruyla entegre calisir:
+
+### Mermaid Tema Motoru
+
+`src/bookmaker/production/` altinda profil-tabanli Mermaid tema motoru bulunur:
+
+| Modul | Islev |
+|-------|-------|
+| `mermaid_theme.py` | 5 profil temasi (flutter/java/python/react/default), JSON tabanli, `config_file()` context manager |
+| `mermaid_renderer.py` | mmdc tabanli PNG renderer, MD5 cache ile idempotent, `MermaidRenderConfig.from_manifest()` |
+| `themes/` | 5 JSON tema dosyasi |
+
+`normalize_with_mermaid()` (postprocess.py) NORMALIZE asamasinda mermaid bloklarini PNG'ye donusturur. mmdc kurulu degilse sessizce gecer.
+
+### Screenshot Engine
+
+`src/bookmaker/production/screenshot_strategies/` altinda 3 strateji:
+
+| Strateji | Fence Syntax | Islev |
+|----------|-------------|-------|
+| `python_plot` | `python plot` | matplotlib/plotly/seaborn → PNG |
+| `python_console` | `python console` | Terminal ciktisi → stillendirilmis PNG |
+| `react_component` | `jsx screenshot` | React bileseni → headless Chromium PNG |
+
+`process_screenshots()` (postprocess.py) ASSEMBLE sonrasi `_save_chapter()` icinde cagrilir. Playwright kurulu degilse sessizce gecer.
+
+```text
+src/bookmaker/production/
+├── screenshot_engine.py         # Ana motor, tagged block regex, cache
+├── screenshot_strategies/
+│   ├── base.py                  # ScreenshotStrategy (ABC) + ScreenshotConfig
+│   ├── python_plot.py           # matplotlib/plotly/ seaborn grafikleri
+│   ├── python_console.py        # Terminal ciktisi (dark/light tema)
+│   └── react_component.py       # CDN React + Babel render
+├── mermaid_theme.py             # MermaidTheme + MermaidThemeManager
+├── mermaid_renderer.py          # MermaidRenderer + MermaidRenderConfig
+└── themes/                      # 5 profil temasi (JSON)
+```
+
+Her iki motor da manifest uzerinden yapilandirilir:
+
+```yaml
+# book_manifest.yaml
+mermaid:
+  theme: flutter
+  scale: 2
+  background: white
+  width: 900
+
+production:
+  screenshots:
+    enabled: true
+    python_timeout: 15
+    terminal_theme: dark
+    scale: 2
+```
+
+---
+
 ## CLI Kullanim
 
 ```powershell
@@ -192,7 +253,7 @@ bookmaker check chapter chapters/giris/content/draft.md --book-root book_project
 
 ```powershell
 uv run ruff check src/                      # lint
-uv run pytest tests/ -q --tb=short           # 304 passed
+uv run pytest tests/ -q --tb=short           # 377 passed
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
 ```
 
@@ -203,7 +264,7 @@ uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme 
 Proje GitHub Actions ile her push ve PR'de asagidaki kontrolleri calistirir:
 
 - Ruff lint (`src/` ve `tests/`)
-- Pytest test suite (289+ test)
+- Pytest test suite (377 test)
 - Prompt validation
 - Ornek Flutter kitap projesi kalite kontrolu
 - Python 3.12 / 3.13 matrisi
