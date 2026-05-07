@@ -724,3 +724,27 @@ def test_whitespace_language_normalized() -> None:
 
     adapter = select_code_adapter(None, "  Java  ")
     assert isinstance(adapter, JavaCodeAdapter)
+
+
+# ---------------------------------------------------------------------------
+# summarize_test_results enriched output
+# ---------------------------------------------------------------------------
+
+def test_summarize_test_results_returns_ok_error_skipped_total() -> None:
+    from bookmaker.code.report import summarize_test_results
+
+    results = [
+        {"block": 1, "status": "ok"},
+        {"block": 2, "status": "ok"},
+        {"block": 3, "status": "error"},
+        {"block": 4, "status": "skipped"},
+        {"block": 5, "status": "ok"},
+    ]
+    summary = summarize_test_results(results)
+
+    assert summary["ok"] == 3
+    assert summary["error"] == 1
+    assert summary["skipped"] == 1
+    assert summary["total"] == 5
+    assert summary["compiled"] == 3  # backward compat
+    assert summary["failed"] == 1   # backward compat

@@ -123,17 +123,62 @@ def check_export_readiness(
             }
         )
 
+    checks: list[dict] = []
+
+    checks.append({
+        "name": "book_manifest",
+        "status": "ok",
+        "message": "book_manifest.yaml bulundu",
+    })
+
     if normalized_fmt in {"docx", "pdf", "epub", "html"}:
         ok, message = _check_pandoc()
         if not ok:
             errors.append(message)
+            checks.append({
+                "name": "pandoc",
+                "status": "error",
+                "message": message,
+            })
+        else:
+            checks.append({
+                "name": "pandoc",
+                "status": "ok",
+                "message": "pandoc bulundu",
+            })
+
+    chapter_errors = [c for c in chapters if not c["ready"]]
+    if chapter_errors:
+        checks.append({
+            "name": "chapters",
+            "status": "error" if len(chapter_errors) == len(chapters) else "warning",
+            "message": (
+                f"{len(chapter_errors)}/{len(chapters)} bölüm "
+                "export için hazır değil"
+            ),
+        })
+    else:
+        checks.append({
+            "name": "chapters",
+            "status": "ok",
+            "message": f"{len(chapters)} bölüm export için hazır",
+        })
+
+    if errors:
+        status = "error"
+    elif warnings:
+        status = "warning"
+    else:
+        status = "ok"
 
     return {
         "ready": len(errors) == 0,
+        "status": status,
         "format": normalized_fmt,
         "final_required_for_export": final_required,
         "errors": errors,
         "warnings": warnings,
+        "checks": checks,
         "chapters": chapters,
     }
 

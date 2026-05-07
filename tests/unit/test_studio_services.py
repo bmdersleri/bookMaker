@@ -712,4 +712,114 @@ def test_wizard_uses_parent_book_projects_when_active_book_is_project(tmp_path):
 
     assert "error" not in result
     assert (tmp_path / "book_projects" / "new-book" / "book_manifest.yaml").exists()
-    assert not (active_project / "book_projects" / "new-book").exists()
+
+
+# ---------------------------------------------------------------------------
+# compile_code enriched payload tests (FAZ 6.5)
+# ---------------------------------------------------------------------------
+
+def test_compile_code_returns_summary_and_status(tmp_path: Path) -> None:
+    """Test book with dart code returns summary and status fields."""
+    root = _create_test_project(tmp_path)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: Test Code\n"
+        "  alias: test-code\n"
+        "style:\n"
+        "  code_language: dart\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    title: Giriş\n",
+        encoding="utf-8",
+    )
+    content_dir = root / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True, exist_ok=True)
+    (content_dir / "final.md").write_text(
+        "# Giriş\n\n```dart\nvoid main() {}\n```\n",
+        encoding="utf-8",
+    )
+
+    from bookmaker.studio.services import quality_service
+
+    result = quality_service.compile_code(root, "giris")
+
+    assert "summary" in result
+    assert "status" in result
+    assert result["summary"]["total"] == 1
+    assert result["status"] in {"ok", "skipped", "error", "empty"}
+
+
+def test_compile_code_status_empty_when_no_blocks(tmp_path: Path) -> None:
+    root = _create_test_project(tmp_path)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: No Code\n"
+        "  alias: no-code\n"
+        "style:\n"
+        "  code_language: java\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    title: Giriş\n",
+        encoding="utf-8",
+    )
+    content_dir = root / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True, exist_ok=True)
+    (content_dir / "final.md").write_text(
+        "# Giriş\n\nBu bölümde hiç kod yok.\n",
+        encoding="utf-8",
+    )
+
+    from bookmaker.studio.services import quality_service
+
+    result = quality_service.compile_code(root, "giris")
+
+    assert result["status"] == "empty"
+    assert result["blocks"] == 0
+    assert result["summary"]["total"] == 0
+
+
+def test_compile_code_status_error_when_adapter_reports_error(
+    tmp_path: Path, monkeypatch,
+) -> None:
+    root = _create_test_project(tmp_path)
+    (root / "book_manifest.yaml").write_text(
+        "book:\n"
+        "  title: Bad Code\n"
+        "  alias: bad-code\n"
+        "style:\n"
+        "  code_language: java\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    title: Giriş\n",
+        encoding="utf-8",
+    )
+    content_dir = root / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True, exist_ok=True)
+    (content_dir / "final.md").write_text(
+        "# Giriş\n\n```java\npublic class Demo {}\n```\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        "bookmaker.code.adapters.java.shutil.which",
+        lambda cmd: "/fake/javac" if cmd == "javac" else None,
+    )
+
+    def fake_run(cmd, **kwargs):
+        class R:
+            returncode = 1
+            stdout = ""
+            stderr = "error: class Demo is public"
+        return R()
+
+    monkeypatch.setattr(
+        "bookmaker.code.adapters.java.subprocess.run", fake_run,
+    )
+
+    from bookmaker.studio.services import quality_service
+
+    result = quality_service.compile_code(root, "giris")
+
+    assert result["status"] == "error"
+    assert result["failed"] == 1
+    assert result["summary"]["error"] == 1

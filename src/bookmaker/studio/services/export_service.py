@@ -31,6 +31,10 @@ def _chapter_source(chapter) -> str:
     return default_chapter_source(chapter)
 
 
+def _to_url(rel_path: str) -> str:
+    return f"/output/{rel_path.replace(chr(92), '/')}"
+
+
 def _output_dir(root: Path, *parts: str) -> Path:
     out = root / "exports" / Path(*parts)
     out.mkdir(parents=True, exist_ok=True)
@@ -235,6 +239,7 @@ def export_to_format(project_root: str | Path, fmt: str,
             },
         )
         result["report_path"] = report_path
+        result["report_url"] = _to_url(report_path)
         return result
 
     # Önce birleştir
@@ -251,6 +256,7 @@ def export_to_format(project_root: str | Path, fmt: str,
             },
         )
         assembled["report_path"] = report_path
+        assembled["report_url"] = _to_url(report_path)
         return assembled
 
     md_path = root / assembled["path"]
@@ -276,6 +282,7 @@ def export_to_format(project_root: str | Path, fmt: str,
             },
         )
         result["report_path"] = report_path
+        result["report_url"] = _to_url(report_path)
         return result
 
     pandoc_fmt, ext, target_dir = fmt_map[fmt]
@@ -323,11 +330,14 @@ def export_to_format(project_root: str | Path, fmt: str,
                 },
             )
             payload["report_path"] = report_path
+            payload["report_url"] = _to_url(report_path)
             return payload
 
+        rel_path = str(out_path.relative_to(root))
         payload = {
             "format": fmt,
-            "path": str(out_path.relative_to(root)),
+            "path": rel_path,
+            "output_url": _to_url(rel_path),
             "size_bytes": out_path.stat().st_size,
             "cmd": " ".join(cmd),
         }
@@ -342,6 +352,7 @@ def export_to_format(project_root: str | Path, fmt: str,
             },
         )
         payload["report_path"] = report_path
+        payload["report_url"] = _to_url(report_path)
         return payload
     except FileNotFoundError:
         payload = {"error": "pandoc bulunamadi. Pandoc kurulu oldugundan emin olun."}
@@ -357,6 +368,7 @@ def export_to_format(project_root: str | Path, fmt: str,
             },
         )
         payload["report_path"] = report_path
+        payload["report_url"] = _to_url(report_path)
         return payload
     except subprocess.TimeoutExpired:
         payload = {"error": "Pandoc zamani asimi (120s)."}
@@ -372,6 +384,7 @@ def export_to_format(project_root: str | Path, fmt: str,
             },
         )
         payload["report_path"] = report_path
+        payload["report_url"] = _to_url(report_path)
         return payload
 
 

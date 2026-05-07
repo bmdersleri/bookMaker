@@ -420,3 +420,207 @@ def test_api_jobs_create_list_cancel_use_project_logs(tmp_path) -> None:
         with jobs._LOCK:
             jobs._JOBS.clear()
             jobs._JOBS.update(previous_jobs)
+
+
+# ---------------------------------------------------------------------------
+# Export readiness and report URL tests (FAZ 6.5)
+# ---------------------------------------------------------------------------
+
+def test_export_readiness_includes_status_and_checks(tmp_path: Path) -> None:
+    from fastapi.testclient import TestClient
+
+    from bookmaker.studio import app as studio_app
+
+    manifest = tmp_path / "book_manifest.yaml"
+    manifest.write_text(
+        "book:\n"
+        "  title: Test Readiness\n"
+        "  alias: test-readiness\n"
+        "style:\n"
+        "  code_language: java\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    title: Giriş\n",
+        encoding="utf-8",
+    )
+    content_dir = tmp_path / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True, exist_ok=True)
+    (content_dir / "final.md").write_text("# Giriş\n\nTest.\n", encoding="utf-8")
+
+    previous = getattr(studio_app, "_active_book", None)
+    studio_app._active_book = str(tmp_path)
+    try:
+        client = TestClient(studio_app.app)
+        resp = client.get("/api/export/readiness?fmt=docx")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "status" in data
+        assert data["status"] in {"ok", "warning", "error"}
+        assert "checks" in data
+        assert isinstance(data["checks"], list)
+        assert len(data["checks"]) >= 2  # book_manifest + chapters
+        assert all("name" in c and "status" in c for c in data["checks"])
+    finally:
+        studio_app._active_book = previous
+
+
+def test_export_to_format_returns_report_url(
+    tmp_path: Path, monkeypatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from bookmaker.studio import app as studio_app
+
+    manifest = tmp_path / "book_manifest.yaml"
+    manifest.write_text(
+        "book:\n"
+        "  title: Report URL Test\n"
+        "  alias: report-url-test\n"
+        "style:\n"
+        "  code_language: java\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    title: Giriş\n",
+        encoding="utf-8",
+    )
+    content_dir = tmp_path / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True, exist_ok=True)
+    (content_dir / "final.md").write_text(
+        "# Giriş\n\nTest içeriği.\n", encoding="utf-8",
+    )
+    (tmp_path / "exports" / "md").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "exports" / "docx").mkdir(parents=True, exist_ok=True)
+    md_path = tmp_path / "exports" / "md" / "kitap_birlestirilmis.md"
+    md_path.write_text("# Test\n\nContent.\n", encoding="utf-8")
+    (tmp_path / "logs" / "production").mkdir(parents=True, exist_ok=True)
+
+    monkeypatch.setattr(
+        "bookmaker.studio.services.export_service.check_export_readiness",
+        lambda root, fmt=None, chapter_ids=None: {
+            "ready": True,
+            "status": "ok",
+            "format": fmt or "docx",
+            "errors": [],
+            "warnings": [],
+            "checks": [
+                {"name": "book_manifest", "status": "ok", "message": "ok"},
+                {"name": "chapters", "status": "ok", "message": "1 bölüm"},
+            ],
+            "chapters": [
+                {
+                    "chapter_id": "giris",
+                    "ready": True,
+                    "source": "chapters/giris/content/final.md",
+                    "source_kind": "final",
+                },
+            ],
+        },
+    )
+
+    def fake_run(cmd, **kwargs):
+        out = cmd[cmd.index("-o") + 1]
+        Path(out).write_text("dummy", encoding="utf-8")
+
+        class R:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+        return R()
+
+    monkeypatch.setattr(
+        "bookmaker.studio.services.export_service.subprocess.run", fake_run,
+    )
+
+    previous = getattr(studio_app, "_active_book", None)
+    studio_app._active_book = str(tmp_path)
+    try:
+        client = TestClient(studio_app.app)
+        resp = client.post("/api/export/docx")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "report_url" in data
+        assert data["report_url"].startswith("/output/logs/production/")
+    finally:
+        studio_app._active_book = previous
+
+
+def test_export_to_format_returns_output_url_on_success(
+    tmp_path: Path, monkeypatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from bookmaker.studio import app as studio_app
+
+    manifest = tmp_path / "book_manifest.yaml"
+    manifest.write_text(
+        "book:\n"
+        "  title: Output URL Test\n"
+        "  alias: output-url-test\n"
+        "style:\n"
+        "  code_language: java\n"
+        "chapters:\n"
+        "  - alias: giris\n"
+        "    title: Giriş\n",
+        encoding="utf-8",
+    )
+    content_dir = tmp_path / "chapters" / "giris" / "content"
+    content_dir.mkdir(parents=True, exist_ok=True)
+    (content_dir / "final.md").write_text(
+        "# Giriş\n\nTest içeriği.\n", encoding="utf-8",
+    )
+    (tmp_path / "exports" / "md").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "exports" / "docx").mkdir(parents=True, exist_ok=True)
+    md_path = tmp_path / "exports" / "md" / "kitap_birlestirilmis.md"
+    md_path.write_text("# Test\n\nContent.\n", encoding="utf-8")
+    (tmp_path / "logs" / "production").mkdir(parents=True, exist_ok=True)
+
+    monkeypatch.setattr(
+        "bookmaker.studio.services.export_service.check_export_readiness",
+        lambda root, fmt=None, chapter_ids=None: {
+            "ready": True,
+            "status": "ok",
+            "format": fmt or "docx",
+            "errors": [],
+            "warnings": [],
+            "checks": [
+                {"name": "book_manifest", "status": "ok", "message": "ok"},
+                {"name": "chapters", "status": "ok", "message": "1 bölüm"},
+            ],
+            "chapters": [
+                {
+                    "chapter_id": "giris",
+                    "ready": True,
+                    "source": "chapters/giris/content/final.md",
+                    "source_kind": "final",
+                },
+            ],
+        },
+    )
+
+    def fake_run(cmd, **kwargs):
+        out = cmd[cmd.index("-o") + 1]
+        Path(out).write_text("dummy docx content", encoding="utf-8")
+
+        class R:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+        return R()
+
+    monkeypatch.setattr(
+        "bookmaker.studio.services.export_service.subprocess.run", fake_run,
+    )
+
+    previous = getattr(studio_app, "_active_book", None)
+    studio_app._active_book = str(tmp_path)
+    try:
+        client = TestClient(studio_app.app)
+        resp = client.post("/api/export/docx")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "output_url" in data
+        assert data["output_url"].startswith("/output/exports/docx/")
+        assert "path" in data
+        assert "report_url" in data
+    finally:
+        studio_app._active_book = previous

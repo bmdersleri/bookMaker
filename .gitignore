@@ -53,3 +53,17 @@ run_studio.ps1
 # Kök tools/ altındaki tek seferlik çalışma scriptleri.
 # Kalıcı araçlar package koduna, tools/utils/ veya tools/archive/ altına alınmalı.
 tools/*.py
+
+# Local tool state
+.playwright-mcp/
+*.code-workspace
+
+# Root-level generated outputs
+/chapters/
+/exports/
+
+# Book project generated exports
+book_projects/*/exports/code/
+book_projects/*/exports/docx/*.docx
+book_projects/*/exports/html/
+book_projects/*/exports/md/*.md

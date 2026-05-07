@@ -293,6 +293,7 @@ def search_content(project_root: str | Path, query: str,
 
 def compile_code(project_root: str | Path, chapter_id: str) -> dict:
     """Kod bloklarını profile-aware adapter ile işler."""
+    from bookmaker.code.report import summarize_test_results
     from bookmaker.manifest.manager import ManifestManager
     root = Path(project_root).resolve()
     mgr = ManifestManager(root)
@@ -308,10 +309,22 @@ def compile_code(project_root: str | Path, chapter_id: str) -> dict:
     src = next((_chapter_source(ch) for ch in manifest.chapters
                 if _chapter_matches(ch, chapter_id)), None)
     if not src:
-        return {"error": f"Bölüm bulunamadi: {chapter_id}"}
+        return {
+            "chapter_id": chapter_id,
+            "status": "error",
+            "error": f"Bölüm bulunamadi: {chapter_id}",
+            "summary": {"ok": 0, "error": 1, "skipped": 0, "total": 0},
+            "results": [],
+        }
     p = root / src
     if not p.exists():
-        return {"error": f"Dosya bulunamadi: {p}"}
+        return {
+            "chapter_id": chapter_id,
+            "status": "error",
+            "error": f"Dosya bulunamadi: {p}",
+            "summary": {"ok": 0, "error": 1, "skipped": 0, "total": 0},
+            "results": [],
+        }
 
     text = p.read_text(encoding="utf-8")
     blocks = adapter.extract_blocks(text)
@@ -323,6 +336,9 @@ def compile_code(project_root: str | Path, chapter_id: str) -> dict:
             "blocks": 0,
             "compiled": 0,
             "failed": 0,
+            "skipped": 0,
+            "status": "empty",
+            "summary": {"ok": 0, "error": 0, "skipped": 0, "total": 0},
             "results": [],
         }
 
@@ -331,16 +347,27 @@ def compile_code(project_root: str | Path, chapter_id: str) -> dict:
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
     results = adapter.run_tests(blocks, tmp_dir)
-    compiled = sum(1 for r in results if r.get("status") == "ok")
-    errors = [r for r in results if r["status"] == "error"]
+    summary = summarize_test_results(results)
+
+    failed = summary["error"]
+    skipped = summary["skipped"]
+    if failed > 0:
+        status = "error"
+    elif skipped == summary["total"]:
+        status = "skipped"
+    else:
+        status = "ok"
 
     return {
         "chapter_id": chapter_id,
         "adapter": adapter.name,
         "language": adapter.language,
-        "blocks": len(blocks),
-        "compiled": compiled,
-        "failed": len(errors),
+        "blocks": summary["total"],
+        "compiled": summary["ok"],
+        "failed": failed,
+        "skipped": skipped,
+        "status": status,
+        "summary": summary,
         "results": results,
     }
 
