@@ -1,3 +1,4 @@
+"""Dosya sistemi islemleri — okuma, yazma, kopyalama."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -25,28 +26,35 @@ def read_events(log_path: Path) -> list[VersionEvent]:
 
 
 def chapter_workspace(project_root: Path, chapter_id: str) -> Path:
+    """Bolum calisma dizinini dondurur."""
     return project_root / "chapters" / chapter_id
 
 
 def seed_path(project_root: Path, chapter_id: str, version: str = "seed_v001") -> Path:
+    """Seed dosyasinin tam yolunu dondurur."""
     return chapter_workspace(project_root, chapter_id) / "seed" / f"{version}.yaml"
 
 
 def outline_path(project_root: Path, chapter_id: str, version: str) -> Path:
+    """Taslak (outline) dosyasinin tam yolunu dondurur."""
     return chapter_workspace(project_root, chapter_id) / "outline_versions" / f"{version}.md"
 
 
 def draft_path(project_root: Path, chapter_id: str, version: str) -> Path:
+    """Taslak (draft) versiyon dosyasinin tam yolunu dondurur."""
     return chapter_workspace(project_root, chapter_id) / "draft_versions" / f"{version}.md"
 
 
 def approved_path(project_root: Path, chapter_id: str, version: str = "v001") -> Path:
+    """Onayli bolum dosyasinin tam yolunu dondurur."""
     return chapter_workspace(project_root, chapter_id) / "approved" / f"{chapter_id}_{version}.md"
 
 
 def version_log_path(project_root: Path, chapter_id: str) -> Path:
+    """Versiyon log dosyasinin tam yolunu dondurur."""
     return chapter_workspace(project_root, chapter_id) / "version_log.jsonl"
 
 
 def active_version_path(project_root: Path, chapter_id: str) -> Path:
+    """Aktif versiyon dosyasinin tam yolunu dondurur."""
     return chapter_workspace(project_root, chapter_id) / "active_version.yaml"

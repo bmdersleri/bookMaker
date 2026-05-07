@@ -1,9 +1,12 @@
+"""Kitap projesi exchange/transfer modelleri."""
 from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
 
 class RevisionIssue(BaseModel):
+    """Revizyon gerektiren bir sorunu tanimlar."""
+
     issue_id: str
     severity: str
     location: str = ""
@@ -14,6 +17,8 @@ class RevisionIssue(BaseModel):
 
 
 class RevisionPacket(BaseModel):
+    """Bir revizyon gorevi icin sorun ve kisitlama paketi."""
+
     packet_id: str
     target_artifact: str
     artifact_version: str

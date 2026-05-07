@@ -1,5 +1,4 @@
-"""
-bookmaker.production.screenshot_strategies.react_component
+"""bookmaker.production.screenshot_strategies.react_component
 ===========================================================
 React/JSX bileşenlerini tarayıcıda render edip PNG'ye dönüştürür.
 Vite veya build adımı gerektirmez — CDN React + Babel kullanır.
@@ -91,8 +90,7 @@ const {{ useState, useEffect, useRef, useCallback, useMemo }} = React;
 
 
 def _detect_component_name(code: str) -> str:
-    """
-    Koddan bileşen adını çıkarır.
+    """Koddan bileşen adını çıkarır.
     Önce 'export default X' veya 'function X' formatına bakar.
     Bulamazsa 'App' döner.
     """
@@ -117,7 +115,7 @@ def _detect_component_name(code: str) -> str:
 
 
 def _clean_exports(code: str) -> str:
-    """export default/export deyimlerini kaldırır — CDN ortamında çalışmaz."""
+    """Export default/export deyimlerini kaldırır — CDN ortamında çalışmaz."""
     import re
     code = re.sub(r"\bexport\s+default\s+", "", code)
     code = re.sub(r"\bexport\s+", "", code)

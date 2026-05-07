@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Awaitable, Callable
 from pathlib import Path
+from typing import Any
 
 try:
     from fastapi import FastAPI, Request
     from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+    from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
     from fastapi.staticfiles import StaticFiles
 except ImportError:
     FastAPI = None  # type: ignore
@@ -38,6 +40,7 @@ _CONFIG_FILE = "build/studio_config.json"
 
 
 def _allowed_origins() -> list[str]:
+    """Return allowed CORS origins from env or default to localhost:8765."""
     raw = os.environ.get("BOOKMAKER_STUDIO_ORIGINS", "").strip()
     if raw:
         origins = [item.strip() for item in raw.split(",") if item.strip()]
@@ -47,11 +50,13 @@ def _allowed_origins() -> list[str]:
 
 
 def _studio_token() -> str | None:
+    """Return the studio auth token from env, or None if not set."""
     token = os.environ.get("BOOKMAKER_STUDIO_TOKEN", "").strip()
     return token or None
 
 
 def _manifest_book_info(project_root: Path) -> dict[str, str]:
+    """Extract book name/title/author from book_manifest.yaml."""
     manifest_path = project_root / "book_manifest.yaml"
     if not manifest_path.exists():
         return {}
@@ -69,6 +74,7 @@ def _manifest_book_info(project_root: Path) -> dict[str, str]:
 
 
 def _project_search_roots(root: Path) -> list[Path]:
+    """Return candidate directories for book_projects search, deduplicated."""
     candidates = [
         root / "book_projects",
         root.parent if root.parent.name == "book_projects" else None,
@@ -128,7 +134,11 @@ if FastAPI is not None:
                        allow_methods=["*"], allow_headers=["*"])
 
     @app.middleware("http")
-    async def enforce_studio_token(request: Request, call_next):
+    async def enforce_studio_token(
+        request: Request,
+        call_next: Callable[[Request], Awaitable[Response]],
+    ) -> Any:
+        """FastAPI HTTP middleware — studio token kontrolu."""
         token = _studio_token()
         is_mutating = request.method not in {"GET", "HEAD", "OPTIONS"}
         if token and is_mutating and request.url.path.startswith("/api/"):
@@ -143,7 +153,7 @@ if FastAPI is not None:
     app.mount("/static", StaticFiles(directory=str(_static)), name="static")
 
     @app.get("/output/{file_path:path}")
-    async def serve_output(file_path: str):
+    async def serve_output(file_path: str) -> Any:
         """Project output dosyalarını güvenli şekilde sunar."""
         from fastapi.responses import PlainTextResponse
 
@@ -553,6 +563,13 @@ if FastAPI is not None:
         return {"job_id": job_id, "status": "cancelled"}
 
 def run_studio(host: str = "127.0.0.1", port: int = 8765) -> None:
+    """Start the bookMaker Studio FastAPI server.
+
+    Args:
+        host: Bind address (default 127.0.0.1).
+        port: Listen port (default 8765).
+
+    """
     if app is None:
         raise ImportError("FastAPI kurulu değil")
     from bookmaker.studio.jobs import load_jobs, start_worker

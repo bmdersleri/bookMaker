@@ -1,5 +1,4 @@
-"""
-bookmaker.production.screenshot_engine
+"""bookmaker.production.screenshot_engine
 =======================================
 Markdown içindeki işaretlenmiş kod bloklarını ekran görüntüsüne dönüştürür.
 
@@ -63,6 +62,7 @@ _LANG_HINT_TO_STRATEGY: dict[tuple[str, str], str] = {
 @dataclass
 class ScreenshotProcessResult:
     """Bir Markdown dosyasının tüm screenshot işlemlerinin sonucu."""
+
     total: int
     rendered: int
     cached: int
@@ -83,8 +83,7 @@ class ScreenshotProcessResult:
 
 
 class ScreenshotEngine:
-    """
-    Markdown'daki işaretlenmiş kod bloklarını screenshot'a dönüştürür.
+    """Markdown'daki işaretlenmiş kod bloklarını screenshot'a dönüştürür.
 
     Kullanım:
         engine = ScreenshotEngine(config)
@@ -115,8 +114,7 @@ class ScreenshotEngine:
         assets_dir: Path,
         chapter_alias: str = "chapter",
     ) -> ScreenshotProcessResult:
-        """
-        Markdown içeriğindeki tüm işaretlenmiş kod bloklarını işler.
+        """Markdown içeriğindeki tüm işaretlenmiş kod bloklarını işler.
 
         Args:
             md_content: draft.md veya final.md içeriği
@@ -125,6 +123,7 @@ class ScreenshotEngine:
 
         Returns:
             ScreenshotProcessResult — güncellenmiş Markdown + istatistikler
+
         """
         if not self.config.enabled:
             return ScreenshotProcessResult(

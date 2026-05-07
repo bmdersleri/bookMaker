@@ -1,3 +1,8 @@
+"""Python code adapter for bookMaker.
+
+Compiles extracted Python code blocks with py_compile to verify syntax.
+"""
+
 from __future__ import annotations
 
 import subprocess
@@ -8,11 +13,26 @@ from bookmaker.code.adapters.base import CodeAdapter
 
 
 class PythonCodeAdapter(CodeAdapter):
+    """Code adapter for Python code blocks.
+
+    Compiles each code block with py_compile to verify syntax correctness.
+    """
+
     name = "python"
     language = "python"
     fence_languages = ("python",)
 
     def run_tests(self, blocks: list[str], workdir: Path) -> list[dict]:
+        """Compile each Python code block with py_compile.
+
+        Args:
+            blocks: List of Python code block contents.
+            workdir: Working directory for temporary files.
+
+        Returns:
+            List of test result dictionaries.
+
+        """
         results: list[dict] = []
         for index, block in enumerate(blocks, start=1):
             fpath = workdir / f"block_{index:03d}.py"

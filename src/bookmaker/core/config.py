@@ -333,7 +333,8 @@ class BookConfig:
     @property
     def chapter_order(self) -> list[str]:
         """Oncelikle manifest'teki siralamayi dene,
-        bulamazsa varsayilan 23+4 sirasini kullan."""
+        bulamazsa varsayilan 23+4 sirasini kullan.
+        """
         ids = self.chapter_ids
         return ids if ids else list(_DEFAULT_CHAPTER_ORDER)
 
@@ -349,7 +350,8 @@ class BookConfig:
 
     def chapter_path(self, chapter_id: str) -> Path | None:
         """Approved .md dosyasinin mutlak yolunu doner.
-        Yoksa None doner."""
+        Yoksa None doner.
+        """
         for c in self.chapters:
             if c.get("chapter_id") == chapter_id:
                 rel = c.get("file")
@@ -477,7 +479,7 @@ class BookConfig:
 
     @property
     def mermaid_mmdc_cmd(self) -> list[str]:
-        """mmdc'yi PowerShell uzerinden cagiran komut listesi."""
+        """Mmdc'yi PowerShell uzerinden cagiran komut listesi."""
         return [
             self.mermaid_shell_path,
             "-NoProfile",
@@ -558,6 +560,7 @@ class BookConfig:
 
         Returns:
             orn: ['pandoc', '-f', 'markdown+...', '-o', 'output.docx', ...]
+
         """
         cmd = [
             "pandoc",
@@ -647,6 +650,7 @@ def load_config(
 
     Raises:
         ConfigError: Dosya bulunamazsa
+
     """
     from bookmaker.core.paths import find_project_root
 

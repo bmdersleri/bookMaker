@@ -14,6 +14,7 @@ from __future__ import annotations
 import logging
 import random
 import time
+from collections.abc import Generator
 from typing import Any
 
 import requests
@@ -21,6 +22,17 @@ import requests
 from bookmaker.llm.base import LLMClient
 
 logger = logging.getLogger(__name__)
+
+# Varsayilan yapilandirma sabitleri
+_DEFAULT_TEMPERATURE: float = 0.7
+_DEFAULT_MAX_TOKENS: int = 8192
+_MIN_BACKOFF_DELAY: float = 0.5
+_JITTER_RATIO: float = 0.25
+
+# Devam (resume) mekanizmasi sabitleri
+_CONTEXT_TAIL_SIZE: int = 1500
+_CONTEXT_HISTORY_SIZE: int = 3000
+_MAX_CONTINUES: int = 5
 
 
 class OpenAICompatibleClient(LLMClient):
@@ -115,7 +127,7 @@ class OpenAICompatibleClient(LLMClient):
         except Exception:
             pass
 
-    def chat(self, messages: list[dict], **kwargs: Any) -> dict:
+    def chat(self, messages: list[dict], **kwargs: Any) -> dict[str, Any]:
         """Sohbet tamamlama API'sini cagirir. Retry + backoff ile.
 
         Retry stratejisi:
@@ -130,12 +142,13 @@ class OpenAICompatibleClient(LLMClient):
         Returns:
             {"content": "...", "model": "...", "usage": {...}, "retries": N}
             veya {"error": "...", "retries": N}
+
         """
         payload = {
             "model": kwargs.get("model", self.model),
             "messages": messages,
-            "temperature": kwargs.get("temperature", 0.7),
-            "max_tokens": kwargs.get("max_tokens", 8192),
+            "temperature": kwargs.get("temperature", _DEFAULT_TEMPERATURE),
+            "max_tokens": kwargs.get("max_tokens", _DEFAULT_MAX_TOKENS),
         }
 
         last_error = None
@@ -235,14 +248,16 @@ class OpenAICompatibleClient(LLMClient):
     def _backoff_delay(self, attempt: int) -> float:
         """Exponential backoff + jitter hesapla.
 
-        Formül: base_delay * 2^attempt * (0.75 ~ 1.25 jitter)
+        Formül: base_delay * 2^attempt * (1 ± jitter)
         Örnek: 2.0 * 2^0 = 2.0s → 2.0 * 2^1 = 4.0s → 2.0 * 2^2 = 8.0s
         """
         base = self.retry_delay * (2 ** attempt)
-        jitter = base * random.uniform(-0.25, 0.25)  # ±%25
-        return max(0.5, base + jitter)  # minimum 0.5s
+        jitter = base * random.uniform(-_JITTER_RATIO, _JITTER_RATIO)
+        return max(_MIN_BACKOFF_DELAY, base + jitter)
 
-    def chat_stream(self, messages: list[dict], **kwargs: Any):
+    def chat_stream(
+        self, messages: list[dict], **kwargs: Any
+    ) -> Generator[dict[str, Any], None, None]:
         """Streaming modunda API cagrisi. SSE chunk'larini yield eder.
 
         DeepSeek SSE (Server-Sent Events) formati:
@@ -256,14 +271,15 @@ class OpenAICompatibleClient(LLMClient):
         Yields:
             {"content": "...", "finish_reason": "...", "usage": {...}}
             Her chunk'ta delta content birikir. Son chunk'ta finish_reason ve usage gelir.
+
         """
         import json
 
         payload = {
             "model": kwargs.get("model", self.model),
             "messages": messages,
-            "temperature": kwargs.get("temperature", 0.7),
-            "max_tokens": kwargs.get("max_tokens", 8192),
+            "temperature": kwargs.get("temperature", _DEFAULT_TEMPERATURE),
+            "max_tokens": kwargs.get("max_tokens", _DEFAULT_MAX_TOKENS),
             "stream": True,
         }
 
@@ -381,6 +397,7 @@ class OpenAICompatibleClient(LLMClient):
 
         Returns:
             Tam metin (string)
+
         """
         messages = self.make_prompt_messages(system_prompt, user_prompt)
         accumulated = ""
@@ -417,7 +434,7 @@ class OpenAICompatibleClient(LLMClient):
             )
         return accumulated
 
-    def test_connection(self) -> dict:
+    def test_connection(self) -> dict[str, Any]:
         """API baglantisini test eder (minimal bir istek gonderir)."""
         messages = [
             {"role": "user", "content": "Reply with only the word OK."}
@@ -476,11 +493,12 @@ class OpenAICompatibleClient(LLMClient):
 
         Returns:
             Birlestirilmis tam metin
+
         """
         messages = self.make_prompt_messages(system_prompt, user_prompt)
         all_parts = []
         total_continues = 0
-        max_continues = 5
+        max_continues = _MAX_CONTINUES
 
         # Ilk cagri
         result = self.chat(messages, **kwargs)
@@ -498,8 +516,8 @@ class OpenAICompatibleClient(LLMClient):
                 total_continues, max_continues, len(content)
             )
 
-            # Son 1500 karakteri context olarak al
-            tail = content[-1500:] if len(content) > 1500 else content
+            # Son _CONTEXT_TAIL_SIZE karakteri context olarak al
+            tail = content[-_CONTEXT_TAIL_SIZE:] if len(content) > _CONTEXT_TAIL_SIZE else content
 
             # Gelişmiş devam prompt'u — 7 kesin kural ile
             continue_user = (
@@ -538,7 +556,11 @@ class OpenAICompatibleClient(LLMClient):
                 {"role": "user", "content": user_prompt},
                 {
                     "role": "assistant",
-                    "content": content[-3000:] if len(content) > 3000 else content,
+                    "content": (
+                        content[-_CONTEXT_HISTORY_SIZE:]
+                        if len(content) > _CONTEXT_HISTORY_SIZE
+                        else content
+                    ),
                 },
                 {"role": "user", "content": continue_user},
             ]

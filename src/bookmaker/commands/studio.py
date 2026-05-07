@@ -14,7 +14,7 @@ def studio_start(
     host: Annotated[str, typer.Option("--host", "-h", help="Sunucu host")] = "127.0.0.1",
     port: Annotated[int, typer.Option("--port", "-p", help="Sunucu port")] = 8765,
 ) -> None:
-    """bookMaker Studio web arayüzünü başlatır."""
+    """BookMaker Studio web arayüzünü başlatır."""
     try:
         from bookmaker.studio.app import run_studio
         print(f"  bookMaker Studio baslatiliyor: http://{host}:{port}")

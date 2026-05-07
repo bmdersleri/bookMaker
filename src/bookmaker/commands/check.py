@@ -1,3 +1,4 @@
+"""bookMaker kalite kontrol komutlari."""
 # ruff: noqa: E501
 from __future__ import annotations
 

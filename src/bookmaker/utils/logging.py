@@ -40,6 +40,7 @@ def setup_logging(
         log_dir: Log dosyalarinin yazilacagi dizin. None = ./logs
         console: Konsola renkli cikti acik/kapali
         file: Dosyaya yazma acik/kapali
+
     """
     import os
 
@@ -100,5 +101,6 @@ def get_logger(name: str) -> logging.Logger:
 
     Returns:
         Configure edilmis Logger instance.
+
     """
     return logging.getLogger(name)

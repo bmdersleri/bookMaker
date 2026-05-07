@@ -23,6 +23,16 @@ def select_code_adapter(
     profile: str | None,
     code_language: str | None = None,
 ) -> CodeAdapter:
+    """Select the appropriate code adapter based on profile or language.
+
+    Args:
+        profile: Validation profile name (e.g. java, flutter, python).
+        code_language: Fenced code language tag as fallback.
+
+    Returns:
+        An appropriate CodeAdapter instance for the given context.
+
+    """
     normalized_profile = normalize_profile(profile)
     normalized_language = _normalize_language(code_language)
 

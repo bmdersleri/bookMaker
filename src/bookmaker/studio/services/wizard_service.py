@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any
 
 from ruamel.yaml import YAML
 
 from bookmaker.core.time import now_iso
 from bookmaker.generation.prompts import SYSTEM_AUTHOR
+from bookmaker.llm.openai import OpenAICompatibleClient
 from bookmaker.manifest.models import BookManifest, PipelineState
 
 _yaml = YAML()
@@ -108,7 +108,7 @@ def _create_directory_structure(book_dir: Path, data: dict) -> None:
 
 
 def _normalize_chapters(
-    chapters: Any,
+    chapters: list[str] | list[dict[str, str]] | None,
     chapter_count: int,
     appendix_count: int,
 ) -> list[dict[str, str]]:
@@ -265,7 +265,8 @@ def _write_text(path: Path, content: str) -> None:
 # LLM PLAN
 # ================================================================
 
-def generate_llm_plan(project_root: str | Path, client: Any,
+def generate_llm_plan(project_root: str | Path,
+                      client: OpenAICompatibleClient,
                       topic: str, chapter_count: int = 23,
                       appendix_count: int = 4,
                       language: str = "tr") -> list[dict]:
@@ -273,6 +274,7 @@ def generate_llm_plan(project_root: str | Path, client: Any,
 
     Returns:
         [{"chapter_id": "bolum-01", "title": "Java'ya Giriş", "type": "core"}, ...]
+
     """
     prompt = f"""## Görev: Kitap Bölüm Planı Oluştur
 

@@ -13,6 +13,7 @@ from pathlib import Path
 
 from bookmaker.llm.config import LLMConfig
 from bookmaker.llm.openai import OpenAICompatibleClient
+from bookmaker.manifest.models import ManifestChapter
 from bookmaker.studio.services import prompt_service
 
 # ── Review prompt helpers (mevcut) ──
@@ -29,15 +30,18 @@ def save_review_prompt(project_root: str | Path, content: str) -> dict:
 
 # ── Chapter content helpers ──
 
-def _chapter_alias(chapter) -> str:
+def _chapter_alias(chapter: ManifestChapter) -> str:
+    """Return chapter alias from a ManifestChapter instance."""
     return chapter.chapter_id or chapter.alias or ""
 
 
-def _chapter_matches(chapter, chapter_id: str) -> bool:
+def _chapter_matches(chapter: ManifestChapter, chapter_id: str) -> bool:
+    """Check if a chapter matches by chapter_id or alias."""
     return chapter_id in {chapter.chapter_id, chapter.alias}
 
 
-def _chapter_source(chapter) -> str:
+def _chapter_source(chapter: ManifestChapter) -> str:
+    """Return default source path for a chapter."""
     alias = _chapter_alias(chapter)
     return chapter.source or f"chapters/{alias}/content/final.md"
 
@@ -139,6 +143,7 @@ def generate_observer_review(
             "elapsed_s": float,
             "error": str (varsa)
         }
+
     """
     root = Path(project_root).resolve()
 
@@ -253,6 +258,7 @@ def list_observer_reviews(
 
     Returns:
         [{chapter_id, timestamp, path, json_path, exists}, ...]
+
     """
     root = Path(project_root).resolve()
     review_chapters_dir = _review_dir(root) / "chapters"

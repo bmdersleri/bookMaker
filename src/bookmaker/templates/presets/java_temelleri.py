@@ -41,6 +41,7 @@ CHAPTER_TITLES = [
 
 
 def make_book_profile(book_id: str, author: str = "") -> BookProfile:
+    """Varsayilan Java Temelleri kitap profilini olusturur."""
     return BookProfile(
         book_id=book_id,
         title="Java Temelleri",
@@ -57,6 +58,7 @@ def make_book_profile(book_id: str, author: str = "") -> BookProfile:
 
 
 def make_book_architecture(book_id: str) -> BookArchitecture:
+    """Varsayilan Java Temelleri kitap mimarisini olusturur."""
     chapters = [
         ChapterArchEntry(
             chapter_id=f"chapter_{order:02d}",

@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 
 class ChapterOut(BaseModel):
     """Bölüm bilgisi (response)."""
+
     chapter_id: str
     title: str
     order: int
@@ -24,6 +25,7 @@ class ChapterOut(BaseModel):
 
 class ChapterCreate(BaseModel):
     """Yeni bölüm (request)."""
+
     chapter_id: str = Field(..., pattern=r"^[a-z0-9_-]+$")
     title: str = Field(..., min_length=1, max_length=200)
     order: int | None = None
@@ -31,6 +33,7 @@ class ChapterCreate(BaseModel):
 
 class ChapterUpdate(BaseModel):
     """Bölüm güncelleme (request)."""
+
     title: str | None = None
     order: int | None = None
     status: str | None = None
@@ -38,6 +41,7 @@ class ChapterUpdate(BaseModel):
 
 class ChapterReorder(BaseModel):
     """Bölüm sırası güncelleme (request)."""
+
     chapter_ids: list[str] = Field(..., min_length=1)
 
 
@@ -47,6 +51,7 @@ class ChapterReorder(BaseModel):
 
 class GenerateRequest(BaseModel):
     """Pipeline başlatma parametreleri."""
+
     title: str | None = None
     concepts: list[str] = Field(default_factory=list)
     enrich_types: list[str] = Field(
@@ -57,6 +62,7 @@ class GenerateRequest(BaseModel):
 
 class GenerateResponse(BaseModel):
     """Pipeline sonuç (REST)."""
+
     chapter_id: str
     title: str
     elapsed_s: float = 0
@@ -74,6 +80,7 @@ class GenerateResponse(BaseModel):
 
 class JobOut(BaseModel):
     """İş durumu."""
+
     id: str
     step: str  # generate, build, extract, render
     chapter_id: str
@@ -88,6 +95,7 @@ class JobOut(BaseModel):
 
 class JobCreate(BaseModel):
     """Yeni iş oluşturma."""
+
     step: str = "generate"
     chapter_id: str
     params: dict[str, Any] = Field(default_factory=dict)
@@ -99,6 +107,7 @@ class JobCreate(BaseModel):
 
 class LlmConfigRequest(BaseModel):
     """LLM yapılandırma."""
+
     provider: str = "deepseek"
     api_key: str = Field(..., min_length=1)
     model: str = "deepseek-chat"
@@ -106,6 +115,7 @@ class LlmConfigRequest(BaseModel):
 
 class LlmStatusOut(BaseModel):
     """LLM durumu."""
+
     status: str
     provider: str = ""
     model: str = ""
@@ -118,6 +128,7 @@ class LlmStatusOut(BaseModel):
 
 class ProjectOut(BaseModel):
     """Proje bilgisi."""
+
     title: str = "(isimsiz)"
     chapters: int = 0
     author: str = "—"
@@ -127,6 +138,7 @@ class ProjectOut(BaseModel):
 
 class PipelineStateOut(BaseModel):
     """Pipeline durumu."""
+
     pipeline_id: str = ""
     current_stage: str = ""
     chapters: dict[str, Any] = Field(default_factory=dict)
@@ -138,6 +150,7 @@ class PipelineStateOut(BaseModel):
 
 class BookCreateRequest(BaseModel):
     """Yeni kitap oluşturma."""
+
     project_name: str = Field(..., pattern=r"^[a-z0-9_-]+$")
     title: str = Field(..., min_length=1, max_length=100)
     title_en: str | None = None
@@ -148,6 +161,7 @@ class BookCreateRequest(BaseModel):
 
 class WizardPlanRequest(BaseModel):
     """LLM bölüm planı oluşturma."""
+
     topic: str = Field(..., min_length=3)
     chapter_count: int = 23
     appendix_count: int = 4
@@ -160,6 +174,7 @@ class WizardPlanRequest(BaseModel):
 
 class BuildResult(BaseModel):
     """Build sonucu."""
+
     chapter_id: str
     compiled: int = 0
     extracted: int = 0
@@ -169,6 +184,7 @@ class BuildResult(BaseModel):
 
 class ExportRequest(BaseModel):
     """Export isteği."""
+
     format: str = Field(..., pattern=r"^(docx|pdf|epub|html)$")
     chapter_ids: list[str] | None = None  # None = tüm kitap
     reference_docx: str | None = None
@@ -180,6 +196,7 @@ class ExportRequest(BaseModel):
 
 class StatusOut(BaseModel):
     """Sunucu durumu."""
+
     status: str = "running"
     version: str = "0.1.0"
     uptime: str = "active"

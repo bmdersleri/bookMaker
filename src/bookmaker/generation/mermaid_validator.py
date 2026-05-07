@@ -27,6 +27,7 @@ from bookmaker.core.config import BookConfig
 @dataclass
 class MermaidIssue:
     """Mermaid kodunda tespit edilen bir sorun."""
+
     type: str
     line: int
     message: str
@@ -35,6 +36,7 @@ class MermaidIssue:
 @dataclass
 class MermaidResult:
     """Bir mermaid diyagrami icin validate sonucu."""
+
     valid: bool = False
     code: str = ""
     fixed: bool = False
@@ -122,7 +124,7 @@ class MermaidValidator:
 
     def compile(self, code: str,
                 output_path: Path | None = None) -> MermaidResult:
-        """mmdc ile PNG'ye derlemeyi dener. ~5s timeout."""
+        """Mmdc ile PNG'ye derlemeyi dener. ~5s timeout."""
         if output_path is None:
             with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
                 output_path = Path(f.name)

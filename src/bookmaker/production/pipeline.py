@@ -1,5 +1,6 @@
 """Production pipeline — Mermaid, QR, DOCX export.
-book_manifest.yaml -> BookConfig ile yapilandirilir."""
+book_manifest.yaml -> BookConfig ile yapilandirilir.
+"""
 
 from __future__ import annotations
 
@@ -23,6 +24,7 @@ def run(
         chapter_path: Bolum .md dosyasi
         build_root: Build dizini (None = config.build_dir)
         config: Kitap config (None = otomatik bul)
+
     """
     if config is None:
         try:

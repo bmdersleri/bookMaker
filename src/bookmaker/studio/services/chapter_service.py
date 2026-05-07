@@ -12,6 +12,7 @@ from bookmaker.manifest.models import (
     ChapterPipelineEntry,
     ChapterState,
     ManifestChapter,
+    PipelineState,
 )
 from bookmaker.manifest.pipeline import PipelineManager
 
@@ -27,14 +28,16 @@ def _chapter_alias(ch: ManifestChapter) -> str:
     return ch.alias or ch.chapter_id or ""
 
 
-def _state_lookup(pipeline_state) -> dict[str, Any]:
+def _state_lookup(pipeline_state: PipelineState) -> dict[str, Any]:
     chapters = pipeline_state.chapters
     if isinstance(chapters, dict):
         return chapters
     return {entry.alias: entry for entry in chapters}
 
 
-def _state_values(state) -> tuple[str, float | int, str, int]:
+def _state_values(
+    state: ChapterPipelineEntry | ChapterState | None,
+) -> tuple[str, float | int, str, int]:
     if isinstance(state, ChapterPipelineEntry):
         return (
             state.status.state,

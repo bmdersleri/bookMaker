@@ -1,3 +1,9 @@
+"""Code adapter implementations for different programming languages.
+
+Each adapter handles running tests on extracted code blocks
+from book chapters for a specific language or platform.
+"""
+
 from __future__ import annotations
 
 from bookmaker.code.adapters.base import CodeAdapter, ReviewOnlyAdapter

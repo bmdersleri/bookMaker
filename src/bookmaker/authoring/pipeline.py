@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from bookmaker.chapter.parser import parse
 from bookmaker.chapter.scoring import make_report
@@ -18,6 +19,10 @@ from bookmaker.storage.files import (
     outline_path,
     seed_path,
 )
+
+# Outline dogrulama sabitleri
+_MIN_H2_HEADINGS: int = 3
+_HEADING_PATTERN = r"^(#{1,6})\s+(.+?)\s*$"
 
 
 def _ensure_workspace(project_root: Path, chapter_id: str) -> None:
@@ -44,17 +49,21 @@ class AuthoringPipeline:
         self.pipeline_mgr = PipelineManager(self.root)
 
     def get_state(self, chapter_id: str) -> ChapterState:
+        """Bolumun mevcut pipeline durumunu dondurur."""
         state = self.pipeline_mgr.load()
         return state.chapters.get(chapter_id, ChapterState())
 
-    def set_state(self, chapter_id: str, **kwargs) -> ChapterState:
+    def set_state(self, chapter_id: str, **kwargs: Any) -> ChapterState:
+        """Bolum durumunu gunceller ve kaydeder."""
         return self.pipeline_mgr.update_chapter(chapter_id, **kwargs)
 
     def advance(self, chapter_id: str, target_step: str) -> ChapterState:
+        """Bolumu bir sonraki adima gecirir."""
         assert target_step in self.VALID_STEPS, f"Invalid step: {target_step}"
         return self.set_state(chapter_id, current_step=target_step)
 
-    def seed(self, chapter_id: str, **fields) -> ChapterSeed:
+    def seed(self, chapter_id: str, **fields: Any) -> ChapterSeed:
+        """Bolum seed bilgisini olusturur ve kaydeder."""
         _ensure_workspace(self.root, chapter_id)
         seed = ChapterSeed(chapter_id=chapter_id, **fields)
         seed.to_yaml(seed_path(self.root, chapter_id))
@@ -62,6 +71,7 @@ class AuthoringPipeline:
         return seed
 
     def load_seed(self, chapter_id: str) -> ChapterSeed | None:
+        """Kayitli seed bilgisini yukler, yoksa None dondurur."""
         sp = seed_path(self.root, chapter_id)
         if not sp.exists():
             return None
@@ -115,7 +125,7 @@ class AuthoringPipeline:
         lines = text.splitlines()
         headings = []
         for i, line in enumerate(lines, 1):
-            m = re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+            m = re.match(_HEADING_PATTERN, line)
             if m:
                 from bookmaker.chapter.parser import Heading
                 headings.append(Heading(
@@ -126,8 +136,8 @@ class AuthoringPipeline:
         if len(h1) != 1:
             issues.append("Outline tek H1 baslik icermeli.")
         h2 = [h for h in headings if h.level == 2]
-        if len(h2) < 3:
-            issues.append("Outline en az 3 H2 alt baslik icermeli.")
+        if len(h2) < _MIN_H2_HEADINGS:
+            issues.append(f"Outline en az {_MIN_H2_HEADINGS} H2 alt baslik icermeli.")
         for concept in seed.mandatory_concepts:
             if concept.lower() not in text.lower():
                 issues.append(f"Zorunlu kavram outline'da bulunamadi: {concept}")

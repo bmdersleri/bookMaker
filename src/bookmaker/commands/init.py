@@ -1,3 +1,4 @@
+"""bookMaker proje baslatma komutu."""
 # ruff: noqa: E501
 from __future__ import annotations
 

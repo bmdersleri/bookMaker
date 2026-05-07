@@ -1,5 +1,4 @@
-"""
-bookmaker.production.mermaid_theme
+"""bookmaker.production.mermaid_theme
 ===================================
 Kitap profiline göre Mermaid tema seçimi ve mmdc konfigürasyon yönetimi.
 
@@ -45,12 +44,12 @@ _PROFILE_MAP: dict[str, str] = {
 
 @dataclass
 class MermaidTheme:
-    """
-    Tek bir Mermaid tema konfigürasyonu.
+    """Tek bir Mermaid tema konfigürasyonu.
 
     Attributes:
         name: Tema adı (dosya adıyla aynı, uzantısız)
         config: mmdc'ye geçilecek tam JSON nesnesi
+
     """
 
     name: str
@@ -58,11 +57,11 @@ class MermaidTheme:
 
     @classmethod
     def load(cls, theme_name: str) -> MermaidTheme:
-        """
-        Tema dosyasını yükler. Bulunamazsa 'default' temaya düşer.
+        """Tema dosyasını yükler. Bulunamazsa 'default' temaya düşer.
 
         Args:
             theme_name: Tema dosyasının adı (uzantısız, örn. 'flutter')
+
         """
         theme_path = _THEMES_DIR / f"{theme_name}.json"
 
@@ -81,12 +80,12 @@ class MermaidTheme:
         return cls(name=theme_path.stem, config=config)
 
     def merge(self, overrides: dict) -> MermaidTheme:
-        """
-        Mevcut temaya kullanıcı override'larını uygular.
+        """Mevcut temaya kullanıcı override'larını uygular.
         book_manifest.yaml'dan gelen özel ayarlar için kullanılır.
 
         Args:
             overrides: {"themeVariables": {...}} formatında ek ayarlar
+
         """
         import copy
 
@@ -100,8 +99,7 @@ class MermaidTheme:
 
     @contextlib.contextmanager
     def config_file(self) -> Iterator[Path]:
-        """
-        Geçici bir JSON konfigürasyon dosyası oluşturur ve path'ini yield eder.
+        """Geçici bir JSON konfigürasyon dosyası oluşturur ve path'ini yield eder.
         Context manager bitince dosya silinir.
 
         Kullanım:
@@ -124,17 +122,14 @@ class MermaidTheme:
 
 
 class MermaidThemeManager:
-    """
-    Profil adından tema yükleyen statik yardımcı.
-    """
+    """Profil adından tema yükleyen statik yardımcı."""
 
     @staticmethod
     def for_profile(
         profile: str,
         overrides: dict | None = None,
     ) -> MermaidTheme:
-        """
-        Kitap profiline uygun temayı döner.
+        """Kitap profiline uygun temayı döner.
 
         Args:
             profile: Kitap profili ('flutter', 'java', 'python', 'react', 'generic')
@@ -142,6 +137,7 @@ class MermaidThemeManager:
 
         Returns:
             Uygulanmaya hazır MermaidTheme nesnesi
+
         """
         theme_name = _PROFILE_MAP.get(profile.lower(), "default")
         theme = MermaidTheme.load(theme_name)

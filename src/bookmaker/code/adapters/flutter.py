@@ -1,3 +1,8 @@
+"""Flutter/Dart code adapter for bookMaker.
+
+Runs dart analyze on extracted Dart code blocks to verify syntax.
+"""
+
 from __future__ import annotations
 
 import shutil
@@ -22,11 +27,26 @@ def _find_pubspec(workdir: Path) -> Path | None:
 
 
 class FlutterCodeAdapter(CodeAdapter):
+    """Code adapter for Flutter/Dart code blocks.
+
+    Runs dart analyze on extracted Dart code snippets to verify syntax.
+    """
+
     name = "flutter"
     language = "dart"
     fence_languages = ("dart",)
 
     def run_tests(self, blocks: list[str], workdir: Path) -> list[dict]:
+        """Run dart analyze on each code block.
+
+        Args:
+            blocks: List of Dart code block contents.
+            workdir: Working directory for temporary files.
+
+        Returns:
+            List of test result dictionaries.
+
+        """
         results: list[dict] = []
         dart = shutil.which("dart")
         pubspec = _find_pubspec(workdir)

@@ -7,10 +7,19 @@ Bu sayede kod blokları, diyagramlar, sözlük gibi yapılar garantilenmiş olur
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
 from bookmaker.generation.prompts import SYSTEM_AUTHOR, build_system_author
 
+if TYPE_CHECKING:
+    from bookmaker.llm.openai import OpenAICompatibleClient
+
 logger = logging.getLogger(__name__)
+
+# ------------------------------------------------------------
+# Module-level named constants (replaces magic numbers)
+# ------------------------------------------------------------
+SPEC_MAX_CHARS: int = 5000
 
 # ============================================================
 # SPEC PROMPT
@@ -100,8 +109,8 @@ Cevabını şu formatta ver:
 
 def build_seed_from_spec_prompt(spec: str, chapter_title: str, code_language: str = "java") -> str:
     """Spesifikasyona dayalı seed generation prompt'u."""
-    spec_short = spec[:5000]
-    if len(spec) > 5000:
+    spec_short = spec[:SPEC_MAX_CHARS]
+    if len(spec) > SPEC_MAX_CHARS:
         spec_short += "\n\n... (planin devami var, tum maddeleri isle)"
     lang = code_language or "java"
     lang_cap = lang.capitalize()
@@ -146,7 +155,7 @@ Yazım kuralları:
 # SPEC FUNCTIONS
 # ============================================================
 
-def generate_spec(client, chapter_title: str, concepts: list[str],
+def generate_spec(client: OpenAICompatibleClient, chapter_title: str, concepts: list[str],
                   book_context: str = "", chapter_no: int | None = None,
                   code_language: str = "java") -> str:
     """LLM'e bölüm spesifikasyonu ürettirir.
@@ -161,8 +170,8 @@ def generate_spec(client, chapter_title: str, concepts: list[str],
 
     Returns:
         Spesifikasyon metni (Markdown formatında)
+
     """
-    """LLM'e bölüm spesifikasyonu ürettirir."""
     user = build_spec_prompt(chapter_title, concepts, book_context, chapter_no,
                              code_language=code_language)
     system = build_system_author(code_language) if code_language != "java" else SYSTEM_AUTHOR
@@ -172,7 +181,7 @@ def generate_spec(client, chapter_title: str, concepts: list[str],
     return spec
 
 
-def validate_spec(client, spec: str, chapter_title: str,
+def validate_spec(client: OpenAICompatibleClient, spec: str, chapter_title: str,
                   code_language: str = "java") -> dict[str, str]:
     """LLM'e spesifikasyonu doğrulatır.
 
@@ -184,11 +193,7 @@ def validate_spec(client, spec: str, chapter_title: str,
 
     Returns:
         {"status": "PASS"|"REVISION", "notes": "...", "response": "..."}
-    """
-    """LLM'e spesifikasyonu doğrulatır.
 
-    Returns:
-        {"status": "PASS"|"REVISION", "notes": "...", "response": "..."}
     """
     user = build_spec_validation_prompt(spec, chapter_title,
                                         code_language=code_language)

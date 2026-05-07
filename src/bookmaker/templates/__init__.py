@@ -1,0 +1,1 @@
+"""bookMaker sablon modulu."""

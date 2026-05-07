@@ -1,5 +1,4 @@
-"""
-bookmaker.production.screenshot_strategies.python_plot
+"""bookmaker.production.screenshot_strategies.python_plot
 =======================================================
 matplotlib, plotly ve seaborn çıktılarını PNG'ye dönüştürür.
 
@@ -83,8 +82,7 @@ class PythonPlotStrategy(ScreenshotStrategy):
     # ------------------------------------------------------------------
 
     def _patch_code(self, code: str, output_path: Path) -> str:
-        """
-        plt.show() ve fig.show() çağrılarını dosyaya kaydetme ile değiştirir.
+        """plt.show() ve fig.show() çağrılarını dosyaya kaydetme ile değiştirir.
         Matplotlib backend'ini non-interactive olarak ayarlar.
         """
         out = str(output_path).replace("\\", "/")

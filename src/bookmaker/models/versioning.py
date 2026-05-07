@@ -1,3 +1,4 @@
+"""Surum yonetimi modelleri — Version, VersionHistory."""
 from __future__ import annotations
 
 from enum import StrEnum
@@ -11,6 +12,8 @@ _yaml.preserve_quotes = True
 
 
 class EventType(StrEnum):
+    """Surum olay tipleri (seed_created, outline_pasted, vb.)."""
+
     seed_created = "seed_created"
     seed_updated = "seed_updated"
     seed_approved = "seed_approved"
@@ -34,6 +37,8 @@ class EventType(StrEnum):
 
 
 class ChapterStep(StrEnum):
+    """Bolum adim durumlari (planned, seeded, ..., ready_for_export)."""
+
     planned = "planned"
     seeded = "seeded"
     outline_prompt_ready = "outline_prompt_ready"
@@ -55,6 +60,8 @@ class ChapterStep(StrEnum):
 
 
 class VersionEvent(BaseModel):
+    """Bir surum olayini kaydeder — zaman, tur, versiyon, skor."""
+
     event_id: str
     created_at: str
     chapter_id: str
@@ -68,16 +75,20 @@ class VersionEvent(BaseModel):
     notes: str = ""
 
     def to_jsonl_line(self) -> str:
+        """Olayi JSONL satirina donusturur."""
         import json
         return json.dumps(self.model_dump(mode="json"), ensure_ascii=False)
 
     @classmethod
     def from_jsonl_line(cls, line: str) -> VersionEvent:
+        """JSONL satirindan olay yukler."""
         import json
         return cls.model_validate(json.loads(line))
 
 
 class ActiveVersion(BaseModel):
+    """Bir bolumun aktif versiyon ve adim bilgisi."""
+
     chapter_id: str
     current_step: ChapterStep = ChapterStep.planned
     seed: str | None = None
@@ -86,12 +97,14 @@ class ActiveVersion(BaseModel):
     approved_chapter: str | None = None
 
     def to_yaml(self, path: Path) -> None:
+        """Aktif versiyonu YAML dosyasina yazar."""
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
             _yaml.dump(self.model_dump(mode="json"), f)
 
     @classmethod
     def from_yaml(cls, path: Path) -> ActiveVersion:
+        """YAML dosyasindan aktif versiyon yukler."""
         with open(path, encoding="utf-8") as f:
             data = _yaml.load(f)
         return cls.model_validate(data)

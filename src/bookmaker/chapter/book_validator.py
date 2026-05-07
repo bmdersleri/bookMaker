@@ -30,6 +30,7 @@ class BookCheckResult:
     """Kitap validasyonu sonucu."""
 
     def __init__(self, report: QualityReport) -> None:
+        """Initialize BookCheckResult with a quality report."""
         self.report = report
         self.chapter_order: list[str] = []
         self.chapter_orders: dict[str, int] = {}
@@ -419,6 +420,17 @@ def validate_book_cli(
     images_dir: str = "",
     json_output: bool = False,
 ) -> BookCheckResult:
+    """Validate a book project from the command line.
+
+    Args:
+        project_root: Path to the project root directory.
+        images_dir: Path to images directory (optional).
+        json_output: Whether to output results as JSON.
+
+    Returns:
+        BookCheckResult containing validation results.
+
+    """
     root = Path(project_root)
     idir = Path(images_dir) if images_dir and Path(images_dir).exists() else None
     return validate_book(root, idir)

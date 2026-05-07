@@ -54,6 +54,18 @@ from bookmaker.llm.openai import OpenAICompatibleClient
 
 logger = logging.getLogger(__name__)
 
+# ------------------------------------------------------------
+# Module-level named constants (replaces magic numbers)
+# ------------------------------------------------------------
+CONTEXT_HEAD_CHARS: int = 2000
+CONTEXT_TAIL_CHARS: int = 2000
+MAX_PARALLEL_WORKERS: int = 4
+MAX_SECTION_PARTS: int = 8
+MIN_SECTION_PARTS: int = 2
+DEFAULT_MAX_TOKENS: int = 8192
+DRAFT_MAX_TOKENS: int = 4096
+DEEPEN_MIN_CHARS: int = 300
+
 
 def _fallback_content(key: str, chapter_title: str) -> str:
     """LLM enrichment çalışmadığında güvenli varsayılan içerik üretir."""
@@ -226,14 +238,15 @@ class ChapterGenerator:
         headings = [s["heading"] for s in sections
                     if s["heading"] != "__title__"]
 
-        # Tam baglam: ilk 2000 + son 2000 karakter
+        # Tam baglam: ilk CONTEXT_HEAD_CHARS + son CONTEXT_TAIL_CHARS karakter
         clean_text = normalized_text
         if clean_text.startswith("---"):
             idx = clean_text.find("---", 3)
             if idx != -1:
                 clean_text = clean_text[idx + 3:]
-        head = clean_text[:2000].strip()
-        tail = clean_text[-2000:].strip() if len(clean_text) > 4000 else ""
+        head = clean_text[:CONTEXT_HEAD_CHARS].strip()
+        context_chars = CONTEXT_HEAD_CHARS + CONTEXT_TAIL_CHARS
+        tail = clean_text[-CONTEXT_TAIL_CHARS:].strip() if len(clean_text) > context_chars else ""
         context = head + ("\n...\n" + tail if tail else "")
 
         type_map = {
@@ -265,7 +278,7 @@ class ChapterGenerator:
         enriched, start = {}, time.time()
 
         with concurrent.futures.ThreadPoolExecutor(
-            max_workers=min(len(pending), 4)
+            max_workers=min(len(pending), MAX_PARALLEL_WORKERS)
         ) as pool:
             fmap = {}
             for key in pending:
@@ -302,7 +315,7 @@ class ChapterGenerator:
         c = self.client.generate_text(self.system_prompt, user_prompt)
         return c.strip(), time.time() - t0
 
-    def _fallback_all(self, enrich_types, chapter_title):
+    def _fallback_all(self, enrich_types: list[str] | None, chapter_title: str) -> dict[str, str]:
         types = enrich_types or ["ozet", "sozluk", "soru",
                                  "alistirma", "hata", "kopru"]
         return {k: _fallback_content(k, chapter_title) for k in types}
@@ -446,7 +459,7 @@ class ChapterGenerator:
 
     def _spec_seed_normalize(
         self, chapter_id: str, title: str, concepts: list[str],
-        chapter_no, gen_dir: Path, result: dict,
+        chapter_no: int | None, gen_dir: Path, result: dict,
     ) -> str:
         """Spec -> Validate -> Seed -> Normalize ortak akisi.
 
@@ -501,9 +514,12 @@ class ChapterGenerator:
 
     def generate_chapter_with_spec(
         self, chapter_id: str, title: str, concepts: list[str],
-        chapter_no=None, enrich_types=None, next_chapter=None, save=True,
+        chapter_no: int | None = None,
+        enrich_types: list[str] | None = None,
+        next_chapter: str | None = None,
+        save: bool = True,
         include_deepen: bool = False,
-    ):
+    ) -> dict[str, Any]:
         """Spec -> Validate -> Seed -> Normalize -> [Deepen] -> Enrich -> Assemble.
 
         Her asamanin ciktisi logs/production/ altina kaydedilir.
@@ -552,8 +568,8 @@ class ChapterGenerator:
 
     def generate_chapter_sectioned(
         self, chapter_id: str, title: str, concepts: list[str],
-        chapter_no=None, save=True,
-    ) -> dict:
+        chapter_no: int | None = None, save: bool = True,
+    ) -> dict[str, Any]:
         """Parça bazlı bölüm üretimi — her alt bölüm ayrı API çağrısı.
 
         Strateji:
@@ -597,10 +613,10 @@ class ChapterGenerator:
             if s_clean and s_clean.lower() not in seen:
                 seen.add(s_clean.lower())
                 sections.append(s_clean)
-                if len(sections) >= 8:
+                if len(sections) >= MAX_SECTION_PARTS:
                     break
 
-        if len(sections) < 2:
+        if len(sections) < MIN_SECTION_PARTS:
             logger.warning("SECTIONED: Yetersiz bölüm başlığı, normal moda geçiliyor...")
             return self.generate_chapter_with_spec(
                 chapter_id, title, concepts, chapter_no, save=save)
@@ -638,7 +654,7 @@ class ChapterGenerator:
             t_part = time.time()
             try:
                 part_text = self.client.generate_text_with_resume(
-                    self.system_prompt, section_prompt, max_tokens=8192
+                    self.system_prompt, section_prompt, max_tokens=DEFAULT_MAX_TOKENS
                 )
                 elapsed = time.time() - t_part
                 wc = len(part_text.split())
@@ -700,7 +716,7 @@ class ChapterGenerator:
                     chapter_id, wc, tt, len(all_parts), gen_dir)
         return result
 
-    def _save(self, path, content):
+    def _save(self, path: Path, content: str) -> None:
         """Icerigi dosyaya kaydet. Hata durumunda uyari verir."""
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -722,13 +738,13 @@ class ChapterGenerator:
             section_content=section_content,
         )
         # Bölüm zaten uzunsa daha fazla token iste
-        est_tokens = min(8192, max(4096, len(section_content) // 2))
+        est_tokens = min(DEFAULT_MAX_TOKENS, max(DRAFT_MAX_TOKENS, len(section_content) // 2))
         return self.client.generate_text_with_resume(
             self.system_prompt, prompt, max_tokens=est_tokens
         )
 
     def _deepen_sections(
-        self, text: str, chapter_title: str, gen_dir
+        self, text: str, chapter_title: str, gen_dir: Path
     ) -> str:
         """Normalize edilmiş bölümü H2 bazında teorik olarak derinleştirir.
 
@@ -745,7 +761,7 @@ class ChapterGenerator:
             sections=sections,
             deepen_fn=self._call_deepen,
             chapter_title=chapter_title,
-            min_chars=300,
+            min_chars=DEEPEN_MIN_CHARS,
         )
 
         result = reassemble_from_sections(deepened)
@@ -764,8 +780,11 @@ class ChapterGenerator:
 
     def generate_chapter_two_pass(
         self, chapter_id: str, title: str, concepts: list[str],
-        chapter_no=None, enrich_types=None, next_chapter=None, save=True,
-    ) -> dict:
+        chapter_no: int | None = None,
+        enrich_types: list[str] | None = None,
+        next_chapter: str | None = None,
+        save: bool = True,
+    ) -> dict[str, Any]:
         """İki geçişli bölüm üretimi: önce hızlı taslak, sonra bölüm bölüm genişlet.
 
         Strateji:
@@ -797,7 +816,7 @@ class ChapterGenerator:
         # İlk geçiş: hızlı, kısa taslak
         draft = self.client.generate_text_with_resume(
             self.system_prompt, seed_prompt,
-            max_tokens=4096,  # Kısa taslak için düşük limit
+            max_tokens=DRAFT_MAX_TOKENS,
             output_path=str(gen_dir / "pass1_draft_stream.md"),
         )
         result["draft_time"] = round(time.time() - t_draft, 1)
@@ -861,8 +880,11 @@ class ChapterGenerator:
 
     def generate_chapter_with_spec_deep(
         self, chapter_id: str, title: str, concepts: list[str],
-        chapter_no=None, enrich_types=None, next_chapter=None, save=True,
-    ) -> dict:
+        chapter_no: int | None = None,
+        enrich_types: list[str] | None = None,
+        next_chapter: str | None = None,
+        save: bool = True,
+    ) -> dict[str, Any]:
         """Spec -> Validate -> Seed -> Normalize -> Deepen -> Enrich -> Assemble.
 
         Standart spec pipeline'ina deepen pass eklenmis hali.

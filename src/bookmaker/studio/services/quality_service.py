@@ -11,17 +11,26 @@ from bookmaker.chapter.scoring import make_report
 from bookmaker.chapter.validation_modes import resolve_validation_profile_from_manifest
 from bookmaker.chapter.validator import validate
 from bookmaker.code.runner import select_code_adapter
+from bookmaker.manifest.models import ManifestChapter
+from bookmaker.models.quality import QualityReport
+
+_PREVIEW_LENGTH = 500
+_ERROR_TRUNCATION = 200
+_READING_SPEED_WPM = 200
 
 
-def _chapter_alias(chapter) -> str:
+def _chapter_alias(chapter: ManifestChapter) -> str:
+    """Return chapter alias from a ManifestChapter instance."""
     return chapter.chapter_id or chapter.alias or ""
 
 
-def _chapter_matches(chapter, chapter_id: str) -> bool:
+def _chapter_matches(chapter: ManifestChapter, chapter_id: str) -> bool:
+    """Check if a chapter matches by chapter_id or alias."""
     return chapter_id in {chapter.chapter_id, chapter.alias}
 
 
-def _chapter_source(chapter) -> str:
+def _chapter_source(chapter: ManifestChapter) -> str:
+    """Return default source path for a chapter."""
     alias = _chapter_alias(chapter)
     return chapter.source or f"chapters/{alias}/content/final.md"
 
@@ -34,7 +43,7 @@ def _report_path(chapter_id: str | None = None) -> str:
     return str(Path("logs") / "reviews" / "book_quality_report.json")
 
 
-def _issue_rows(report, limit: int = 25) -> list[dict]:
+def _issue_rows(report: QualityReport, limit: int = 25) -> list[dict]:
     rows = []
     for issue in report.issues[:limit]:
         rows.append({
@@ -47,7 +56,11 @@ def _issue_rows(report, limit: int = 25) -> list[dict]:
     return rows
 
 
-def _chapter_report_payload(root: Path, chapter_id: str, report) -> dict:
+def _chapter_report_payload(
+    root: Path,
+    chapter_id: str,
+    report: QualityReport,
+) -> dict:
     report_path = _report_path(chapter_id)
     return {
         "chapter_id": chapter_id,
@@ -83,7 +96,7 @@ def validate_chapter(project_root: str | Path, chapter_id: str) -> dict:
         report = make_report(chapter_id, issues)
         return _chapter_report_payload(root, chapter_id, report)
     except Exception as e:
-        return {"error": f"Validasyon hatasi: {str(e)[:200]}"}
+        return {"error": f"Validasyon hatasi: {str(e)[:_ERROR_TRUNCATION]}"}
 
 
 def get_chapter_content(project_root: str | Path, chapter_id: str) -> dict:
@@ -115,7 +128,7 @@ def get_chapter_content(project_root: str | Path, chapter_id: str) -> dict:
                     "path": str(p.relative_to(root)),
                     "words": len(text.split()),
                     "chars": len(text),
-                    "preview": text[:500], "full": text}
+                    "preview": text[:_PREVIEW_LENGTH], "full": text}
     return {"error": f"İçerik bulunamadi: {chapter_id}"}
 
 
@@ -227,7 +240,7 @@ def get_book_stats(project_root: str | Path) -> dict:
             word_counts.append({"chapter_id": alias,
                                 "words": 0, "title": ch.title or alias})
 
-    reading_minutes = round(total_words / 200)
+    reading_minutes = round(total_words / _READING_SPEED_WPM)
     chapter_count = len(manifest.chapters)
 
     # En uzun/kısa bölüm
@@ -285,7 +298,7 @@ def search_content(project_root: str | Path, query: str,
                 results.append({
                     "chapter_id": _chapter_alias(ch),
                     "line": i + 1,
-                    "context": context[:500],
+                    "context": context[:_PREVIEW_LENGTH],
                     "text": line[:200],
                 })
     return results

@@ -1,3 +1,9 @@
+"""Markdown chapter parser for bookMaker.
+
+Provides data classes and parsing functions for extracting
+frontmatter, headings, and meta blocks from markdown chapter files.
+"""
+
 from __future__ import annotations
 
 import re
@@ -7,6 +13,16 @@ from pathlib import Path
 
 @dataclass
 class MetaBlock:
+    """Represents a meta block found in markdown content.
+
+    Attributes:
+        kind: Meta block kind (e.g. CODE_META, MERMAID_META).
+        data: Key-value pairs parsed from the block body.
+        line: Starting line number in the source text.
+        end: Character offset (exclusive) in raw text.
+
+    """
+
     kind: str
     data: dict[str, str]
     line: int
@@ -15,6 +31,15 @@ class MetaBlock:
 
 @dataclass
 class Heading:
+    """Represents a markdown heading.
+
+    Attributes:
+        level: Heading level (1-6).
+        title: Heading title text.
+        line: Line number in the source text.
+
+    """
+
     level: int
     title: str
     line: int
@@ -22,6 +47,17 @@ class Heading:
 
 @dataclass
 class ParsedChapter:
+    """Represents a fully parsed chapter with its structure.
+
+    Attributes:
+        path: Path to the source markdown file.
+        text: Raw chapter text content.
+        frontmatter: YAML front matter key-value pairs.
+        headings: List of parsed headings.
+        meta_blocks: List of parsed meta blocks.
+
+    """
+
     path: Path
     text: str
     frontmatter: dict[str, str]
@@ -89,6 +125,17 @@ def _parse_headings(text: str) -> list[Heading]:
 
 
 def parse(path: Path) -> ParsedChapter:
+    """Parse a markdown file into a ParsedChapter.
+
+    Extracts frontmatter, headings, and meta blocks from the file.
+
+    Args:
+        path: Path to the markdown file.
+
+    Returns:
+        ParsedChapter containing all parsed elements.
+
+    """
     text = path.read_text(encoding="utf-8")
     return ParsedChapter(
         path=path,

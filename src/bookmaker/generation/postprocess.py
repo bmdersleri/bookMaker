@@ -1,14 +1,20 @@
 """Normalizasyon — LLM çıktısını yapılandırılmış bölüm dosyasına dönüştürür.
 Hiçbir meta etiketi (CODE_META, SECTION_META) kullanılmaz.
-Tüm format işlemleri Python kodu ile yapılır."""
+Tüm format işlemleri Python kodu ile yapılır.
+"""
 
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from bookmaker.core.config import BookConfig
 from bookmaker.generation.clean_text import TextCleaner
+
+if TYPE_CHECKING:
+    from bookmaker.manifest.models import BookManifest
 
 # ============================================================
 # HEADING NORMALIZASYONU
@@ -128,6 +134,7 @@ def build_front_matter(chapter_id: str, title: str, config: BookConfig | None = 
     devam eder (cokmez). normalize() fonksiyonu icinden dogru cagrilir:
         ensure_front_matter(text, chapter_id, title, config)
         -> build_front_matter(chapter_id, title, config)
+
     """
     # Saglamlik: yanlislikla string gecilmisse uyar
     if isinstance(config, str):
@@ -257,6 +264,7 @@ def extract_sections(text: str) -> list[dict]:
 
     Returns:
         [{'heading': 'Bölüm özeti', 'content': '...', 'order': 1}, ...]
+
     """
     in_front_matter = text.lstrip().startswith("---")
     in_code_block = False
@@ -360,6 +368,7 @@ def detect_missing_sections(text: str) -> list[dict]:
 
     Returns:
         [{'key': 'ozet', 'title': 'Bölüm özeti', 'existing': False}, ...]
+
     """
     sections = extract_sections(text)
     existing_headings = [_ascii_lower(s["heading"]) for s in sections]
@@ -391,6 +400,7 @@ def extract_code_blocks(text: str, language: str = "java") -> list[dict]:
 
     Returns:
         [{'index': 0, 'code': '...', 'language': 'java', 'start': 100, 'end': 250}, ...]
+
     """
     pattern = re.compile(
         r"```" + language + r"\s*\n(.*?)```", re.DOTALL
@@ -412,6 +422,7 @@ def extract_mermaid_blocks(text: str) -> list[dict]:
 
     Returns:
         [{'index': 0, 'code': '...', 'start': 100, 'end': 250}, ...]
+
     """
     pattern = re.compile(r"```mermaid\s*\n(.*?)```", re.DOTALL)
     return [
@@ -443,6 +454,7 @@ def insert_section(text: str, section_title: str, section_content: str,
 
     Returns:
         Güncellenmiş metin
+
     """
     # Mükerrer kontrolü: benzer başlık zaten var mı?
     if turkish_terms:
@@ -555,6 +567,7 @@ def normalize(
 
     Returns:
         Normalize edilmiş bölüm metni
+
     """
     text = TextCleaner.clean(text)
     text = normalize_headings(text)
@@ -574,7 +587,7 @@ def normalize_with_mermaid(
     text: str,
     chapter_alias: str,
     chapter_content_dir: Path,
-    manifest=None,
+    manifest: BookManifest | None = None,
     chapter_id: str = "",
     title: str = "",
     config: BookConfig | None = None,
@@ -622,7 +635,7 @@ def process_screenshots(
     text: str,
     chapter_alias: str,
     chapter_content_dir: Path,
-    manifest=None,
+    manifest: BookManifest | None = None,
 ) -> str:
     """Markdown icindeki isaretlenmis kod bloklarini (python plot,
     python console, jsx screenshot) ekran goruntusune donusturur.
@@ -748,7 +761,7 @@ def extract_h2_sections(text: str) -> list[dict[str, str]]:
 
 def deepen_theory(
     sections: list[dict[str, str]],
-    deepen_fn,
+    deepen_fn: Callable[[str, str, str], str],
     chapter_title: str,
     min_chars: int = 500,
 ) -> list[dict[str, str]]:
@@ -763,6 +776,7 @@ def deepen_theory(
 
     Returns:
         Derinleştirilmiş bölümler listesi (aynı yapıda)
+
     """
     deepened = []
     for sec in sections:

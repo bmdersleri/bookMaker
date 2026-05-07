@@ -14,6 +14,9 @@ _JOBS: dict[str, dict[str, Any]] = {}
 _LOCK = threading.Lock()
 _WORKER_STARTED = False
 
+_MAX_CONCURRENT_ENRICH = 4
+_MAX_LOG_ENTRIES = 50
+
 
 def _now() -> str:
     return datetime.now().isoformat(timespec="seconds")
@@ -104,7 +107,7 @@ def list_jobs(limit: int = 20) -> list[dict]:
         return [dict(j) for j in jobs[:limit]]
 
 
-def update_job(job_id: str, **kwargs) -> dict | None:
+def update_job(job_id: str, **kwargs: Any) -> dict | None:
     with _LOCK:
         job = _JOBS.get(job_id)
         if not job:
@@ -133,8 +136,8 @@ def append_log(job_id: str, msg: str) -> None:
         job = _JOBS.get(job_id)
         if job:
             job["progress"]["log"].append(f"[{_now()}] {msg}")
-            if len(job["progress"]["log"]) > 50:
-                job["progress"]["log"] = job["progress"]["log"][-50:]
+            if len(job["progress"]["log"]) > _MAX_LOG_ENTRIES:
+                job["progress"]["log"] = job["progress"]["log"][-_MAX_LOG_ENTRIES:]
 
 
 def cancel_job(job_id: str) -> dict | None:
@@ -345,7 +348,7 @@ def _run_pipeline(root: Path, job_id: str, chapter_id: str, params: dict) -> Non
     pending_types = [e for e in enrich_types if e in builders]
 
     with concurrent.futures.ThreadPoolExecutor(
-        max_workers=min(len(pending_types), 4)
+        max_workers=min(len(pending_types), _MAX_CONCURRENT_ENRICH)
     ) as pool:
         fmap = {}
         for etype in pending_types:

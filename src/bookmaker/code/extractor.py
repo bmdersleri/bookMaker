@@ -4,6 +4,16 @@ import re
 
 
 def extract_fenced_blocks(text: str, languages: tuple[str, ...]) -> list[str]:
+    """Extract fenced code blocks for the given languages.
+
+    Args:
+        text: Markdown text to search.
+        languages: Tuple of fence language tags to match.
+
+    Returns:
+        List of code block contents (without fences).
+
+    """
     blocks: list[str] = []
     for language in languages:
         pattern = rf"```{re.escape(language)}\s*\n(.*?)```"

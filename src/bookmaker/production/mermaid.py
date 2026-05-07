@@ -31,6 +31,7 @@ def render_mermaid(
     Returns:
         {'status': 'passed'|'failed'|'timeout'|'error',
          'output': str, 'error': str, 'path': str|None}
+
     """
     output_path.parent.mkdir(parents=True, exist_ok=True)
 

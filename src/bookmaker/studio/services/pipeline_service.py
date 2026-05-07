@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
+from bookmaker.generation.pipeline import ChapterGenerator
 from bookmaker.manifest.models import ChapterPipelineEntry, ChapterState
 from bookmaker.manifest.pipeline import PipelineManager
 from bookmaker.studio.services import chapter_service, generation_service
 
 
-def _chapter_state_dict(state) -> dict:
+def _chapter_state_dict(
+    state: ChapterPipelineEntry | ChapterState | None,
+) -> dict:
     if isinstance(state, ChapterPipelineEntry):
         return {
             "current_step": state.status.state,
@@ -53,14 +57,16 @@ def get_pipeline_state(project_root: str | Path) -> dict:
     }
 
 
-def update_chapter_state(project_root: str | Path, chapter_id: str, **kwargs) -> dict:
+def update_chapter_state(project_root: str | Path, chapter_id: str, **kwargs: Any) -> dict:
     """Update one chapter state using the manifest pipeline manager."""
     manager = PipelineManager(Path(project_root).resolve())
     state = manager.update_chapter(chapter_id, **kwargs)
     return {"chapter_id": chapter_id, **_chapter_state_dict(state)}
 
 
-def get_generator(project_root: str | Path):
+def get_generator(
+    project_root: str | Path,
+) -> ChapterGenerator | None:
     """Compatibility wrapper for generation_service.get_generator."""
     return generation_service.get_generator(project_root)
 

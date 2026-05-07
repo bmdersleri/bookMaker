@@ -1,5 +1,4 @@
-"""
-bookmaker.production.screenshot_strategies.base
+"""bookmaker.production.screenshot_strategies.base
 =================================================
 Screenshot stratejilerinin ortak arayüzü ve veri modelleri.
 """
@@ -15,6 +14,7 @@ from pathlib import Path
 @dataclass
 class ScreenshotResult:
     """Tek bir kod bloğunun screenshot sonucu."""
+
     index: int
     hint: str                  # "plot" | "console" | "screenshot"
     output_path: Path
@@ -29,8 +29,7 @@ class ScreenshotResult:
 
 @dataclass
 class ScreenshotConfig:
-    """
-    book_manifest.yaml → production.screenshots bölümünden yüklenir.
+    """book_manifest.yaml → production.screenshots bölümünden yüklenir.
 
     Örnek manifest:
         production:
@@ -43,6 +42,7 @@ class ScreenshotConfig:
             scale: 2
             terminal_theme: dark
     """
+
     enabled: bool = True
     python_timeout: int = 15
     react_timeout: int = 10
@@ -84,8 +84,7 @@ class ScreenshotStrategy(ABC):
         output_path: Path,
         index: int,
     ) -> ScreenshotResult:
-        """
-        Kodu çalıştır ve output_path'e PNG yaz.
+        """Kodu çalıştır ve output_path'e PNG yaz.
         Hata olursa result.error doldurulur, exception fırlatılmaz.
         """
 

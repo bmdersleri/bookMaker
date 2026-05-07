@@ -1,4 +1,10 @@
 # ruff: noqa: E501
+"""Chapter content validator for bookMaker.
+
+Validates structure, meta blocks, code fences, and screenshots
+in parsed chapter markdown files.
+"""
+
 from __future__ import annotations
 
 import re

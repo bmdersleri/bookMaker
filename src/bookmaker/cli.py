@@ -53,7 +53,7 @@ def main(
     ctx: typer.Context,
     version: bool = typer.Option(False, "--version", "-v", help="Versiyon goster."),
 ) -> None:
-    """bookMaker — akademik ve teknik kitap uretim studyosu CLI."""
+    """BookMaker — akademik ve teknik kitap uretim studyosu CLI."""
     setup_logging()
     if version:
         typer.echo(f"bookmaker {__version__}")

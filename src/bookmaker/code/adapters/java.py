@@ -1,3 +1,8 @@
+"""Java code adapter for bookMaker.
+
+Compiles extracted Java code blocks with javac to verify syntax.
+"""
+
 from __future__ import annotations
 
 import re
@@ -9,11 +14,26 @@ from bookmaker.code.adapters.base import CodeAdapter
 
 
 class JavaCodeAdapter(CodeAdapter):
+    """Code adapter for Java code blocks.
+
+    Compiles each code block with javac to verify syntax correctness.
+    """
+
     name = "java"
     language = "java"
     fence_languages = ("java",)
 
     def run_tests(self, blocks: list[str], workdir: Path) -> list[dict]:
+        """Compile each Java code block with javac.
+
+        Args:
+            blocks: List of Java code block contents.
+            workdir: Working directory for temporary files.
+
+        Returns:
+            List of test result dictionaries.
+
+        """
         results: list[dict] = []
         javac = shutil.which("javac")
 

@@ -6,7 +6,12 @@ from pathlib import Path
 
 from bookmaker.chapter.validation_modes import resolve_validation_profile_from_manifest
 from bookmaker.manifest.manager import ManifestManager
-from bookmaker.manifest.models import BookManifest, ChapterPipelineEntry, ChapterState
+from bookmaker.manifest.models import (
+    BookManifest,
+    ChapterPipelineEntry,
+    ChapterState,
+    PipelineState,
+)
 from bookmaker.manifest.pipeline import PipelineManager
 
 
@@ -15,7 +20,7 @@ def load_manifest(project_root: str | Path) -> BookManifest:
     return ManifestManager(Path(project_root).resolve()).load_or_generate()
 
 
-def _chapter_states(pipeline_state) -> list[str]:
+def _chapter_states(pipeline_state: PipelineState) -> list[str]:
     chapters = pipeline_state.chapters
     if isinstance(chapters, dict):
         return [

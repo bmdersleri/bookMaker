@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from bookmaker.manifest.manager import ManifestManager
+from bookmaker.manifest.models import ManifestChapter
 from bookmaker.production.export_report import write_export_report
 from bookmaker.production.readiness import check_export_readiness
 from bookmaker.production.sources import (
@@ -18,16 +19,22 @@ from bookmaker.production.sources import (
     resolve_chapter_source,
 )
 
+_PANDOC_TIMEOUT = 120
+_MMDC_TIMEOUT = 30
 
-def _chapter_alias(chapter) -> str:
+
+def _chapter_alias(chapter: ManifestChapter) -> str:
+    """Return chapter alias from a ManifestChapter instance."""
     return chapter_alias(chapter)
 
 
-def _chapter_matches(chapter, chapter_id: str) -> bool:
+def _chapter_matches(chapter: ManifestChapter, chapter_id: str) -> bool:
+    """Check if a chapter matches the given chapter_id."""
     return chapter_matches(chapter, chapter_id)
 
 
-def _chapter_source(chapter) -> str:
+def _chapter_source(chapter: ManifestChapter) -> str:
+    """Return default source path for a chapter."""
     return default_chapter_source(chapter)
 
 
@@ -312,7 +319,7 @@ def export_to_format(project_root: str | Path, fmt: str,
         cmd.extend(["--lua-filter", str(lua_path)])
 
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=_PANDOC_TIMEOUT)
         if result.returncode != 0:
             payload = {
                 "error": f"Pandoc hatasi: {result.stderr[:300]}",
@@ -428,7 +435,7 @@ def render_mermaid(project_root: str | Path,
                 proc = subprocess.run(
                     ["mmdc", "-i", str(mmd_path), "-o", str(png_path),
                      "-b", "white"],
-                    capture_output=True, text=True, timeout=30)
+                    capture_output=True, text=True, timeout=_MMDC_TIMEOUT)
                 if proc.returncode == 0:
                     rendered += 1
                     images.append(str(png_path.relative_to(root)))

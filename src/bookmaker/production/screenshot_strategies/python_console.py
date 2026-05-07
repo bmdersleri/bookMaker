@@ -1,5 +1,4 @@
-"""
-bookmaker.production.screenshot_strategies.python_console
+"""bookmaker.production.screenshot_strategies.python_console
 ==========================================================
 Python kodunun konsol çıktısını stillendirilmiş terminal PNG'sine dönüştürür.
 

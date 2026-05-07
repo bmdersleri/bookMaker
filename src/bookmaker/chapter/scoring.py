@@ -1,3 +1,9 @@
+"""Scoring and report generation for chapter validation.
+
+Provides make_report() to convert a list of validation issues
+into a scored QualityReport.
+"""
+
 from __future__ import annotations
 
 from bookmaker.core.ids import new_issue_id

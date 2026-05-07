@@ -218,7 +218,7 @@ def is_known_code_kind(value: str | None) -> bool:
 
 
 def is_language_compatible_with_profile(language: str | None, profile: str | None) -> bool:
-    """CODE_META language ile profil uyumlu mu?
+    """Check if CODE_META language is compatible with the given profile.
 
     Profil None veya generic ise her dil kabul edilir.
     Profil java ise yalnızca java kabul edilir.

@@ -145,6 +145,7 @@ def build_seed_prompt(
 
     Returns:
         LLM'e gönderilecek kullanıcı prompt'u
+
     """
     # Kavramları madde işaretine çevir
     concepts_str = "\n".join(f"  - {c}" for c in concepts)

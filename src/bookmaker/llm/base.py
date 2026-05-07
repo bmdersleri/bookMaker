@@ -15,12 +15,12 @@ class LLMClient(ABC):
         self.base_url = base_url or "https://api.openai.com/v1"
 
     @abstractmethod
-    def chat(self, messages: list[dict], **kwargs: Any) -> dict:
+    def chat(self, messages: list[dict], **kwargs: Any) -> dict[str, Any]:
         """Sohbet tamamlama API'sini çağırır."""
         ...
 
     @abstractmethod
-    def test_connection(self) -> dict:
+    def test_connection(self) -> dict[str, Any]:
         """API bağlantısını test eder."""
         ...
 

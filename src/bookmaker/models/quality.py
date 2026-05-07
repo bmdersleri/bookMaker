@@ -1,3 +1,4 @@
+"""Kalite degerlendirme modelleri — QualityReport, Score, vb."""
 from __future__ import annotations
 
 from enum import StrEnum
@@ -11,12 +12,16 @@ _yaml.preserve_quotes = True
 
 
 class Severity(StrEnum):
+    """Sorun siddet seviyesi (error, warning, info)."""
+
     error = "error"
     warning = "warning"
     info = "info"
 
 
 class Decision(StrEnum):
+    """Kalite karari (pass, pass_with_warnings, revision_required, blocked)."""
+
     passed = "pass"
     passed_with_warnings = "pass_with_warnings"
     revision_required = "revision_required"
@@ -24,6 +29,8 @@ class Decision(StrEnum):
 
 
 class IssueStatus(StrEnum):
+    """Sorun durumu (open, fix_now, fix_later, accepted, resolved)."""
+
     open = "open"
     fix_now = "fix_now"      # 🔴 triyaj
     fix_later = "fix_later"  # 🟡 triyaj
@@ -32,12 +39,16 @@ class IssueStatus(StrEnum):
 
 
 class IssueLocation(BaseModel):
+    """Sorunun dosya, satir ve bolum konumu."""
+
     file: str = ""
     line: int | None = None
     section: str = ""
 
 
 class Issue(BaseModel):
+    """Bir kalite sorununu tum detaylariyla tanimlar."""
+
     issue_id: str
     severity: Severity
     category: str
@@ -52,12 +63,16 @@ class Issue(BaseModel):
 
 
 class CheckResult(BaseModel):
+    """Bir kontrolun sonucu (pass/fail/warning/skip)."""
+
     check_id: str
     status: str  # "pass" | "fail" | "warning" | "skip"
     message: str = ""
 
 
 class QualityReport(BaseModel):
+    """Kalite raporu — skor, karar, sorunlar ve kontroller."""
+
     report_id: str
     artifact_type: str
     artifact_version: str
@@ -93,12 +108,15 @@ class QualityReport(BaseModel):
         return Decision.revision_required
 
     def to_yaml(self, path: Path) -> None:
+        """Raporu YAML dosyasina yazar."""
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
             _yaml.dump(self.model_dump(mode="json"), f)
 
 
 class GateResult(BaseModel):
+    """Gecit sonucu — gecis karari ve engelleyen sorunlar."""
+
     gate_id: str
     passed: bool
     score: int

@@ -1,5 +1,4 @@
-"""
-bookmaker.production.mermaid_renderer
+"""bookmaker.production.mermaid_renderer
 =======================================
 Mermaid kod bloklarını temalı PNG'ye dönüştürür ve Markdown referanslarını günceller.
 
@@ -48,8 +47,7 @@ _CACHE_FILE = ".mermaid_cache.json"
 
 @dataclass
 class MermaidRenderConfig:
-    """
-    Tek bir render operasyonunun ayarları.
+    """Tek bir render operasyonunun ayarları.
     book_manifest.yaml → production.mermaid bölümünden yüklenir.
 
     Örnek manifest:
@@ -156,8 +154,7 @@ class ProcessResult:
 # ---------------------------------------------------------------------------
 
 class MermaidRenderer:
-    """
-    Markdown içindeki mermaid bloklarını temalı PNG'ye dönüştürür.
+    """Markdown içindeki mermaid bloklarını temalı PNG'ye dönüştürür.
 
     Kullanım (NORMALIZE sonrasında):
         config = MermaidRenderConfig.from_manifest(manifest.production.mermaid)
@@ -189,8 +186,7 @@ class MermaidRenderer:
         assets_dir: Path,
         chapter_alias: str = "chapter",
     ) -> ProcessResult:
-        """
-        Markdown içeriğindeki tüm ```mermaid bloklarını işler.
+        """Markdown içeriğindeki tüm ```mermaid bloklarını işler.
 
         Args:
             md_content: draft.md veya normalized.md içeriği
@@ -199,6 +195,7 @@ class MermaidRenderer:
 
         Returns:
             ProcessResult — güncellenmiş Markdown + istatistikler
+
         """
         assets_dir.mkdir(parents=True, exist_ok=True)
         cache = self._load_cache(assets_dir)
@@ -273,8 +270,7 @@ class MermaidRenderer:
         mermaid_src: str,
         output_path: Path,
     ) -> RenderResult:
-        """
-        Tek bir mermaid kaynak stringini PNG'ye render eder.
+        """Tek bir mermaid kaynak stringini PNG'ye render eder.
         Birim testleri ve doğrudan kullanım için.
         """
         theme = self.config.resolve_theme()
@@ -368,7 +364,7 @@ class MermaidRenderer:
         out: Path,
         cfg: Path,
     ) -> list[str]:
-        """mmdc komut satırını oluşturur."""
+        """Mmdc komut satırını oluşturur."""
         return [
             "mmdc",
             "--input", str(src),
@@ -419,7 +415,7 @@ class MermaidRenderer:
 
     @staticmethod
     def _check_mmdc() -> None:
-        """mmdc kurulu değilse uyarı log'lar (exception fırlatmaz)."""
+        """Mmdc kurulu değilse uyarı log'lar (exception fırlatmaz)."""
         if shutil.which("mmdc") is None:
             logger.warning(
                 "mmdc bulunamadı. Mermaid render devre dışı olacak.\n"

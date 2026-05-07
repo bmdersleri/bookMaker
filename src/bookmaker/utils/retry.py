@@ -22,7 +22,7 @@ from __future__ import annotations
 import functools
 import random
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from typing import Any
 
 # Retry yapilacak hata siniflari (varsayilan)
@@ -32,12 +32,18 @@ DEFAULT_RETRYABLE = (
     OSError,
 )
 
+# Minimum backoff bekleme suresi (saniye)
+MIN_BACKOFF_DELAY: float = 0.5
+
+# Jitter orani (±%25)
+JITTER_RATIO: float = 0.25
+
 
 def _backoff_delay(attempt: int, base: float = 2.0) -> float:
     """Exponential backoff + jitter hesapla."""
     delay = base * (2 ** attempt)
-    jitter = delay * random.uniform(-0.25, 0.25)
-    return max(0.5, delay + jitter)
+    jitter = delay * random.uniform(-JITTER_RATIO, JITTER_RATIO)
+    return max(MIN_BACKOFF_DELAY, delay + jitter)
 
 
 def retry_on_transient_error(
@@ -59,6 +65,7 @@ def retry_on_transient_error(
 
     Raises:
         Son denemede de basarisiz olursa orijinal hatayi yeniden firlatir.
+
     """
 
     def decorator(func: Callable) -> Callable:
@@ -107,16 +114,19 @@ class RetryContext:
         self._last_error: Exception | None = None
 
     def __enter__(self) -> RetryContext:
+        """Context manager'e giris."""
         return self
 
     def __exit__(self, *_: Any) -> bool:
+        """Context manager'den cikis. Istisnalari bastirmaz."""
         return False
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[int]:
+        """Retry denemeleri icin iterator dondurur."""
         return iter(range(self.max_retries + 1))
 
     def wait(self, attempt: int) -> None:
-        """attempt denemesi icin backoff beklemesi yapar."""
+        """Attempt denemesi icin backoff beklemesi yapar."""
         if attempt < self.max_retries:
             delay = _backoff_delay(attempt, self.backoff)
             time.sleep(delay)
