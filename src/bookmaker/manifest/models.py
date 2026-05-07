@@ -143,7 +143,7 @@ class MermaidConfig(BaseModel):
     theme: str = "default"
     scale: int = 2
     width: int = 900
-    theme_overrides: dict = {}
+    theme_overrides: dict[str, Any] = Field(default_factory=dict)
 
 
 class OutputsConfig(BaseModel):

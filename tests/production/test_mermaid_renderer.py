@@ -8,6 +8,7 @@ mmdc mock'lanır — gerçek mmdc kurulumu gerekmez.
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -372,12 +373,83 @@ class TestMermaidRenderer:
 
     def test_cache_key_depends_on_theme(self, renderer):
         """Aynı kaynak, farklı tema → farklı cache key."""
-        key_flutter = MermaidRenderer._cache_key(SIMPLE_FLOWCHART, "flutter")
-        key_java = MermaidRenderer._cache_key(SIMPLE_FLOWCHART, "java")
+        cfg_flutter = MermaidRenderConfig(theme="flutter")
+        cfg_java = MermaidRenderConfig(theme="java")
+        key_flutter = MermaidRenderer._cache_key(SIMPLE_FLOWCHART, cfg_flutter.cache_fingerprint())
+        key_java = MermaidRenderer._cache_key(SIMPLE_FLOWCHART, cfg_java.cache_fingerprint())
         assert key_flutter != key_java
 
     def test_cache_key_consistent(self, renderer):
         """Aynı girdi → her zaman aynı hash."""
-        k1 = MermaidRenderer._cache_key(SIMPLE_FLOWCHART, "python")
-        k2 = MermaidRenderer._cache_key(SIMPLE_FLOWCHART, "python")
+        cfg = MermaidRenderConfig(theme="python")
+        k1 = MermaidRenderer._cache_key(SIMPLE_FLOWCHART, cfg.cache_fingerprint())
+        k2 = MermaidRenderer._cache_key(SIMPLE_FLOWCHART, cfg.cache_fingerprint())
         assert k1 == k2
+
+    def test_cache_key_changes_when_width_changes(self):
+        """width değişince cache key değişmeli."""
+        src = "flowchart TD\nA --> B"
+        cfg1 = MermaidRenderConfig(theme="default", width=900)
+        cfg2 = MermaidRenderConfig(theme="default", width=1200)
+
+        key1 = MermaidRenderer._cache_key(src, cfg1.cache_fingerprint())
+        key2 = MermaidRenderer._cache_key(src, cfg2.cache_fingerprint())
+
+        assert key1 != key2
+
+    def test_cache_key_changes_when_theme_overrides_change(self):
+        """theme_overrides değişince cache key değişmeli."""
+        src = "flowchart TD\nA --> B"
+        cfg1 = MermaidRenderConfig(
+            theme="default",
+            theme_overrides={"themeVariables": {"fontSize": "15px"}},
+        )
+        cfg2 = MermaidRenderConfig(
+            theme="default",
+            theme_overrides={"themeVariables": {"fontSize": "18px"}},
+        )
+
+        assert MermaidRenderer._cache_key(src, cfg1.cache_fingerprint()) != (
+            MermaidRenderer._cache_key(src, cfg2.cache_fingerprint())
+        )
+
+    @patch("subprocess.run")
+    @patch("shutil.which", return_value="/usr/bin/mmdc")
+    def test_timeout_value_passed_to_subprocess(self, mock_which, mock_run, tmp_path):
+        """subprocess.run timeout argümanı config.timeout_seconds ile gelmeli."""
+        cfg = MermaidRenderConfig(timeout_seconds=7)
+        renderer = MermaidRenderer(cfg)
+
+        # PNG oluştur
+        def fake_run(cmd, **kwargs):
+            out_path = Path(cmd[cmd.index("--output") + 1])
+            out_path.write_bytes(b"fake_png_data")
+            return _make_mock_proc(returncode=0)
+
+        mock_run.side_effect = fake_run
+
+        result = renderer.render_string(
+            mermaid_src=SIMPLE_FLOWCHART,
+            output_path=tmp_path / "test.png",
+        )
+
+        assert result.success
+        # timeout argümanı 7 ile çağrılmış olmalı
+        assert mock_run.call_args[1]["timeout"] == 7
+
+    @patch("subprocess.run")
+    @patch("shutil.which", return_value="/usr/bin/mmdc")
+    def test_timeout_error_message_is_dynamic(self, mock_which, mock_run, tmp_path):
+        """Timeout hata mesajı sabit değil, config değerini göstermeli."""
+        cfg = MermaidRenderConfig(timeout_seconds=7)
+        renderer = MermaidRenderer(cfg)
+
+        mock_run.side_effect = subprocess.TimeoutExpired(cmd=["mmdc"], timeout=7)
+
+        result = renderer.render_string(
+            mermaid_src=SIMPLE_FLOWCHART,
+            output_path=tmp_path / "test.png",
+        )
+
+        assert result.success is False
+        assert "7 saniye" in result.error

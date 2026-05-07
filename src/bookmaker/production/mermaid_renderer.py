@@ -69,6 +69,23 @@ class MermaidRenderConfig:
     background: str = "white"    # "white" veya "transparent"
     width: int = 900             # px cinsinden diyagram genişliği
     theme_overrides: dict = field(default_factory=dict)
+    timeout_seconds: int = 30
+
+    def cache_fingerprint(self) -> str:
+        """Render çıktısını etkileyen tüm ayarların deterministik özeti.
+
+        Cache key üretiminde kullanılır. width, scale, background, theme
+        veya theme_overrides değiştiğinde fingerprint de değişir → cache
+        invalidate olur.
+        """
+        payload = {
+            "theme": self.theme,
+            "scale": self.scale,
+            "background": self.background,
+            "width": self.width,
+            "theme_overrides": self.theme_overrides,
+        }
+        return json.dumps(payload, ensure_ascii=False, sort_keys=True)
 
     @classmethod
     def from_manifest(cls, manifest_mermaid: dict | None) -> MermaidRenderConfig:
@@ -81,6 +98,7 @@ class MermaidRenderConfig:
             background=manifest_mermaid.get("background", "white"),
             width=manifest_mermaid.get("width", 900),
             theme_overrides=manifest_mermaid.get("theme_overrides", {}),
+            timeout_seconds=manifest_mermaid.get("timeout_seconds", 30),
         )
 
     def resolve_theme(self) -> MermaidTheme:
@@ -192,7 +210,7 @@ class MermaidRenderer:
 
         for i, mermaid_src in enumerate(blocks, start=1):
             original_block = f"```mermaid\n{mermaid_src}```"
-            cache_key = self._cache_key(mermaid_src, self.config.theme)
+            cache_key = self._cache_key(mermaid_src, self.config.cache_fingerprint())
             fig_name = f"fig_{chapter_alias}_{i:02d}.png"
             fig_path = assets_dir / fig_name
 
@@ -260,7 +278,7 @@ class MermaidRenderer:
         Birim testleri ve doğrudan kullanım için.
         """
         theme = self.config.resolve_theme()
-        cache_key = self._cache_key(mermaid_src, self.config.theme)
+        cache_key = self._cache_key(mermaid_src, self.config.cache_fingerprint())
         return self._render_single(
             mermaid_src=mermaid_src,
             output_path=output_path,
@@ -282,6 +300,7 @@ class MermaidRenderer:
         cache_key: str,
     ) -> RenderResult:
         """Tek bir mermaid bloğunu mmdc ile PNG'ye render eder."""
+        src_path: Path | None = None
         try:
             with tempfile.NamedTemporaryFile(
                 mode="w", suffix=".mmd", delete=False, encoding="utf-8"
@@ -297,10 +316,8 @@ class MermaidRenderer:
                     cmd,
                     capture_output=True,
                     text=True,
-                    timeout=30,
+                    timeout=self.config.timeout_seconds,
                 )
-
-            src_path.unlink(missing_ok=True)
 
             if proc.returncode != 0:
                 err = (proc.stderr or proc.stdout or "bilinmeyen hata").strip()
@@ -332,7 +349,7 @@ class MermaidRenderer:
                 index=index,
                 source_hash=cache_key,
                 output_path=output_path,
-                error="mmdc 30 saniye içinde tamamlanamadı (timeout).",
+                error=f"mmdc {self.config.timeout_seconds} saniye içinde tamamlanamadı (timeout).",
             )
         except Exception as e:
             return RenderResult(
@@ -341,6 +358,9 @@ class MermaidRenderer:
                 output_path=output_path,
                 error=str(e),
             )
+        finally:
+            if src_path is not None:
+                src_path.unlink(missing_ok=True)
 
     def _build_cmd(
         self,
@@ -365,9 +385,9 @@ class MermaidRenderer:
     # -----------------------------------------------------------------------
 
     @staticmethod
-    def _cache_key(mermaid_src: str, theme_name: str) -> str:
-        """Mermaid kaynak + tema adından benzersiz hash üretir."""
-        payload = f"{theme_name}::{mermaid_src.strip()}"
+    def _cache_key(mermaid_src: str, config_fingerprint: str) -> str:
+        """Mermaid kaynak + render konfigürasyon özetinden benzersiz hash üretir."""
+        payload = f"{config_fingerprint}::{mermaid_src.strip()}"
         return hashlib.md5(payload.encode("utf-8")).hexdigest()
 
     @staticmethod
