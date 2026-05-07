@@ -35,7 +35,9 @@ def test_export_readiness_reports_ready_project(tmp_path: Path, monkeypatch) -> 
     assert result["chapters"][0]["source_kind"] == "final"
 
 
-def test_export_readiness_fails_when_final_required_and_missing(tmp_path: Path, monkeypatch) -> None:
+def test_export_readiness_fails_when_final_required_and_missing(
+    tmp_path: Path, monkeypatch,
+) -> None:
     from bookmaker.production.readiness import check_export_readiness
 
     project = tmp_path / "book_projects" / "readiness-fail"

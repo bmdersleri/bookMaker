@@ -166,8 +166,27 @@ bookmaker check chapter chapters/giris/content/draft.md --book-root book_project
 
 ```powershell
 uv run ruff check src/                      # lint
-uv run pytest tests/ -q --tb=short           # 289 passed
+uv run pytest tests/ -q --tb=short           # 294 passed
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
+```
+
+---
+
+## CI ve Kalite Kontrol
+
+Proje GitHub Actions ile her push ve PR'de asagidaki kontrolleri calistirir:
+
+- Ruff lint (`src/` ve `tests/`)
+- Pytest test suite (289+ test)
+- Prompt validation
+- Ornek Flutter kitap projesi kalite kontrolu
+- Python 3.12 / 3.13 matrisi
+
+Yerel kontrol:
+
+```powershell
+uv run ruff check src/ tests/
+uv run pytest tests/ -q --tb=short
 ```
 
 ---
@@ -184,6 +203,7 @@ uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme 
 | `CHANGELOG.md` | Surum gecmisi (v0.1.0, v0.2.0) |
 | `TODO.md` | Yapilacaklar listesi |
 | `MIGRATION.md` | Project-based mimari gecis kaydi (tamamlandi) |
+| `RELEASE_CHECKLIST.md` | Release oncesi kontrol listesi |
 | `book_project_dir.md` | Kitap proje klasor standardi |
 | `docs/` | Tarihi tasarim ve planlama dokumanlari arsivi |
 

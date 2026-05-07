@@ -522,3 +522,24 @@ python -m py_compile src/bookMaker/generation/prompts.py
 - **Logging:** Print statements (no logging module)
 - **Error handling:** Graceful degradation — pipeline continues on non-fatal errors
 - **Never commit:** `llm_config.json`, `.claude/settings.local.json`, `build/`, `.playwright-mcp/`, generated export files
+
+---
+
+## 16. CI / QA State
+
+The repository includes GitHub Actions CI for linting and testing on every push and PR:
+
+- Ruff lint (`src/` and `tests/`)
+- Pytest test suite (294 tests)
+- Prompt validation
+- Sample Flutter book project quality check
+- Python 3.12 / 3.13 matrix
+
+Before any structural change, run:
+
+```powershell
+uv run ruff check src/ tests/
+uv run pytest tests/ -q --tb=short
+```
+
+Release readiness is tracked in `RELEASE_CHECKLIST.md`.

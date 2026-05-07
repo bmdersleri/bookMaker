@@ -1,6 +1,6 @@
 # =============================================================================
 # bookMaker — CI Workflow
-# Her push ve PR'de: project-based architecture lint + test + prompt validation
+# Her push ve PR'de: lint + test + prompt validation + book check
 # =============================================================================
 name: CI
 
@@ -26,6 +26,10 @@ jobs:
   lint-and-test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -35,20 +39,13 @@ jobs:
           version: "0.11.9"
 
       - name: Setup Python
-        run: uv python install 3.12
+        run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: uv sync
 
-      - name: Lint project-architecture modules
-        run: |
-          uv run ruff check \
-            src/bookmaker/manifest \
-            src/bookmaker/core/paths.py \
-            src/bookmaker/chapter/book_validator.py \
-            src/bookmaker/chapter/validator.py \
-            src/bookmaker/commands/check.py \
-            src/bookmaker/commands/init.py
+      - name: Lint
+        run: uv run ruff check src/ tests/
 
       - name: Unit tests
         run: uv run pytest tests/ -q --tb=short
@@ -58,7 +55,7 @@ jobs:
           if [ -f tools/validate_prompt_changes.py ]; then
             uv run python tools/validate_prompt_changes.py
           else
-            echo "tools/validate_prompt_changes.py bulunamadı, atlanıyor."
+            echo "tools/validate_prompt_changes.py bulunamadi, atlaniyor."
           fi
 
       - name: Validate sample Flutter book project
@@ -66,5 +63,5 @@ jobs:
           if [ -d book_projects/flutter-ile-mobil-uygulama-gelistirme ]; then
             uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
           else
-            echo "Örnek Flutter kitap projesi bulunamadı, atlanıyor."
+            echo "Ornek Flutter kitap projesi bulunamadi, atlaniyor."
           fi

@@ -1,5 +1,28 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- Export readiness checks and production export reports.
+- Profile-aware code adapter pipeline (Java, Python, Flutter, React).
+- Studio-friendly code validation summary payloads.
+- Studio-friendly export report and output URLs.
+- End-to-end smoke test coverage.
+- GitHub Actions CI workflow with Python 3.12/3.13 matrix.
+- Release checklist.
+
+### Changed
+- Export and assembly now use project-based `exports/` paths.
+- Unknown code profiles now fall back to `ReviewOnlyAdapter`.
+- React adapter safely skips TS/JSX/TSX blocks while checking plain JS.
+- CI ruff check expanded to full `src/ tests/`.
+
+### Fixed
+- Code adapter timeout handling (Java, Python, Flutter).
+- Export report generation for success and failure cases.
+
+---
+
 ## [0.2.0] — 2026-05-07 (main branch)
 
 ### Added
