@@ -12,7 +12,143 @@ let wsCancel = false;  // Flag to cancel pipeline
 async function init() { loadBookSelector(); await refreshAll(); await loadPipelineState(); await loadJobs(); }
 
 // REFRESH
-async function refreshAll() { await loadProject(); await loadChapters(); await loadLlmStatus(); }
+async function refreshAll() { await loadProject(); await loadChapters(); }
+
+// =========== MANIFEST CONFIG ===========
+var manifestData = {};
+
+async function loadManifestConfig() {
+  try {
+    var r = await fetch('/api/manifest'); manifestData = await r.json();
+    if (manifestData.error) { document.getElementById('cfg-status').textContent = manifestData.error; return; }
+    populateConfigForm(manifestData);
+    document.getElementById('cfg-status').textContent = '';
+  } catch(e) { document.getElementById('cfg-status').textContent = 'Yuklenemedi: '+e.message; }
+}
+
+function populateConfigForm(d) {
+  var b = d.book || {};
+  document.getElementById('cfg-title').value = b.title || '';
+  document.getElementById('cfg-subtitle').value = b.subtitle || '';
+  document.getElementById('cfg-author').value = b.author || '';
+  document.getElementById('cfg-alias').value = b.alias || '';
+  document.getElementById('cfg-language').value = b.language || 'tr';
+  document.getElementById('cfg-version').value = b.version || '';
+  document.getElementById('cfg-edition').value = b.edition || '';
+  document.getElementById('cfg-year').value = b.year || new Date().getFullYear();
+
+  var p = d.production || {};
+  document.getElementById('cfg-producer-model').value = p.producer_model || 'deepseek-chat';
+  document.getElementById('cfg-observer-model').value = p.observer_model || 'deepseek-chat';
+  document.getElementById('cfg-generation-mode').value = p.generation_mode || 'chapter_based';
+  document.getElementById('cfg-approval-required').checked = p.approval_required !== false;
+
+  var s = d.style || {};
+  document.getElementById('cfg-target-audience').value = s.target_audience || 'universite_1';
+  document.getElementById('cfg-tone').value = s.tone || '';
+  document.getElementById('cfg-code-language').value = s.code_language || '';
+  document.getElementById('cfg-framework').value = s.framework || '';
+
+  var a = d.automation || {};
+  document.getElementById('cfg-code-meta-required').checked = a.code_meta_required !== false;
+  document.getElementById('cfg-screenshot-required').checked = a.screenshot_required === true;
+  document.getElementById('cfg-min-screenshots').value = a.minimum_screenshots_per_chapter || 0;
+  document.getElementById('cfg-qr-policy').value = a.qr_policy || 'none';
+  document.getElementById('cfg-github-export').checked = a.github_code_export === true;
+}
+
+async function saveManifestConfig() {
+  manifestData.book = manifestData.book || {};
+  manifestData.book.title = document.getElementById('cfg-title').value;
+  manifestData.book.subtitle = document.getElementById('cfg-subtitle').value || null;
+  manifestData.book.author = document.getElementById('cfg-author').value;
+  manifestData.book.alias = document.getElementById('cfg-alias').value;
+  manifestData.book.language = document.getElementById('cfg-language').value;
+  manifestData.book.version = document.getElementById('cfg-version').value;
+  manifestData.book.edition = document.getElementById('cfg-edition').value;
+  manifestData.book.year = parseInt(document.getElementById('cfg-year').value) || null;
+
+  manifestData.production = manifestData.production || {};
+  manifestData.production.producer_model = document.getElementById('cfg-producer-model').value;
+  manifestData.production.observer_model = document.getElementById('cfg-observer-model').value;
+  manifestData.production.generation_mode = document.getElementById('cfg-generation-mode').value;
+  manifestData.production.approval_required = document.getElementById('cfg-approval-required').checked;
+
+  manifestData.style = manifestData.style || {};
+  manifestData.style.target_audience = document.getElementById('cfg-target-audience').value;
+  manifestData.style.tone = document.getElementById('cfg-tone').value;
+  manifestData.style.code_language = document.getElementById('cfg-code-language').value || null;
+  manifestData.style.framework = document.getElementById('cfg-framework').value || null;
+
+  manifestData.automation = manifestData.automation || {};
+  manifestData.automation.code_meta_required = document.getElementById('cfg-code-meta-required').checked;
+  manifestData.automation.screenshot_required = document.getElementById('cfg-screenshot-required').checked;
+  manifestData.automation.minimum_screenshots_per_chapter = parseInt(document.getElementById('cfg-min-screenshots').value) || 0;
+  manifestData.automation.qr_policy = document.getElementById('cfg-qr-policy').value;
+  manifestData.automation.github_code_export = document.getElementById('cfg-github-export').checked;
+
+  try {
+    var r = await fetch('/api/manifest', { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(manifestData) });
+    var d = await r.json();
+    if (d.error) { document.getElementById('cfg-status').textContent = 'Hata: '+d.error; return; }
+    document.getElementById('cfg-status').textContent = 'Kaydedildi ✓';
+    setTimeout(function(){ document.getElementById('cfg-status').textContent = ''; }, 2000);
+  } catch(e) { document.getElementById('cfg-status').textContent = 'Kaydedilemedi: '+e.message; }
+}
+
+function switchConfigTab(name) {
+  document.querySelectorAll('.config-sub').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelector('.config-sub[data-sub="'+name+'"]').classList.add('active');
+  var panels = { book: 'cfg-panel-book', production: 'cfg-panel-production', style: 'cfg-panel-style', automation: 'cfg-panel-automation' };
+  Object.values(panels).forEach(function(id){ document.getElementById(id).classList.add('hidden'); });
+  document.getElementById(panels[name]).classList.remove('hidden');
+}
+
+// =========== CHAPTER WIZARD ===========
+function openChapterWizard() {
+  document.getElementById('chapter-wizard-overlay').classList.remove('hidden');
+  document.getElementById('new-chapter-id').value = '';
+  document.getElementById('new-chapter-title').value = '';
+  document.getElementById('new-chapter-order').value = (chapters.length + 1);
+  document.getElementById('chapter-wizard-result').innerHTML = '';
+}
+
+function closeChapterWizard(event) {
+  if (event && event.target !== document.getElementById('chapter-wizard-overlay')) return;
+  document.getElementById('chapter-wizard-overlay').classList.add('hidden');
+}
+
+async function createChapter() {
+  var cid = document.getElementById('new-chapter-id').value.trim();
+  var title = document.getElementById('new-chapter-title').value.trim();
+  var order = parseInt(document.getElementById('new-chapter-order').value) || 1;
+  if (!cid || !title) { showToast('Bolum ID ve basligi zorunlu', 'error'); return; }
+  try {
+    var r = await fetch('/api/chapters', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ chapter_id: cid, title: title, order: order }) });
+    var d = await r.json();
+    if (d.error) { document.getElementById('chapter-wizard-result').innerHTML = '<div class="message error">'+escHtml(d.error)+'</div>'; return; }
+    closeChapterWizard();
+    await loadChapters();
+    showToast('Bolum eklendi: '+cid, 'success');
+  } catch(e) { document.getElementById('chapter-wizard-result').innerHTML = '<div class="message error">'+e.message+'</div>'; }
+}
+
+async function removeSelectedChapters() {
+  if (selectedIds.size === 0) { showToast('Once bolum secin', 'info'); return; }
+  if (!confirm(selectedIds.size + ' bolum silinecek. Devam edilsin mi?')) return;
+  var errors = [];
+  for (var id of selectedIds) {
+    try {
+      var r = await fetch('/api/chapters/' + encodeURIComponent(id), { method: 'DELETE' });
+      var d = await r.json();
+      if (d.error) errors.push(id + ': ' + d.error);
+    } catch(e) { errors.push(id + ': ' + e.message); }
+  }
+  selectedIds.clear();
+  await loadChapters();
+  if (errors.length) showToast(errors.join(', '), 'error');
+  else showToast('Bolumler silindi', 'success');
+}
 
 // =========== BOOK SELECTOR DROPDOWN ===========
 function loadBookSelector() {
@@ -260,14 +396,88 @@ async function loadJobs() {
 function jobStatusClass(s) { return {'queued':'neutral','running':'info','done':'success','error':'danger','cancelled':'warning'}[s]||'neutral'; }
 
 // CHAPTER ACTIONS
+var currentChapterId = null;
+
 async function viewChapter(id) {
-  showModal('Goruntule: '+id,'<span class="spinner"></span> Yukleniyor...');
-  try {
-    const r=await fetch('/api/view/'+id); const d=await r.json();
-    if(d.error){document.getElementById('modal-body').innerHTML='<div class="message error">'+escHtml(d.error)+'</div>';return;}
-    document.getElementById('modal-body').innerHTML='<div style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">'+d.path+' &middot; '+d.words.toLocaleString()+' kelime</div><div class="chapter-view">'+escHtml(d.full)+'</div>';
-  } catch(e) { document.getElementById('modal-body').innerHTML='<div class="message error">Hata: '+e.message+'</div>'; }
+  currentChapterId = id;
+  document.getElementById('modal-title').textContent = 'Duzenle: ' + id;
+  var body = document.getElementById('modal-body');
+  body.innerHTML = '';
+  body.appendChild(document.importNode(document.getElementById('editor-container-tpl').content, true));
+  body.appendChild(document.importNode(document.getElementById('editor-toolbar-tpl').content, true));
+  body.parentElement.style.maxWidth = '95vw';
+  document.getElementById('modal-overlay').classList.remove('hidden');
+  await loadChapterContent(id, 'draft');
 }
+
+async function loadChapterContent(id, type) {
+  try {
+    var r = await fetch('/api/view/' + id); var d = await r.json();
+    if (d.error) { showToast(d.error, 'error'); return; }
+    var ta = document.getElementById('markdown-editor');
+    ta.value = d.full || '';
+    document.getElementById('editor-path').textContent = d.path || '';
+    document.getElementById('editor-type').value = type;
+    livePreview();
+  } catch(e) { showToast('Yuklenemedi: ' + e.message, 'error'); }
+}
+
+function livePreview() {
+  var md = document.getElementById('markdown-editor').value || '';
+  document.getElementById('markdown-preview').innerHTML = renderMarkdown(md);
+}
+
+async function switchEditorType(type) {
+  await loadChapterContent(currentChapterId, type);
+}
+
+async function saveChapterContent() {
+  var content = document.getElementById('markdown-editor').value;
+  var type = document.getElementById('editor-type').value;
+  var st = document.getElementById('editor-status');
+  try {
+    var r = await fetch('/api/view/' + currentChapterId + '/save', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({content: content, type: type})
+    });
+    var d = await r.json();
+    if (d.error) { st.textContent = 'Hata: ' + d.error; return; }
+    st.textContent = 'Kaydedildi (' + d.words + ' kelime)';
+    setTimeout(function(){ st.textContent = ''; }, 2500);
+  } catch(e) { st.textContent = 'Kaydedilemedi: ' + e.message; }
+}
+
+// ---- Markdown to HTML Renderer ----
+function renderMarkdown(md) {
+  var html = md;
+  // Code blocks (fence must be handled before inline)
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(_, lang, code) {
+    return '<pre><code class="lang-' + escHtml(lang) + '">' + escHtml(code) + '</code></pre>';
+  });
+  // Headers
+  html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  // Bold & italic
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Horizontal rules
+  html = html.replace(/^---$/gm, '<hr>');
+  // Unordered lists
+  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+  // Paragraphs (double newlines)
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = '<p>' + html + '</p>';
+  // Fix nested <pre> inside <p>
+  html = html.replace(/<p><pre>/g, '<pre>');
+  html = html.replace(/<\/pre><\/p>/g, '</pre>');
+  return html;
+}
+
 async function checkChapter(id) {
   showModal('Kontrol: '+id,'<span class="spinner"></span> Kontrol ediliyor...');
   try {
@@ -402,38 +612,6 @@ function cancelPipeline() {
   showToast('Pipeline iptal edildi', 'info');
 }
 
-// =========== LLM CONFIG ===========
-function showLlmConfig() { switchTab('config'); }
-async function loadLlmStatus() {
-  try {
-    const r=await fetch('/api/llm-status'); const d=await r.json();
-    const el=document.getElementById('stat-llm');
-    el.textContent=d.configured?d.model:'Ayarlanmamis';
-    el.style.color=d.configured?'var(--success)':'var(--danger)';
-    document.getElementById('llm-current').innerHTML=d.configured?'<span class="status-dot green"></span> '+d.provider+' / '+d.model:'<span class="status-dot red"></span> Yapilandirilmamis';
-    document.getElementById('llm-provider').value=d.provider||'deepseek';
-    document.getElementById('llm-model').value=d.model||'deepseek-chat';
-  } catch(e) {}
-}
-async function saveLlmConfig() {
-  const provider=document.getElementById('llm-provider').value, api_key=document.getElementById('llm-key').value.trim(), model=document.getElementById('llm-model').value.trim();
-  if(!api_key){showToast('API anahtari gerekli','error');return;}
-  try {
-    const r=await fetch('/api/llm-configure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider,api_key,model})});
-    const d=await r.json();
-    if(d.error) showToast(d.error,'error');
-    else { document.getElementById('llm-key').value=''; showToast('LLM yapilandirildi','success'); await loadLlmStatus(); }
-  } catch(e) { showToast('Kaydedilemedi: '+e.message,'error'); }
-}
-async function testLlmConnection() {
-  const el=document.getElementById('llm-test-result');
-  el.classList.remove('hidden');
-  el.innerHTML='<span class="spinner"></span> Test ediliyor...';
-  try {
-    const r=await fetch('/api/llm-test'); const d=await r.json();
-    el.innerHTML=d.status==='ok'?'<div class="message success">Baglanti basarili: '+d.model+'</div>':'<div class="message error">'+d.message+'</div>';
-  } catch(e) { el.innerHTML='<div class="message error">'+e.message+'</div>'; }
-}
 async function loadPipelineState() {
   try {
     const r=await fetch('/api/pipeline-state'); pipelineState=await r.json();
@@ -457,10 +635,10 @@ function switchTab(name) {
   var loaders = {
     chapters: loadChapters,
     pipeline: async function() { await loadPipelineState(); await loadJobs(); },
-    config: loadLlmStatus,
     quality: loadQualityTab,
     build: initBuildPanel,
-    prompts: loadPromptTab
+    prompts: loadPromptTab,
+    config: loadManifestConfig
   };
   var loader = loaders[name];
   if (loader) {
@@ -475,7 +653,7 @@ function showModal(title,bodyHtml) {
   document.getElementById('modal-body').innerHTML=bodyHtml;
   document.getElementById('modal-overlay').classList.remove('hidden');
 }
-function closeModal(e) { if(e&&e.target!==e.currentTarget) return; document.getElementById('modal-overlay').classList.add('hidden'); }
+function closeModal(e) { if(e&&e.target!==e.currentTarget) return; document.getElementById('modal-overlay').classList.add('hidden'); var m=document.querySelector('#modal-body'); if(m&&m.parentElement) m.parentElement.style.maxWidth=''; }
 function escHtml(s) { if(!s) return ''; var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
 // =========== BOOK LOADER ===========

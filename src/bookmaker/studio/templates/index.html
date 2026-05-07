@@ -27,13 +27,11 @@
   <div class="stat-card"><div class="num" id="stat-screenshot">-</div><div class="lbl">Screenshot</div></div>
   <div class="stat-card"><div class="num" id="stat-qr">-</div><div class="lbl">QR</div></div>
   <div class="stat-card"><div class="num" id="stat-stage">-</div><div class="lbl">Pipeline Aşaması</div></div>
-  <div class="stat-card"><div class="num" id="stat-llm">-</div><div class="lbl">LLM</div></div>
 </div>
 
 <!-- Actions -->
 <div class="toolbar">
   <button class="btn outline" onclick="refreshAll()">🔄 Yenile</button>
-  <button class="btn outline" onclick="showLlmConfig()">⚙️ LLM Ayarları</button>
   <button class="btn outline" onclick="showAllPipeline()">📊 Pipeline Durumu</button>
 </div>
 
@@ -76,7 +74,10 @@
         <span>Secili: <strong id="bulk-count">0</strong></span>
         <button class="btn btn-sm primary bulk-only" style="display:none" onclick="bulkAction('generate')">Toplu Uret</button>
         <button class="btn btn-sm outline bulk-only" style="display:none" onclick="bulkAction('build')">Toplu Build</button>
-        <button class="btn btn-sm outline bulk-only" style="display:none" onclick="bulkAction('reset')">Sifirla</button>
+        <button class="btn btn-sm danger bulk-only" style="display:none" onclick="removeSelectedChapters()">Secili Bolumleri Sil</button>
+      </div>
+      <div style="margin-bottom:8px">
+        <button class="btn success" onclick="openChapterWizard()">+ Bolum Ekle</button>
       </div>
 
       <div id="chapter-loading" class="loading"><span class="spinner"></span> Yukleniyor...</div>
@@ -157,24 +158,6 @@
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- TAB: Config -->
-<div class="tab-content" id="tab-config">
-  <div class="card">
-    <div class="card-header"><h2>LLM Yapilandirmasi</h2></div>
-    <div class="card-body">
-      <div class="config-form">
-        <div class="form-group"><label>Sağlayıcı</label>
-          <select id="llm-provider"><option value="deepseek">DeepSeek</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option></select>
-        </div>
-        <div class="form-group"><label>API Anahtari</label><input type="password" id="llm-key" placeholder="sk-..."></div>
-        <div class="form-group"><label>Model</label><input type="text" id="llm-model" placeholder="deepseek-chat" value="deepseek-chat"></div>
-        <button class="btn primary" onclick="saveLlmConfig()">💾 Kaydet</button>
-      </div>
-      <div id="llm-current" style="margin-top:1rem;font-size:1rem;color:var(--muted)">Yukleniyor...</div>
     </div>
   </div>
 </div>
@@ -279,6 +262,63 @@
         <button class="btn outline" onclick="runGlossary()">Glossary Olustur</button>
       </div>
       <div id="index-result" class="result-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Config -->
+<div class="tab-content" id="tab-config">
+  <div class="card">
+    <div class="card-header"><h2>Kitap Yapilandirmasi</h2></div>
+    <div class="card-body">
+      <div class="tabs" style="margin-bottom:1rem">
+        <button class="tab config-sub active" data-sub="book" onclick="switchConfigTab('book')">Kitap Bilgisi</button>
+        <button class="tab config-sub" data-sub="production" onclick="switchConfigTab('production')">Uretim</button>
+        <button class="tab config-sub" data-sub="style" onclick="switchConfigTab('style')">Stil</button>
+        <button class="tab config-sub" data-sub="automation" onclick="switchConfigTab('automation')">Otomasyon</button>
+      </div>
+
+      <!-- Book Info -->
+      <div id="cfg-panel-book" class="config-form" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>Kitap Adi</label><input type="text" id="cfg-title"></div>
+        <div class="form-group"><label>Alt Baslik</label><input type="text" id="cfg-subtitle"></div>
+        <div class="form-group"><label>Yazar</label><input type="text" id="cfg-author"></div>
+        <div class="form-group"><label>Alias</label><input type="text" id="cfg-alias"></div>
+        <div class="form-group"><label>Dil</label><select id="cfg-language"><option value="tr">Turkce</option><option value="en">English</option></select></div>
+        <div class="form-group"><label>Versiyon</label><input type="text" id="cfg-version"></div>
+        <div class="form-group"><label>Edisyon</label><input type="text" id="cfg-edition"></div>
+        <div class="form-group"><label>Yil</label><input type="number" id="cfg-year"></div>
+      </div>
+
+      <!-- Production -->
+      <div id="cfg-panel-production" class="config-form hidden" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>Uretici Model</label><input type="text" id="cfg-producer-model"></div>
+        <div class="form-group"><label>Gozlemci Model</label><input type="text" id="cfg-observer-model"></div>
+        <div class="form-group"><label>Uretim Modu</label><select id="cfg-generation-mode"><option value="chapter_based">Chapter Based</option><option value="full_book">Full Book</option></select></div>
+        <div class="form-group"><label><input type="checkbox" id="cfg-approval-required"> Onay Gerekli</label></div>
+      </div>
+
+      <!-- Style -->
+      <div id="cfg-panel-style" class="config-form hidden" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>Hedef Kitle</label><select id="cfg-target-audience"><option value="universite_1">Universite 1. Sinif</option><option value="universite_2">Universite 2. Sinif</option><option value="lise">Lise</option><option value="baslangic">Yeni Baslayan</option><option value="profesyonel">Profesyonel</option></select></div>
+        <div class="form-group"><label>Uslup</label><input type="text" id="cfg-tone"></div>
+        <div class="form-group"><label>Kod Dili</label><input type="text" id="cfg-code-language"></div>
+        <div class="form-group"><label>Framework</label><input type="text" id="cfg-framework"></div>
+      </div>
+
+      <!-- Automation -->
+      <div id="cfg-panel-automation" class="config-form hidden" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label><input type="checkbox" id="cfg-code-meta-required"> CODE_META Zorunlu</label></div>
+        <div class="form-group"><label><input type="checkbox" id="cfg-screenshot-required"> Screenshot Zorunlu</label></div>
+        <div class="form-group"><label>Screenshot/bolum</label><input type="number" id="cfg-min-screenshots" min="0"></div>
+        <div class="form-group"><label>QR Politikasi</label><select id="cfg-qr-policy"><option value="none">Yok</option><option value="source">Source</option><option value="page">Page</option><option value="single">Single</option><option value="dual">Dual</option></select></div>
+        <div class="form-group"><label><input type="checkbox" id="cfg-github-export"> GitHub Export</label></div>
+      </div>
+
+      <div style="margin-top:1rem;display:flex;gap:8px;align-items:center">
+        <button class="btn primary" onclick="saveManifestConfig()">Kaydet</button>
+        <span id="cfg-status" style="font-size:.9rem;color:var(--muted)"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -415,6 +455,53 @@
     </div>
   </div>
 </div>
+
+<!-- Chapter Wizard Overlay -->
+<div class="modal-overlay hidden" id="chapter-wizard-overlay" onclick="closeChapterWizard(event)">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:500px">
+    <div class="modal-header">
+      <h3>Yeni Bolum Ekle</h3>
+      <button class="close" onclick="closeChapterWizard()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="config-form">
+        <div class="form-group"><label>Bolum ID (alias)</label><input type="text" id="new-chapter-id" placeholder="ornek-bolum"></div>
+        <div class="form-group"><label>Bolum Basligi</label><input type="text" id="new-chapter-title" placeholder="Ornek Bolum"></div>
+        <div class="form-group"><label>Sira Numarasi</label><input type="number" id="new-chapter-order" min="1" value="1"></div>
+        <button class="btn primary" onclick="createChapter()">Bolum Olustur</button>
+        <div id="chapter-wizard-result" style="margin-top:.75rem"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Editor Toolbar Template -->
+<template id="editor-toolbar-tpl">
+  <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+    <button class="btn primary" onclick="saveChapterContent()">Kaydet</button>
+    <span id="editor-status" style="font-size:.85rem;color:var(--muted)"></span>
+  </div>
+</template>
+
+<!-- Editor Container Template -->
+<template id="editor-container-tpl">
+  <div style="display:flex;gap:12px;height:70vh">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:.85rem;color:var(--muted)" id="editor-path"></span>
+        <select id="editor-type" onchange="switchEditorType(this.value)" style="font-size:.85rem;padding:4px 8px">
+          <option value="draft">draft.md</option>
+          <option value="final">final.md</option>
+        </select>
+      </div>
+      <textarea id="markdown-editor" oninput="livePreview()" style="flex:1;font-family:Consolas,monospace;font-size:.88rem;padding:12px;border:1px solid var(--border);border-radius:8px;resize:none" spellcheck="false"></textarea>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="font-size:.85rem;color:var(--muted);margin-bottom:8px">Onizleme</div>
+      <div id="markdown-preview" class="md-preview" style="flex:1;overflow-y:auto;padding:12px;border:1px solid var(--border);border-radius:8px;background:#fff;line-height:1.6"></div>
+    </div>
+  </div>
+</template>
 
 <!-- Book Loader Overlay -->
 <div class="modal-overlay hidden" id="book-loader" onclick="closeBookLoader(event)">

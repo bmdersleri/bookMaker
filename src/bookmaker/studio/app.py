@@ -202,6 +202,31 @@ if FastAPI is not None:
         return pipeline_service.get_pipeline_state(get_active_book())
 
     # ================================================================
+    # Manifest
+    # ================================================================
+    @app.get("/api/manifest")
+    async def api_manifest_get() -> dict:
+        from bookmaker.manifest.models import BookManifest
+        root = get_active_book()
+        manifest_path = root / "book_manifest.yaml"
+        if not manifest_path.exists():
+            return {"error": "book_manifest.yaml bulunamadi"}
+        return BookManifest.load(manifest_path).model_dump(
+            mode="json", exclude_none=True)
+
+    @app.put("/api/manifest")
+    async def api_manifest_save(data: dict) -> dict:
+        from bookmaker.manifest.models import BookManifest
+        root = get_active_book()
+        manifest_path = root / "book_manifest.yaml"
+        try:
+            manifest = BookManifest.model_validate(data)
+            manifest.save(manifest_path)
+            return {"status": "ok"}
+        except Exception as e:
+            return {"error": str(e)[:300]}
+
+    # ================================================================
     # Chapters
     # ================================================================
     @app.get("/api/chapters")
@@ -258,6 +283,17 @@ if FastAPI is not None:
         return quality_service.get_chapter_content(
             get_active_book(), chapter_id)
 
+    @app.post("/api/view/{chapter_id}/save")
+    async def api_view_save(chapter_id: str, data: dict) -> dict:
+        root = get_active_book()
+        content = data.get("content", "")
+        src_type = data.get("type", "draft")
+        p = root / "chapters" / chapter_id / "content" / f"{src_type}.md"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(content, encoding="utf-8")
+        return {"status": "ok", "path": str(p.relative_to(root)),
+                "words": len(content.split())}
+
     @app.get("/api/check/{chapter_id}")
     async def api_check(chapter_id: str) -> dict:
         return quality_service.validate_chapter(
@@ -269,26 +305,6 @@ if FastAPI is not None:
     @app.get("/api/build/{chapter_id}")
     async def api_build(chapter_id: str) -> dict:
         return build_service.build_docx(get_active_book(), chapter_id)
-
-    # ================================================================
-    # LLM
-    # ================================================================
-    @app.get("/api/llm-status")
-    async def api_llm_status() -> dict:
-        return llm_service.get_status(get_active_book())
-
-    @app.post("/api/llm-configure")
-    async def api_llm_configure(data: dict) -> dict:
-        api_key = data.get("api_key", "")
-        if not api_key:
-            return {"error": "API anahtari gerekli"}
-        return llm_service.configure(
-            get_active_book(), data.get("provider", "deepseek"),
-            api_key, data.get("model", "deepseek-chat"))
-
-    @app.post("/api/llm-test")
-    async def api_llm_test() -> dict:
-        return llm_service.test_connection(get_active_book())
 
     # ================================================================
     # Quality, Stats, Search, Code
