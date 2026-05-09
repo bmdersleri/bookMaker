@@ -77,6 +77,13 @@ tools/*.py
 .playwright-mcp/
 *.code-workspace
 
+# Flutter screenshot runner build çıktıları
+tools/flutter_screenshot_runner/build/
+tools/flutter_screenshot_runner/.dart_tool/
+tools/flutter_screenshot_runner/.flutter-plugins
+tools/flutter_screenshot_runner/.flutter-plugins-dependencies
+tools/flutter_screenshot_runner/pubspec.lock
+
 # Root-level generated outputs
 /chapters/
 /exports/

@@ -21,10 +21,10 @@ production:
   approval_required: true
   screenshots:
     enabled: true
-    python_timeout: 15
-    react_timeout: 10
-    viewport_width: 1280
-    viewport_height: 720
+    python_timeout: 30      # Flutter golden test için (varsayılan 15'ten artırıldı)
+    react_timeout: 15       # Flutter web build için (varsayılan 10'dan artırıldı)
+    viewport_width: 390     # iPhone 14 Pro genişliği
+    viewport_height: 844    # iPhone 14 Pro yüksekliği
     scale: 2
     terminal_theme: dark
 style:

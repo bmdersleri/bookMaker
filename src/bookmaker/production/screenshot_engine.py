@@ -27,6 +27,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from bookmaker.production.screenshot_strategies import (
+    FlutterGoldenStrategy,
+    FlutterWebStrategy,
     PythonConsoleStrategy,
     PythonPlotStrategy,
     ReactComponentStrategy,
@@ -42,7 +44,7 @@ logger = logging.getLogger(__name__)
 # Grup 2: hint (plot, console, screenshot)
 # Grup 3: kod içeriği
 _TAGGED_BLOCK_RE = re.compile(
-    r"```(python|jsx|tsx|javascript|react)\s+(plot|console|screenshot)\s*\n(.*?)```",
+    r"```(python|jsx|tsx|javascript|react|dart)\s+(plot|console|screenshot|web-screenshot)\s*\n(.*?)```",
     re.DOTALL | re.IGNORECASE,
 )
 
@@ -50,12 +52,14 @@ _CACHE_FILE = ".screenshot_cache.json"
 
 # Dil etiketi → strateji hint eşlemesi
 _LANG_HINT_TO_STRATEGY: dict[tuple[str, str], str] = {
-    ("python", "plot"): "plot",
-    ("python", "console"): "console",
-    ("jsx", "screenshot"): "screenshot",
-    ("tsx", "screenshot"): "screenshot",
+    ("dart", "screenshot"): "flutter_golden",
+    ("dart", "web-screenshot"): "flutter_web",
     ("javascript", "screenshot"): "screenshot",
+    ("jsx", "screenshot"): "screenshot",
+    ("python", "console"): "console",
+    ("python", "plot"): "plot",
     ("react", "screenshot"): "screenshot",
+    ("tsx", "screenshot"): "screenshot",
 }
 
 
@@ -91,18 +95,28 @@ class ScreenshotEngine:
         # result.output_md → güncellenmiş Markdown
     """
 
-    def __init__(self, config: ScreenshotConfig | None = None) -> None:
+    def __init__(
+        self,
+        config: ScreenshotConfig | None = None,
+        runner_dir: Path | None = None,
+    ) -> None:
         self.config = config or ScreenshotConfig()
         self._strategies: dict[str, ScreenshotStrategy] = {
-            "plot": PythonPlotStrategy(self.config),
             "console": PythonConsoleStrategy(self.config),
+            "flutter_golden": FlutterGoldenStrategy(self.config, runner_dir),
+            "flutter_web": FlutterWebStrategy(self.config, runner_dir),
+            "plot": PythonPlotStrategy(self.config),
             "screenshot": ReactComponentStrategy(self.config),
         }
 
     @classmethod
-    def from_manifest(cls, manifest_screenshots: dict | None) -> ScreenshotEngine:
+    def from_manifest(
+        cls,
+        manifest_screenshots: dict | None,
+        runner_dir: Path | None = None,
+    ) -> ScreenshotEngine:
         config = ScreenshotConfig.from_manifest(manifest_screenshots)
-        return cls(config)
+        return cls(config, runner_dir=runner_dir)
 
     # ------------------------------------------------------------------
     # Ana API
