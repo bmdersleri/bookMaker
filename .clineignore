@@ -1,0 +1,162 @@
+# .clineignore — optimized for Windows + VS Code + Cline + Ollama
+# Goal: keep Cline context small, avoid generated files, binaries, secrets, and caches.
+
+# ------------------------------------------------------------
+# Version control / IDE
+# ------------------------------------------------------------
+.git/
+.github/
+.vscode/
+.idea/
+*.code-workspace
+
+# ------------------------------------------------------------
+# Python / uv / virtual environments
+# ------------------------------------------------------------
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+.nox/
+.coverage
+coverage/
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# ------------------------------------------------------------
+# Node / web / frontend
+# ------------------------------------------------------------
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+.next/
+.nuxt/
+.svelte-kit/
+vite.config.*.timestamp*
+coverage/
+dist/
+out/
+
+# ------------------------------------------------------------
+# Flutter / Dart
+# ------------------------------------------------------------
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+build/
+
+# ------------------------------------------------------------
+# Java / JVM
+# ------------------------------------------------------------
+target/
+bin/
+out/
+*.class
+*.jar
+*.war
+*.ear
+
+# ------------------------------------------------------------
+# BookMaker / BookFactory generated outputs
+# Keep source manifests and chapter markdown visible; ignore only generated/heavy artifacts.
+# ------------------------------------------------------------
+book_projects/**/logs/
+book_projects/**/build/
+book_projects/**/output/
+book_projects/**/outputs/
+book_projects/**/reports/
+book_projects/**/exports/
+book_projects/**/tmp/
+book_projects/**/temp/
+book_projects/**/chapters/**/content/revisions/
+
+workspace/**/build/
+workspace/**/output/
+workspace/**/outputs/
+workspace/**/reports/
+workspace/**/exports/
+workspace/**/tmp/
+workspace/**/temp/
+
+# Generated diagrams / screenshots / render outputs
+mermaid_images/
+screenshots/
+generated_screenshots/
+*_images/
+*.svg
+
+# ------------------------------------------------------------
+# Logs, temporary files, databases
+# ------------------------------------------------------------
+logs/
+tmp/
+temp/
+*.tmp
+*.temp
+*.log
+*.bak
+*.old
+*.db
+*.sqlite
+*.sqlite3
+
+# ------------------------------------------------------------
+# Binary / archive / office / media files
+# ------------------------------------------------------------
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+*.bz2
+*.xz
+*.exe
+*.msi
+*.dll
+*.so
+*.dylib
+*.pdf
+*.docx
+*.pptx
+*.xlsx
+*.xls
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.mp3
+*.wav
+
+# ------------------------------------------------------------
+# Secrets / credentials
+# ------------------------------------------------------------
+.env
+.env.*
+*.key
+*.pem
+*.pfx
+*.p12
+*.crt
+*.cer
+*.token
+*secret*
+*secrets*
+*credential*
+*credentials*

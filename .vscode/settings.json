@@ -1,0 +1,19 @@
+{
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
+    "**/node_modules": true,
+    "**/build": true,
+    "**/dist": true
+  },
+  "search.exclude": {
+    "**/.git": true,
+    "**/.venv": true,
+    "**/node_modules": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/book_projects/*/logs": true,
+    "**/book_projects/*/output": true
+  }
+}

@@ -1,0 +1,24 @@
+# Cline Rules
+
+You are running inside Cline in VS Code.
+
+Critical rules:
+- Do not print JSON tool calls.
+- Do not write examples like {"name":"list_files"}.
+- If you need a file, use the real Cline tool.
+- If you cannot use the tool, stop and say: "Tool call failed."
+- Work on one small step at a time.
+- Do not edit files unless explicitly approved.
+
+Environment:
+- OS: Windows
+- Shell: PowerShell 7
+- Project: bookMaker
+- Prefer PowerShell commands, not Bash commands.
+- Do not use `ls -la`; use `Get-ChildItem`.
+
+Workflow:
+- First read only one file or list one small directory.
+- Then summarize.
+- Do not scan the whole repository.
+- Do not modify generated outputs, logs, build folders, or virtual environments.

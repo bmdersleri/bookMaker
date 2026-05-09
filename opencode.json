@@ -1,0 +1,25 @@
+﻿{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "AGENTS.md",
+    "CONTRIBUTING.md",
+    "docs/*.md"
+  ],
+  "share": "manual",
+  "lsp": true,
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "uv run pytest*": "ask",
+      "uv run ruff*": "ask",
+      "git commit*": "ask",
+      "git reset*": "deny",
+      "git clean*": "deny",
+      "rm *": "deny"
+    }
+  }
+}
