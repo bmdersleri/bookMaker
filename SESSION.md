@@ -9,15 +9,62 @@ Detaylı durum: `TODO.md` | GUI: `GUI_ROADMAP.md` | Plan: `docs/master_plan.md` 
 ## ŞU AN
 
 ```text
-Aktif Faz       : Kapsamlı kod kalitesi iyileştirmesi tamamlandı; sırada kullanıcı yönlendirmesiyle yeni iş
-Son Oturum      : 2026-05-07 - Kod kalitesi iyileştirmesi + .env güvenlik (382 test, ruff clean)
+Aktif Faz       : Flutter Screenshot Engine entegrasyonu tamamlandi; sirada kullanici yonlendirmesiyle yeni is
+Son Oturum      : 2026-05-09 - Flutter Screenshot Engine entegrasyonu (golden test + web build)
 Repo            : D:\bookMaker_clean
 Branch          : main  (tek branch)
 Remote          : origin
-Son Kod Commit  : 46b27bc Test duzeltmesi: .env oncelikli LLMConfig testleri guncellendi
-Durum           : .env güvenlik, merkezi logging, retry utility, AppConfig, type hints, Google docstrings, magic number temizliği, PEP8
-Test            : 382 passed, ruff clean
+Son Kod Commit  : bad7ae7 Flutter Screenshot Engine entegrasyonu: golden test ve web build stratejileri eklendi
+Durum           : 5 screenshot stratejisi (python_plot, python_console, react_component, flutter_golden, flutter_web), Flutter runner projesi
+Test            : 411 passed, ruff clean
 ```
+
+---
+
+## 2026-05-09 Oturumu — Flutter Screenshot Engine Entegrasyonu
+
+### Yapilan Isler
+
+- `flutter_final/` icindeki hazir dosyalar proje yapisina tasindi:
+  - `src/bookmaker/production/screenshot_strategies/flutter_golden.py` — Flutter widget → headless golden test PNG (~5s, emulator yok)
+  - `src/bookmaker/production/screenshot_strategies/flutter_web.py` — Flutter ekrani → web build + Playwright PNG (~30-60s)
+  - `src/bookmaker/production/screenshot_strategies/flutter_utils.py` — Dart kod analizi, golden/web sablon ureticileri
+  - `tools/flutter_screenshot_runner/` — Flutter runner projesi (pubspec.yaml, main.dart, screenshot_test.dart)
+  - `tests/production/test_flutter_screenshot.py` — 29 test (mock'lu, Flutter SDK gerektirmez)
+- `src/bookmaker/production/screenshot_engine.py` — dart fence etiketleri destegi (`dart screenshot`, `dart web-screenshot`), `runner_dir` parametresi, Flutter stratejileri
+- `src/bookmaker/production/screenshot_strategies/__init__.py` — FlutterGoldenStrategy ve FlutterWebStrategy import/export eklendi
+- `src/bookmaker/generation/prompts.py` — Sistem yazar prompt'una Flutter/Dart screenshot talimatlari eklendi
+- `book_projects/flutter-ile-mobil-uygulama-gelistirme/book_manifest.yaml` — timeout (30/15) ve viewport (390x844 iPhone 14 Pro) degerleri guncellendi
+- `.gitignore` — Flutter build ciktilari eklendi
+- `flutter_final/` ve `flutter_integration_task.md` temizlendi
+
+### Duzeltilen Hata
+
+- `tests/production/test_flutter_screenshot.py` — `runner` fixture'i `lib/main.dart` olusturmuyordu, FlutterWebStrategy testleri FileNotFoundError aliyordu. Fixture'a `lib/` dizini ve `main.dart` placeholder eklendi.
+
+### Dogrulama
+
+```text
+uv run ruff check src/   -> All checks passed!
+uv run pytest tests/production/test_flutter_screenshot.py -v --tb=short  -> 29 passed
+uv run pytest tests/ -q --tb=short  -> 411 passed
+python tools/validate_prompt_changes.py  -> 40/40 PASSED
+```
+
+### Commit
+
+```text
+bad7ae7 Flutter Screenshot Engine entegrasyonu: golden test ve web build stratejileri eklendi
+13 files changed, 1240 insertions(+), 17 deletions(-)
+```
+
+### Mimari Notlar
+
+- `pyproject.toml` degisikligi gerekmedi — `playwright` zaten `[project] dependencies` altinda
+- Flutter SDK kurulu degilse her iki strateji de sessizce hata doner, pipeline durmaz
+- `flutter_utils.py` `src/bookmaker/code/adapters/flutter.py`'den bagimsizdir — cakis-ma yok
+- Golden test stratejisi `python_timeout * 4` timeout kullanir (30*4=120s)
+- Web build stratejisi `react_timeout` degerini Playwright sayfa yukleme timeout'u olarak kullanir
 
 ---
 
@@ -900,34 +947,35 @@ book check -> 100/pass
 
 ---
 
-## Yeni Oturum İçin Kısa Özet
+## Yeni Oturum Icin Kisa Ozet
 
 ```text
-BookMaker — LLM destekli akademik/teknik kitap üretim framework'ü.
+BookMaker — LLM destekli akademik/teknik kitap uretim framework'u.
 Repo: D:\bookMaker_clean
 Branch: main (tek branch)
-Son commit: 865262e Harden Mermaid renderer configuration and caching
+Son commit: bad7ae7 Flutter Screenshot Engine entegrasyonu: golden test ve web build stratejileri eklendi
 
-Tamamlananlar (son dönem):
-- FAZ 4: Profile-aware validator, manifest tabanlı profil çözümü
-- FAZ 5: Studio GUI (6 sekme), servis katmanı ayrımı, project-based wizard
-- FAZ 6.3-6.5: Export readiness, export report, adapter katmanı
+Tamamlananlar (son donem):
+- FAZ 4: Profile-aware validator, manifest tabanli profil cozumu
+- FAZ 5: Studio GUI (6 sekme), servis katmani ayrimi, project-based wizard
+- FAZ 6.3-6.5: Export readiness, export report, adapter katmani
 - FAZ 6.6: Studio UX entegrasyonu (validation/export readiness UI)
-- FAZ 6.7: E2E smoke testler, CI güçlendirme, release checklist
-- FAZ 6.8: Devcontainer/Codespaces, toolchain check modülü, CLI komutu
-- Mermaid tema motoru entegrasyonu (5 profil teması, mmdc PNG renderer)
-- Screenshot engine entegrasyonu (3 strateji: python plot/console, react)
-- Mermaid renderer hardening (cache key genişletme, timeout, temp temizliği, mutable default)
+- FAZ 6.7: E2E smoke testler, CI guclendirme, release checklist
+- FAZ 6.8: Devcontainer/Codespaces, toolchain check modulu, CLI komutu
+- Mermaid tema motoru entegrasyonu (5 profil temasi, mmdc PNG renderer)
+- Screenshot engine entegrasyonu (5 strateji: python plot/console, react, flutter golden/web)
+- Mermaid renderer hardening (cache key genisletme, timeout, temp temizligi, mutable default)
+- Flutter Screenshot Engine entegrasyonu (golden test + web build, Flutter runner projesi)
 
-Güncel durum:
-- Sürüm: 0.2.0
-- test kapsamı: 381 passed
+Guncel durum:
+- Surum: 0.2.0
+- test kapsami: 411 passed
 - ruff: clean (src/ + tests/)
 - Flutter kitap validasyonu: 100/pass
 - toolchain: ok
 
-Sıradaki:
-- Kullanıcı yönlendirmesiyle yeni iş
+Siradaki:
+- Kullanici yonlendirmesiyle yeni is
 ```
 
 ---

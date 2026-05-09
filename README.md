@@ -193,24 +193,29 @@ Pipeline, iki gorsel uretim motoruyla entegre calisir:
 
 ### Screenshot Engine
 
-`src/bookmaker/production/screenshot_strategies/` altinda 3 strateji:
+`src/bookmaker/production/screenshot_strategies/` altinda 5 strateji:
 
 | Strateji | Fence Syntax | Islev |
 |----------|-------------|-------|
 | `python_plot` | `python plot` | matplotlib/plotly/seaborn → PNG |
 | `python_console` | `python console` | Terminal ciktisi → stillendirilmis PNG |
 | `react_component` | `jsx screenshot` | React bileseni → headless Chromium PNG |
+| `flutter_golden` | `dart screenshot` | Flutter widget → headless golden test PNG (~5s, emulator yok) |
+| `flutter_web` | `dart web-screenshot` | Flutter ekrani → web build + Playwright PNG (~30-60s) |
 
-`process_screenshots()` (postprocess.py) ASSEMBLE sonrasi `_save_chapter()` icinde cagrilir. Playwright kurulu degilse sessizce gecer.
+`process_screenshots()` (postprocess.py) ASSEMBLE sonrasi `_save_chapter()` icinde cagrilir. Playwright/Flutter SDK kurulu degilse sessizce gecer.
 
 ```text
 src/bookmaker/production/
 ├── screenshot_engine.py         # Ana motor, tagged block regex, cache
 ├── screenshot_strategies/
 │   ├── base.py                  # ScreenshotStrategy (ABC) + ScreenshotConfig
-│   ├── python_plot.py           # matplotlib/plotly/ seaborn grafikleri
+│   ├── python_plot.py           # matplotlib/plotly/seaborn grafikleri
 │   ├── python_console.py        # Terminal ciktisi (dark/light tema)
-│   └── react_component.py       # CDN React + Babel render
+│   ├── react_component.py       # CDN React + Babel render
+│   ├── flutter_golden.py        # Headless golden test (Dart VM)
+│   ├── flutter_web.py           # Web build + Playwright screenshot
+│   └── flutter_utils.py         # Dart kod analizi ve sablon ureticileri
 ├── mermaid_theme.py             # MermaidTheme + MermaidThemeManager
 ├── mermaid_renderer.py          # MermaidRenderer + MermaidRenderConfig
 └── themes/                      # 5 profil temasi (JSON)
@@ -253,7 +258,7 @@ bookmaker check chapter chapters/giris/content/draft.md --book-root book_project
 
 ```powershell
 uv run ruff check src/                      # lint
-uv run pytest tests/ -q --tb=short           # 377 passed
+uv run pytest tests/ -q --tb=short           # 411 passed
 uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme --json
 ```
 
@@ -264,7 +269,7 @@ uv run bookmaker check book book_projects/flutter-ile-mobil-uygulama-gelistirme 
 Proje GitHub Actions ile her push ve PR'de asagidaki kontrolleri calistirir:
 
 - Ruff lint (`src/` ve `tests/`)
-- Pytest test suite (377 test)
+- Pytest test suite (411 test)
 - Prompt validation
 - Ornek Flutter kitap projesi kalite kontrolu
 - Python 3.12 / 3.13 matrisi
